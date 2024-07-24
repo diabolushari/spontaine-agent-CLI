@@ -1,0 +1,103 @@
+import ListingPage from '@/Components/ListingPage/ListingPage'
+import { ReferenceData, ReferenceDataDomain } from '@/ui/data_interfaces'
+import { Paginator } from '@/ui/ui_interfaces'
+import useCustomForm from '@/hooks/useCustomForm'
+import { useMemo } from 'react'
+import { FormItem } from '@/FormBuilder/FormBuilder'
+
+interface Props {
+  referenceData: Paginator<ReferenceData>
+  domains: ReferenceDataDomain[]
+  oldDomain: string
+  oldParameter: string
+  oldValue: string
+}
+
+const cols = ['Domain', 'Parameter', 'Position', 'Value One', 'Value Two']
+
+const ReferenceDataIndex = ({
+  referenceData,
+  domains,
+  oldDomain,
+  oldValue,
+  oldParameter,
+}: Props) => {
+  const { formData, setFormValue } = useCustomForm({
+    domain_id: oldDomain,
+    parameter_id: oldParameter,
+    value: oldValue,
+  })
+
+  const formItems = useMemo(<
+    T,
+    U extends keyof T,
+    K extends keyof L,
+    G extends keyof L,
+    L extends Record<K, string | number> & Record<G, string | number | null>,
+  >() => {
+    return {
+      domain_id: {
+        label: 'Domain',
+        type: 'select',
+        setValue: setFormValue('domain_id'),
+        list: domains,
+        displayKey: 'domain',
+        dataKey: 'id',
+      },
+      parameter_id: {
+        label: 'Parameter',
+        type: 'dynamicSelect',
+        setValue: setFormValue('parameter_id'),
+        displayKey: 'parameter',
+        dataKey: 'id',
+        selectListUrl: route('parameter-list', {
+          domain: formData.domain_id,
+        }),
+      },
+      value: {
+        label: 'Value',
+        type: 'text',
+        setValue: setFormValue('value'),
+      },
+    } as Record<U, FormItem<T[U], K, G, L>>
+  }, [setFormValue, domains, formData.domain_id])
+
+  const data = useMemo(() => {
+    console.log(referenceData)
+    return referenceData.data.map((row) => {
+      return {
+        id: row.id,
+        domain: row.domain,
+        parameter: row.parameter,
+        sort_order: row.sort_order,
+        value_one: row.value_one,
+        value_two: row.value_two,
+        actions: [
+          {
+            title: 'Edit',
+            url: route('reference-data.edit', row.id, false),
+          },
+        ],
+      }
+    })
+  }, [referenceData])
+
+  console.log(data)
+
+  return (
+    <ListingPage
+      cols={cols}
+      rows={data}
+      keys={['domain', 'parameter', 'sort_order', 'value_one', 'value_two']}
+      primaryKey={'id'}
+      title='Reference Data'
+      paginator={referenceData}
+      formItems={formItems}
+      formData={formData}
+      searchUrl={route('reference-data.index')}
+      addButtonUrl={route('reference-data.create')}
+    />
+  )
+}
+
+export default ReferenceDataIndex

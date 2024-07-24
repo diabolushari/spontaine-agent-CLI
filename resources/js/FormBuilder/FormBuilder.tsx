@@ -9,6 +9,7 @@ import FileInput from '@/ui/form/FileInput'
 import SelectList from '@/ui/form/SelectList'
 import PrimaryButton from '@/Components/PrimaryButton'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
 
 export interface FormItem<
   T,
@@ -24,6 +25,7 @@ export interface FormItem<
     | 'password'
     | 'checkbox'
     | 'select'
+    | 'dynamicSelect'
     | 'radio'
     | 'textarea'
     | 'date'
@@ -35,6 +37,9 @@ export interface FormItem<
   displayKey?: K
   dataKey?: G
   colPositionAdjustment?: string
+  selectListUrl?: string
+  showAllOption?: boolean
+  allOptionText?: string
 }
 
 interface Props<
@@ -49,6 +54,9 @@ interface Props<
   onFormSubmit: (e: React.FormEvent<HTMLFormElement>) => unknown
   formItems: Record<U, FormItem<T[U], K, G, L>>
   loading: boolean
+  errors?: Record<U, string | undefined>
+  buttonText?: string
+  buttonAlignment?: 'start' | 'center' | 'end'
 }
 
 export default function FormBuilder<
@@ -57,12 +65,28 @@ export default function FormBuilder<
   K extends keyof L,
   G extends keyof L,
   L extends Record<K, string | number> & Record<G, string | number | null>,
->({ formStyles = '', formItems, formData, onFormSubmit, loading = false }: Props<T, U, K, G, L>) {
+>({
+  formStyles = '',
+  formItems,
+  formData,
+  onFormSubmit,
+  loading = false,
+  errors,
+  buttonText = 'Submit',
+  buttonAlignment,
+}: Props<T, U, K, G, L>) {
   const formStyle = cn('grid w-full grid-cols-1 md:grid-cols-2 gap-5', formStyles)
 
   const keys: (keyof typeof formItems)[] = useMemo(() => {
     return Object.keys(formItems) as (keyof typeof formItems)[]
   }, [formItems])
+
+  const buttonStyle =
+    buttonAlignment === 'center'
+      ? 'justify-center'
+      : buttonAlignment === 'end'
+        ? 'justify-end'
+        : 'justify-start'
 
   return (
     <form
@@ -79,6 +103,8 @@ export default function FormBuilder<
               value={formData[keyValue] as string | number | undefined}
               label={formItems[keyValue].label}
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
             />
           )}
           {formItems[keyValue].type === 'email' && !formItems[keyValue].hidden && (
@@ -87,6 +113,8 @@ export default function FormBuilder<
               label={formItems[keyValue].label}
               type='email'
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
             />
           )}
           {formItems[keyValue].type === 'password' && !formItems[keyValue].hidden && (
@@ -95,6 +123,8 @@ export default function FormBuilder<
               label={formItems[keyValue].label}
               type='password'
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
             />
           )}
           {formItems[keyValue].type === 'checkbox' && !formItems[keyValue].hidden && (
@@ -102,6 +132,8 @@ export default function FormBuilder<
               toggleValue={formItems[keyValue].setValue as () => unknown}
               value={formData[keyValue] as boolean}
               label={formItems[keyValue].label}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
             />
           )}
           {formItems[keyValue].type === 'textarea' && !formItems[keyValue].hidden && (
@@ -109,6 +141,8 @@ export default function FormBuilder<
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
               value={formData[keyValue] as string}
               label={formItems[keyValue].label}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
             />
           )}
           {formItems[keyValue].type === 'date' && !formItems[keyValue].hidden && (
@@ -116,6 +150,8 @@ export default function FormBuilder<
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
               value={formData[keyValue] as string}
               label={formItems[keyValue].label}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
             />
           )}
           {formItems[keyValue].type === 'time' && !formItems[keyValue].hidden && (
@@ -123,6 +159,8 @@ export default function FormBuilder<
               setValue={formItems[keyValue].setValue as (value: string) => unknown}
               value={formData[keyValue] as string}
               label={formItems[keyValue].label}
+              error={errors != null ? errors[keyValue] : undefined}
+              disabled={formItems[keyValue].disabled}
             />
           )}
           {formItems[keyValue].type === 'file' && !formItems[keyValue].hidden && (
@@ -130,6 +168,7 @@ export default function FormBuilder<
               setValue={formItems[keyValue].setValue as (value: File | null) => unknown}
               label={formItems[keyValue].label}
               file={formData[keyValue] as File | null}
+              error={errors != null ? errors[keyValue] : undefined}
             />
           )}
           {formItems[keyValue].type === 'select' &&
@@ -144,13 +183,35 @@ export default function FormBuilder<
                 setValue={formItems[keyValue].setValue as (value: string) => unknown}
                 value={formData[keyValue] as string | number}
                 label={formItems[keyValue].label}
+                showAllOption={formItems[keyValue].showAllOption}
+                allOptionText={formItems[keyValue].allOptionText}
+                error={errors != null ? errors[keyValue] : undefined}
+                disabled={formItems[keyValue].disabled}
+              />
+            )}
+          {formItems[keyValue].type === 'dynamicSelect' &&
+            !formItems[keyValue].hidden &&
+            formItems[keyValue].selectListUrl != null &&
+            formItems[keyValue].displayKey != null &&
+            formItems[keyValue].dataKey != null && (
+              <DynamicSelectList
+                url={formItems[keyValue].selectListUrl}
+                dataKey={formItems[keyValue].dataKey as string}
+                displayKey={formItems[keyValue].displayKey as string}
+                setValue={formItems[keyValue].setValue as (value: string) => unknown}
+                value={formData[keyValue] as string | number}
+                label={formItems[keyValue].label}
+                showAllOption={formItems[keyValue].showAllOption}
+                allOptionText={formItems[keyValue].allOptionText}
+                disabled={formItems[keyValue].disabled}
+                error={errors != null ? errors[keyValue] : undefined}
               />
             )}
         </div>
       ))}
-      <div className='flex justify-center'>
+      <div className={cn('flex gap-5 col-start-1 ', buttonStyle)}>
         <FullSpinnerWrapper processing={loading}>
-          <PrimaryButton>LOGIN</PrimaryButton>
+          <PrimaryButton>{buttonText}</PrimaryButton>
         </FullSpinnerWrapper>
       </div>
     </form>

@@ -13,7 +13,7 @@ export interface PostOptions {
 }
 
 const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Record<keyof T, string | undefined>>({} as any)
   const [loading, setLoading] = useState(false)
   const post = useCallback(
     (form: T) => {
@@ -32,7 +32,7 @@ const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
           },
           onSuccess: (data) => {
             const flash = data.props.flash as LaravelFlash
-            setErrors({})
+            setErrors({} as any)
             if (flash.error == null && options?.onComplete != null) {
               options.onComplete()
             }
@@ -49,7 +49,7 @@ const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
                 'Data Submitted Is Incomplete/Invalid, Please Try Again After Fixing All Errors.'
               )
             }
-            setErrors(errors)
+            setErrors(errors as any)
           },
           replace: options?.replace ?? true,
         }

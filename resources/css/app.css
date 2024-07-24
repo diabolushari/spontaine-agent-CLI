@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.Toastify__toast-container--bottom-center {
+    z-index: 999999 !important;
+}
+
+body {
+    @apply bg-gray-100;
+}
+
+.standard-th {
+    @apply px-6 py-3  text-left font-semibold uppercase tracking-wider text-gray-700;
+}
+
+.standard-tr {
+    @apply border-b border-gray-800 leading-none;
+}
+
+.standard-td {
+    @apply max-w-xs break-words px-3 py-6;
+}
+
+.spinner_svg {
+    animation: 2s linear infinite svg-animation;
+    max-width: 100px;
+}
+
+@keyframes svg-animation {
+    0% {
+        transform: rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateZ(360deg);
+    }
+}
+
+.spinner_circle {
+    animation: 1.4s ease-in-out infinite both circle-animation;
+    display: block;
+    fill: transparent;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 280;
+    stroke-width: 10px;
+    transform-origin: 50% 50%;
+}

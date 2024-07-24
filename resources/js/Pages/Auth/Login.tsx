@@ -5,12 +5,6 @@ import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import React, { useMemo } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 
-const genders = [
-  { id: 1, name: 'MALE' },
-  { id: 2, name: 'FEMALE' },
-  { id: 3, name: 'OTHER' },
-]
-
 export default function Login({ status }: { status?: string; canResetPassword: boolean }) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     remember: false,
