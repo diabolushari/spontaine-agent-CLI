@@ -7,9 +7,9 @@ import DatePicker from '@/ui/form/DatePicker'
 import TimePicker from '@/ui/form/TimePicker'
 import FileInput from '@/ui/form/FileInput'
 import SelectList from '@/ui/form/SelectList'
-import PrimaryButton from '@/Components/PrimaryButton'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import Button from '@/ui/button/Button'
 
 export interface FormItem<
   T,
@@ -211,7 +211,7 @@ export default function FormBuilder<
       ))}
       <div className={cn('flex gap-5 col-start-1 ', buttonStyle)}>
         <FullSpinnerWrapper processing={loading}>
-          <PrimaryButton>{buttonText}</PrimaryButton>
+          <Button label={buttonText} />
         </FullSpinnerWrapper>
       </div>
     </form>

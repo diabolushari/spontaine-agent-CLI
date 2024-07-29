@@ -7,6 +7,7 @@ use App\Http\Requests\ReferenceDataRequests\RefDataFormRequest;
 use App\Http\Requests\ReferenceDataRequests\ReferenceDataSearchRequest;
 use App\Models\ReferenceData;
 use App\Models\ReferenceDataDomain;
+use App\Services\ReferenceData\HasSecondValue;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -47,8 +48,17 @@ class ReferenceDataController extends Controller
         ]);
     }
 
-    public function store(RefDataFormRequest $request)
+    public function store(RefDataFormRequest $request, HasSecondValue $hasSecondValue): RedirectResponse
     {
+
+        $response = $hasSecondValue->check($request);
+
+        if ($response->error) {
+            return back()->with([
+                'error' => $response->message,
+            ]);
+        }
+
         try {
             ReferenceData::create($request->all());
         } catch (Exception $e) {
@@ -76,8 +86,17 @@ class ReferenceDataController extends Controller
         ]);
     }
 
-    public function update(string $id, RefDataFormRequest $request): RedirectResponse
+    public function update(string $id, RefDataFormRequest $request, HasSecondValue $hasSecondValue): RedirectResponse
     {
+
+        $response = $hasSecondValue->check($request);
+
+        if ($response->error) {
+            return back()->with([
+                'error' => $response->message,
+            ]);
+        }
+
         try {
             ReferenceData::where('id', $id)
                 ->update($request->all());

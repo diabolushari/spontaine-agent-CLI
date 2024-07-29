@@ -1,20 +1,40 @@
 import Authenticated from '@/Layouts/AuthenticatedLayout'
-import Table from '@/ui/Table/Table'
 import Card from '@/ui/Card/Card'
 import Heading from '@/typograpy/Heading'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import { Link, router } from '@inertiajs/react'
-import React from 'react'
+import { router } from '@inertiajs/react'
+import React, { useEffect } from 'react'
 import AddButton from '@/ui/button/AddButton'
+import ListResourceTable from '@/Components/ListingPage/ListResourceTable'
+import SelectList from '@/ui/form/SelectList'
+import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
+
+export interface ListItemKeys<T> {
+  key: keyof T
+  label: string
+  isCardHeader?: boolean
+  isShownInCard?: boolean
+  textStyles?: string
+  hideLabel?: boolean
+}
+
+const viewTypes = [
+  {
+    label: 'Cards',
+    value: 'cards',
+  },
+  {
+    label: 'Table',
+    value: 'table',
+  },
+]
 
 interface Props<
   U extends keyof T,
-  V extends keyof T,
-  T extends Record<U, string> &
-    Record<V, string | number | null | undefined> &
+  T extends Record<U, string | number | null | undefined> &
     Record<'actions', { url: string; title: string }[]>,
   Q,
   P extends keyof Q,
@@ -22,8 +42,7 @@ interface Props<
   S extends keyof L,
   L extends Record<R, string | number> & Record<S, string | number | null>,
 > {
-  cols: string[]
-  keys: V[]
+  keys: ListItemKeys<T>[]
   primaryKey: keyof T
   rows: T[]
   formData: Q
@@ -34,11 +53,9 @@ interface Props<
   addButtonUrl?: string
 }
 
-export default function ListingPage<
+export default function ListResourcePage<
   U extends keyof T,
-  V extends keyof T,
-  T extends Record<U, string> &
-    Record<V, string | number | null | undefined> &
+  T extends Record<U, string | number | null | undefined> &
     Record<'actions', { url: string; title: string }[]>,
   Q,
   P extends keyof Q,
@@ -46,7 +63,6 @@ export default function ListingPage<
   S extends keyof L,
   L extends Record<R, string | number> & Record<S, string | number | null>,
 >({
-  cols,
   rows,
   primaryKey,
   keys,
@@ -56,7 +72,7 @@ export default function ListingPage<
   formData,
   searchUrl,
   addButtonUrl,
-}: Props<U, V, T, Q, P, R, S, L>) {
+}: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -68,6 +84,14 @@ export default function ListingPage<
       ...formData,
     } as Record<string, string | number>)
   }
+
+  const [viewType, setViewType] = React.useState('table')
+
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setViewType('cards')
+    }
+  }, [])
 
   return (
     <Authenticated>
@@ -89,51 +113,40 @@ export default function ListingPage<
                   formStyles={'md:grid-cols-3 lg:grid-cols-4'}
                 />
               </div>
-              <Table
-                heads={cols}
-                editColumn={true}
-              >
-                <tbody>
-                  {rows.map((row) => {
-                    return (
-                      <tr
-                        key={row[primaryKey] as string}
-                        className='standard-tr'
-                      >
-                        {keys.map((rowKey) => {
-                          return (
-                            <td
-                              key={rowKey as string}
-                              className='standard-td'
-                            >
-                              {row[rowKey as keyof typeof row]}
-                            </td>
-                          )
-                        })}
-                        {row.actions != null && (
-                          <td>
-                            {row.actions.map((action) => {
-                              return (
-                                <Link
-                                  key={action.title}
-                                  href={action.url}
-                                  className='text-blue-500 underline hover:text-blue-400'
-                                >
-                                  {action.title}
-                                </Link>
-                              )
-                            })}
-                          </td>
-                        )}
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </Table>
-              {paginator != null && <Pagination pagination={paginator} />}
             </div>
           </div>
         </Card>
+        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 my-5'>
+          <div className='flex flex-col md:col-start-3 lg:col-start-4'>
+            <SelectList
+              list={viewTypes}
+              dataKey='value'
+              displayKey='label'
+              setValue={setViewType}
+              value={viewType}
+            />
+          </div>
+        </div>
+        {viewType === 'cards' && (
+          <>
+            <ListResourceCard
+              keys={keys}
+              primaryKey={primaryKey}
+              rows={rows}
+            />
+            {paginator != null && <Pagination pagination={paginator} />}
+          </>
+        )}
+        {viewType === 'table' && (
+          <Card className='p-5'>
+            <ListResourceTable
+              keys={keys}
+              primaryKey={primaryKey}
+              rows={rows}
+            />
+            {paginator != null && <Pagination pagination={paginator} />}
+          </Card>
+        )}
       </DashboardPadding>
     </Authenticated>
   )

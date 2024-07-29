@@ -44,10 +44,7 @@ export const chooseButtonColor = (type: string): [string, string] => {
     }
 
     default: {
-      return [
-        'bg-theme_color_1 text-white hover:bg-theme_color_2 focus:ring-1',
-        'text-primary-700 ',
-      ]
+      return ['bg-primary-500 text-white hover:bg-theme_color_2 focus:ring-1', 'text-primary-700 ']
     }
   }
 }

@@ -1,4 +1,4 @@
-import ListingPage from '@/Components/ListingPage/ListingPage'
+import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { ReferenceData, ReferenceDataDomain } from '@/ui/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
@@ -63,7 +63,6 @@ const ReferenceDataIndex = ({
   }, [setFormValue, domains, formData.domain_id])
 
   const data = useMemo(() => {
-    console.log(referenceData)
     return referenceData.data.map((row) => {
       return {
         id: row.id,
@@ -82,13 +81,40 @@ const ReferenceDataIndex = ({
     })
   }, [referenceData])
 
-  console.log(data)
+  const keys = useMemo(() => {
+    return [
+      {
+        key: 'domain',
+        label: 'Domain',
+        isCardHeader: true,
+      },
+      {
+        key: 'parameter',
+        label: 'Parameter',
+        isShownInCard: true,
+        hideLabel: true,
+      },
+      {
+        key: 'sort_order',
+        label: 'Position',
+      },
+      {
+        key: 'value_one',
+        label: 'Value One',
+        isShownInCard: true,
+      },
+      {
+        key: 'value_two',
+        label: 'Value Two',
+        isShownInCard: true,
+      },
+    ] as ListItemKeys<Partial<ReferenceData>>[]
+  }, [])
 
   return (
-    <ListingPage
-      cols={cols}
+    <ListResourcePage
       rows={data}
-      keys={['domain', 'parameter', 'sort_order', 'value_one', 'value_two']}
+      keys={keys}
       primaryKey={'id'}
       title='Reference Data'
       paginator={referenceData}
