@@ -52,17 +52,23 @@ export default function MetaDataShow({ metaData }: Props) {
     <ShowResourcePage
       items={displayedItems}
       title={metaData.name}
-      backButtonUrl={route('meta-data.index')}
+      backUrl={route('meta-data.index')}
     >
       <>
         <Card className='mt-5'>
-          <CardHeader title='Groups' />
+          <CardHeader
+            title='Groups'
+            onAddClick={() => {}}
+          />
           <div className='p-2'>
             <StrongText>Part of no groups.</StrongText>
           </div>
         </Card>
         <Card className='mt-5'>
-          <CardHeader title='Hierarchy' />
+          <CardHeader
+            title='Hierarchy'
+            onAddClick={() => {}}
+          />
           <div className='p-2'>
             <StrongText>Not part of any hierarchy.</StrongText>
           </div>

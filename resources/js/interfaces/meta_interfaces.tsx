@@ -41,5 +41,5 @@ export interface MetaHierarchyItem extends Model {
   meta_data_id: number
   meta_data?: Partial<MetaData> | null
   meta_hierarchy?: Partial<MetaHierarchy> | null
-  parent?: Partial<MetaData> | null
+  parent?: Partial<MetaHierarchyItem> | null
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Meta\MetaDataSearchController;
 use App\Http\Controllers\Meta\MetaGroupAddItemController;
 use App\Http\Controllers\Meta\MetaHierarchyAddItemController;
 use App\Http\Controllers\Meta\MetaHierarchyController;
+use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
@@ -56,5 +57,7 @@ Route::post('meta-group-add-item', MetaGroupAddItemController::class)
     ->name('meta-group-add-item');
 Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
     ->name('meta-hierarchy-add-item');
+Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
+    ->name('meta-hierarchy-search');
 
 require __DIR__.'/auth.php';

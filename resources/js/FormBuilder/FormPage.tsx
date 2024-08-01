@@ -19,6 +19,13 @@ interface Props<
   formItems: Record<U, FormItem<T[U], K, G, L>>
   title: string
   backUrl?: string
+  onBackClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  addUrl?: string
+  onAddClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  editUrl?: string
+  onEditClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  deleteUrl?: string
+  onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   isPatchRequest?: boolean
 }
 
@@ -35,6 +42,13 @@ export default function FormPage<
   formData,
   title,
   backUrl,
+  editUrl,
+  onBackClick,
+  onEditClick,
+  deleteUrl,
+  onDeleteClick,
+  onAddClick,
+  addUrl,
   isPatchRequest = false,
 }: Props<T, U, K, G, L>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
@@ -55,6 +69,13 @@ export default function FormPage<
             <CardHeader
               title={title}
               backUrl={backUrl}
+              editUrl={editUrl}
+              onBackClick={onBackClick}
+              onEditClick={onEditClick}
+              deleteUrl={deleteUrl}
+              onDeleteClick={onDeleteClick}
+              addUrl={addUrl}
+              onAddClick={onAddClick}
             />
             <div className='flex flex-col p-5'>
               <FormBuilder

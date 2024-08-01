@@ -58,7 +58,7 @@ class MetaHierarchyController extends Controller
         $items = MetaHierarchyItem::with('metaData:id,name')
             ->with('metaData.metaStructure:id,structure_name')
             ->where('meta_hierarchy_id', $metaHierarchy->id)
-            ->when($node != null, fn ($q) => $q->where('parent_id', $node->meta_data_id))
+            ->when($node != null, fn ($q) => $q->where('parent_id', $node->id))
             ->when($node == null, fn ($q) => $q->whereNull('parent_id'))
             ->get();
 

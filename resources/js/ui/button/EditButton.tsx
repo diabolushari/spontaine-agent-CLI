@@ -1,14 +1,14 @@
+import React from 'react'
 import { router } from '@inertiajs/react'
 import ButtonBorderIcon from './ButtonBorderIcon'
-import { ArrowLeftIcon } from 'lucide-react'
-import React from 'react'
+import { Pencil } from 'lucide-react'
 
-interface Properties {
+interface Props {
   link?: string
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => unknown
 }
 
-export default function BackButton({ onClick, link }: Properties) {
+export default function EditButton({ link, onClick }: Props) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (link != null) {
       router.get(link)
@@ -20,11 +20,8 @@ export default function BackButton({ onClick, link }: Properties) {
   }
 
   return (
-    <ButtonBorderIcon
-      onClick={handleClick}
-      type='danger'
-    >
-      <ArrowLeftIcon className='h-6 w-6' />
+    <ButtonBorderIcon onClick={handleClick}>
+      <Pencil className='h-6 w-6' />
     </ButtonBorderIcon>
   )
 }

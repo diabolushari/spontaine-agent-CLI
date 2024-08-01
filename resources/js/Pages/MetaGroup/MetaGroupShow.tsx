@@ -27,7 +27,7 @@ export default function MetaGroupShow({ metaDataGroup, groupItems }: Props) {
     <ShowResourcePage
       title={metaDataGroup.name}
       items={displayedValues}
-      backButtonUrl={route('meta-data-group.index')}
+      backUrl={route('meta-data-group.index')}
     >
       <MetaGroupAddItem metaDataGroup={metaDataGroup} />
       <MetaGroupItemList

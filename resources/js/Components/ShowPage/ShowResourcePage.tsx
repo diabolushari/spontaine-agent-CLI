@@ -18,18 +18,44 @@ export interface ShowPageItem {
 interface Props {
   title: string
   children?: React.ReactNode
-  backButtonUrl?: string
   items: ShowPageItem[]
+  backUrl?: string
+  onBackClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  addUrl?: string
+  onAddClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  editUrl?: string
+  onEditClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  deleteUrl?: string
+  onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
 }
 
-export default function ShowResourcePage({ title, children, backButtonUrl, items }: Props) {
+export default function ShowResourcePage({
+  title,
+  children,
+  backUrl,
+  items,
+  editUrl,
+  onBackClick,
+  onEditClick,
+  deleteUrl,
+  onDeleteClick,
+  onAddClick,
+  addUrl,
+}: Props) {
   return (
     <Authenticated>
       <DashboardPadding>
         <Card>
           <CardHeader
             title={title}
-            backUrl={backButtonUrl}
+            backUrl={backUrl}
+            onBackClick={onBackClick}
+            editUrl={editUrl}
+            onEditClick={onEditClick}
+            deleteUrl={deleteUrl}
+            onDeleteClick={onDeleteClick}
+            addUrl={addUrl}
+            onAddClick={onAddClick}
           />
           <div className='flex flex-col gap-5 py-5 px-10'>
             {items.map((item) => (

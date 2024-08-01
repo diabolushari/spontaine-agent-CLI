@@ -32,7 +32,7 @@ export default function MetaHierarchyShow({ metaHierarchy, hierarchyItems, curre
     <ShowResourcePage
       title={metaHierarchy.name}
       items={displayItems}
-      backButtonUrl={route('meta-hierarchy.index')}
+      backUrl={route('meta-hierarchy.index')}
     >
       <MetaHierarchyAddItem metaHierarchy={metaHierarchy} />
       <MetaHierarchyItemList

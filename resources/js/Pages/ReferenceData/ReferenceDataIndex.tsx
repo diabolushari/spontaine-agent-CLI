@@ -121,7 +121,7 @@ const ReferenceDataIndex = ({
       formItems={formItems}
       formData={formData}
       searchUrl={route('reference-data.index')}
-      addButtonUrl={route('reference-data.create')}
+      addUrl={route('reference-data.create')}
     />
   )
 }

@@ -74,7 +74,7 @@ export default function MetaHierarchyIndex({ hierarchies }: Props) {
       formItems={formItems}
       paginator={hierarchies}
       title='Meta Hierarchies'
-      addButtonUrl={route('meta-hierarchy.create')}
+      addUrl={route('meta-hierarchy.create')}
       searchUrl={route('meta-hierarchy.index')}
     />
   )

@@ -70,7 +70,7 @@ export default function MetaGroupIndex({ groups }: Props) {
       rows={data}
       formData={formData}
       formItems={formItems}
-      addButtonUrl={route('meta-data-group.create')}
+      addUrl={route('meta-data-group.create')}
       title={'Meta Data Groups'}
       searchUrl={route('meta-data-group.index')}
       paginator={groups}

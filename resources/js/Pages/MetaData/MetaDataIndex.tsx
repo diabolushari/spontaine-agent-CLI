@@ -64,7 +64,7 @@ export default function MetaDataIndex({ structures, metaData }: Props) {
       rows={data}
       formData={formData}
       formItems={formItems}
-      addButtonUrl={route('meta-data.create')}
+      addUrl={route('meta-data.create')}
       title={'Meta Data'}
       searchUrl={route('meta-data.index')}
     />

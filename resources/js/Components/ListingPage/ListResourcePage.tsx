@@ -49,7 +49,14 @@ interface Props<
   paginator?: Paginator<{}>
   title?: string
   searchUrl?: string
-  addButtonUrl?: string
+  backUrl?: string
+  onBackClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  addUrl?: string
+  onAddClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  editUrl?: string
+  onEditClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  deleteUrl?: string
+  onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
 }
 
 export default function ListResourcePage<
@@ -70,7 +77,14 @@ export default function ListResourcePage<
   formItems,
   formData,
   searchUrl,
-  addButtonUrl,
+  backUrl,
+  onBackClick,
+  addUrl,
+  onAddClick,
+  editUrl,
+  onEditClick,
+  deleteUrl,
+  onDeleteClick,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -99,7 +113,14 @@ export default function ListResourcePage<
           <div className='flex flex-col gap-5'>
             <CardHeader
               title={title}
-              addUrl={addButtonUrl}
+              addUrl={addUrl}
+              backUrl={backUrl}
+              onBackClick={onBackClick}
+              onAddClick={onAddClick}
+              editUrl={editUrl}
+              onEditClick={onEditClick}
+              deleteUrl={deleteUrl}
+              onDeleteClick={onDeleteClick}
             />
             <div className='flex flex-col gap-10 px-5 py-5'>
               <div className='flex flex-col gap-5'>

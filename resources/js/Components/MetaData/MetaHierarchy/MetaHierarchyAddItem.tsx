@@ -21,10 +21,12 @@ export default function MetaHierarchyAddItem({ metaHierarchy }: Props) {
     MetaData,
     'id' | 'name' | 'structure_name'
   > | null>(null)
-  const [selectedParent, setSelectedParent] = useState<Pick<
-    MetaData,
-    'id' | 'name' | 'structure_name'
-  > | null>(null)
+  const [selectedParent, setSelectedParent] = useState<{
+    id: string
+    name: string
+    structure_name: string
+    meta_data_id: string
+  } | null>(null)
 
   const onComplete = useCallback(() => {
     setShowModal(false)
@@ -53,11 +55,19 @@ export default function MetaHierarchyAddItem({ metaHierarchy }: Props) {
         dataKey: 'id',
         displayKey: 'name',
         displayKey2: 'structure_name',
-        selectListUrl: route('meta-data-search', {
+        selectListUrl: route('meta-hierarchy-search', {
           hierarchy: metaHierarchy.id,
           search: '',
         }),
-        setValue: (value: Pick<MetaData, 'id' | 'name' | 'structure_name'>) => {
+        setValue: (
+          value: {
+            id: string
+            name: string
+            structure_name: string
+            meta_data_id: string
+          } | null
+        ) => {
+          console.log(value)
           setSelectedParent(value)
           setFormValue('parent_id')(value?.id.toString() ?? '')
         },

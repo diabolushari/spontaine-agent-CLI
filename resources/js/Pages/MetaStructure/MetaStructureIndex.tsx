@@ -59,7 +59,7 @@ export default function MetaStructureIndex({ structures }: Props) {
       rows={data}
       formData={formData}
       formItems={formItems}
-      addButtonUrl={route('meta-structure.create')}
+      addUrl={route('meta-structure.create')}
       searchUrl={route('meta-structure.index', undefined, false)}
       paginator={structures}
     />
