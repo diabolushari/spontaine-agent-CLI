@@ -51,6 +51,11 @@ const sidebarLinks: SidebarSection[] = [
     title: 'Data & Settings',
     links: [
       {
+        title: 'Subject Area',
+        link: route('subject-area.index'),
+        permission: 'reference-data.view',
+      },
+      {
         title: 'Reference Data',
         link: route('reference-data.index'),
         permission: 'reference-data.view',

@@ -1,6 +1,7 @@
 import React from 'react'
 import { FormFieldProp } from '../ui_interfaces'
 import { getFormStyle } from './Input'
+import ErrorText from '@/typograpy/ErrorText'
 
 export default function TextArea({
   label,
@@ -22,7 +23,7 @@ export default function TextArea({
         disabled={disabled}
         className={getFormStyle(style)}
       ></textarea>
-      {error && <div className='error-text'>{error}</div>}
+      {error && <ErrorText>{error}</ErrorText>}
     </>
   )
 }

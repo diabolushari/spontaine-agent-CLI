@@ -1,5 +1,6 @@
 import React from 'react'
 import { FormFieldProp } from '../ui_interfaces'
+import ErrorText from '@/typograpy/ErrorText'
 
 export const getFormStyle = (style: 'normal' | 'bottom-border' | 'dark') => {
   switch (style) {
@@ -58,7 +59,7 @@ export default function Input({
         readOnly={readonly}
         required={required}
       />
-      {error && <div className='error-text'>{error}</div>}
+      {error && <ErrorText>{error}</ErrorText>}
     </>
   )
 }

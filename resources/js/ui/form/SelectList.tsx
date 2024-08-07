@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { FormFieldProp as FormFieldProperty } from '../ui_interfaces'
+import ErrorText from '@/typograpy/ErrorText'
 
 export interface Properties<
   K extends keyof T,
@@ -92,7 +93,7 @@ export default function SelectList<
           )
         })}
       </select>
-      {error && <div className='error-text'>{error}</div>}
+      {error && <ErrorText>{error}</ErrorText>}
     </>
   )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { CheckboxProp } from '../ui_interfaces'
+import ErrorText from '@/typograpy/ErrorText'
 
 export default function CheckBox({
   label,
@@ -51,7 +52,7 @@ export default function CheckBox({
             }`}
         </style>
       </div>
-      {error && <div className='error-text'>{error}</div>}
+      {error && <ErrorText>{error}</ErrorText>}
     </>
   )
 }

@@ -30,3 +30,10 @@ export interface ReferenceData extends Model {
   value_one: string
   value_two: string | null
 }
+
+export interface SubjectArea extends Model {
+  name: string
+  description: string | null
+  table_name: string
+  is_active: 0 | 1
+}

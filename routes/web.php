@@ -10,6 +10,7 @@ use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
+use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -52,5 +53,9 @@ Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
     ->name('meta-hierarchy-add-item');
 Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
+
+//subject area
+Route::resource('subject-area', SubjectAreaController::class)
+    ->parameters(['subject-areas' => 'subjectArea']);
 
 require __DIR__.'/auth.php';
