@@ -38,6 +38,7 @@ export default function SubjectAreaEdit({ subjectArea }: Props) {
         type: 'text',
         label: 'Table Name',
         setValue: setFormValue('table_name'),
+        disabled: true,
       },
       is_active: {
         type: 'checkbox',
@@ -49,12 +50,13 @@ export default function SubjectAreaEdit({ subjectArea }: Props) {
 
   return (
     <FormPage
-      url={route('subject-area.store')}
+      url={route('subject-area.update', subjectArea.id)}
       backUrl={route('subject-area.index')}
       formData={formData}
       formItems={formItems}
       title={`Edit: ${subjectArea.name}`}
       formStyles='md:w-1/2 md:grid-cols-1'
+      isPatchRequest
     />
   )
 }

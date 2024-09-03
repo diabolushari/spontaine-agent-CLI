@@ -3,6 +3,7 @@ import { Model } from '@/interfaces/data_interfaces'
 export interface MetaStructure extends Model {
   structure_name: string
   description?: string | null
+  meta_data_count?: number
 }
 
 export interface MetaData extends Model {

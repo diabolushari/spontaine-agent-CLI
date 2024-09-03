@@ -27,7 +27,8 @@ class MetaStructureController extends Controller
 
     public function index(Request $request): Response
     {
-        $structures = MetaStructure::when($request->filled(key:'search'),fn(Builder $builder)=>$builder
+        $structures = MetaStructure::withCount('metaData')
+            ->when($request->filled(key:'search'),fn(Builder $builder)=>$builder
             ->where('structure_name',operator:'like',value:'%'.$request->input(key:'search').'%'))
             ->paginate(20)
             ->withQueryString();

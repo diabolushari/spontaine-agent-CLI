@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\SubjectArea;
 
-use Illuminate\Support\Facades\Log;
+use App\Models\SubjectArea\SubjectArea;
 use Route;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
@@ -23,15 +23,14 @@ class SubjectAreaUpdateRequest extends Data
      */
     public static function rules(): array
     {
-        $id = Route::current()->parameter('subjectArea');
-
-        Log::info($id);
+        /** @var SubjectArea $subjectArea */
+        $subjectArea = Route::current()->parameter('subject_area');
 
         return [
-            'name' => ['required', 'string', 'max:255', "unique:subject_areas,name,$id"],
+            'name' => ['required', 'string', 'max:255', "unique:subject_areas,name,$subjectArea->id"],
             'description' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['required', 'boolean'],
-            'table_name' => ['required', 'string', 'max:255', 'unique:subject_areas,table_name,'.$id],
+            'table_name' => ['required', 'string', 'max:255', 'unique:subject_areas,table_name,'.$subjectArea->id],
         ];
     }
 }

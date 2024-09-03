@@ -44,6 +44,9 @@ export default function MetaDataIndex({ structures, metaData }: Props) {
     return metaData.data.map((metaData) => ({
       id: metaData.id,
       name: metaData.name,
+      structure: metaData.meta_structure?.structure_name,
+      groups: '0',
+      hierarchies: '0',
       actions: [
         {
           title: 'Show',
@@ -54,7 +57,12 @@ export default function MetaDataIndex({ structures, metaData }: Props) {
   }, [metaData])
 
   const keys = useMemo(() => {
-    return [{ key: 'name', label: 'Name', isCardHeader: true }] as ListItemKeys<Partial<MetaData>>[]
+    return [
+      { key: 'name', label: 'Name', isCardHeader: true },
+      { key: 'structure', label: 'Structure', isShownInCard: true },
+      { key: 'groups', label: 'Groups', isShownInCard: true },
+      { key: 'hierarchies', label: 'Hierarchies', isShownInCard: true },
+    ] as ListItemKeys<Partial<MetaData>>[]
   }, [])
 
   return (

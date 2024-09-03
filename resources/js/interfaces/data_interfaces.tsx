@@ -37,3 +37,32 @@ export interface SubjectArea extends Model {
   table_name: string
   is_active: 0 | 1
 }
+
+export interface DataDetail extends Model {
+  subject_area_id: number
+  name: string
+  description: string | null
+  type: string
+  is_active: 0 | 1
+}
+
+export interface TableDateField extends Model {
+  data_detail_id: number
+  column: string
+  field_name: string
+}
+
+export interface TableDimensionField extends Model {
+  data_detail_id: number
+  column: string
+  field_name: string
+  meta_structure_id: number
+}
+
+export interface TableMeasureField extends Model {
+  data_detail_id: number
+  column: string
+  unit_column: string | null
+  field_name: string
+  unit_field_name: string | null
+}

@@ -45,16 +45,21 @@ const sidebarLinks: SidebarSection[] = [
         link: route('meta-hierarchy.index'),
         permission: 'reference-data.view',
       },
-    ],
-  },
-  {
-    title: 'Data & Settings',
-    links: [
       {
         title: 'Subject Area',
         link: route('subject-area.index'),
         permission: 'reference-data.view',
       },
+      {
+        title: 'Data Details',
+        link: route('data-detail.index'),
+        permission: 'reference-data.view',
+      },
+    ],
+  },
+  {
+    title: 'Data & Settings',
+    links: [
       {
         title: 'Reference Data',
         link: route('reference-data.index'),

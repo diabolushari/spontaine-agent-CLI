@@ -49,6 +49,10 @@ export default function MetaStructureIndex({ structures }: Props) {
         structure_name: structure.structure_name,
         actions: [
           {
+            title: `${structure.meta_data_count} Records`,
+            url: route('meta-data.index', { structure: structure.id }, false),
+          },
+          {
             title: 'Edit',
             url: route('meta-structure.edit', structure.id, false),
           },
@@ -65,7 +69,7 @@ export default function MetaStructureIndex({ structures }: Props) {
       formData={formData}
       formItems={formItems}
       addUrl={route('meta-structure.create')}
-      searchUrl={route('meta-structure.index', undefined, false)}
+      searchUrl={route('meta-structure.index')}
       paginator={structures}
     />
   )

@@ -1,7 +1,17 @@
 import useCustomForm from '@/hooks/useCustomForm'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+
+export function generateTableNames(name: string): string {
+  if (name == '') {
+    return ''
+  }
+  //remove all special characters except space
+  const tableName = name.replace(/[^a-zA-Z0-9 ]/g, '')
+  //replace all spaces with underscore
+  return tableName.replace(/ /g, '_').toLowerCase() + '_data_table'
+}
 
 export default function SubjectAreaCreate() {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
@@ -10,6 +20,10 @@ export default function SubjectAreaCreate() {
     table_name: '',
     is_active: true,
   })
+
+  useEffect(() => {
+    setFormValue('table_name')(generateTableNames(formData.name))
+  }, [formData.name, setFormValue])
 
   const formItems = useMemo(<
     T,
@@ -33,6 +47,7 @@ export default function SubjectAreaCreate() {
         type: 'text',
         label: 'Table Name',
         setValue: setFormValue('table_name'),
+        disabled: true,
       },
       is_active: {
         type: 'checkbox',
@@ -49,6 +64,7 @@ export default function SubjectAreaCreate() {
       formItems={formItems}
       title='Create Subject Area'
       formStyles='md:w-1/2 md:grid-cols-1'
+      backUrl={route('subject-area.index')}
     />
   )
 }

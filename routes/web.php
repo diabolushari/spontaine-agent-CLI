@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DataDetail\DataDetailController;
+use App\Http\Controllers\DataDetail\DataTableFieldsInfoController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
@@ -14,6 +16,10 @@ use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::get('xdebug', function () {
+    return phpinfo();
+});
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -54,8 +60,14 @@ Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
 Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
 
-//subject area
+//subject areas & data details
 Route::resource('subject-area', SubjectAreaController::class)
     ->parameters(['subject-areas' => 'subjectArea']);
+Route::resource('data-detail', DataDetailController::class)
+    ->parameters(['data-detail' => 'dataDetail']);
+
+Route::resource('data-detail-fields-info', DataTableFieldsInfoController::class)
+    ->parameters(['data-detail-fields-info' => 'dataTableFieldsInfo'])
+    ->only('create', 'store');
 
 require __DIR__.'/auth.php';

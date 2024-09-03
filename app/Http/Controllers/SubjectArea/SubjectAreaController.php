@@ -7,8 +7,10 @@ use App\Http\Requests\SubjectArea\SubjectAreaFormRequest;
 use App\Http\Requests\SubjectArea\SubjectAreaUpdateRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\SubjectArea\SubjectArea;
+use App\Services\SubjectArea\CreateDataTable;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -48,33 +50,38 @@ class SubjectAreaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(SubjectAreaFormRequest $formRequest)
+    public function store(SubjectAreaFormRequest $formRequest, CreateDataTable $createDataTable): RedirectResponse
     {
+
         try {
-            $record = SubjectArea::create([
-                ...$formRequest->all(),
-                'created_by' => request()->user()->id,
-            ]);
-
-            //create table
-
+            $createDataTable->create($formRequest->tableName);
         } catch (Exception $exception) {
             return back()->with([
                 'error' => ExceptionMessage::getMessage($exception),
             ]);
         }
 
+        try {
+            $record = SubjectArea::create([
+                ...$formRequest->all(),
+                'created_by' => request()->user()->id,
+            ]);
+        } catch (Exception $exception) {
+            Schema::drop($formRequest->tableName);
+
+            return back()->with([
+                'error' => ExceptionMessage::getMessage($exception),
+            ]);
+        }
+
         return redirect()->route('subject-area.index')
-            ->with('success', "Subject area $record->name created successfully");
+            ->with(['message' => "Subject area $record->name created successfully"]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+    public function show(string $id): void {}
 
     /**
      * Show the form for editing the specified resource.
@@ -104,7 +111,7 @@ class SubjectAreaController extends Controller
         }
 
         return redirect()->route('subject-area.index')
-            ->with('success', "Subject area $subjectArea->name updated successfully");
+            ->with(['message' => "Subject area $subjectArea->name updated successfully"]);
     }
 
     /**

@@ -34,7 +34,10 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
     return [
       { key: 'name', label: 'Name', isCardHeader: true },
       { key: 'is_active', label: 'Is Active', isShownInCard: true },
-    ] as ListItemKeys<Partial<SubjectArea>>[]
+    ] as ListItemKeys<{
+      name: string
+      is_active: string
+    }>[]
   }, [])
 
   const data = useMemo(() => {
@@ -42,7 +45,7 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       return {
         id: subjectArea.id,
         name: subjectArea.name,
-        is_active: subjectArea.is_active,
+        is_active: subjectArea.is_active === 1 ? 'Yes' : 'No',
         actions: [
           {
             title: 'Show',
