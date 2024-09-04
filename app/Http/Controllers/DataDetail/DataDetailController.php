@@ -108,14 +108,16 @@ class DataDetailController extends Controller
 
     public function show(DataDetail $dataDetail)
     {
-        $dataDetail->loadCount('dateFields', 'dataDimensions', 'dataMeasures');
-        if ($dataDetail->date_fields_count === 0 && $dataDetail->data_dimensions_count === 0 && $dataDetail->data_measures_count === 0) {
+        $dataDetail->loadCount('dateFields', 'dimensionFields', 'measureFields');
+        if ($dataDetail->date_fields_count === 0 && $dataDetail->dimension_fields_count === 0 && $dataDetail->measure_fields_count === 0) {
             return redirect()
                 ->route('data-detail-fields-info.create', [
                     'detail_id' => $dataDetail->id,
                 ]);
         }
 
-        return $dataDetail;
+        return Inertia::render('DataDetail/DataDetailShow', [
+            'dataDetail' => $dataDetail,
+        ]);
     }
 }

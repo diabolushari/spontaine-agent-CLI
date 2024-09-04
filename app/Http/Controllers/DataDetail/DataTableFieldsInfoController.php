@@ -28,9 +28,18 @@ class DataTableFieldsInfoController extends Controller
         ];
     }
 
-    public function create(Request $request): Response
+    public function create(Request $request): Response|RedirectResponse
     {
-        $detail = DataDetail::findOrFail($request->detail_id);
+        /** @var DataDetail $detail */
+        $detail = DataDetail::where('id', $request->detail_id)
+            ->withCount('dateFields', 'dimensionFields', 'measureFields')
+            ->firstOrFail();
+
+        // if any field is already added, redirect to show page
+        if ($detail->date_fields_count > 0 || $detail->dimension_fields_count > 0 || $detail->measure_fields_count > 0) {
+            return redirect()
+                ->route('data-detail.show', $request->detail_id);
+        }
 
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
 
@@ -42,34 +51,85 @@ class DataTableFieldsInfoController extends Controller
 
     public function store(DataTableFieldRequest $request): RedirectResponse
     {
+
+        $detail = DataDetail::where('id', $request->detailId)
+            ->withCount('dateFields', 'dimensionFields', 'measureFields')
+            ->first();
+
+        if ($detail == null) {
+            return redirect()
+                ->route('data-detail.show', $request->detailId)
+                ->with([
+                    'error' => 'Data Detail not found',
+                ]);
+        }
+
+        // if any field is already added, redirect to show page
+        if ($detail->date_fields_count > 0 || $detail->dimension_fields_count > 0 || $detail->measure_fields_count > 0) {
+            return redirect()
+                ->route('data-detail.show', $request->detailId)
+                ->with([
+                    'error' => 'Data Table Fields Info already added',
+                ]);
+        }
+
         $createdBy = request()->user()->id;
 
-        $dates = $request->dates;
-        foreach ($dates as &$data) {
-            $data['data_detail_id'] = $request->detailId;
-            $data['updated_by'] = $createdBy;
-            $data['created_by'] = $createdBy;
+        $dateFields = [];
+        $dimensionFields = [];
+        $measureFields = [];
+        $now = now()->toDateString();
+
+        if ($request->dates != null) {
+            foreach ($request->dates as $measure) {
+                $dateFields[] = [
+                    'data_detail_id' => $request->detailId,
+                    'column' => $measure->column,
+                    'field_name' => $measure->fieldName,
+                    'created_by' => $createdBy,
+                    'updated_by' => $createdBy,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
         }
 
-        $dimensions = $request->dimensions;
-        foreach ($dimensions as &$date) {
-            $date['data_detail_id'] = $request->detailId;
-            $date['updated_by'] = $createdBy;
-            $date['created_by'] = $createdBy;
+        if ($request->dimensions != null) {
+            foreach ($request->dimensions as $measure) {
+                $dimensionFields[] = [
+                    'data_detail_id' => $request->detailId,
+                    'column' => $measure->column,
+                    'field_name' => $measure->fieldName,
+                    'meta_structure_id' => $measure->metaStructureId,
+                    'created_by' => $createdBy,
+                    'updated_by' => $createdBy,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
         }
 
-        $measures = $request->measures;
+        if ($request->measures != null) {
+            foreach ($request->measures as $measure) {
+                $measureFields[] = [
+                    'data_detail_id' => $request->detailId,
+                    'column' => $measure->column,
+                    'field_name' => $measure->fieldName,
+                    'unit_column' => $measure->unitColumn,
+                    'unit_field_name' => $measure->unitFieldName,
+                    'created_by' => $createdBy,
+                    'updated_by' => $createdBy,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
 
-        foreach ($measures as &$data) {
-            $data['data_detail_id'] = $request->detailId;
-            $data['updated_by'] = $createdBy;
-            $data['created_by'] = $createdBy;
         }
 
         try {
-            DataTableDate::insert($dates);
-            DataTableDimension::insert($dimensions);
-            DataTableMeasure::insert($measures);
+            DataTableDate::insert($dateFields);
+            DataTableDimension::insert($dimensionFields);
+            DataTableMeasure::insert($measureFields);
         } catch (Exception $e) {
             return back()->with([
                 'error' => ExceptionMessage::getMessage($e),

@@ -2,18 +2,13 @@ import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
 import { FormEvent, useMemo } from 'react'
 import { MetaStructure } from '@/interfaces/meta_interfaces'
+import { showError } from '@/ui/alerts'
 
 interface Props {
   fieldType: 'date' | 'dimension' | 'measure'
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
-  onFormSubmit: (
-    type: string,
-    data: {
-      field_name: string
-      unit_field_name?: string
-      meta_structure_id?: string
-    }
-  ) => void
+  selectedField: DataTableFieldInfo
+  onFormSubmit: (type: string, data: DataTableFieldInfo) => void
 }
 
 export const possibleDateFields = ['date_1', 'date_2', 'date_3', 'date_4', 'date_5']
@@ -46,15 +41,22 @@ export const possibleMeasureFields = [
   'measure_8_unit',
 ]
 
+export interface DataTableFieldInfo {
+  field_name: string
+  unit_field_name?: string
+  meta_structure_id?: string
+}
+
 export default function DataTableFieldInfoForm({
   fieldType,
   structures,
   onFormSubmit,
+  selectedField,
 }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
-    field_name: '',
-    unit_field_name: '', // only for measure fields
-    meta_structure_id: '', // only for  dimension fields
+    field_name: selectedField.field_name,
+    unit_field_name: selectedField.unit_field_name, // only for measure fields
+    meta_structure_id: selectedField.meta_structure_id, // only for  dimension fields
   })
 
   const formItems = useMemo(<
@@ -86,6 +88,18 @@ export default function DataTableFieldInfoForm({
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (formData.field_name === '') {
+      showError('Field Name is required')
+      return
+    }
+    if (fieldType === 'dimension' && formData.meta_structure_id === '') {
+      showError('Structure is required')
+      return
+    }
+    if (fieldType === 'measure' && formData.unit_field_name === '') {
+      showError('Unit Field is required')
+      return
+    }
     onFormSubmit(fieldType, formData)
   }
 
@@ -97,7 +111,7 @@ export default function DataTableFieldInfoForm({
         loading={false}
         onFormSubmit={submitForm}
         buttonText='ADD'
-        formStyles='w-full grid-cols-1 gap-2'
+        formStyles='w-full grid grid-cols-1 gap-2'
       />
     </div>
   )

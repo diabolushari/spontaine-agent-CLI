@@ -33,7 +33,7 @@ class DataDetail extends Model
     /**
      * @return HasMany<DataTableDimension>
      */
-    public function dataDimensions(): HasMany
+    public function dimensionFields(): HasMany
     {
         return $this->hasMany(DataTableDimension::class, 'data_detail_id', 'id');
     }
@@ -41,7 +41,7 @@ class DataDetail extends Model
     /**
      * @return HasMany<DataTableMeasure>
      */
-    public function dataMeasures(): HasMany
+    public function measureFields(): HasMany
     {
         return $this->hasMany(DataTableMeasure::class, 'data_detail_id', 'id');
     }
