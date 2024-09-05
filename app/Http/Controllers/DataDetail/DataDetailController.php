@@ -106,10 +106,14 @@ class DataDetailController extends Controller
             ->route('data-detail.show', $dataDetail->id);
     }
 
-    public function show(DataDetail $dataDetail)
+    public function show(DataDetail $dataDetail): RedirectResponse|Response
     {
-        $dataDetail->loadCount('dateFields', 'dimensionFields', 'measureFields');
-        if ($dataDetail->date_fields_count === 0 && $dataDetail->dimension_fields_count === 0 && $dataDetail->measure_fields_count === 0) {
+        $dataDetail->load('dateFields', 'dimensionFields.structure', 'measureFields');
+        if (
+            $dataDetail->dateFields->count() === 0
+            && $dataDetail->dimensionFields->count() === 0
+            && $dataDetail->measureFields->count() === 0
+        ) {
             return redirect()
                 ->route('data-detail-fields-info.create', [
                     'detail_id' => $dataDetail->id,
@@ -117,7 +121,7 @@ class DataDetailController extends Controller
         }
 
         return Inertia::render('DataDetail/DataDetailShow', [
-            'dataDetail' => $dataDetail,
+            'detail' => $dataDetail,
         ]);
     }
 }

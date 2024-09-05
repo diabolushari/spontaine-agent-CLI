@@ -9,7 +9,7 @@ interface Props {
   details: Paginator<DataDetail>
 }
 
-export default function DataDetailIndex({ details }: Props) {
+export default function DataDetailIndex({ details }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     search: '',
   })

@@ -1,16 +1,57 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import Card from '@/ui/Card/Card'
-import CardHeader from '@/ui/Card/CardHeader'
+import { DataDetail } from '@/interfaces/data_interfaces'
+import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
+import { useMemo } from 'react'
 
-export default function DataDetailShow() {
+interface Props {
+  detail: DataDetail
+}
+
+export default function DataDetailShow({ detail }: Readonly<Props>) {
+  const displayedItems = useMemo(() => {
+    let index = 1
+    const records: ShowPageItem[] = [
+      {
+        id: index++,
+        label: 'Fields',
+        content: '',
+        type: 'text',
+      },
+    ]
+
+    detail.date_fields?.map((field) => {
+      records.push({
+        id: index++,
+        label: field.field_name ?? '',
+        content: 'Date',
+        type: 'text',
+      })
+    })
+
+    detail.dimension_fields?.map((field) => {
+      records.push({
+        id: index++,
+        label: field.field_name ?? '',
+        content: `${field.structure?.structure_name} Field`,
+        type: 'text',
+      })
+    })
+
+    detail.measure_fields?.map((field) => {
+      records.push({
+        id: index++,
+        label: `${field.field_name} (${field.unit_field_name})`,
+        content: 'Number',
+        type: 'text',
+      })
+    })
+
+    return records
+  }, [detail])
+
   return (
-    <AuthenticatedLayout>
-      <DashboardPadding>
-        <Card>
-          <CardHeader title='Data Detail' />
-        </Card>
-      </DashboardPadding>
-    </AuthenticatedLayout>
+    <ShowResourcePage
+      title={detail.name}
+      items={displayedItems}
+    />
   )
 }

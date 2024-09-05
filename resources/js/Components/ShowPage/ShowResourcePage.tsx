@@ -67,7 +67,7 @@ export default function ShowResourcePage({
                   <SubHeading>{item.label}</SubHeading>
                 </div>
                 <div className='md:col-span-2'>
-                  {item.type === 'text' && <NormalText>{item.label}</NormalText>}
+                  {item.type === 'text' && <NormalText>{item.content}</NormalText>}
                   {item.type === 'link' && (
                     <Link
                       href={item.content as string}

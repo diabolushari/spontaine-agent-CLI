@@ -1,3 +1,5 @@
+import { MetaStructure } from '@/interfaces/meta_interfaces'
+
 export interface Model {
   id: number
   created_at?: string | null
@@ -43,6 +45,9 @@ export interface DataDetail extends Model {
   name: string
   description: string | null
   type: string
+  date_fields?: Partial<TableDateField>[]
+  dimension_fields?: Partial<TableDimensionField>[]
+  measure_fields?: Partial<TableMeasureField>[]
   is_active: 0 | 1
 }
 
@@ -57,6 +62,7 @@ export interface TableDimensionField extends Model {
   column: string
   field_name: string
   meta_structure_id: number
+  structure?: Partial<MetaStructure>
 }
 
 export interface TableMeasureField extends Model {
