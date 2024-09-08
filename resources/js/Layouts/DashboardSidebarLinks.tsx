@@ -58,6 +58,21 @@ const sidebarLinks: SidebarSection[] = [
     ],
   },
   {
+    title: 'Data Loader',
+    links: [
+      {
+        title: 'Loader Connections',
+        link: route('loader-connections.index'),
+        permission: 'reference-data.view',
+      },
+      {
+        title: 'Loader Queries',
+        link: route('loader-queries.index'),
+        permission: 'reference-data.view',
+      },
+    ],
+  },
+  {
     title: 'Data & Settings',
     links: [
       {

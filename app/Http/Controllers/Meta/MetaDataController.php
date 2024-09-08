@@ -8,9 +8,9 @@ use App\Libs\ExceptionMessage;
 use App\Models\Meta\MetaData;
 use App\Models\Meta\MetaStructure;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -37,8 +37,8 @@ class MetaDataController extends Controller
         $records = MetaData::with([
             'metaStructure:id,structure_name',
         ])
-            ->when($request->filled(key:'search'),fn(Builder $builder)=>$builder->where('name',operator:'like',value:'%'.$request->input(key:'search').'%'))
-            ->when($request->filled('structure'),fn(Builder $builder)=>$builder->where('meta_structure_id','like',$request->input(key:'structure')))
+            ->when($request->filled(key: 'search'), fn (Builder $builder) => $builder->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%'))
+            ->when($request->filled('structure'), fn (Builder $builder) => $builder->where('meta_structure_id', 'like', $request->input(key: 'structure')))
             ->paginate(20)
             ->withQueryString();
 
@@ -104,5 +104,19 @@ class MetaDataController extends Controller
         return redirect()
             ->route('meta-data.index')
             ->with(['message' => "Meta Data: $request->name updated successfully"]);
+    }
+
+    public function destroy(MetaData $metaData): RedirectResponse
+    {
+        try {
+            $metaData->delete();
+        } catch (Exception $e) {
+            return back()
+                ->with(['error' => ExceptionMessage::getMessage($e)]);
+        }
+
+        return redirect()
+            ->route('meta-data.index')
+            ->with(['message' => "Meta Data: $metaData->name deleted successfully"]);
     }
 }

@@ -26,6 +26,7 @@ interface Props<
   onEditClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   deleteUrl?: string
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
+  customSubmitData?: Partial<T>
   isPatchRequest?: boolean
 }
 
@@ -49,16 +50,20 @@ export default function FormPage<
   onDeleteClick,
   onAddClick,
   addUrl,
+  customSubmitData,
   isPatchRequest = false,
 }: Props<T, U, K, G, L>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    const data = customSubmitData != null ? customSubmitData : formData
+
     post({
-      ...formData,
+      ...data,
       _method: isPatchRequest ? 'PATCH' : 'POST',
-    })
+    } as any)
   }
 
   return (

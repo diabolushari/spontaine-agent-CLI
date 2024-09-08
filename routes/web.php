@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableFieldsInfoController;
+use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
@@ -86,5 +87,11 @@ Route::get('test', function () {
 
     return \Illuminate\Support\Facades\DB::connection('external')->getDatabaseName();
 });
+
+Route::resource('loader-connections', DataLoaderConnectionController::class)
+    ->parameters(['loader-connections' => 'dataLoaderConnection']);
+
+Route::resource('loader-queries', \App\Http\Controllers\DataLoader\DataLoaderQueryController::class)
+    ->parameters(['loader-queries' => 'dataLoaderQuery']);
 
 require __DIR__.'/auth.php';

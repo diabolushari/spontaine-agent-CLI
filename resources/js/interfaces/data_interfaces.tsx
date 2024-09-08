@@ -72,3 +72,21 @@ export interface TableMeasureField extends Model {
   field_name: string
   unit_field_name: string | null
 }
+
+export interface DataLoaderConnection extends Model {
+  name: string
+  description: string | null
+  driver: string
+  host: string
+  port: number
+  database: string
+  username: string
+}
+
+export interface DataLoaderQuery extends Model {
+  connection_id: number
+  query: string
+  name: string
+  description: string | null
+  connection?: Partial<DataLoaderConnection> | null
+}

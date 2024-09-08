@@ -1,0 +1,97 @@
+import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
+import useCustomForm from '@/hooks/useCustomForm'
+import { DataLoaderConnection } from '@/interfaces/data_interfaces'
+import { useMemo } from 'react'
+import { FormItem } from '@/FormBuilder/FormBuilder'
+import { Paginator } from '@/ui/ui_interfaces'
+
+interface Props {
+  dataLoaderConnections: Paginator<DataLoaderConnection>
+}
+
+interface FormFields {
+  search: string
+}
+
+export default function DataLoaderConnectionIndex({ dataLoaderConnections }: Readonly<Props>) {
+  //holds data
+  const { formData, setFormValue } = useCustomForm<FormFields>({
+    search: '',
+  })
+
+  //input elements list
+  const formItems = useMemo(() => {
+    return {
+      search: {
+        label: 'Search',
+        type: 'text',
+        setValue: setFormValue('search'),
+      } as FormItem<string, never, never, never>,
+    }
+  }, [setFormValue])
+
+  // keys(table col titles) for the table
+  const keys = useMemo(() => {
+    return [
+      {
+        key: 'name',
+        label: 'Name',
+        isCardHeader: true,
+      },
+      {
+        key: 'host',
+        label: 'Host',
+        isShownInCard: true,
+      },
+      {
+        key: 'driver',
+        label: 'Driver',
+        isShownInCard: true,
+      },
+      {
+        key: 'username',
+        label: 'Username',
+        isShownInCard: true,
+      },
+      {
+        key: 'database',
+        label: 'Database',
+        isShownInCard: true,
+      },
+    ] as ListItemKeys<Partial<DataLoaderConnection>>[]
+  }, [])
+
+  //table data
+  const data = useMemo(() => {
+    return dataLoaderConnections.data.map((record) => {
+      return {
+        id: record.id,
+        name: record.name,
+        host: record.host,
+        driver: record.driver,
+        username: record.username,
+        database: record.database,
+        actions: [
+          {
+            title: 'Show',
+            url: route('loader-connections.show', record.id),
+          },
+        ],
+      }
+    })
+  }, [dataLoaderConnections])
+
+  return (
+    <ListResourcePage
+      keys={keys}
+      title={'Loader Connections'}
+      primaryKey={'id'}
+      rows={data}
+      formData={formData}
+      formItems={formItems}
+      addUrl={route('loader-connections.create')}
+      searchUrl={route('loader-connections.index')}
+      paginator={dataLoaderConnections}
+    />
+  )
+}

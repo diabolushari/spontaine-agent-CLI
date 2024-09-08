@@ -15,6 +15,12 @@ return new class extends Migration
             $table->longText('query');
             $table->foreignId('connection_id')
                 ->constrained('loader_connections');
+            $table->foreignId('created_by')
+                ->nullable()
+                ->constrained('users');
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->constrained('users');
             $table->timestamps();
             $table->softDeletes();
         });

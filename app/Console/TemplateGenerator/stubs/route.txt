@@ -1,2 +1,2 @@
-Route::resource('#[url]', App\Http\Controllers\#[Directory]\#[ModelName]Controller::class)
-    ->parameters(['#[urlSingularSnake]' => '#[urlSingular]']);
+Route::resource('#[url]', \App\Http\Controllers\#[Directory]\#[ModelName]Controller::class)
+    ->parameters(['#[url]' => '#[modelName]']);

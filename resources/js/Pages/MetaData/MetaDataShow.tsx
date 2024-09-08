@@ -1,15 +1,18 @@
 import { MetaData } from '@/interfaces/meta_interfaces'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import CardHeader from '@/ui/Card/CardHeader'
 import Card from '@/ui/Card/Card'
 import StrongText from '@/typograpy/StrongText'
+import DeleteModal from '@/ui/Modal/DeleteModal'
 
 interface Props {
   metaData: MetaData
 }
 
 export default function MetaDataShow({ metaData }: Props) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
   const displayedItems: ShowPageItem[] = useMemo(() => {
     return [
       {
@@ -53,6 +56,10 @@ export default function MetaDataShow({ metaData }: Props) {
       items={displayedItems}
       title={metaData.name}
       backUrl={route('meta-data.index')}
+      editUrl={route('meta-data.edit', metaData.id)}
+      onDeleteClick={() => {
+        setShowDeleteModal(true)
+      }}
     >
       <>
         <Card className='mt-5'>
@@ -74,6 +81,15 @@ export default function MetaDataShow({ metaData }: Props) {
           </div>
         </Card>
       </>
+      {showDeleteModal && (
+        <DeleteModal
+          setShowModal={setShowDeleteModal}
+          title={`Delete ${metaData.name}`}
+          url={route('meta-data.destroy', metaData.id)}
+        >
+          <p>Are you sure you want to delete {metaData.name}?</p>
+        </DeleteModal>
+      )}
     </ShowResourcePage>
   )
 }

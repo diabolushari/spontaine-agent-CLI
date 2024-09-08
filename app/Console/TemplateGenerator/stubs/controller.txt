@@ -4,12 +4,12 @@ namespace App\Http\Controllers\#[Directory];
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\#[Directory]\#[ModelName]FormRequest;
+use App\Http\Requests\#[Directory]\#[ModelName]FormRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\#[Directory]\#[ModelName];
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Exception;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,7 +25,7 @@ class #[ModelName]Controller extends Controller
         ];
     }
 
-    public function index(Request $request): Response
+    public function index(#[ModelName]SearchRequest $request): Response
     {
         /** @var LengthAwarePaginator<#[ModelName]> $#[modelNamePlural] */
         $#[modelNamePlural] = #[ModelName]::paginate(20)
@@ -65,7 +65,7 @@ class #[ModelName]Controller extends Controller
 
     public function edit(#[ModelName] $#[modelName]): Response
     {
-        return Inertia::render('#[Directory]/#[ModelName]', [
+        return Inertia::render('#[Directory]/#[ModelName]Edit', [
             '#[modelName]' => $#[modelName],
         ]);
     }

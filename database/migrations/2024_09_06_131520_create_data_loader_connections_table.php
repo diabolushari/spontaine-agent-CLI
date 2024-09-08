@@ -12,6 +12,18 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('driver');
+            $table->string('host');
+            $table->unsignedInteger('port');
+            $table->string('username');
+            $table->text('password');
+            $table->string('database');
+            $table->foreignId('created_by')
+                ->nullable()
+                ->constrained('users');
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->constrained('users');
             $table->timestamps();
             $table->softDeletes(); //
         });

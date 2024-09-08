@@ -19,6 +19,9 @@ class DataLoaderQuery extends Model
         'connection_id',
     ];
 
+    /**
+     * @return BelongsTo<DataLoaderConnection, DataLoaderQuery>
+     */
     public function connection(): BelongsTo
     {
         return $this->belongsTo(DataLoaderConnection::class, 'connection_id');

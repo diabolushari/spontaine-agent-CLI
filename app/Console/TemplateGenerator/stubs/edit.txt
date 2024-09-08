@@ -9,7 +9,7 @@ interface Props {
   #[modelName]: #[ModelName]
 }
 
-export default function #[ModelName]Edit({ #[modelName] }: ReadOnly<Props>) {
+export default function #[ModelName]Edit({ #[modelName] }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     //fields
   })
@@ -31,7 +31,7 @@ export default function #[ModelName]Edit({ #[modelName] }: ReadOnly<Props>) {
       url={route('#[url].update', #[modelName].id)}
       formData={formData}
       formItems={formItems}
-      title='Create Meta Data Group'
+      title='Edit #[ModelName]'
       backUrl={route('#[url].index')}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest

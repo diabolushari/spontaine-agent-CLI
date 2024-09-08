@@ -1,19 +1,19 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import useCustomForm from '@/hooks/useCustomForm'
-import { #[ModelName] } from '@/interfaces/data_interfaces'
+import { DataLoaderQuery } from '@/interfaces/data_interfaces'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
 
 interface Props {
-  #[modelNamePlural]: Paginator<#[ModelName]>
+  dataLoaderQueries: Paginator<DataLoaderQuery>
 }
 
 interface FormFields {
   search: string
 }
 
-export default function #[ModelName]Index({ #[modelNamePlural] }: Readonly<Props>) {
+export default function DataLoaderQueryIndex({ dataLoaderQueries }: Readonly<Props>) {
   //holds data
   const { formData, setFormValue } = useCustomForm<FormFields>({
     search: '',
@@ -34,27 +34,38 @@ export default function #[ModelName]Index({ #[modelNamePlural] }: Readonly<Props
   const keys = useMemo(() => {
     return [
       {
-       //key: 'name',
-       //label: 'Name',
-       //isCardHeader: true,
+        key: 'name',
+        label: 'Name',
+        isCardHeader: true,
       },
-    ] as ListItemKeys<Partial<#[ModelName]>>[]
+      {
+        key: 'connection',
+        label: 'Connection',
+        isShownInCard: true,
+      },
+    ] as ListItemKeys<{
+      id: number
+      name: string
+      connection: string
+    }>[]
   }, [])
 
   //table data
   const data = useMemo(() => {
-    return #[modelNamePlural].data.map((record) => {
+    return dataLoaderQueries.data.map((record) => {
       return {
         id: record.id,
+        name: record.name,
+        connection: record.connection?.name ?? '',
         actions: [
           {
             title: 'Show',
-            url: route('#[url].show', record.id),
+            url: route('loader-queries.show', record.id),
           },
         ],
       }
     })
-  }, [#[modelNamePlural]])
+  }, [dataLoaderQueries])
 
   return (
     <ListResourcePage
@@ -63,9 +74,9 @@ export default function #[ModelName]Index({ #[modelNamePlural] }: Readonly<Props
       rows={data}
       formData={formData}
       formItems={formItems}
-      addUrl={route('#[url].create')}
-      searchUrl={route('#[url].index')}
-      paginator={#[modelNamePlural]}
+      addUrl={route('loader-queries.create')}
+      searchUrl={route('loader-queries.index')}
+      paginator={dataLoaderQueries}
     />
   )
 }

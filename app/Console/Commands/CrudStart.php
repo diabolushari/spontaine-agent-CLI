@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Console\TemplateGenerator\GenerateController;
+use App\Console\TemplateGenerator\GenerateFormRequest;
 use App\Console\TemplateGenerator\GenerateMigration;
 use App\Console\TemplateGenerator\GenerateModel;
+use App\Console\TemplateGenerator\GenerateSearchRequest;
 use App\Console\TemplateGenerator\GenerateUIFiles;
+use App\Console\TemplateGenerator\InsertNewRoute;
 use App\Console\TemplateGenerator\InsertNewTypeDefinition;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
@@ -16,7 +20,7 @@ class CrudStart extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'app:crud-start {model} {url} {directory} {ui}';
+    protected $signature = 'app:crud-start {model} {url} {directory}';
 
     /**
      * The console command description.
@@ -34,7 +38,6 @@ class CrudStart extends Command implements PromptsForMissingInput
         $model = $this->argument('model');
         $url = $this->argument('url');
         $directory = $this->argument('directory');
-        $ui = $this->argument('ui');
 
         //model file
         $modelNamespace = 'App\\Models\\'.ucfirst($directory).'\\'.ucfirst($model);
@@ -50,30 +53,35 @@ class CrudStart extends Command implements PromptsForMissingInput
 
         $this->line('setting up data_interface file...');
         (new InsertNewTypeDefinition($model))->generate();
-        //        (new GenerateFormRequest($this, $currentWorkingDirectory, $directory, $model))->generate();
-        //
-        //        $this->line('creating controller...');
-        //        (new GenerateController(
-        //            $this,
-        //            $currentWorkingDirectory,
-        //            $directory,
-        //            $model,
-        //            $url
-        //        ))->generate();
+        (new GenerateSearchRequest($this, $currentWorkingDirectory, $directory, $model))->generate();
+        (new GenerateFormRequest($this, $currentWorkingDirectory, $directory, $model))->generate();
 
-        if ($ui === 'yes') {
-            $this->line('creating tsx files...');
-            (new GenerateUIFiles(
-                $this,
-                $currentWorkingDirectory,
-                $directory,
-                $model,
-                $url
-            ))->generate();
-        }
+        $this->line('creating controller...');
+        (new GenerateController(
+            $this,
+            $currentWorkingDirectory,
+            $directory,
+            $model,
+            $url
+        ))->generate();
 
-        $this->line('updating interface file...');
+        $this->line('creating tsx files...');
+        (new GenerateUIFiles(
+            $this,
+            $currentWorkingDirectory,
+            $directory,
+            $model,
+            $url
+        ))->generate();
+
         $this->line('updating route file...');
+        (new InsertNewRoute(
+            $this,
+            $currentWorkingDirectory,
+            $directory,
+            $model,
+            $url
+        ))->generate();
     }
 
     /**
@@ -87,7 +95,6 @@ class CrudStart extends Command implements PromptsForMissingInput
             'model' => 'Model used in CRUD files?',
             'url' => 'URL used in CRUD files?',
             'directory' => 'Directory in which file are grouped and placed?',
-            'ui' => 'Generate UI files?[yes/no]',
         ];
     }
 }

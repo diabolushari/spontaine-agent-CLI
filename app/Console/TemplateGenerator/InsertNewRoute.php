@@ -29,7 +29,7 @@ class InsertNewRoute
             return;
         }
 
-        $routeContent = File::get($routeFilePath);
+        $routeContent = File::lines($routeFilePath)->toArray();
 
         $urlName = implode(
             '',
@@ -41,16 +41,16 @@ class InsertNewRoute
 
         $urlSingular = Str::singular($urlName);
 
-        $snubContent = File::get($this->basePath.'app/Console/TemplateGenerator/stubs/route.txt');
+        $snubContent = File::get($this->basePath.'/app/Console/TemplateGenerator/stubs/route.txt');
 
         $snubContent = str_replace('#[ModelName]', ucfirst($this->model), $snubContent);
         $snubContent = str_replace('#[Directory]', ucfirst($this->directory), $snubContent);
         $snubContent = str_replace('#[url]', strtolower($this->url), $snubContent);
-        $snubContent = str_replace('#[urlSingularSnake]', Str::snake($urlSingular), $snubContent);
-        $snubContent = str_replace('#[urlSingular]', $urlSingular, $snubContent);
+        $snubContent = str_replace('#[urlSingularSnake]', Str::kebab($urlSingular), $snubContent);
+        $snubContent = str_replace('#[modelName]', lcfirst($this->model), $snubContent);
 
-        $routeContent = "\n".$snubContent."\n".$routeContent."\n";
+        array_splice($routeContent, count($routeContent) - 2, 0, $snubContent);
 
-        File::put($routeFilePath, $routeContent);
+        File::put($routeFilePath, implode(PHP_EOL, $routeContent));
     }
 }
