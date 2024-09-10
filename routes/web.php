@@ -26,6 +26,9 @@ Route::get('xdebug', function () {
 });
 
 Route::get('/', function () {
+
+    Cache::set('key', 'value', 60);
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
