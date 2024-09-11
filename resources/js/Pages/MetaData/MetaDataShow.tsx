@@ -1,4 +1,4 @@
-import { MetaData, MetaHierarchy } from '@/interfaces/meta_interfaces'
+import { MetaData, MetaDataGroup, MetaHierarchy } from '@/interfaces/meta_interfaces'
 import { useMemo, useState } from 'react'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import CardHeader from '@/ui/Card/CardHeader'
@@ -10,7 +10,7 @@ import MetaHierarchyAddForm from './MetaHierarchyAddForm'
 
 interface Props {
   metaData: MetaData
-  metaGroup: MetaGroup
+  metaGroup: MetaDataGroup
   metaHierarchy: MetaHierarchy
 }
 
