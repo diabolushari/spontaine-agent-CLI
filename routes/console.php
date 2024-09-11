@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\DataLoader\ScheduledQuery\RunScheduleQuery;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -8,5 +9,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::call(function () {
-    \Illuminate\Support\Facades\Log::info('This is a scheduled task');
+
+    $runScheduleQuery = new RunScheduleQuery();
+    $runScheduleQuery->runQuery();
+
 })->everyMinute();
