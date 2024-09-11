@@ -56,12 +56,7 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
       },
     ]
   }, [metaData])
-  const hierarchyNames =
-    metaData.hierarchy_item?.map((item) => item.meta_hierarchy?.name).filter(Boolean) || []
-  const groupNames =
-    metaData.group_item?.map((item) => item.meta_data_group?.name).filter(Boolean) || []
-  console.log(metaGroup)
-  console.log(metaHierarchy)
+
   return (
     <ShowResourcePage
       items={displayedItems}
@@ -81,7 +76,12 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
             }}
           />
           <div className='p-2'>
-            <div>{groupNames}</div>
+            <div className='flex flex-col gap-2'>
+              {metaData.group_item?.length === 0 && <div>No groups</div>}
+              {metaData.group_item?.map((groupName) => (
+                <div key={groupName.id}>{groupName.meta_data_group?.name}</div>
+              ))}
+            </div>
           </div>
         </Card>
         <Card className='mt-5'>
@@ -92,7 +92,12 @@ export default function MetaDataShow({ metaData, metaGroup, metaHierarchy }: Pro
             }}
           />
           <div className='p-2'>
-            <div>{hierarchyNames}</div>
+            <div className='flex flex-col gap-2'>
+              {metaData.hierarchy_item?.length === 0 && <div>No hierarchy</div>}
+              {metaData.hierarchy_item?.map((hierarchyName) => (
+                <div key={hierarchyName.id}>{hierarchyName.meta_hierarchy?.name}</div>
+              ))}
+            </div>
           </div>
         </Card>
       </>

@@ -85,6 +85,7 @@ export default function DataLoaderConnectionCreate() {
       title='Create DataLoaderConnection'
       backUrl={route('loader-connections.index')}
       formStyles='w-1/2 md:grid-cols-1'
+      buttonText={'Add & Verify'}
     />
   )
 }

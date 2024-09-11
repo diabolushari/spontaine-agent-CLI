@@ -32,7 +32,7 @@ export default function #[ModelName]Edit({ #[modelName] }: Readonly<Props>) {
       formData={formData}
       formItems={formItems}
       title='Edit #[ModelName]'
-      backUrl={route('#[url].index')}
+      backUrl={route('#[url].show', #[modelName].id)}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
     />

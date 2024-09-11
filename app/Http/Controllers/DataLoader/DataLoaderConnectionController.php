@@ -9,6 +9,7 @@ use App\Http\Requests\DataLoader\DataLoaderConnectionUpdateRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderQuery;
+use App\Services\DataLoader\Connection\LoaderConnectionStatusCheck;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
@@ -34,6 +35,7 @@ class DataLoaderConnectionController extends Controller
             $request->search != null,
             fn ($query) => $query->where('name', 'like', "%$request->search%")
         )
+            ->withCount('queries')
             ->paginate(20)
             ->withQueryString();
 
@@ -62,10 +64,13 @@ class DataLoaderConnectionController extends Controller
             ->with(['message' => 'Data added successfully.']);
     }
 
-    public function show(DataLoaderConnection $dataLoaderConnection): Response
+    public function show(DataLoaderConnection $dataLoaderConnection, LoaderConnectionStatusCheck $statusCheck): Response
     {
         return Inertia::render('DataLoader/DataLoaderConnectionShow', [
             'dataLoaderConnection' => $dataLoaderConnection,
+            'status' => $statusCheck->checkStatus(
+                $dataLoaderConnection
+            ),
         ]);
     }
 

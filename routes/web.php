@@ -3,6 +3,9 @@
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableFieldsInfoController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
+use App\Http\Controllers\DataLoader\DataLoaderJobController;
+use App\Http\Controllers\DataLoader\DataLoaderQueryController;
+use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
@@ -23,6 +26,9 @@ Route::get('xdebug', function () {
 });
 
 Route::get('/', function () {
+
+    Cache::set('key', 'value', 60);
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -71,27 +77,22 @@ Route::resource('data-detail-fields-info', DataTableFieldsInfoController::class)
     ->parameters(['data-detail-fields-info' => 'dataTableFieldsInfo'])
     ->only('create', 'store');
 
-Route::get('test', function () {
-    \Illuminate\Support\Facades\Config::set('database.connections.external', [
-        'driver' => 'mysql',
-        'host' => 'mysql',
-        'port' => '3306',
-        'username' => 'root',
-        'database' => 'laravel',
-        'password' => 'password',
-    ]);
-
-    DB::purge('external');
-
-    \Illuminate\Support\Facades\DB::connection('external')->reconnect();
-
-    return \Illuminate\Support\Facades\DB::connection('external')->getDatabaseName();
-});
-
 Route::resource('loader-connections', DataLoaderConnectionController::class)
     ->parameters(['loader-connections' => 'dataLoaderConnection']);
 
-Route::resource('loader-queries', \App\Http\Controllers\DataLoader\DataLoaderQueryController::class)
+Route::resource('loader-queries', DataLoaderQueryController::class)
     ->parameters(['loader-queries' => 'dataLoaderQuery']);
+
+Route::resource('loader-jobs', DataLoaderJobController::class)
+    ->parameters(['loader-jobs' => 'dataLoaderJob']);
+
+Route::resource('loader-jobs', DataLoaderJobController::class)
+    ->parameters(['loader-jobs' => 'dataLoaderJob']);
+
+Route::resource('loader-jobs', DataLoaderJobController::class)
+    ->parameters(['loader-jobs' => 'dataLoaderJob']);
+
+Route::get('queries-in-connection', QueryListController::class)
+    ->name('queries-in-connection');
 
 require __DIR__.'/auth.php';
