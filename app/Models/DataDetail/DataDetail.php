@@ -5,7 +5,9 @@ namespace App\Models\DataDetail;
 use App\Models\DataTable\DataTableDate;
 use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
+use App\Models\SubjectArea\SubjectArea;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -44,5 +46,13 @@ class DataDetail extends Model
     public function measureFields(): HasMany
     {
         return $this->hasMany(DataTableMeasure::class, 'data_detail_id', 'id');
+    }
+
+    /**
+     * @return BelongsTo<DataDetail, SubjectArea>
+     */
+    public function subjectArea(): BelongsTo
+    {
+        return $this->belongsTo(SubjectArea::class, 'subject_area_id', 'id');
     }
 }

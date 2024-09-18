@@ -143,3 +143,43 @@ export interface DataLoaderJob extends Model {
   detail?: Partial<DataDetail> | null
   loader_query?: Partial<DataLoaderQuery> | null
 }
+
+export interface DataTableItem extends Model {
+  data_detail_id?: number
+  date_1?: string | null
+  date_2?: string | null
+  date_3?: string | null
+  date_4?: string | null
+  date_5?: string | null
+  dim_1?: number | null
+  dim_2?: number | null
+  dim_3?: number | null
+  dim_4?: number | null
+  dim_5?: number | null
+  dim_1_name?: string | null
+  dim_2_name?: string | null
+  dim_3_name?: string | null
+  dim_4_name?: string | null
+  dim_5_name?: string | null
+  dim_6_name?: string | null
+  dim_7_name?: string | null
+  dim_8_name?: string | null
+  dim_9_name?: string | null
+  dim_10_name?: string | null
+  measure_1?: number | null
+  measure_2?: number | null
+  measure_3?: number | null
+  measure_4?: number | null
+  measure_5?: number | null
+  measure_6?: number | null
+  measure_7?: number | null
+  measure_8?: number | null
+  measure_1_unit?: string | null
+  measure_2_unit?: string | null
+  measure_3_unit?: string | null
+  measure_4_unit?: string | null
+  measure_5_unit?: string | null
+  measure_6_unit?: string | null
+  measure_7_unit?: string | null
+  measure_8_unit?: string | null
+}

@@ -8,6 +8,7 @@ use App\Libs\ExceptionMessage;
 use App\Models\DataDetail\DataDetail;
 use App\Models\ReferenceData\ReferenceData;
 use App\Models\SubjectArea\SubjectArea;
+use App\Services\DataTable\QueryDataTable;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -106,9 +107,9 @@ class DataDetailController extends Controller
             ->route('data-detail.show', $dataDetail->id);
     }
 
-    public function show(DataDetail $dataDetail): RedirectResponse|Response
+    public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable): RedirectResponse|Response
     {
-        $dataDetail->load('dateFields', 'dimensionFields.structure', 'measureFields');
+        $dataDetail->load('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea');
         if (
             $dataDetail->dateFields->count() === 0
             && $dataDetail->dimensionFields->count() === 0
@@ -120,8 +121,11 @@ class DataDetailController extends Controller
                 ]);
         }
 
+        $dataTable = $queryDataTable->query($dataDetail->subjectArea->table_name ?? '')->get();
+
         return Inertia::render('DataDetail/DataDetailShow', [
             'detail' => $dataDetail,
+            'dataTableItems' => $dataTable,
         ]);
     }
 }

@@ -1,12 +1,14 @@
-import { DataDetail } from '@/interfaces/data_interfaces'
+import { DataDetail, DataTableItem } from '@/interfaces/data_interfaces'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import { useMemo } from 'react'
+import DataSetTable from '@/Components/DataExplorer/DataSetTable'
 
 interface Props {
   detail: DataDetail
+  dataTableItems: DataTableItem[]
 }
 
-export default function DataDetailShow({ detail }: Readonly<Props>) {
+export default function DataDetailShow({ detail, dataTableItems }: Readonly<Props>) {
   const displayedItems = useMemo(() => {
     let index = 1
     const records: ShowPageItem[] = [
@@ -67,6 +69,11 @@ export default function DataDetailShow({ detail }: Readonly<Props>) {
     <ShowResourcePage
       title={detail.name}
       items={displayedItems}
-    />
+    >
+      <DataSetTable
+        dataDetail={detail}
+        dataTableItems={dataTableItems}
+      />
+    </ShowResourcePage>
   )
 }
