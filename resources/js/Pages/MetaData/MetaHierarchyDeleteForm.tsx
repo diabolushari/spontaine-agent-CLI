@@ -1,26 +1,19 @@
 import useCustomForm from '@/hooks/useCustomForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import React, { SetStateAction, useCallback, useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 
 interface Props {
-  metaGroup: { id: number; name: string }
+  metaHierarchy: { id: number; name: string }
   metaDataId: number
-  setShowAddModal: React.Dispatch<SetStateAction<boolean>>
 }
 
-export default function MetaGroupAddForm({ metaGroup, metaDataId, setShowAddModal }: Props) {
+export default function MetaHierarchyDeleteForm({ metaHierarchy, metaDataId }: Props) {
   const { formData, setFormValue } = useCustomForm({
-    metaGroup: '',
+    meta_hierarchy_id: '',
   })
 
-  const onCompleted = useCallback(() => {
-    setShowAddModal(false)
-  }, [setShowAddModal])
-
-  const { post, loading, errors } = useInertiaPost(route('meta-group-add-item'), {
-    onComplete: onCompleted,
-  })
+  const { post, loading } = useInertiaPost(route('meta-hierarchy-delete-item'))
 
   const formItems = useMemo(<
     T,
@@ -30,24 +23,22 @@ export default function MetaGroupAddForm({ metaGroup, metaDataId, setShowAddModa
     L extends Record<K, string | number> & Record<G, string | number | null>,
   >() => {
     return {
-      metaGroup: {
-        label: 'Meta Data Group',
+      meta_hierarchy_id: {
+        label: 'Meta Hierarchy',
         type: 'select' as const,
-        list: metaGroup,
+        list: metaHierarchy,
         dataKey: 'id',
         displayKey: 'name',
-        setValue: setFormValue('metaGroup'),
+        setValue: setFormValue('meta_hierarchy_id'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [metaGroup, setFormValue])
+  }, [metaHierarchy, setFormValue])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const meta_group_id = Number(formData.metaGroup)
-    const meta_data_id = metaDataId
     const dataToSubmit = {
-      meta_group_id,
-      meta_data_id,
+      meta_hierarchy_id: formData.meta_hierarchy_id,
+      meta_data_id: metaDataId,
     }
     post(dataToSubmit)
   }
