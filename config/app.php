@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'vpn_password' => env('VPN_PASSWORD', null),
+
 ];

@@ -8,6 +8,7 @@ use App\Models\DataLoader\DataLoaderConnection;
 use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Process;
 
 class LoaderConnectionStatusCheck
 {
@@ -30,6 +31,13 @@ class LoaderConnectionStatusCheck
 
         $connectionName = 'connection'.$connection->id;
 
+        /** @var string|null $vpnPassword */
+        $vpnPassword = config('app.vpn_password');
+
+        if ($vpnPassword !== null) {
+            Process::run("echo $vpnPassword | snx -s 125.17.229.163 -u xocortx");
+        }
+
         try {
             Config::set("database.connections.$connectionName", [
                 'driver' => $connection->driver,
@@ -46,6 +54,10 @@ class LoaderConnectionStatusCheck
             DB::connection($connectionName)->getPdo();
         } catch (Exception $e) {
             return new OperationResult(true, ExceptionMessage::getMessage($e));
+        } finally {
+            if ($vpnPassword !== null) {
+                Process::run('snx -d');
+            }
         }
 
         return new OperationResult(false, 'Connection successful');

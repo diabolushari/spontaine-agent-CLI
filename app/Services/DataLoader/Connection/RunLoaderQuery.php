@@ -7,6 +7,7 @@ use App\Models\DataLoader\DataLoaderQuery;
 use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Process;
 
 class RunLoaderQuery
 {
@@ -19,6 +20,13 @@ class RunLoaderQuery
     {
         $connectionName = 'connection'.$connection->id;
 
+        /** @var string|null $vpnPassword */
+        $vpnPassword = config('app.vpn_password');
+
+        if ($vpnPassword !== null) {
+            Process::run("echo $vpnPassword | snx -s 125.17.229.163 -u xocortx");
+        }
+
         Config::set("database.connections.$connectionName", [
             'driver' => $connection->driver,
             'host' => $connection->host,
@@ -30,7 +38,12 @@ class RunLoaderQuery
 
         DB::purge($connectionName);
 
-        return DB::connection($connectionName)->select($query->query);
+        $result = DB::connection($connectionName)->select($query->query);
 
+        if ($vpnPassword !== null) {
+            Process::run('snx -d');
+        }
+
+        return $result;
     }
 }

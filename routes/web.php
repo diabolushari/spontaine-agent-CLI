@@ -88,12 +88,6 @@ Route::resource('loader-queries', DataLoaderQueryController::class)
 Route::resource('loader-jobs', DataLoaderJobController::class)
     ->parameters(['loader-jobs' => 'dataLoaderJob']);
 
-Route::resource('loader-jobs', DataLoaderJobController::class)
-    ->parameters(['loader-jobs' => 'dataLoaderJob']);
-
-Route::resource('loader-jobs', DataLoaderJobController::class)
-    ->parameters(['loader-jobs' => 'dataLoaderJob']);
-
 Route::get('queries-in-connection', QueryListController::class)
     ->name('queries-in-connection');
 
