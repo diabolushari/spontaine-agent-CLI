@@ -67,7 +67,8 @@ export default function Login({ status }: { status?: string; canResetPassword: b
         />
         <div className='mt-6 text-center text-sm text-gray-500'>
           <p>
-            forgot password or trouble signing in contact?{' '}
+            forgot password or trouble signing in ? <br />
+            contact{' '}
             <Link
               href={''}
               className='text-blue-500 underline'
