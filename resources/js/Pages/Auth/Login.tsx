@@ -47,7 +47,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
 
   return (
     <div className='flex min-h-screen flex-col items-center justify-center bg-blue-100'>
-      <div className='w-full max-w-sm rounded-lg bg-white p-8 shadow-lg'>
+      <div className='w-full max-w-sm rounded-lg bg-blue-100 p-8'>
         <div className='mb-4 flex justify-center'>
           <img
             src='/one-stop-logo.png'
