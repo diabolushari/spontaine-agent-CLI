@@ -1,18 +1,16 @@
 import { cn } from '@/utils'
 import Input from '@/ui/form/Input'
-import React, { Children, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import CheckBox from '@/ui/form/CheckBox'
 import ComboBox from '@/ui/form/ComboBox'
 import DatePicker from '@/ui/form/DatePicker'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import FileInput from '@/ui/form/FileInput'
-import Input from '@/ui/form/Input'
 import SelectList from '@/ui/form/SelectList'
 import TextArea from '@/ui/form/TextArea'
 import TimePicker from '@/ui/form/TimePicker'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
-import { cn } from '@/utils'
-import React, { useMemo } from 'react'
+import Button from '@/ui/button/Button'
 
 export interface FormItem<
   T,
@@ -250,7 +248,7 @@ export default function FormBuilder<
         </div>
       ))}
       {children}
-      <div className={cn('flex gap-5 col-start-1 ', buttonStyle)}>
+      <div className={cn('col-start-1 flex gap-5', buttonStyle)}>
         <FullSpinnerWrapper processing={loading}>
           <Button label={buttonText} />
         </FullSpinnerWrapper>
