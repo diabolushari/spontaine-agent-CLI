@@ -72,7 +72,7 @@ export default function Login({ status }: { status?: string; canResetPassword: b
               href={''}
               className='text-blue-500 underline'
             >
-              contact support
+              support
             </Link>
           </p>
         </div>
