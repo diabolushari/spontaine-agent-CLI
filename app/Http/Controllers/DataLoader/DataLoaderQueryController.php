@@ -105,7 +105,7 @@ class DataLoaderQueryController extends Controller
             'dataLoaderQuery' => $dataLoaderQuery,
             'error' => $error->error,
             'errorMessage' => $error->message,
-            'result' => array_slice($result, 0, 10),
+            'result' => $result,
         ]);
     }
 

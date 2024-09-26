@@ -45,6 +45,7 @@ export interface FormItem<
   selectListUrl?: string
   showAllOption?: boolean
   allOptionText?: string
+  placeholder?: string
 }
 
 interface Props<
