@@ -10,12 +10,17 @@ export interface AnnouncementListPageProperties {
 
 interface Properties {
   oldValues?: Record<string, string>
+  searchUrl?: string
 }
-const FilterOldValues = ({ oldValues }: Properties) => {
+const FilterOldValues = ({ oldValues, searchUrl }: Properties) => {
   const performSearchtest = useCallback(
     (key: string) => {
+      if (searchUrl == null) {
+        return
+      }
+
       router.get(
-        `/meta-data-analytics`,
+        searchUrl,
         {
           ...oldValues,
           [key]: '',
@@ -23,7 +28,7 @@ const FilterOldValues = ({ oldValues }: Properties) => {
         { preserveScroll: true }
       )
     },
-    [oldValues]
+    [oldValues, searchUrl]
   )
 
   const keys = Object.keys(oldValues ?? {})
@@ -33,16 +38,20 @@ const FilterOldValues = ({ oldValues }: Properties) => {
     .filter((key) => {
       return oldValues != null && oldValues[key] != null
     })
+
   return (
-    <div className='flex flex-wrap justify-center gap-5'>
-      {oldValues != null &&
-        keys.map((key) => (
-          <BorderedPill
-            key={key}
-            value={oldValues[key as keyof typeof oldValues]}
-            onClose={() => performSearchtest(key)}
-          />
-        ))}
+    <div className='flex gap-5 py-4'>
+      {keys.length > 0 && <span className='pl-4 text-left'>Searched for: </span>}
+      <div className='flex flex-wrap justify-center gap-5'>
+        {oldValues != null &&
+          keys.map((key) => (
+            <BorderedPill
+              key={key}
+              value={oldValues[key as keyof typeof oldValues]}
+              onClose={() => performSearchtest(key)}
+            />
+          ))}
+      </div>
     </div>
   )
 }

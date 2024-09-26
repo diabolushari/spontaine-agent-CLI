@@ -135,9 +135,9 @@ export default function MetaDataUiIndex<
             </div>
           </div>
         </div>
-      </Card>
-      <FilterOldValues oldValues={oldValues} />
-      {/* <div className='my-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
+
+        <FilterOldValues oldValues={oldValues} />
+        {/* <div className='my-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
         <div className='flex flex-col md:col-start-3 lg:col-start-4'>
           <SelectList
             list={viewTypes}
@@ -149,19 +149,20 @@ export default function MetaDataUiIndex<
         </div>
       </div> */}
 
-      {/* <ListResourceCard
+        {/* <ListResourceCard
             keys={keys}
             primaryKey={primaryKey}
             rows={rows}
           /> */}
-      <Card className='p-5'>
-        <MetaDataCard
-          keys={keys}
-          primaryKey={primaryKey}
-          rows={rows}
-          addUrl={route('meta-data.create')}
-        />
-        {paginator != null && <Pagination pagination={paginator} />}
+        <div className='p-5'>
+          <MetaDataCard
+            keys={keys}
+            primaryKey={primaryKey}
+            rows={rows}
+            addUrl={route('meta-data.create')}
+          />
+          {paginator != null && <Pagination pagination={paginator} />}
+        </div>
       </Card>
     </DashboardPadding>
   )
