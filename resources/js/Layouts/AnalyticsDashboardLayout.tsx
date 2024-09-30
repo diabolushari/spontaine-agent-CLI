@@ -68,12 +68,13 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
     }
   }, [])
 
-  useEffect(() => {
-    const tabInfo = dashboardMenuItems.find((tab) => tab.value === activeTab)
+  const changeTab = (newTab: string) => {
+    setActiveTab(newTab)
+    const tabInfo = dashboardMenuItems.find((tab) => tab.value === newTab)
     if (tabInfo != null && tabInfo.url != null) {
       router.get(tabInfo.url)
     }
-  }, [activeTab])
+  }
 
   return (
     <div className='h-screen bg-white'>
@@ -155,7 +156,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             <Tab
               tabItems={dashboardMenuItems}
               activeTab={activeTab}
-              setActiveTab={setActiveTab}
+              setActiveTab={changeTab}
             />
             <div className='mt-8 flex flex-wrap gap-4 md:gap-1 lg:space-x-10'>
               {menuItems.map((item) => (
