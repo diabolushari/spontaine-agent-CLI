@@ -64,7 +64,11 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       formData={formData}
       formItems={formItems}
       addUrl={route('subject-area.create')}
+      searchUrl={route('subject-area.index', { type: 'data', subtype: 'subject-area' })}
       title='Subject Areas'
+      type='data'
+      subtype='subject-area'
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
     />
   )
 }

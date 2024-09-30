@@ -63,9 +63,16 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
       keys={keys}
       rows={data}
       paginator={details}
-      searchUrl={route('data-detail.index')}
+      searchUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
       addUrl={route('data-detail.create')}
       primaryKey='id'
+      type='data'
+      subtype='data-tables'
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      title='Data Tables'
+      subheading={`Data tables are primary containers for data. Data tables may be populated by standard loader jobs, 
+      orin some cases, may be manually populated, or bulk loaded from spreadsheets.
+       \nSubsets are derived from data tables are individual groups based on organizational hierarchy, a particulartime period etc.`}
     />
   )
 }

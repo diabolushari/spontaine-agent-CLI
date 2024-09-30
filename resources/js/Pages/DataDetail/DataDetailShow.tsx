@@ -69,6 +69,9 @@ export default function DataDetailShow({ detail, dataTableItems }: Readonly<Prop
     <ShowResourcePage
       title={detail.name}
       items={displayedItems}
+      type='data'
+      subtype='data-tables'
+      backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
     >
       <DataSetTable
         dataDetail={detail}

@@ -51,12 +51,14 @@ export default function SubjectAreaEdit({ subjectArea }: Props) {
   return (
     <FormPage
       url={route('subject-area.update', subjectArea.id)}
-      backUrl={route('subject-area.index')}
+      backUrl={route('subject-area.index', { type: 'data', subtype: 'subject-area' })}
       formData={formData}
       formItems={formItems}
       title={`Edit: ${subjectArea.name}`}
       formStyles='md:w-1/2 md:grid-cols-1'
       isPatchRequest
+      type='data'
+      subtype='subject-area'
     />
   )
 }

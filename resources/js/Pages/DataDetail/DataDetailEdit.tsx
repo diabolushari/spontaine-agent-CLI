@@ -71,8 +71,10 @@ export default function DataDetailEdit({ subjectAreas, types, dataDetail }: Prop
       formData={formData}
       formItems={formItems}
       title='Create Data Detail'
-      backUrl={route('data-detail.index')}
+      backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
       formStyles='w-1/2 md:grid-cols-1'
+      type='data'
+      subtype='data-tables'
     />
   )
 }

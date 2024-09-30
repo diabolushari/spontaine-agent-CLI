@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { User } from '@/interfaces/data_interfaces'
 import Tab from '@/ui/Tabs/Tab'
@@ -8,30 +8,42 @@ interface Properties {
   children?: ReactNode
   type?: string
   subtype?: string
+  title?: string
 }
-
-const tabs = [
-  { name: 'Data Tables', value: 'data' },
-  { name: 'Definitions', value: 'definitions' },
-  { name: 'Loaders', value: 'loaders' },
-  { name: 'Config', value: 'config' },
-]
-
-const headings = [
-  { name: 'MANAGE', value: 'manage' },
-  { name: 'DASHBOARD', value: 'dashboard' },
-]
 
 export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
   const [activeTab, setActiveTab] = useState(type ?? 'data')
   const [activeHeading, setActiveHeading] = useState('manage')
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
 
+  const profileRef = useRef<HTMLDivElement>(null)
+
+  // const tabs = [
+  //   { name: 'Data Tables', value: 'data', url: '/data-detail?type=data&subtype=data-tables' },
+  //   {
+  //     name: 'Definitions',
+  //     value: 'definitions',
+  //     url: '/meta-data?type=definitions&subtype=metadata',
+  //   },
+  //   { name: 'Loaders', value: 'loaders', url: '/loader-jobs?type=loaders&subtype=jobs' },
+  //   { name: 'Config', value: 'config', url: '/reference-data?type=config&subtype=reference-data' },
+  // ]
+
+  const headings = [
+    { name: 'MANAGE', value: 'manage' },
+    { name: 'DASHBOARD', value: 'dashboard' },
+  ]
+
+  // export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
+  //   const [activeTab, setActiveTab] = useState(type ?? 'data')
+  //   const [activeHeading, setActiveHeading] = useState('manage')
+  //   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
+
   const menuItems = useMemo(() => {
     return dashboardMenuItems.find((item) => item.value === activeTab)?.links ?? []
   }, [activeTab])
 
-  const profileRef = useRef<HTMLDivElement>(null)
+  // const profileRef = useRef<HTMLDivElement>(null)
 
   const userInfo = usePage().props.auth as unknown as { user: User | null }
   const User = useMemo(() => {
@@ -56,6 +68,10 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
     }
   }, [])
 
+  const setTab = (tab: { name: string; value: string; url: string }) => {
+    setActiveTab(tab.value)
+    router.get(tab.url)
+  }
   return (
     <div className='h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
@@ -72,7 +88,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             {headings.map((heading) => (
               <div
                 key={heading.value}
-                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'text-1stop-highlight font-bold' : 'text-gray-600'}`}
+                className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'font-bold text-1stop-highlight' : 'text-gray-600'}`}
                 onClick={() => setActiveHeading(heading.value)}
               >
                 <h1
@@ -89,7 +105,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
               ref={profileRef}
             >
               <div
-                className='bg-1stop-highlight hover:bg-1stop-accent1 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-2xl font-extrabold text-white'
+                className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl font-extrabold text-white hover:bg-1stop-accent1'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
@@ -136,9 +152,10 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             <Tab
               tabItems={dashboardMenuItems}
               activeTab={activeTab}
-              setActiveTab={setActiveTab}
+              // setActiveTab={setTa}
+              onTabClick={setTab}
             />
-            <div className='mt-8 flex flex-wrap gap-4 space-x-10 md:gap-1'>
+            <div className='mt-8 flex flex-wrap gap-4 md:gap-1 lg:space-x-10'>
               {menuItems.map((item) => (
                 <div
                   key={item.title}
