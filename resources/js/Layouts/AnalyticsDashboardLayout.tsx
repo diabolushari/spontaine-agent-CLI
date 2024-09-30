@@ -1,4 +1,4 @@
-import { Link, router, usePage } from '@inertiajs/react'
+import { Link, usePage } from '@inertiajs/react'
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { User } from '@/interfaces/data_interfaces'
 import Tab from '@/ui/Tabs/Tab'
@@ -68,10 +68,6 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
     }
   }, [])
 
-  const setTab = (tab: { name: string; value: string; url: string }) => {
-    setActiveTab(tab.value)
-    router.get(tab.url)
-  }
   return (
     <div className='h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
@@ -152,8 +148,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
             <Tab
               tabItems={dashboardMenuItems}
               activeTab={activeTab}
-              // setActiveTab={setTa}
-              onTabClick={setTab}
+              setActiveTab={setActiveTab}
             />
             <div className='mt-8 flex flex-wrap gap-4 md:gap-1 lg:space-x-10'>
               {menuItems.map((item) => (
