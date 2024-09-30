@@ -18,26 +18,10 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
 
   const profileRef = useRef<HTMLDivElement>(null)
 
-  // const tabs = [
-  //   { name: 'Data Tables', value: 'data', url: '/data-detail?type=data&subtype=data-tables' },
-  //   {
-  //     name: 'Definitions',
-  //     value: 'definitions',
-  //     url: '/meta-data?type=definitions&subtype=metadata',
-  //   },
-  //   { name: 'Loaders', value: 'loaders', url: '/loader-jobs?type=loaders&subtype=jobs' },
-  //   { name: 'Config', value: 'config', url: '/reference-data?type=config&subtype=reference-data' },
-  // ]
-
   const headings = [
     { name: 'MANAGE', value: 'manage' },
     { name: 'DASHBOARD', value: 'dashboard' },
   ]
-
-  // export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
-  //   const [activeTab, setActiveTab] = useState(type ?? 'data')
-  //   const [activeHeading, setActiveHeading] = useState('manage')
-  //   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
 
   const menuItems = useMemo(() => {
     return dashboardMenuItems.find((item) => item.value === activeTab)?.links ?? []
@@ -77,7 +61,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   }
 
   return (
-    <div className='h-screen bg-white'>
+    <div className='min-h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
         {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
