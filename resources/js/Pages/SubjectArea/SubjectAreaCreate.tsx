@@ -64,7 +64,9 @@ export default function SubjectAreaCreate() {
       formItems={formItems}
       title='Create Subject Area'
       formStyles='md:w-1/2 md:grid-cols-1'
-      backUrl={route('subject-area.index')}
+      backUrl={route('subject-area.index', { type: 'data', subtype: 'subject-area' })}
+      type='data'
+      subtype='subject-area'
     />
   )
 }

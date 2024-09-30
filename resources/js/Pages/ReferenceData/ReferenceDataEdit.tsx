@@ -68,8 +68,10 @@ const ReferenceDataEdit = ({ domains, referenceData }: Props) => {
       formData={formData}
       title='Update Reference Data'
       url={route('reference-data.update', referenceData.id)}
-      backUrl={route('reference-data.index')}
+      backUrl={route('reference-data.index', { type: 'config', subtype: 'reference-data' })}
       isPatchRequest
+      type='config'
+      subtype='reference-data'
     />
   )
 }

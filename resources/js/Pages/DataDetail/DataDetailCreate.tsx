@@ -69,9 +69,11 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
       url={route('data-detail.store')}
       formData={formData}
       formItems={formItems}
-      title='Create Data Detail'
-      backUrl={route('data-detail.index')}
+      title='Create Data Table'
+      backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
       formStyles='w-1/2 md:grid-cols-1'
+      type='data'
+      subtype='data-tables'
     />
   )
 }

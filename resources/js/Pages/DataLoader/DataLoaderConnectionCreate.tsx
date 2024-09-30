@@ -86,7 +86,7 @@ export default function DataLoaderConnectionCreate({ type, subtype }: Properties
       url={route('loader-connections.store')}
       formData={formData}
       formItems={formItems}
-      title='Create DataLoaderConnection'
+      title='Create Data Source'
       backUrl={route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' })}
       formStyles='w-1/2 md:grid-cols-1'
       buttonText={'Add & Verify'}
