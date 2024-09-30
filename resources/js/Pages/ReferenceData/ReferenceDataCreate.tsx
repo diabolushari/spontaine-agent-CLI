@@ -67,7 +67,9 @@ const ReferenceDataCreate = ({ domains }: Props) => {
       formData={formData}
       title='Create Reference Data'
       url={route('reference-data.store')}
-      backUrl={route('reference-data.index')}
+      backUrl={route('reference-data.index', { type: 'config', subtype: 'reference-data' })}
+      type='config'
+      subtype='reference-data'
     />
   )
 }

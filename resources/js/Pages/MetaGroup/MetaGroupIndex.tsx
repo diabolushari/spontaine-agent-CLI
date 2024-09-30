@@ -84,6 +84,7 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
       type={type}
       subtype={subtype}
       oldValues={oldValues}
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
     />
   )
 }

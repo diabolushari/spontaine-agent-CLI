@@ -63,9 +63,13 @@ export default function DataDetailIndex({ details }: Readonly<Props>) {
       keys={keys}
       rows={data}
       paginator={details}
-      searchUrl={route('data-detail.index')}
+      searchUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
       addUrl={route('data-detail.create')}
       primaryKey='id'
+      type='data'
+      subtype='data-tables'
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      title='Data Tables'
     />
   )
 }

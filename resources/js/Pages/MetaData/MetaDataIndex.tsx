@@ -83,6 +83,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       type={type}
       subtype={subtype}
       oldValues={oldValues}
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
     />
   )
 }

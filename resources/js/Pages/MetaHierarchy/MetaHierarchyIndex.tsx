@@ -88,6 +88,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       type={type}
       subtype={subtype}
       oldValues={oldValues}
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
     />
   )
 }

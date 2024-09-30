@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { User } from '@/interfaces/data_interfaces'
 
@@ -6,9 +6,14 @@ interface Properties {
   children?: ReactNode
   type?: string
   subtype?: string
+  title?: string
 }
 
-export default function AnalyticsDashboardLayout({ children, type, subtype }: Properties) {
+export default function AnalyticsDashboardLayout({ children, type, subtype, title }: Properties) {
+  // useEffect(() => {
+  //   document.title = title ?? 'KSEB'
+  // }, [title])
+
   const [activeTab, setActiveTab] = useState(type ?? 'data')
   const [activeHeading, setActiveHeading] = useState('manage')
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
@@ -16,10 +21,14 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   const profileRef = useRef<HTMLDivElement>(null)
 
   const tabs = [
-    { name: 'Data Tables', value: 'data' },
-    { name: 'Definitions', value: 'definitions' },
-    { name: 'Loaders', value: 'loaders' },
-    { name: 'Config', value: 'config' },
+    { name: 'Data Tables', value: 'data', url: '/data-detail?type=data&subtype=data-tables' },
+    {
+      name: 'Definitions',
+      value: 'definitions',
+      url: '/meta-data?type=definitions&subtype=metadata',
+    },
+    { name: 'Loaders', value: 'loaders', url: '/loader-jobs?type=loaders&subtype=jobs' },
+    { name: 'Config', value: 'config', url: '/reference-data?type=config&subtype=reference-data' },
   ]
 
   const headings = [
@@ -50,8 +59,18 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
     }
   }, [])
 
+  const defaultTab = (link: string) => {
+    if (link != null) {
+      router.get(link)
+    }
+  }
+
+  const setTab = (tab: { name: string; value: string; url: string }) => {
+    setActiveTab(tab.value)
+    router.get(tab.url)
+  }
   return (
-    <div className='bg-white h-screen'>
+    <div className='h-screen bg-white'>
       <div className='container mx-auto px-4 py-10'>
         {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>
@@ -119,7 +138,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                       ? 'border-green-700'
                       : 'border-transparent hover:border-green-700'
                   }`}
-                  onClick={() => setActiveTab(tab.value)}
+                  onClick={() => setTab(tab)}
                 >
                   <p
                     className={`text-lg font-extrabold leading-none ${activeTab === tab.value ? 'text-green-700' : 'text-gray-600 group-hover:text-green-700'}`}
@@ -243,6 +262,104 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
                     <span className='max-w-16 pt-1 text-center text-xs'>EXTRACTION STATEMENTS</span>
                   </Link>
                 </div>
+              </div>
+            )}
+            {activeTab === 'data' && (
+              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'data-tables' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/data-detail?type=data&subtype=data-tables'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/data-tables.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>DATA TABLES</span>
+                  </Link>
+                </div>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'subject-area' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/subject-area?type=data&subtype=subject-area'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/subject-area.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>SUBJECT AREAS</span>
+                  </Link>
+                </div>
+                {/* <div
+                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/loader-connections?type=loaders&subtype=data-sources'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/subsets.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>SUBSETS</span>
+                  </Link>
+                </div> */}
+              </div>
+            )}
+            {activeTab === 'config' && (
+              <div className='mt-4 flex gap-4 space-x-4 md:gap-1'>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'reference-data' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/reference-data?type=config&subtype=reference-data'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/reference-data.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>REFERENCE DATA</span>
+                  </Link>
+                </div>
+                {/* <div
+                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/loader-connections?type=loaders&subtype=data-sources'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/users.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>USERS</span>
+                  </Link>
+                </div>
+                <div
+                  className={`metadatalogo rounded-xl ${subtype === 'data-sources' ? 'bg-[#E3FE3C]' : 'bg-[#EFF0A6]'} p-8`}
+                >
+                  <Link
+                    href='/loader-connections?type=loaders&subtype=data-sources'
+                    className='text-black-600 flex flex-col font-bold hover:text-green-700'
+                  >
+                    <img
+                      className='h-10 w-10 justify-center pt-1 md:h-20 md:w-20'
+                      src='/roles.png'
+                      alt=''
+                    />
+                    <span className='pt-1 text-center text-xs'>ROLES</span>
+                  </Link>
+                </div> */}
               </div>
             )}
           </div>

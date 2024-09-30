@@ -102,7 +102,7 @@ export default function DataLoaderConnectionIndex({
   return (
     <ListResourcePage
       keys={keys}
-      title={'Loader Connections'}
+      title={'Data Sources'}
       primaryKey={'id'}
       rows={data}
       formData={formData}
@@ -113,6 +113,7 @@ export default function DataLoaderConnectionIndex({
       type={type}
       subtype={subtype}
       oldValues={oldValues}
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
     />
   )
 }

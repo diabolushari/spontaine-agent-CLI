@@ -76,9 +76,11 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
       addUrl={route('meta-structure.create', { type: 'definitions', subtype: 'blocks' })}
       searchUrl={route('meta-structure.index')}
       paginator={structures}
-      type={type}
-      subtype={subtype}
+      type={type ?? 'definitions'}
+      subtype={subtype ?? 'blocks'}
       oldValues={oldValues}
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      title='Structural Blocks'
     />
   )
 }

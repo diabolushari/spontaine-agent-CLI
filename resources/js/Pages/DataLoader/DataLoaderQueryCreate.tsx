@@ -58,7 +58,7 @@ export default function DataLoaderQueryCreate({ connections, type, subtype }: Re
       url={route('loader-queries.store')}
       formData={formData}
       formItems={formItems}
-      title='Create Loader Query'
+      title='Create Extraction Statement'
       backUrl={route('loader-queries.index', { type: 'loaders', subtype: 'queries' })}
       formStyles='w-1/2 md:grid-cols-1'
       buttonText='Save & Test'

@@ -1,4 +1,5 @@
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import { Link } from '@inertiajs/react'
 import React, { useState } from 'react'
 
@@ -18,5 +19,9 @@ export default function Index() {
     { name: 'DASHBOARD', value: 'dashboard' },
   ]
 
-  return <AnalyticsDashboardLayout></AnalyticsDashboardLayout>
+  return (
+    <AuthenticatedLayout>
+      <div className=''>test</div>
+    </AuthenticatedLayout>
+  )
 }

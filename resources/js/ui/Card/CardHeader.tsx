@@ -29,8 +29,8 @@ export default function CardHeader({
   onDeleteClick,
 }: Props) {
   return (
-    <div className='flex gap-5 flex-wrap bg-gray-200 py-4 px-4 justify-between items-center'>
-      <div className='flex gap-5 items-center'>
+    <div className='flex flex-wrap items-center justify-between gap-5 px-4 py-4'>
+      <div className='flex items-center gap-5'>
         {(backUrl != null || onBackClick != null) && (
           <BackButton
             link={backUrl}
@@ -39,7 +39,7 @@ export default function CardHeader({
         )}
         <Heading>{title}</Heading>
       </div>
-      <div className='flex gap-2 flex-wrap'>
+      <div className='flex flex-wrap gap-2'>
         {(editUrl != null || onEditClick != null) && (
           <EditButton
             link={editUrl}

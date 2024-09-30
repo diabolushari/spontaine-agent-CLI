@@ -120,8 +120,11 @@ const ReferenceDataIndex = ({
       paginator={referenceData}
       formItems={formItems}
       formData={formData}
-      searchUrl={route('reference-data.index')}
+      searchUrl={route('reference-data.index', { type: 'config', subtype: 'reference-data' })}
       addUrl={route('reference-data.create')}
+      type='config'
+      subtype='reference-data'
+      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
     />
   )
 }

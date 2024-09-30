@@ -36,6 +36,7 @@ interface Props<
   primaryKey: keyof T
   rows: T[]
   formData: Q
+  formStyles?: string
   formItems: Record<P, FormItem<Q[P], R, S, L>>
   paginator?: Paginator<{}>
   title?: string
@@ -77,6 +78,7 @@ export default function ListResourcePage<
   addUrl,
   onAddClick,
   editUrl,
+  formStyles,
   onEditClick,
   deleteUrl,
   onDeleteClick,
@@ -109,6 +111,7 @@ export default function ListResourcePage<
     <AnalyticsDashboardLayout
       type={type}
       subtype={subtype}
+      title={title}
     >
       <DashboardPadding>
         <div className='pb-5'>{pageDescription ?? ''}</div>
@@ -133,7 +136,7 @@ export default function ListResourcePage<
                 formItems={formItems}
                 loading={false}
                 buttonText='Search'
-                formStyles={'md:grid-cols-3 lg:grid-cols-4'}
+                formStyles={`md:grid-cols-3 lg:grid-cols-4 ${formStyles}`}
               />
             </div>
           </div>

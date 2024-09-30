@@ -53,6 +53,8 @@ export default function MetaDataEdit({ metaData, structures }: Props) {
       title={'Update Meta Data'}
       backUrl={route('meta-data.show', metaData.id)}
       isPatchRequest
+      type='definitions'
+      subtype='metadata'
     />
   )
 }
