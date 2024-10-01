@@ -119,6 +119,7 @@ export default function ListResourcePage<
       type={type}
       subtype={subtype}
       title={title}
+      description={subheading}
     >
       <DashboardPadding>
         <div className='flex flex-col gap-5'>
