@@ -73,6 +73,16 @@ export default function DataDetailShow({ detail, dataTableItems }: Readonly<Prop
       subtype='data-tables'
       backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
     >
+      <div className='my-5 flex justify-end'>
+        <a
+          target='_blank'
+          href={route('export-data-table', detail.id)}
+          className='link'
+          rel='noreferrer'
+        >
+          Export Data
+        </a>
+      </div>
       <DataSetTable
         dataDetail={detail}
         dataTableItems={dataTableItems}
