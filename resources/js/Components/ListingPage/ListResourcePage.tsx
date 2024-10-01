@@ -18,7 +18,6 @@ export interface ListItemKeys<T> {
   boxStyles?: string
   hideLabel?: boolean
   isLink?: boolean
-  url?: string
 }
 
 interface Props<

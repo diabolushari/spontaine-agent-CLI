@@ -51,7 +51,6 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       id: metaData.id,
       name: metaData.name,
       structure: metaData.meta_structure?.structure_name,
-
       groups: '0',
       hierarchies: '0',
       actions: [
@@ -62,9 +61,11 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       ],
     }))
   }, [metaData])
+
   const handleCardClick = useCallback((id: number | string) => {
     router.get(route('meta-data.show', { id: id }))
   }, [])
+
   const keys = useMemo(() => {
     return [
       { key: 'name', label: 'Name', isCardHeader: true, isLink: true },
@@ -76,8 +77,8 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
 
   return (
     <ListResourcePage
-      pageDescription='This section of the application defines standardized data values 
-      and structures allowed in data tables. Maintaining standard values and structures helps 
+      pageDescription='This section of the application defines standardized data values
+      and structures allowed in data tables. Maintaining standard values and structures helps
       ensure data in the system remains valid,
        and can automatically be rolled-up as necessary into higher levels of reporting.'
       keys={keys}

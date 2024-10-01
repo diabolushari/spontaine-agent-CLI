@@ -11,7 +11,7 @@ import StrongText from '@/typograpy/StrongText'
 interface Props<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
-    Record<'actions', { url: string; title: string }[]>,
+    Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
 > {
   keys: ListItemKeys<T>[]
   primaryKey: keyof T
@@ -31,6 +31,24 @@ export default function ListResourceCard<
     return keys.find((key) => key.isCardHeader)
   }, [keys])
 
+  const isUsingTitleClick = useMemo(() => {
+    return titleKey?.isLink ?? false
+  }, [titleKey])
+
+  const handleCardDivClick = (id: number | string) => {
+    if (isUsingTitleClick || handleCardClick == null) {
+      return
+    }
+    handleCardClick(id)
+  }
+
+  const handleTitleClick = (id: number | string) => {
+    if (!isUsingTitleClick || handleCardClick == null) {
+      return
+    }
+    handleCardClick(id)
+  }
+
   return (
     <div className='grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
       <AddButton link={addUrl} />
@@ -40,17 +58,19 @@ export default function ListResourceCard<
             className={'bg-[#F5F5FA] p-2 ' + cardStyles}
             key={row[primaryKey] as string}
           >
-            {titleKey != null && <SubHeading>{row[titleKey.key] as string}</SubHeading>}
+            {titleKey != null && (
+              <SubHeading onClick={() => handleTitleClick(row[primaryKey] as string | number)}>
+                {row[titleKey.key] as string}
+              </SubHeading>
+            )}
             <div className={`${cn('grid grid-cols-1', gridStyles)}`}>
               {keys
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
                   <div
-                    className={`${cn('flex gap-2', rowKey.boxStyles)}`}
+                    className={`${cn(`flex gap-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`, rowKey.boxStyles)}`}
                     key={rowKey.key as string}
-                    onClick={() =>
-                      handleCardClick != null && handleCardClick(row[primaryKey] as number)
-                    }
+                    onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
                     {!(rowKey.hideLabel ?? false) && (
                       <StrongText className='font-bold'>{rowKey.label as string}</StrongText>
