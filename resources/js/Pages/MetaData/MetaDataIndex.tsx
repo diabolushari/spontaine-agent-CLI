@@ -1,9 +1,10 @@
 import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
 import { Paginator } from '@/ui/ui_interfaces'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import { FormItem } from '@/FormBuilder/FormBuilder'
+import { router } from '@inertiajs/react'
 
 interface Props {
   structures: Partial<MetaStructure>[]
@@ -50,6 +51,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       id: metaData.id,
       name: metaData.name,
       structure: metaData.meta_structure?.structure_name,
+
       groups: '0',
       hierarchies: '0',
       actions: [
@@ -60,13 +62,15 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       ],
     }))
   }, [metaData])
-
+  const handleCardClick = useCallback((id: number | string) => {
+    router.get(route('meta-data.show', { id: id }))
+  }, [])
   const keys = useMemo(() => {
     return [
-      { key: 'name', label: 'Name', isCardHeader: true },
-      { key: 'structure', label: 'Structure', isShownInCard: true },
-      { key: 'groups', label: 'Groups', isShownInCard: true },
-      { key: 'hierarchies', label: 'Hierarchies', isShownInCard: true },
+      { key: 'name', label: 'Name', isCardHeader: true, isLink: true },
+      { key: 'structure', label: 'Structure', isShownInCard: true, boxStyles: 'col-span-full' },
+      { key: 'groups', label: 'Groups', isShownInCard: true, boxStyles: 'link' },
+      { key: 'hierarchies', label: 'Hierarchies', isShownInCard: true, boxStyles: 'justify-end' },
     ] as ListItemKeys<Partial<MetaData>>[]
   }, [])
 
@@ -84,12 +88,15 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       addUrl={route('meta-data.create')}
       title={'Meta Data'}
       searchUrl={route('meta-data.index')}
-      type={type}
-      subtype={subtype}
+      type={type ?? 'definitions'}
+      subtype={subtype ?? 'metadata'}
       oldValues={oldValues}
       formStyles='bg-[#F5F5FA] p-4 rounded-lg'
       subheading='Metadata elements that will form valid reporting dimension. Each metdata element will be a distinct value of a structural block.
 e.g: "Yellow" is a valid dimensional value of a structural block called "Colour"'
+      handleCardClick={handleCardClick}
+      gridStyles='grid-cols-2'
+      cardStyles=''
     />
   )
 }

@@ -62,7 +62,7 @@ export default function AnalyticsDashboardLayout({ children, type, subtype }: Pr
   }
 
   return (
-    <div className='h-screen bg-white'>
+    <div className='min-h-screen'>
       <div className='container mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
         {/* Flex container to align logo, headings, and profile picture */}
         <div className='flex items-center justify-between'>

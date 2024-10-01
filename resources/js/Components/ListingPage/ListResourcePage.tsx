@@ -17,6 +17,8 @@ export interface ListItemKeys<T> {
   textStyles?: string
   boxStyles?: string
   hideLabel?: boolean
+  isLink?: boolean
+  url?: string
 }
 
 interface Props<
@@ -53,6 +55,7 @@ interface Props<
   oldValues?: Record<string, string>
   cardStyles?: string
   gridStyles?: string
+  handleCardClick: (id: number | string) => void
 }
 
 export default function ListResourcePage<
@@ -89,6 +92,7 @@ export default function ListResourcePage<
   subheading,
   cardStyles,
   gridStyles,
+  handleCardClick,
 }: Props<U, T, Q, P, R, S, L>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -167,6 +171,7 @@ export default function ListResourcePage<
           addUrl={addUrl}
           cardStyles={cardStyles}
           gridStyles={gridStyles}
+          handleCardClick={handleCardClick}
         />
         {paginator != null && <Pagination pagination={paginator} />}
 
