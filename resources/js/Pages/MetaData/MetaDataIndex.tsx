@@ -34,6 +34,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
         type: 'text',
         label: 'Search',
         setValue: setFormValue('search'),
+        placeholder: 'Search for a metadata value..',
       },
       structure: {
         type: 'select',
@@ -51,12 +52,17 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       id: metaData.id,
       name: metaData.name,
       structure: metaData.meta_structure?.structure_name,
-      groups: '0',
-      hierarchies: '0',
+      actionStyle: 'gap-8',
       actions: [
         {
-          title: 'Show',
-          url: route('meta-data.show', { id: metaData.id }),
+          title: 'Groups ' + metaData.hierarchy_item?.length ?? '',
+          url: route('meta-data-group.index', { search: metaData.name }),
+          textStyles: ' hover:scale-105 transition',
+        },
+        {
+          title: 'Hierarchies ' + metaData.hierarchy_item?.length ?? '',
+          url: route('meta-hierarchy.index', { search: metaData.name }),
+          textStyles: 'ml-auto  hover:scale-105 transition',
         },
       ],
     }))
@@ -69,18 +75,14 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
   const keys = useMemo(() => {
     return [
       { key: 'name', label: 'Name', isCardHeader: true, isLink: true },
-      { key: 'structure', label: 'Structure', isShownInCard: true, boxStyles: 'col-span-full' },
-      { key: 'groups', label: 'Groups', isShownInCard: true, boxStyles: 'link' },
-      { key: 'hierarchies', label: 'Hierarchies', isShownInCard: true, boxStyles: 'justify-end' },
+      // { key: 'structure', label: 'Structure', isShownInCard: true, boxStyles: 'col-span-full' },
+      // { key: 'groups', label: 'Groups', isShownInCard: true, boxStyles: 'link' },
+      // { key: 'hierarchies', label: 'Hierarchies', isShownInCard: true, boxStyles: 'justify-end' },
     ] as ListItemKeys<Partial<MetaData>>[]
   }, [])
 
   return (
     <ListResourcePage
-      pageDescription='This section of the application defines standardized data values
-      and structures allowed in data tables. Maintaining standard values and structures helps
-      ensure data in the system remains valid,
-       and can automatically be rolled-up as necessary into higher levels of reporting.'
       keys={keys}
       primaryKey='id'
       rows={data}
@@ -97,7 +99,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
 e.g: "Yellow" is a valid dimensional value of a structural block called "Colour"'
       handleCardClick={handleCardClick}
       gridStyles='grid-cols-2'
-      cardStyles=''
+      cardStyles='p-4'
     />
   )
 }

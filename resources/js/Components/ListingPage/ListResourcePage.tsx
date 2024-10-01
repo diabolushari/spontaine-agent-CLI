@@ -18,12 +18,13 @@ export interface ListItemKeys<T> {
   boxStyles?: string
   hideLabel?: boolean
   isLink?: boolean
+  actionStyle?: string
 }
 
 interface Props<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
-    Record<'actions', { url: string; title: string }[]>,
+    Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
   Q,
   P extends keyof Q,
   R extends keyof L,
@@ -54,13 +55,13 @@ interface Props<
   oldValues?: Record<string, string>
   cardStyles?: string
   gridStyles?: string
-  handleCardClick: (id: number | string) => void
+  handleCardClick?: (id: number | string) => void
 }
 
 export default function ListResourcePage<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
-    Record<'actions', { url: string; title: string }[]>,
+    Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
   Q,
   P extends keyof Q,
   R extends keyof L,

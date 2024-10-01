@@ -31,6 +31,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
         label: 'Search',
         type: 'text',
         setValue: setFormValue('search'),
+        placeholder: 'Search by structure name',
       } as FormItem<string, never, never, never>,
     }
   }, [setFormValue])
@@ -56,10 +57,12 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
           {
             title: `${structure.meta_data_count} Records`,
             url: route('meta-data.index', { structure: structure.id }, false),
+            textStyles: 'hover:scale-105 transition',
           },
           {
             title: 'Edit',
             url: route('meta-structure.edit', structure.id, false),
+            textStyles: 'ml-auto  hover:scale-105 transition',
           },
         ],
       }
@@ -83,6 +86,7 @@ export default function MetaStructureIndex({ structures, type, subtype, oldValue
       title='Structural Blocks'
       subheading='Each metdata element will be a distinct value of a structural block.
 e.g: "Yellow" is a valid dimensional value of a structural block called "Colour".'
+      cardStyles='p-4'
     />
   )
 }
