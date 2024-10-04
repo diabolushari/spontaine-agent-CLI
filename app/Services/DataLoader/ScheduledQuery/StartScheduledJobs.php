@@ -22,7 +22,7 @@ class StartScheduledJobs
         if ($this->now->minute == 0) {
             $this->runHourlyQueries();
         }
-        Log::info('Running scheduled jobs: ': $this->now->toTimeString());
+        Log::info('Running scheduled jobs: '.$this->now->toTimeString());
         $this->runDailyQueries($this->now->toTimeString());
         $this->runWeeklyQueries($this->now->toTimeString(), $this->now->dayName);
         $this->runMonthlyQueries($this->now->toTimeString(), $this->now->day);
