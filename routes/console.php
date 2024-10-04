@@ -1,19 +1,18 @@
 <?php
 
 use App\Services\DataLoader\ScheduledQuery\StartScheduledJobs;
-use Illuminate\Support\Facades\Process;
 
 Schedule::call(function () {
-    Log::info('Running scheduled job');
-    $password = config('app.vpn_password');
-    Log::info($password);
-    $result = Process::run('snx -d');
-    sleep(5);
-    Log::info('disconnected');
-    Log::info($result->output());
-    $result = Process::run("echo $password | snx -s 125.17.229.163 -u xocortx");
-    Log::info('result');
-    Log::info($result->output());
+    //    Log::info('Running scheduled job');
+    //    $password = config('app.vpn_password');
+    //    Log::info($password);
+    //    $result = Process::run('snx -d');
+    //    sleep(5);
+    //    Log::info('disconnected');
+    //    Log::info($result->output());
+    //    $result = Process::run("echo $password | snx -s 125.17.229.163 -u xocortx");
+    //    Log::info('result');
+    //    Log::info($result->output());
 })->everyTenMinutes();
 
 Schedule::call(function () {
