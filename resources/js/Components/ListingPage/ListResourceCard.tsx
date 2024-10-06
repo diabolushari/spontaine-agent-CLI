@@ -67,7 +67,7 @@ export default function ListResourceCard<
       {rows.map((row) => {
         return (
           <Card
-            className={`bg-[#F5F5FA] p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
+            className={`bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
             key={row[primaryKey] as string}
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
@@ -107,7 +107,7 @@ export default function ListResourceCard<
                   <Link
                     as='a'
                     href={action.url}
-                    className={`text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
+                    className={`small-1stop text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
                     key={action.title}
                   >
                     {action.title}

@@ -85,7 +85,7 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
       title='Subject Areas'
       type='data'
       subtype='subject-area'
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       // handleCardClick={handleCardClick}
       subheading='Subject areas are thematic regions that hold data, and will form logical groupings of reports and dashboards'
       cardStyles='p-4'
