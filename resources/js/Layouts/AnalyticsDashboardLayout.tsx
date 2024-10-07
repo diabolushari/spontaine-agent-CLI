@@ -122,7 +122,7 @@ export default function AnalyticsDashboardLayout({
               ref={profileRef}
             >
               <div
-                className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:bg-1stop-dark hover:text-black'
+                className='h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-1stop-highlight text-2xl text-white hover:text-black'
                 onClick={() => setIsProfileDropdown(!isProfileDropdown)}
               >
                 {userInitial}
