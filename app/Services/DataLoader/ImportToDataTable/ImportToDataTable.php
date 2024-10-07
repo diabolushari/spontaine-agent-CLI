@@ -3,11 +3,9 @@
 namespace App\Services\DataLoader\ImportToDataTable;
 
 use App\Models\DataDetail\DataDetail;
-use App\Models\SubjectArea\SubjectArea;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 readonly class ImportToDataTable
 {
@@ -36,7 +34,6 @@ readonly class ImportToDataTable
     public function importToDataTable(DataDetail $dataDetail, array $data): array
     {
 
-        Log::info('Importing data to data table');
         $status = [
             'is_successful' => false,
             'total_records' => 0,
@@ -54,8 +51,7 @@ readonly class ImportToDataTable
         }
 
         //cancel import if data table already has data
-        $count = DB::table($dataDetail->subjectArea->table_name)
-            ->where('data_detail_id', $dataDetail->id)
+        $count = DB::table($dataDetail->table_name)
             ->count();
 
         if ($count > 0) {
@@ -103,17 +99,9 @@ readonly class ImportToDataTable
         }
 
         //save data
-        $subjectArea = SubjectArea::where('id', $dataDetail->subject_area_id)->first();
-        if ($subjectArea == null) {
-            $status['error_message'] = 'Subject Area not found';
-            $status['completed_at'] = now();
-
-            return $status;
-        }
-
         try {
             foreach (array_chunk($dataTable, 1000) as $chunk) {
-                DB::table($subjectArea->table_name)->insert($chunk);
+                DB::table($dataDetail->table_name)->insert($chunk);
             }
         } catch (Exception $e) {
             $status['error_message'] = $e->getMessage();

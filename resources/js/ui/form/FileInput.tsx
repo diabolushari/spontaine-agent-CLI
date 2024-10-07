@@ -1,8 +1,8 @@
 import React, { ChangeEvent } from 'react'
 import { XIcon } from 'lucide-react'
-import StrongText from '@/typograpy/StrongText'
-import Paragraph from '@/typograpy/Paragraph'
-import ErrorText from '@/typograpy/ErrorText'
+import StrongText from '@/typography/StrongText'
+import Paragraph from '@/typography/Paragraph'
+import ErrorText from '@/typography/ErrorText'
 
 export interface Props {
   file?: File | null

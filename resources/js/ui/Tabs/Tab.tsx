@@ -44,8 +44,8 @@ export default function Tab({ tabItems, activeTab, setActiveTab }: Readonly<Prop
           list={tabItems}
           dataKey='value'
           displayKey='name'
-          data={activeTab}
-          setData={setActiveTab}
+          value={activeTab}
+          setValue={setActiveTab}
         />
       </div>
     </div>

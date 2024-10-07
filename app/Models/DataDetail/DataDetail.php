@@ -18,8 +18,9 @@ class DataDetail extends Model
     protected $fillable = [
         'name',
         'description',
-        'type',
-        'subject_area_id',
+        'subject_area',
+        'is_active',
+        'table_name',
         'created_by',
         'updated_by',
     ];

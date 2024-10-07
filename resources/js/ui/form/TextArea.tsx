@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormFieldProp } from '../ui_interfaces'
 import { getFormStyle } from './Input'
-import ErrorText from '@/typograpy/ErrorText'
+import ErrorText from '@/typography/ErrorText'
 
 export default function TextArea({
   label,

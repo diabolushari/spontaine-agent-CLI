@@ -18,10 +18,10 @@ export default function Dropdown<
   U extends number | string,
   T extends Record<K, U>,
 >({
-  data,
+  value,
   label,
   error,
-  setData,
+  setValue,
   list,
   dataKey,
   displayKey,
@@ -41,20 +41,20 @@ export default function Dropdown<
   }, [clickTarget])
 
   useEffect(() => {
-    if (data !== '') {
-      const item = list.find((item) => `${item[dataKey]}` === data)
+    if (value !== '') {
+      const item = list.find((item) => `${item[dataKey]}` === value)
       setSelectedItem(item != null ? item : null)
       return
     }
     setSelectedItem(null)
-  }, [list, data, dataKey])
+  }, [list, value, dataKey])
 
   const toggleList = () => {
     setShowList((oldValue) => !oldValue)
   }
 
   const handleChange = (value: string | number) => {
-    setData(`${value}`)
+    setValue(`${value}`)
     setShowList(false)
   }
 
@@ -67,10 +67,10 @@ export default function Dropdown<
       >
         <button
           onClick={toggleList}
-          className='flex w-full items-center justify-between rounded-lg border border-gray-300  px-3 py-3 text-sm text-gray-800 shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100'
+          className='flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-3 text-sm text-gray-800 shadow-sm focus:border-indigo-700 focus:outline-none disabled:bg-gray-100'
         >
           <span>
-            {data === '' && showAllOption
+            {value === '' && showAllOption
               ? allOptionText
               : selectedItem != null
                 ? selectedItem[displayKey]
@@ -80,27 +80,25 @@ export default function Dropdown<
         </button>
         {showList && (
           <div className='absolute top-full z-10 w-full rounded-b bg-white shadow'>
-            <>
-              {showAllOption && (
+            {showAllOption && (
+              <div
+                className='flex cursor-pointer flex-wrap p-2 text-sm hover:bg-gray-200 hover:font-semibold'
+                onClick={() => handleChange('')}
+              >
+                {allOptionText}
+              </div>
+            )}
+            {list.map((item: T) => {
+              return (
                 <div
-                  className='flex cursor-pointer flex-wrap p-2 text-sm hover:bg-gray-200 hover:font-semibold'
-                  onClick={() => handleChange('')}
+                  key={item[dataKey]}
+                  className='flex cursor-pointer flex-wrap p-2 text-sm transition duration-300 ease-in hover:bg-gray-300'
+                  onClick={() => handleChange(item[dataKey])}
                 >
-                  {allOptionText}
+                  {item[displayKey]}
                 </div>
-              )}
-              {list.map((item: T) => {
-                return (
-                  <div
-                    key={item[dataKey]}
-                    className='flex cursor-pointer flex-wrap  p-2 text-sm transition duration-300 ease-in hover:bg-gray-300'
-                    onClick={() => handleChange(item[dataKey])}
-                  >
-                    {item[displayKey]}
-                  </div>
-                )
-              })}
-            </>
+              )
+            })}
           </div>
         )}
       </div>

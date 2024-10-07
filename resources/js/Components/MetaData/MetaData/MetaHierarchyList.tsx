@@ -4,8 +4,8 @@ import { MetaData, MetaHierarchy, MetaHierarchyItem } from '@/interfaces/meta_in
 import { useState } from 'react'
 import Modal from '@/ui/Modal/Modal'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import NormalText from '@/typograpy/NormalText'
-import StrongText from '@/typograpy/StrongText'
+import NormalText from '@/typography/NormalText'
+import StrongText from '@/typography/StrongText'
 import MetaHierarchyAddForm from '@/Pages/MetaData/MetaHierarchyAddForm'
 
 interface Props {
@@ -40,7 +40,7 @@ export default function MetaHierarchyList({ metaData, metaHierarchy }: Readonly<
             {metaData.hierarchy_item?.map((hierarchyName) => (
               <div
                 key={hierarchyName.id}
-                className='flex justify-between gap-5 flex-wrap gap-y-2'
+                className='flex flex-wrap justify-between gap-5 gap-y-2'
               >
                 <StrongText>{hierarchyName.meta_hierarchy?.name}</StrongText>
                 <button

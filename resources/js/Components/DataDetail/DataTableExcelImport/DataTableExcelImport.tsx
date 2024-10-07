@@ -33,7 +33,7 @@ export default function DataTableExcelImport({ dataDetail }: Readonly<Props>) {
   return (
     <>
       <Button
-        label='Import Excel'
+        label='Import From  Excel'
         onClick={() => setShowImportModal(true)}
       />
       {showImportModal && (

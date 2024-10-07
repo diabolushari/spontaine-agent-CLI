@@ -4,7 +4,7 @@ import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import React, { useCallback, useMemo, useState } from 'react'
 import AddButton from '@/ui/button/AddButton'
 import Modal from '@/ui/Modal/Modal'
-import ErrorText from '@/typograpy/ErrorText'
+import ErrorText from '@/typography/ErrorText'
 import useInertiaPost from '@/hooks/useInertiaPost'
 
 interface Props {
@@ -70,7 +70,7 @@ export default function MetaGroupAddItem({ metaDataGroup }: Props) {
 
   return (
     <>
-      <div className='flex justify-end mt-10'>
+      <div className='mt-10 flex justify-end'>
         <AddButton onClick={() => setShowModal(true)} />
       </div>
       {showModal && (
@@ -78,7 +78,7 @@ export default function MetaGroupAddItem({ metaDataGroup }: Props) {
           title={`Add Item to ${metaDataGroup.name}`}
           setShowModal={setShowModal}
         >
-          <div className='p-2 w-full'>
+          <div className='w-full p-2'>
             <div className='w-full'>
               {errors.meta_group_id != null && (
                 <ErrorText>{errors.meta_group_id as string}</ErrorText>

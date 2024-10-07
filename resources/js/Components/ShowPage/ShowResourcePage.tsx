@@ -3,8 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
-import SubHeading from '@/typograpy/SubHeading'
-import NormalText from '@/typograpy/NormalText'
+import SubHeading from '@/typography/SubHeading'
+import NormalText from '@/typography/NormalText'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 
 export interface ShowPageItem {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { CheckboxProp } from '../ui_interfaces'
-import ErrorText from '@/typograpy/ErrorText'
+import ErrorText from '@/typography/ErrorText'
 
 export default function CheckBox({
   label,

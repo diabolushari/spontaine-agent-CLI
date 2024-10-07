@@ -48,8 +48,15 @@ class DataLoaderJob extends Model
         return $this->hasOne(DataDetail::class, 'id', 'data_detail_id');
     }
 
-    //scopes
+    /**
+     * @return HasOne<DataLoaderJobStatus>
+     */
+    public function lastStatus(): HasOne
+    {
+        return $this->hasOne(DataLoaderJobStatus::class, 'loader_job_id', 'id');
+    }
 
+    //scopes
     /**
      * @param  Builder<DataLoaderJob>  $builder
      * @return Builder<DataLoaderJob>

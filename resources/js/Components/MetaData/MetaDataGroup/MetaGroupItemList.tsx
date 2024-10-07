@@ -3,10 +3,10 @@ import { Paginator } from '@/ui/ui_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import React, { useMemo } from 'react'
-import StrongText from '@/typograpy/StrongText'
+import StrongText from '@/typography/StrongText'
 import Card from '@/ui/Card/Card'
 import { Link } from '@inertiajs/react'
-import NormalText from '@/typograpy/NormalText'
+import NormalText from '@/typography/NormalText'
 
 interface Props {
   metaGroup: MetaDataGroup
@@ -50,7 +50,7 @@ export default function MetaGroupItemList({ metaGroup, groupItems }: Props) {
             loading={false}
             buttonText='search'
           />
-          <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5'>
+          <div className='grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
             {groupItems.data.map((groupItem) => (
               <Card
                 className='p-2'

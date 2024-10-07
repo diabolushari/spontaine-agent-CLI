@@ -1,12 +1,12 @@
-import DashboardPadding from '@/Layouts/DashboardPadding'
-import { Paginator } from '@/ui/ui_interfaces'
-import Pagination from '@/ui/Pagination/Pagination'
+import CardGridView from '@/Components/ListingPage/CardGridView'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import { router } from '@inertiajs/react'
-import React, { useEffect } from 'react'
-import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
-import CardHeader from '@/ui/Card/CardHeader'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import DashboardPadding from '@/Layouts/DashboardPadding'
+import CardHeader from '@/ui/Card/CardHeader'
+import Pagination from '@/ui/Pagination/Pagination'
+import { Paginator } from '@/ui/ui_interfaces'
+import { router } from '@inertiajs/react'
+import React, { useCallback } from 'react'
 import FilterOldValues from '../OldSearch/FilterOldValues'
 
 export interface ListItemKeys<T> {
@@ -95,7 +95,7 @@ export default function ListResourcePage<
   gridStyles,
   layoutStyle,
   handleCardClick,
-}: Props<U, T, Q, P, R, S, L>) {
+}: Readonly<Props<U, T, Q, P, R, S, L>>) {
   const onSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -108,13 +108,13 @@ export default function ListResourcePage<
     } as Record<string, string | number>)
   }
 
-  const [viewType, setViewType] = React.useState('table')
-
-  useEffect(() => {
-    if (window.innerWidth < 1024) {
-      setViewType('cards')
+  const handleAddAction = useCallback(() => {
+    if (addUrl == null) {
+      return
     }
-  }, [])
+
+    router.get(addUrl)
+  }, [addUrl])
 
   return (
     <AnalyticsDashboardLayout
@@ -150,45 +150,21 @@ export default function ListResourcePage<
             </div>
           </div>
         </div>
-
         <FilterOldValues
           oldValues={oldValues}
           searchUrl={searchUrl}
         />
-        {/* <div className='my-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
-          <div className='flex flex-col md:col-start-3 lg:col-start-4'>
-            <SelectList
-              list={viewTypes}
-              dataKey='value'
-              displayKey='label'
-              setValue={setViewType}
-              value={viewType}
-            />
-          </div>
-        </div> */}
-
-        <ListResourceCard
+        <CardGridView
           keys={keys}
           primaryKey={primaryKey}
           rows={rows}
-          addUrl={addUrl}
+          onAddClick={handleAddAction}
           cardStyles={cardStyles}
           gridStyles={gridStyles}
-          handleCardClick={handleCardClick}
+          onCardClick={handleCardClick}
           layoutStyles={layoutStyle}
         />
         {paginator != null && <Pagination pagination={paginator} />}
-
-        {/* {viewType === 'table' && (
-          <Card className='p-5'>
-            <ListResourceTable
-              keys={keys}
-              primaryKey={primaryKey}
-              rows={rows}
-            />
-            {paginator != null && <Pagination pagination={paginator} />}
-          </Card>
-        )} */}
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

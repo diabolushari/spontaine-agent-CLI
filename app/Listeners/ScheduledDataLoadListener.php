@@ -5,7 +5,6 @@ namespace App\Listeners;
 use App\Events\ScheduledDataLoadEvent;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Exception;
-use Illuminate\Support\Facades\Log;
 
 class ScheduledDataLoadListener
 {
@@ -20,7 +19,6 @@ class ScheduledDataLoadListener
     {
 
         $event->dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
-        $result = $this->job->run($event->dataLoaderJob);
-        Log::info('operation result: '.json_encode($result));
+        $this->job->run($event->dataLoaderJob);
     }
 }

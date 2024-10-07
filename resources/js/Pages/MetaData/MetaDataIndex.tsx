@@ -50,7 +50,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
         linkText: 'Structural blocks',
         placeholder: 'Limit to structural block..',
         redirectLink: route('meta-structure.index'),
-        selectListUrl: route('meta-strucure-search', {
+        selectListUrl: route('meta-structure-search', {
           search: '',
         }),
         setValue: (value: Pick<MetaStructure, 'id' | 'structure_name'>) => {

@@ -4,7 +4,7 @@ import {
   MetaHierarchyLevelInfo,
 } from '@/interfaces/meta_interfaces'
 import handleEnterPress from '@/libs/handle-enter'
-import StrongText from '@/typograpy/StrongText'
+import StrongText from '@/typography/StrongText'
 import { useCallback, useMemo, useState } from 'react'
 import MetaHierarchyAddItem from './MetaHierarchyAddItem'
 import MetaHierarchyTreeNode from './MetaHierarchyTreeNode'

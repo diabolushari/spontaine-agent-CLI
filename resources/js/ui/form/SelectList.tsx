@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { FormFieldProp as FormFieldProperty } from '../ui_interfaces'
-import ErrorText from '@/typograpy/ErrorText'
+import ErrorText from '@/typography/ErrorText'
 
 export interface Properties<
   K extends keyof T,
