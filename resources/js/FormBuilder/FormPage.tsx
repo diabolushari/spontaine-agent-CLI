@@ -1,7 +1,6 @@
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'

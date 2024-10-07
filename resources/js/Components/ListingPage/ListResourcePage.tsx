@@ -3,7 +3,7 @@ import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import { router } from '@inertiajs/react'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import ListResourceCard from '@/Components/ListingPage/ListResourceCard'
 import CardHeader from '@/ui/Card/CardHeader'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
@@ -114,27 +114,39 @@ export default function ListResourcePage<
     }
   }, [])
 
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleCardRef = useCallback(() => {
+    if (cardRef.current == null) {
+      return
+    }
+    cardRef.current.scrollIntoView({ behavior: 'smooth' })
+  }, [])
+
   return (
     <AnalyticsDashboardLayout
       type={type}
       subtype={subtype}
       title={title}
       description={subheading}
+      handleCardRef={handleCardRef}
     >
       <DashboardPadding>
         <div className='flex flex-col gap-5'>
-          <CardHeader
-            title={title}
-            // addUrl={addUrl}
-            backUrl={backUrl}
-            onBackClick={onBackClick}
-            onAddClick={onAddClick}
-            editUrl={editUrl}
-            onEditClick={onEditClick}
-            deleteUrl={deleteUrl}
-            onDeleteClick={onDeleteClick}
-            subheading={subheading}
-          />
+          <div ref={cardRef}>
+            <CardHeader
+              title={title}
+              // addUrl={addUrl}
+              backUrl={backUrl}
+              onBackClick={onBackClick}
+              onAddClick={onAddClick}
+              editUrl={editUrl}
+              onEditClick={onEditClick}
+              deleteUrl={deleteUrl}
+              onDeleteClick={onDeleteClick}
+              subheading={subheading}
+            />
+          </div>
           <div className='flex flex-col gap-10 px-5 py-5'>
             <div className='flex flex-col gap-5'>
               <FormBuilder
