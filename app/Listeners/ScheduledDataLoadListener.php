@@ -19,7 +19,6 @@ class ScheduledDataLoadListener
     {
 
         $event->dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
-
         $this->job->run($event->dataLoaderJob);
     }
 }

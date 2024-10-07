@@ -5,58 +5,34 @@ import { MetaStructure } from '@/interfaces/meta_interfaces'
 import { showError } from '@/ui/alerts'
 
 interface Props {
-  fieldType: 'date' | 'dimension' | 'measure'
-  structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
-  selectedField: DataTableFieldInfo
-  onFormSubmit: (type: string, data: DataTableFieldInfo) => void
+  selectedField: DataTableFieldInfo | null
+  onFormSubmit: (data: DataTableFieldInfo) => void
+  onDelete?: () => void
 }
-
-export const possibleDateFields = ['date_1', 'date_2', 'date_3', 'date_4', 'date_5']
-export const possibleDimensionFields = [
-  'dim_1',
-  'dim_2',
-  'dim_3',
-  'dim_4',
-  'dim_5',
-  'dim_6',
-  'dim_7',
-  'dim_8',
-]
-
-//measures 1- 8
-export const possibleMeasureFields = [
-  'measure_1',
-  'measure_1_unit',
-  'measure_2',
-  'measure_2_unit',
-  'measure_3',
-  'measure_4_unit',
-  'measure_5',
-  'measure_5_unit',
-  'measure_6',
-  'measure_6_unit',
-  'measure_7',
-  'measure_7_unit',
-  'measure_8',
-  'measure_8_unit',
-]
 
 export interface DataTableFieldInfo {
+  type: string
   field_name: string
   unit_field_name?: string
-  meta_structure_id?: string
+  meta_structure: MetaStructure | null
 }
 
+const types = [
+  { id: 'date', structure_name: 'Date' },
+  { id: 'dimension', structure_name: 'Dimension' },
+  { id: 'measure', structure_name: 'Measure' },
+]
+
 export default function DataTableFieldInfoForm({
-  fieldType,
-  structures,
   onFormSubmit,
   selectedField,
+  onDelete,
 }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
-    field_name: selectedField.field_name,
-    unit_field_name: selectedField.unit_field_name, // only for measure fields
-    meta_structure_id: selectedField.meta_structure_id, // only for  dimension fields
+    type: selectedField?.type ?? 'date',
+    field_name: selectedField?.field_name ?? '',
+    meta_structure: selectedField?.meta_structure ?? (null as MetaStructure | null), // only for dimension fields
+    unit_field_name: selectedField?.unit_field_name ?? '', // only for measure fields
   })
 
   const formItems = useMemo(<
@@ -67,40 +43,50 @@ export default function DataTableFieldInfoForm({
     L extends Record<K, string | number> & Record<G, string | number | null>,
   >() => {
     return {
+      type: {
+        type: 'select',
+        label: 'Type',
+        list: types,
+        displayKey: 'structure_name',
+        dataKey: 'id',
+        setValue: setFormValue('type'),
+      },
       field_name: { type: 'text', label: 'Field Name', setValue: setFormValue('field_name') },
       unit_field_name: {
         type: 'text',
-        label: 'Unit Field',
+        label: 'Unit Field(Optional)',
         setValue: setFormValue('unit_field_name'),
-        hidden: fieldType !== 'measure',
+        hidden: formData.type !== 'measure',
       },
-      meta_structure_id: {
-        type: 'select',
-        label: 'Data Structure',
-        list: structures,
-        displayKey: 'structure_name',
+      meta_structure: {
+        type: 'autocomplete',
+        label: 'Meta Structure',
+        autoCompleteSelection: formData.meta_structure,
         dataKey: 'id',
-        setValue: setFormValue('meta_structure_id'),
-        hidden: fieldType !== 'dimension',
+        displayKey: 'structure_name',
+        linkText: 'Structural blocks',
+        redirectLink: route('meta-structure.index'),
+        selectListUrl: route('meta-structure-search', {
+          search: '',
+        }),
+        setValue: setFormValue('meta_structure'),
+        hidden: formData.type !== 'dimension',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, fieldType, structures])
+  }, [setFormValue, formData.type, formData.meta_structure])
 
   const submitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    e.stopPropagation()
     if (formData.field_name === '') {
       showError('Field Name is required')
       return
     }
-    if (fieldType === 'dimension' && formData.meta_structure_id === '') {
+    if (formData.type === 'dimension' && formData.meta_structure == null) {
       showError('Structure is required')
       return
     }
-    if (fieldType === 'measure' && formData.unit_field_name === '') {
-      showError('Unit Field is required')
-      return
-    }
-    onFormSubmit(fieldType, formData)
+    onFormSubmit(formData)
   }
 
   return (
@@ -110,8 +96,11 @@ export default function DataTableFieldInfoForm({
         formData={formData}
         loading={false}
         onFormSubmit={submitForm}
-        buttonText='ADD'
-        formStyles='w-full grid grid-cols-1 gap-2'
+        buttonText={selectedField == null ? 'Add Field' : 'Update Field'}
+        formStyles='w-full flex flex-col gap-2'
+        showSecondaryButton={selectedField != null}
+        secondaryButtonLabel='REMOVE'
+        secondaryAction={onDelete}
       />
     </div>
   )

@@ -4,7 +4,7 @@ import {
   MetaHierarchyLevelInfo,
 } from '@/interfaces/meta_interfaces'
 import handleEnterPress from '@/libs/handle-enter'
-import StrongText from '@/typograpy/StrongText'
+import StrongText from '@/typography/StrongText'
 import { useCallback, useMemo, useState } from 'react'
 import MetaHierarchyAddItem from './MetaHierarchyAddItem'
 import MetaHierarchyTreeNode from './MetaHierarchyTreeNode'
@@ -52,7 +52,7 @@ export default function MetaHierarchyTree({
           onClick={() => openAddNodeModal(null)}
           onKeyUp={(event) => handleEnterPress(event, () => openAddNodeModal(null))}
           tabIndex={0}
-          className='mx-2 flex grow cursor-pointer items-center justify-center gap-5 border border-blue-700 p-1 hover:border-green-500 hover:text-green-500 hover:shadow'
+          className='mx-2 flex grow cursor-pointer items-center justify-center gap-5 rounded border border-blue-700 p-1 hover:border-green-500 hover:text-green-500 hover:shadow'
         >
           <StrongText>
             <i className='las la-plus-circle'></i> Add{' '}
@@ -66,6 +66,7 @@ export default function MetaHierarchyTree({
           setShowModal={setShowModal}
           metaHierarchy={metaHierarchy}
           levelInfos={levelInfos}
+          firstLevelInfo={firstLevelInfo}
         />
       )}
     </div>

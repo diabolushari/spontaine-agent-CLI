@@ -10,6 +10,7 @@ interface Properties {
   url: string
   preserveState?: boolean
   onSuccess?: () => unknown
+  large?: boolean
 }
 
 export default function DeleteModal({
@@ -19,6 +20,7 @@ export default function DeleteModal({
   url,
   preserveState = false,
   onSuccess,
+  large = false,
 }: Readonly<Properties>) {
   const { post, loading } = useInertiaPost(url, {
     preserveState: preserveState,
@@ -36,6 +38,7 @@ export default function DeleteModal({
     <Modal
       setShowModal={setShowModal}
       title={title}
+      large={large}
     >
       <div className='flex w-full flex-col gap-3 p-2'>
         {children}
@@ -44,7 +47,7 @@ export default function DeleteModal({
             label='DELETE'
             onClick={onDelete}
             processing={loading}
-            type='danger'
+            variant='danger'
           />
         </div>
       </div>

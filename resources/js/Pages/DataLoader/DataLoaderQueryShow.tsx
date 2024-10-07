@@ -4,7 +4,7 @@ import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderQuery } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
 import AlertMessage from '@/ui/Alert/AlertMessage'
-import NormalText from '@/typograpy/NormalText'
+import NormalText from '@/typography/NormalText'
 
 interface Props {
   dataLoaderQuery: DataLoaderQuery

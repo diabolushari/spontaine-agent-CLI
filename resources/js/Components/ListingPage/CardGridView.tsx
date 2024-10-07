@@ -1,12 +1,12 @@
 import { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
-import Card from '@/ui/Card/Card'
-import NormalText from '@/typograpy/NormalText'
-import { useMemo } from 'react'
-import SubHeading from '@/typograpy/SubHeading'
-import { Link } from '@inertiajs/react'
+import NormalText from '@/typography/NormalText'
+import StrongText from '@/typography/StrongText'
+import SubHeading from '@/typography/SubHeading'
 import AddButton from '@/ui/button/AddButton'
+import Card from '@/ui/Card/Card'
 import { cn } from '@/utils'
-import StrongText from '@/typograpy/StrongText'
+import { Link } from '@inertiajs/react'
+import React, { useMemo } from 'react'
 
 interface Props<
   U extends keyof T,
@@ -16,17 +16,27 @@ interface Props<
   keys: ListItemKeys<T>[]
   primaryKey: keyof T
   rows: T[]
-  addUrl?: string
+  onAddClick?: (e: React.MouseEvent<HTMLButtonElement>) => unknown
   gridStyles?: string
   cardStyles?: string
-  handleCardClick?: (id: number | string) => void
+  onCardClick?: (id: number | string) => void
+  layoutStyles?: string
 }
 
-export default function ListResourceCard<
+export default function CardGridView<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
     Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
->({ keys, primaryKey, rows, addUrl, cardStyles, gridStyles, handleCardClick }: Props<U, T>) {
+>({
+  keys,
+  primaryKey,
+  rows,
+  onAddClick,
+  cardStyles,
+  gridStyles,
+  onCardClick,
+  layoutStyles,
+}: Readonly<Props<U, T>>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
   }, [keys])
@@ -36,22 +46,24 @@ export default function ListResourceCard<
   }, [titleKey])
 
   const handleCardDivClick = (id: number | string) => {
-    if (isUsingTitleClick || handleCardClick == null) {
+    if (isUsingTitleClick || onCardClick == null) {
       return
     }
-    handleCardClick(id)
+    onCardClick(id)
   }
 
   const handleTitleClick = (id: number | string) => {
-    if (!isUsingTitleClick || handleCardClick == null) {
+    if (!isUsingTitleClick || onCardClick == null) {
       return
     }
-    handleCardClick(id)
+    onCardClick(id)
   }
-  // console.log(titleKey?.boxStyles)
+
   return (
-    <div className='grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-      <AddButton link={addUrl} />
+    <div
+      className={`${cn('grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4', layoutStyles)}`}
+    >
+      <AddButton onClick={onAddClick} />
       {rows.map((row) => {
         return (
           <Card
@@ -81,9 +93,10 @@ export default function ListResourceCard<
                     )}
                     <NormalText
                       className={
-                        'text-base ' + rowKey.textStyles != null
+                        'text-base ' +
+                        (rowKey.textStyles != null
                           ? (row[rowKey.textStyles as keyof typeof row] as string)
-                          : ''
+                          : '')
                       }
                     >
                       {row[rowKey.key] as string}

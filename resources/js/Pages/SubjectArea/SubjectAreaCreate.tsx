@@ -3,14 +3,14 @@ import { useEffect, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 
-export function generateTableNames(name: string): string {
+export function generateSnakeCaseName(name: string): string {
   if (name == '') {
     return ''
   }
   //remove all special characters except space
   const tableName = name.replace(/[^a-zA-Z0-9 ]/g, '')
   //replace all spaces with underscore
-  return 'data_table_' + tableName.replace(/ /g, '_').toLowerCase()
+  return tableName.replace(/ /g, '_').toLowerCase()
 }
 
 export default function SubjectAreaCreate() {
@@ -22,7 +22,7 @@ export default function SubjectAreaCreate() {
   })
 
   useEffect(() => {
-    setFormValue('table_name')(generateTableNames(formData.name))
+    setFormValue('table_name')(generateSnakeCaseName(formData.name))
   }, [formData.name, setFormValue])
 
   const formItems = useMemo(<
@@ -55,7 +55,7 @@ export default function SubjectAreaCreate() {
         setValue: toggleBoolean('is_active'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue])
+  }, [setFormValue, toggleBoolean])
 
   return (
     <FormPage

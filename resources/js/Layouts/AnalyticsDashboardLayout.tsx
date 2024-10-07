@@ -34,7 +34,6 @@ export default function AnalyticsDashboardLayout({
   }
 
   useEffect(() => {
-    console.log(sessionFlash)
     if (sessionFlash.message != null) {
       showSuccess(sessionFlash.message)
     }
@@ -88,7 +87,7 @@ export default function AnalyticsDashboardLayout({
       />
       <ToastContainer />
       <div className='mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0'>
           <div className='flex-shrink-0'>
             <Link
               href='/meta-structure'
@@ -101,7 +100,7 @@ export default function AnalyticsDashboardLayout({
             </Link>
           </div>
 
-          <div className='flex flex-col justify-center px-1 md:flex-row md:space-x-12'>
+          <div className='flex flex-col items-center justify-center px-1 md:flex-row md:space-x-12'>
             {headings.map((heading) => (
               <div
                 key={heading.value}
@@ -190,11 +189,11 @@ export default function AnalyticsDashboardLayout({
               activeTab={activeTab}
               setActiveTab={changeTab}
             />
-            <div className='mt-8 flex flex-wrap gap-4 md:gap-1 lg:space-x-10'>
+            <div className='mt-8 flex flex-wrap justify-center gap-4 sm:justify-normal md:gap-1 lg:space-x-10'>
               {menuItems.map((item) => (
                 <div
                   key={item.title}
-                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
+                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-1stop-accent2 hover:opacity-50'} p-8`}
                 >
                   <div
                     onClick={handleCardRef}
@@ -212,7 +211,7 @@ export default function AnalyticsDashboardLayout({
                       src={item.image}
                       alt=''
                     />
-                    <span className='1stop-small-header pt-1 text-center'>{item.title}</span>
+                    <span className='body-1stop pt-1 text-center'>{item.title}</span>
                   </Link>
                 </div>
               ))}

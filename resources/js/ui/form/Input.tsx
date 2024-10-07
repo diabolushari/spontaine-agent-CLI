@@ -1,6 +1,6 @@
 import React from 'react'
 import { FormFieldProp } from '../ui_interfaces'
-import ErrorText from '@/typograpy/ErrorText'
+import ErrorText from '@/typography/ErrorText'
 
 export const getFormStyle = (style: 'normal' | 'bottom-border' | 'dark') => {
   switch (style) {
@@ -46,7 +46,7 @@ export default function Input({
   return (
     <>
       {label != null && (
-        <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+        <label className='small-1stop mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
       )}
       <input
         type={type}

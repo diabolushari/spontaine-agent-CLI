@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormFieldProp } from '../ui_interfaces'
 import { getFormStyle } from './Input'
-import ErrorText from '@/typograpy/ErrorText'
+import ErrorText from '@/typography/ErrorText'
 
 export default function TextArea({
   label,
@@ -14,7 +14,7 @@ export default function TextArea({
 }: FormFieldProp) {
   return (
     <>
-      <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+      <label className='small-1stop mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}

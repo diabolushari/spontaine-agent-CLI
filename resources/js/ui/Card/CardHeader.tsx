@@ -1,5 +1,5 @@
 import BackButton from '@/ui/button/BackButton'
-import Heading from '@/typograpy/Heading'
+import Heading from '@/typography/Heading'
 import React from 'react'
 import AddButton from '@/ui/button/AddButton'
 import EditButton from '@/ui/button/EditButton'
@@ -33,7 +33,7 @@ export default function CardHeader({
   CardHeader
   return (
     <div className=''>
-      <div className='flex flex-wrap items-center justify-between gap-5 px-4 py-4'>
+      <div className='flex flex-wrap items-center justify-between gap-5 py-4'>
         <div className='flex items-center gap-5'>
           {(backUrl != null || onBackClick != null) && (
             <BackButton
@@ -64,7 +64,7 @@ export default function CardHeader({
           )}
         </div>
       </div>
-      <div className='body-1stop pl-4 text-primary'>{subheading ?? ''}</div>
+      <div className='small-1stop pl-4 text-primary'>{subheading ?? ''}</div>
     </div>
   )
 }

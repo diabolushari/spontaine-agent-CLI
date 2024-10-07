@@ -59,14 +59,16 @@ class MapColumnsToField
                         false,
                         null
                     );
-                    $this->insertToList(
-                        $fieldInfo,
-                        $tableField->unit_field_name,
-                        $fieldName,
-                        $tableField->unit_column,
-                        false,
-                        null
-                    );
+                    if ($tableField->unit_column != null && $tableField->unit_field_name != null) {
+                        $this->insertToList(
+                            $fieldInfo,
+                            $tableField->unit_field_name,
+                            $fieldName,
+                            $tableField->unit_column,
+                            false,
+                            null
+                        );
+                    }
                 }
             });
 

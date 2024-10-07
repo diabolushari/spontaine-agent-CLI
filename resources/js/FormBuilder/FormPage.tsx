@@ -32,6 +32,7 @@ interface Props<
   children?: React.ReactNode
   type?: string
   subtype?: string
+  hideSubmitButton?: boolean
 }
 
 export default function FormPage<
@@ -60,6 +61,7 @@ export default function FormPage<
   children,
   type,
   subtype,
+  hideSubmitButton = false,
 }: Readonly<Props<T, U, K, G, L>>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
 
@@ -102,6 +104,7 @@ export default function FormPage<
                 loading={loading}
                 errors={errors}
                 buttonText={buttonText}
+                hideSubmitButton={hideSubmitButton}
               >
                 {children}
               </FormBuilder>
