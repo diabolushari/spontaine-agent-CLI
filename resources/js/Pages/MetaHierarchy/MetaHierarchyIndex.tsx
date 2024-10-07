@@ -96,7 +96,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
       type={type ?? 'definitions'}
       subtype={subtype ?? 'hierarchies'}
       oldValues={oldValues}
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       subheading={
         'Hierarchies can be particularly helpful when automatically drilling down or rolling up data. A hierarchy is a multi level,  "one parent to multiple children" structure'
       }

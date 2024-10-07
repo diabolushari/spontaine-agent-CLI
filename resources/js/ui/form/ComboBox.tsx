@@ -113,7 +113,7 @@ const ComboBox = <
     <>
       {value != null && (
         <div className='flex flex-col gap-2'>
-          <div className='flex items-center justify-between bg-gray-100 px-3 py-2 text-sm text-gray-800'>
+          <div className='small-1stop flex items-center justify-between bg-gray-100 px-3 py-2 text-sm text-gray-800'>
             <span>
               {label}
               <br />
@@ -144,10 +144,12 @@ const ComboBox = <
         >
           <div className='flex flex-col'>
             <div className='flex justify-between'>
-              <label className='mb-1 text-sm tracking-normal text-gray-800'>{label}</label>
+              <label className='small-1stop mb-1 text-sm tracking-normal text-gray-800'>
+                {label}
+              </label>
 
               <a
-                className={`link flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
+                className={`link small-1stop flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
                 href={redirectLink ?? ''}
                 target='_blank'
                 rel='noreferrer'
