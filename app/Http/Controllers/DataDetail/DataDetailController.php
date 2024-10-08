@@ -7,17 +7,15 @@ use App\Http\Requests\DataDetail\DataDetailFormRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
-use App\Models\DataTable\DataTableDate;
-use App\Models\DataTable\DataTableDimension;
-use App\Models\DataTable\DataTableMeasure;
 use App\Models\ReferenceData\ReferenceData;
 use App\Models\SubjectArea\SubjectArea;
 use App\Services\DataTable\QueryDataTable;
+use App\Services\DataTable\SetupDataTable;
 use App\Services\SubjectArea\CreateDataTable;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -75,99 +73,28 @@ class DataDetailController extends Controller
 
     public function store(
         DataDetailFormRequest $request,
-        CreateDataTable $createDataTable
+        CreateDataTable $createDataTable,
+        SetupDataTable $setupDataTable
     ): RedirectResponse {
 
         try {
-            $createDataTable->create($request);
-        } catch (Exception $exception) {
-            return back()->with([
-                'error' => ExceptionMessage::getMessage($exception),
-            ]);
-        }
-
-        DB::beginTransaction();
-        try {
-            $record = DataDetail::create([
-                ...$request->all(),
-                'created_by' => auth()->id(),
-            ]);
+            $result = $setupDataTable->setup($request);
         } catch (Exception $e) {
-            DB::rollBack();
 
             return back()->with([
                 'error' => ExceptionMessage::getMessage($e),
             ]);
         }
 
-        $createdBy = request()->user()->id;
-        $dateFields = [];
-        $dimensionFields = [];
-        $measureFields = [];
-        $now = now()->toDateString();
-
-        if ($request->dates != null) {
-            foreach ($request->dates as $measure) {
-                $dateFields[] = [
-                    'data_detail_id' => $record->id,
-                    'column' => $measure->column,
-                    'field_name' => $measure->fieldName,
-                    'created_by' => $createdBy,
-                    'updated_by' => $createdBy,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
-            }
-        }
-
-        if ($request->dimensions != null) {
-            foreach ($request->dimensions as $measure) {
-                $dimensionFields[] = [
-                    'data_detail_id' => $record->id,
-                    'column' => $measure->column,
-                    'field_name' => $measure->fieldName,
-                    'meta_structure_id' => $measure->metaStructureId,
-                    'created_by' => $createdBy,
-                    'updated_by' => $createdBy,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
-            }
-        }
-
-        if ($request->measures != null) {
-            foreach ($request->measures as $measure) {
-                $measureFields[] = [
-                    'data_detail_id' => $record->id,
-                    'column' => $measure->column,
-                    'field_name' => $measure->fieldName,
-                    'unit_column' => $measure->unitColumn,
-                    'unit_field_name' => $measure->unitFieldName,
-                    'created_by' => $createdBy,
-                    'updated_by' => $createdBy,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
-            }
-
-        }
-
-        try {
-            DataTableDate::insert($dateFields);
-            DataTableDimension::insert($dimensionFields);
-            DataTableMeasure::insert($measureFields);
-        } catch (Exception $e) {
-            DB::rollBack();
+        if ($result->error) {
 
             return back()->with([
-                'error' => ExceptionMessage::getMessage($e),
+                'error' => $result->message,
             ]);
         }
-
-        DB::commit();
 
         return redirect()
-            ->route('data-detail.show', $record->id);
+            ->route('data-detail.show', $result->message);
     }
 
     public function update(
@@ -207,5 +134,26 @@ class DataDetailController extends Controller
             'jobs' => $jobs,
             'tab' => $request->input('tab', 'data'),
         ]);
+    }
+
+    public function destroy(DataDetail $dataDetail): RedirectResponse
+    {
+
+        try {
+            $dataDetail->delete();
+        } catch (Exception $exception) {
+            Schema::drop($dataDetail->table_name);
+
+            return back()->with([
+                'error' => ExceptionMessage::getMessage($exception),
+            ]);
+        }
+
+        return redirect()
+            ->route('data-detail.show', $dataDetail->id)
+            ->with([
+                'message' => "Data Detail $dataDetail->name deleted successfully.",
+            ]);
+
     }
 }
