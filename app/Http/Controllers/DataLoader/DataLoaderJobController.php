@@ -9,6 +9,7 @@ use App\Libs\ExceptionMessage;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderJob;
+use App\Models\DataLoader\DataLoaderJobStatus;
 use App\Models\DataLoader\DataLoaderQuery;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -81,7 +82,7 @@ class DataLoaderJobController extends Controller
     public function show(DataLoaderJob $dataLoaderJob): Response
     {
 
-        $dataLoaderJob->load('loaderQuery:id,name', 'detail:id,name');
+        $dataLoaderJob->load('loaderQuery:id,name', 'detail:id,name', 'statuses');
 
         return Inertia::render('DataLoader/DataLoaderJobShow', [
             'dataLoaderJob' => $dataLoaderJob,

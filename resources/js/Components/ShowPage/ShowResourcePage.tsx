@@ -13,6 +13,7 @@ export interface ShowPageItem {
   content?: string | number | null
   contentDescription?: string
   type: 'text' | 'link' | 'date' | 'html' | 'image' | 'video'
+  boxStyles?: string
 }
 
 interface Props {
@@ -28,6 +29,7 @@ interface Props {
   deleteUrl?: string
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   type?: string
+  cardStyle?: string
   subtype?: string
 }
 
@@ -45,6 +47,7 @@ export default function ShowResourcePage({
   addUrl,
   type,
   subtype,
+  cardStyle,
 }: Props) {
   return (
     <AnalyticsDashboardLayout
@@ -52,7 +55,7 @@ export default function ShowResourcePage({
       subtype={subtype}
     >
       <DashboardPadding>
-        <Card>
+        <Card className={cardStyle}>
           <CardHeader
             title={title}
             backUrl={backUrl}
@@ -74,12 +77,14 @@ export default function ShowResourcePage({
                   <SubHeading>{item.label}</SubHeading>
                 </div>
                 <div className='md:col-span-2'>
-                  {item.type === 'text' && <NormalText>{item.content}</NormalText>}
+                  {item.type === 'text' && (
+                    <NormalText className={'body-1stop'}>{item.content}</NormalText>
+                  )}
                   {item.type === 'link' && (
                     <a
                       target='_blank'
                       href={item.content as string}
-                      className='link'
+                      className='link body-1stop'
                       rel='noreferrer'
                     >
                       {item.contentDescription}

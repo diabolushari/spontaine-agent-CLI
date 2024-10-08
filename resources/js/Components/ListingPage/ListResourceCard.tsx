@@ -94,11 +94,11 @@ export default function ListResourceCard<
                     // onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
                     {!(rowKey.hideLabel ?? false) && (
-                      <StrongText className='body-1stop'>{rowKey.label as string}</StrongText>
+                      <StrongText className='small-1stop'>{rowKey.label as string}</StrongText>
                     )}
                     <NormalText
                       className={
-                        'text-base ' + rowKey.textStyles != null
+                        'text-base' + rowKey.textStyles != null
                           ? (row[rowKey.textStyles as keyof typeof row] as string)
                           : ''
                       }

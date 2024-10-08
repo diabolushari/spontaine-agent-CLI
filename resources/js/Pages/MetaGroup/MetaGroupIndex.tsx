@@ -65,12 +65,13 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         label: 'Name',
         isCardHeader: true,
       },
-      { key: '', label: 'Description', isShownInCard: true, boxStyles: 'items-center' },
+
       {
         key: 'description',
 
         isShownInCard: true,
         boxStyles: 'items-center',
+        textStyles: 'small-1stop',
       },
       {
         key: 'items_count',

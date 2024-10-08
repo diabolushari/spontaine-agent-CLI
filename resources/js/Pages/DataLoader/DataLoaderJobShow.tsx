@@ -1,7 +1,10 @@
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import { DataLoaderJob } from '@/interfaces/data_interfaces'
+import { DataLoaderJob, JobStatuses } from '@/interfaces/data_interfaces'
+import JobStatusesTable from '@/Components/DataLoader/Jobs/JobStatusesTable'
+import JobDetailModal from '@/Components/DataLoader/Jobs/JobDetailModal'
+import Modal from '@/ui/Modal/Modal'
 
 interface Props {
   dataLoaderJob: DataLoaderJob
@@ -9,7 +12,9 @@ interface Props {
 
 export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-
+  const [showStatusModal, setShowStatusModal] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState<JobStatuses | null>(null)
+  console.log(dataLoaderJob)
   const displayedValues = useMemo(() => {
     return [
       {
@@ -40,7 +45,10 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
       },
     ] as ShowPageItem[]
   }, [])
-
+  const showDetails = (status: JobStatuses) => {
+    setShowStatusModal(true)
+    setSelectedStatus(status)
+  }
   return (
     <ShowResourcePage
       title={''}
@@ -52,7 +60,14 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
       }}
       type='loaders'
       subtype='jobs'
+      cardStyle='bg-1stop-white'
     >
+      {showStatusModal && <JobDetailModal selectedStatus={selectedStatus} />}
+
+      <JobStatusesTable
+        statuses={dataLoaderJob.statuses}
+        showDetails={showDetails}
+      />
       {/**more content**/}
       {showDeleteModal && (
         <DeleteModal

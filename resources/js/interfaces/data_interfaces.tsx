@@ -142,6 +142,7 @@ export interface DataLoaderJob extends Model {
   query_id: number
   detail?: Partial<DataDetail> | null
   loader_query?: Partial<DataLoaderQuery> | null
+  statuses: JobStatuses[]
 }
 
 export interface DataTableItem extends Model {
@@ -182,4 +183,13 @@ export interface DataTableItem extends Model {
   measure_6_unit?: string | null
   measure_7_unit?: string | null
   measure_8_unit?: string | null
+}
+
+export interface JobStatuses extends Model {
+  loader_job_id: number
+  executed_at: string
+  completed_at: string
+  is_successful: 0 | 1
+  error_message?: string
+  total_records: string
 }
