@@ -63,7 +63,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
   const data = useMemo(() => {
     return metaData.data.map((metaData) => ({
       id: metaData.id,
-      name: metaData.name,
+      name: metaData.name + ' : ' + metaData.meta_structure?.structure_name,
       structure: metaData.meta_structure?.structure_name,
       actionStyle: 'gap-8',
       actions: [
@@ -107,7 +107,7 @@ export default function MetaDataIndex({ structures, metaData, type, subtype, old
       type={type ?? 'definitions'}
       subtype={subtype ?? 'metadata'}
       oldValues={oldValues}
-      formStyles='bg-[#F5F5FA] p-4 rounded-lg'
+      formStyles='bg-1stop-white p-4 rounded-lg'
       subheading='Metadata elements that will form valid reporting dimension. Each metdata element will be a distinct value of a structural block.
 e.g: "Yellow" is a valid dimensional value of a structural block called "Colour"'
       handleCardClick={handleCardClick}

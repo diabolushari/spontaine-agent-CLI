@@ -88,7 +88,7 @@ export default function AnalyticsDashboardLayout({
       />
       <ToastContainer />
       <div className='mx-auto mt-4 flex w-11/12 flex-col px-4 py-10 2xl:w-10/12'>
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0'>
           <div className='flex-shrink-0'>
             <Link
               href='/meta-structure'
@@ -101,7 +101,7 @@ export default function AnalyticsDashboardLayout({
             </Link>
           </div>
 
-          <div className='flex flex-col justify-center px-1 md:flex-row md:space-x-12'>
+          <div className='flex flex-col items-center justify-center px-1 md:flex-row md:space-x-12'>
             {headings.map((heading) => (
               <div
                 key={heading.value}
@@ -145,38 +145,40 @@ export default function AnalyticsDashboardLayout({
               </svg>
             </div>
             {isProfileDropdown && (
-              <div className='absolute mr-10 mt-2 w-48 rounded-md border border-gray-300 bg-white'>
-                <div className='px-4 py-2'>
-                  <p className='1stop-small-head text-gray-900'>Logged in as {userName}</p>
-                </div>
-                <div className='border-t border-gray-200'></div>
-                <div className='py-2'>
-                  <Link
-                    href='/logout'
-                    method='post'
-                    className='text-black-700 flex w-full px-4 py-2 text-left hover:bg-gray-100'
-                  >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      className='icon icon-tabler icon-tabler-logout'
-                      width={20}
-                      height={20}
-                      viewBox='0 0 24 24'
-                      strokeWidth='1.5'
-                      stroke='currentColor'
-                      fill='none'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
+              <div className='flex justify-center'>
+                <div className='bg:opacity-100 z-50 mt-4 w-48 rounded-xl border border-1stop-highlight bg-1stop-white p-2 shadow sm:absolute sm:right-10'>
+                  <div className='px-4 py-2'>
+                    <p className='small-1stop text-gray-900'>Logged in as {userName}</p>
+                  </div>
+                  <hr />
+                  <div className='py-2'>
+                    <Link
+                      href='/logout'
+                      method='post'
+                      className='text-black-700 small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
                     >
-                      <path
-                        stroke='none'
-                        d='M0 0h24v24H0z'
-                      />
-                      <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
-                      <path d='M7 12h14l-3 -3m0 6l3 -3' />
-                    </svg>
-                    <span className='ml-2 text-sm'>Sign out</span>
-                  </Link>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='icon icon-tabler icon-tabler-logout'
+                        width={20}
+                        height={20}
+                        viewBox='0 0 24 24'
+                        strokeWidth='1.5'
+                        stroke='currentColor'
+                        fill='none'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      >
+                        <path
+                          stroke='none'
+                          d='M0 0h24v24H0z'
+                        />
+                        <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+                        <path d='M7 12h14l-3 -3m0 6l3 -3' />
+                      </svg>
+                      <span className='ml-2 text-sm'>Sign out</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             )}
@@ -190,11 +192,11 @@ export default function AnalyticsDashboardLayout({
               activeTab={activeTab}
               setActiveTab={changeTab}
             />
-            <div className='mt-8 flex flex-wrap gap-4 md:gap-1 lg:space-x-10'>
+            <div className='mt-8 flex flex-wrap justify-center gap-4 sm:justify-normal md:gap-1 lg:space-x-10'>
               {menuItems.map((item) => (
                 <div
                   key={item.title}
-                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-[#EFF0A6] hover:opacity-50'} p-8`}
+                  className={`w-40 rounded-xl ${subtype === item.subtype ? 'bg-1stop-accent1' : 'bg-1stop-accent2 hover:opacity-50'} p-8`}
                 >
                   <div
                     onClick={handleCardRef}
@@ -212,7 +214,7 @@ export default function AnalyticsDashboardLayout({
                       src={item.image}
                       alt=''
                     />
-                    <span className='1stop-small-header pt-1 text-center'>{item.title}</span>
+                    <span className='body-1stop pt-1 text-center'>{item.title}</span>
                   </Link>
                 </div>
               ))}
