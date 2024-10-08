@@ -20,7 +20,7 @@ export default function MetaHierarchyShow({
   hierarchyList,
   levelInfos,
 }: Readonly<Props>) {
-  const [showDeleteHierarchyModal, setShowDeleteHierarchyModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const displayItems = useMemo(() => {
     let index = 1
@@ -54,7 +54,7 @@ export default function MetaHierarchyShow({
   }, [metaHierarchy])
 
   const handleDeleteClick = () => {
-    setShowDeleteHierarchyModal(true)
+    setShowDeleteModal(true)
   }
 
   return (
@@ -73,15 +73,13 @@ export default function MetaHierarchyShow({
         levelInfos={levelInfos}
       />
 
-      {showDeleteHierarchyModal && (
+      {showDeleteModal && (
         <DeleteModal
-          setShowModal={setShowDeleteHierarchyModal}
-          title='Remove Meta Hierarchy'
-          url={route('meta-hierarchy-delete-item', metaHierarchy.name)}
+          setShowModal={setShowDeleteModal}
+          title={`Delete ${metaHierarchy.name}`}
+          url={route('meta-hierarchy.destroy', metaHierarchy.id)}
         >
-          <NormalText>
-            Are you sure you want to delete the hierarchy {metaHierarchy.name}?
-          </NormalText>
+          <p>Are you sure you want to delete {metaHierarchy.name}?</p>
         </DeleteModal>
       )}
     </ShowResourcePage>
