@@ -5,8 +5,8 @@ import { useState } from 'react'
 import Modal from '@/ui/Modal/Modal'
 import MetaGroupAddForm from '@/Pages/MetaData/MetaGroupAddForm'
 import DeleteModal from '@/ui/Modal/DeleteModal'
-import NormalText from '@/typograpy/NormalText'
-import StrongText from '@/typograpy/StrongText'
+import NormalText from '@/typography/NormalText'
+import StrongText from '@/typography/StrongText'
 
 interface Props {
   metaData: MetaData
@@ -40,7 +40,7 @@ export default function MetaDataGroupList({ metaData, metaGroup }: Readonly<Prop
             {metaData.group_item?.map((groupName) => (
               <div
                 key={groupName.id}
-                className='flex justify-between gap-5 flex-wrap gap-y-2'
+                className='flex flex-wrap justify-between gap-5 gap-y-2'
               >
                 <StrongText>{groupName.meta_data_group?.name}</StrongText>
                 <button

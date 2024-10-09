@@ -44,7 +44,8 @@ export interface DataDetail extends Model {
   subject_area_id: number
   name: string
   description: string | null
-  type: string
+  subject_area: string
+  table_name: string
   date_fields?: Partial<TableDateField>[]
   dimension_fields?: Partial<TableDimensionField>[]
   measure_fields?: Partial<TableMeasureField>[]
@@ -144,6 +145,15 @@ export interface DataLoaderJob extends Model {
   loader_query?: Partial<DataLoaderQuery> | null
   statuses?: JobStatuses[]
   latest?: JobStatuses
+  last_status?: Partial<JobStatus> | null
+}
+
+export interface JobStatus extends Model {
+  loader_job_id: number
+  executed_at: string
+  is_successful: 0 | 1
+  total_records: number
+  error_message: string | null
 }
 
 export interface DataTableItem extends Model {

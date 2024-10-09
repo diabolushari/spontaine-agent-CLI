@@ -4,9 +4,9 @@ import axios from 'axios'
 import { handleHttpErrors } from '../alerts'
 import { getFormStyle } from './Input'
 import { XIcon } from 'lucide-react'
-import SubHeading from '@/typograpy/SubHeading'
-import NormalText from '@/typograpy/NormalText'
-import ErrorText from '@/typograpy/ErrorText'
+import SubHeading from '@/typography/SubHeading'
+import NormalText from '@/typography/NormalText'
+import ErrorText from '@/typography/ErrorText'
 import { Link } from '@inertiajs/react'
 
 interface Properties<

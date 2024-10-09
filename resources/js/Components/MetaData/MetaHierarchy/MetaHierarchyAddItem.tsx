@@ -7,7 +7,7 @@ import {
   MetaHierarchyItem,
   MetaHierarchyLevelInfo,
 } from '@/interfaces/meta_interfaces'
-import ErrorText from '@/typograpy/ErrorText'
+import ErrorText from '@/typography/ErrorText'
 import Modal from '@/ui/Modal/Modal'
 import React, { useCallback, useMemo, useState } from 'react'
 

@@ -54,14 +54,6 @@ class SubjectAreaController extends Controller
     {
 
         try {
-            $createDataTable->create($formRequest->tableName);
-        } catch (Exception $exception) {
-            return back()->with([
-                'error' => ExceptionMessage::getMessage($exception),
-            ]);
-        }
-
-        try {
             $record = SubjectArea::create([
                 ...$formRequest->all(),
                 'created_by' => request()->user()->id,

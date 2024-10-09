@@ -1,7 +1,7 @@
+import BreadCrumbs from '@/Components/BreadCrumbs'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
@@ -33,6 +33,7 @@ interface Props<
   children?: React.ReactNode
   type?: string
   subtype?: string
+  hideSubmitButton?: boolean
 }
 
 export default function FormPage<
@@ -61,6 +62,7 @@ export default function FormPage<
   children,
   type,
   subtype,
+  hideSubmitButton = false,
 }: Readonly<Props<T, U, K, G, L>>) {
   const { post, loading, errors } = useInertiaPost<T>(url)
 
@@ -82,6 +84,10 @@ export default function FormPage<
     >
       <DashboardPadding>
         <Card>
+          <BreadCrumbs
+            item={subtype}
+            searchLink={backUrl}
+          />
           <div className='flex flex-col gap-5'>
             <CardHeader
               title={title}
@@ -103,6 +109,7 @@ export default function FormPage<
                 loading={loading}
                 errors={errors}
                 buttonText={buttonText}
+                hideSubmitButton={hideSubmitButton}
               >
                 {children}
               </FormBuilder>

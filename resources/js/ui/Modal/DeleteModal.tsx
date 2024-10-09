@@ -47,7 +47,7 @@ export default function DeleteModal({
             label='DELETE'
             onClick={onDelete}
             processing={loading}
-            type='danger'
+            variant='danger'
           />
         </div>
       </div>

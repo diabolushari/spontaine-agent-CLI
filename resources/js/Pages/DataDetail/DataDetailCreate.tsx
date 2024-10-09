@@ -1,21 +1,36 @@
-import { ReferenceData, SubjectArea } from '@/interfaces/data_interfaces'
+import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
-import { useMemo } from 'react'
-import { FormItem } from '@/FormBuilder/FormBuilder'
-import FormPage from '@/FormBuilder/FormPage'
+import { ReferenceData } from '@/interfaces/data_interfaces'
+import React, { FormEvent, useMemo, useState } from 'react'
+import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
+import DashboardPadding from '@/Layouts/DashboardPadding'
+import AddDataTableFields from '@/Components/DataDetail/DataTableFieldInfo/AddDataTableFields'
+import CardHeader from '@/ui/Card/CardHeader'
+import useInertiaPost from '@/hooks/useInertiaPost'
+import { DataTableFieldInfo } from '@/Components/DataDetail/DataTableFieldInfo/DataTableFieldInfoForm'
+import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
+import Button from '@/ui/button/Button'
 
 interface Props {
-  subjectAreas: Pick<SubjectArea, 'id' | 'name'>[]
   types: ReferenceData[]
 }
 
-export default function DataDetailCreate({ subjectAreas, types }: Props) {
+interface FieldInfo extends DataTableFieldInfo {
+  column: string
+  unit_column?: string | null
+}
+
+export default function DataDetailCreate({ types }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     name: '',
     description: '',
-    type: '',
-    subject_area_id: '',
+    subject_area: '',
     is_active: true,
+  })
+  const [fields, setFields] = useState<FieldInfo[]>([])
+
+  const { post, loading } = useInertiaPost(route('data-detail.store'), {
+    showErrorToast: true,
   })
 
   const formItems = useMemo(<
@@ -36,7 +51,7 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
         label: 'Description',
         setValue: setFormValue('description'),
       },
-      type: {
+      subject_area: {
         type: 'select',
         label: 'Type',
         list: types,
@@ -44,17 +59,7 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
         dataKey: 'value_one',
         showAllOption: true,
         allOptionText: 'Select Type',
-        setValue: setFormValue('type'),
-      },
-      subject_area_id: {
-        type: 'select',
-        label: 'Subject Area',
-        list: subjectAreas,
-        displayKey: 'name',
-        dataKey: 'id',
-        showAllOption: true,
-        allOptionText: 'Select Subject Area',
-        setValue: setFormValue('subject_area_id'),
+        setValue: setFormValue('subject_area'),
       },
       is_active: {
         type: 'checkbox',
@@ -62,18 +67,78 @@ export default function DataDetailCreate({ subjectAreas, types }: Props) {
         setValue: setFormValue('is_active'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue])
+  }, [setFormValue, types])
+
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    postData()
+  }
+
+  const postData = () => {
+    post({
+      ...formData,
+      table_name: 'data_table_' + generateSnakeCaseName(formData.name),
+      dates: fields
+        .filter((field) => field.type === 'date')
+        .map((field) => {
+          return {
+            column: field.column,
+            field_name: field.field_name,
+          }
+        }),
+      dimensions: fields
+        .filter((field) => field.type === 'dimension')
+        .map((field) => {
+          return {
+            column: field.column,
+            field_name: field.field_name,
+            meta_structure_id: field.meta_structure?.id,
+          }
+        }),
+      measures: fields
+        .filter((field) => field.type === 'measure')
+        .map((field) => {
+          return {
+            column: field.column,
+            field_name: field.field_name,
+            unit_column: field.unit_column,
+            unit_field_name: field.unit_field_name,
+          }
+        }),
+    })
+  }
 
   return (
-    <FormPage
-      url={route('data-detail.store')}
-      formData={formData}
-      formItems={formItems}
-      title='Create Data Table'
-      backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
-      formStyles='w-1/2 md:grid-cols-1'
+    <AnalyticsDashboardLayout
       type='data'
       subtype='data-tables'
-    />
+    >
+      <DashboardPadding>
+        <CardHeader
+          title='Create Data Table'
+          backUrl={route('data-detail.index', {
+            type: 'definitions',
+            subtype: 'data',
+          })}
+        />
+        <FormBuilder
+          formData={formData}
+          onFormSubmit={handleFormSubmit}
+          formItems={formItems}
+          loading={loading}
+          hideSubmitButton={true}
+        />
+        <AddDataTableFields
+          fields={fields}
+          setFields={setFields}
+        />
+        <div className='flex gap-5'>
+          <Button
+            label='Save'
+            onClick={postData}
+          />
+        </div>
+      </DashboardPadding>
+    </AnalyticsDashboardLayout>
   )
 }

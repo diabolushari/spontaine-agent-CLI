@@ -30,7 +30,7 @@ class MetaHierarchyController extends Controller
     public function index(Request $request): Response
     {
         $hierarchies = MetaHierarchy::when($request->filled(key: 'search'), function (Builder $query) use ($request) {
-            $query->where('name', operator: 'like', value: '%' . $request->input(key: 'search') . '%')
+            $query->where('name', operator: 'like', value: '%'.$request->input(key: 'search').'%')
                 ->orWhereHas('items.metaHierarchy', function (Builder $query) use ($request) {
                     return $query->where('name', 'like', "%$request->search%");
                 });
@@ -43,7 +43,7 @@ class MetaHierarchyController extends Controller
             'hierarchies' => $hierarchies,
             'type' => $request->type,
             'subtype' => $request->subtype,
-            'oldValues' => $request->all()
+            'oldValues' => $request->all(),
         ]);
     }
 
@@ -61,6 +61,7 @@ class MetaHierarchyController extends Controller
     {
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
         $metaHierarchy->load('levelInfos.structure');
+
         return Inertia::render('MetaHierarchy/MetaHierarchyCreate', [
             'structures' => $structures,
             'metaHierarchy' => $metaHierarchy,
@@ -115,10 +116,8 @@ class MetaHierarchyController extends Controller
 
     public function update(MetaHierarchyFormRequest $request, MetaHierarchy $metaHierarchy): RedirectResponse
     {
-
         $hierarchyLevels = $request->hierarchyLevelInfos;
         DB::beginTransaction();
-        // dd($hierarchyLevels);
         try {
             $metaHierarchy->update([
                 'name' => $request->name,
@@ -161,5 +160,19 @@ class MetaHierarchyController extends Controller
         return redirect()
             ->route('meta-hierarchy.show', $metaHierarchy->id)
             ->with(['message' => "Meta Hierarchy $metaHierarchy->name created successfully."]);
+    }
+
+    public function destroy(MetaHierarchy $metaHierarchy): RedirectResponse
+    {
+        try {
+            $metaHierarchy->delete();
+        } catch (Exception $e) {
+            return back()
+                ->with(['error' => ExceptionMessage::getMessage($e)]);
+        }
+
+        return redirect()
+            ->route('meta-hierarchy.index')
+            ->with(['message' => "Meta Hierarchy: $metaHierarchy->name deleted successfully"]);
     }
 }

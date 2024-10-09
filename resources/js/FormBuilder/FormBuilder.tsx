@@ -66,6 +66,10 @@ interface Props<
   buttonText?: string
   buttonAlignment?: 'start' | 'center' | 'end'
   children?: React.ReactNode
+  hideSubmitButton?: boolean
+  showSecondaryButton?: boolean
+  secondaryButtonLabel?: string
+  secondaryAction?: () => unknown
 }
 
 export default function FormBuilder<
@@ -84,6 +88,10 @@ export default function FormBuilder<
   buttonText = 'Submit',
   buttonAlignment,
   children,
+  hideSubmitButton = false,
+  showSecondaryButton = false,
+  secondaryButtonLabel = 'Cancel',
+  secondaryAction,
 }: Readonly<Props<T, U, K, G, L>>) {
   const formStyle = cn('grid w-full grid-cols-1 md:grid-cols-2 gap-5', formStyles)
 
@@ -254,11 +262,21 @@ export default function FormBuilder<
         </div>
       ))}
       {children}
-      <div className={cn('col-start-1 flex gap-5', buttonStyle)}>
-        <FullSpinnerWrapper processing={loading}>
-          <Button label={buttonText} />
-        </FullSpinnerWrapper>
-      </div>
+      {!hideSubmitButton && (
+        <div className={cn('col-start-1 flex gap-5', buttonStyle)}>
+          <FullSpinnerWrapper processing={loading}>
+            <Button label={buttonText} />
+            {showSecondaryButton && secondaryAction != null && (
+              <Button
+                label={secondaryButtonLabel}
+                variant='secondary'
+                type='button'
+                onClick={secondaryAction}
+              />
+            )}
+          </FullSpinnerWrapper>
+        </div>
+      )}
     </form>
   )
 }

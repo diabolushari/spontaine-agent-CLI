@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
-use App\Http\Controllers\DataDetail\DataTableFieldsInfoController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
@@ -18,6 +17,7 @@ use App\Http\Controllers\Meta\MetaHierarchyController;
 use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
+use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
@@ -69,8 +69,8 @@ Route::post('meta-hierarchy-add-item', MetaHierarchyAddItemController::class)
     ->name('meta-hierarchy-add-item');
 Route::get('meta-hierarchy-search', MetaHierarchySearchController::class)
     ->name('meta-hierarchy-search');
-Route::get('meta-strucure-search', [MetaStructureController::class, 'metaStructureSearch'])
-    ->name('meta-strucure-search');
+Route::get('meta-structure-search', MetaStructureSearchController::class)
+    ->name('meta-structure-search');
 Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::class)
     ->name('meta-group-delete-item');
 Route::delete('meta-hierarchy-delete-item/{metaHierarchyItem}', MetaHierarchyDeleteItemController::class)
@@ -81,10 +81,6 @@ Route::resource('subject-area', SubjectAreaController::class)
     ->parameters(['subject-areas' => 'subjectArea']);
 Route::resource('data-detail', DataDetailController::class)
     ->parameters(['data-detail' => 'dataDetail']);
-
-Route::resource('data-detail-fields-info', DataTableFieldsInfoController::class)
-    ->parameters(['data-detail-fields-info' => 'dataTableFieldsInfo'])
-    ->only('create', 'store');
 
 Route::resource('loader-connections', DataLoaderConnectionController::class)
     ->parameters(['loader-connections' => 'dataLoaderConnection']);

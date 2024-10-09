@@ -1,4 +1,4 @@
-import StrongText from '@/typograpy/StrongText'
+import StrongText from '@/typography/StrongText'
 
 interface Props {
   message?: string | null

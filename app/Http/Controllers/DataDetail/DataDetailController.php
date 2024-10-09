@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\DataDetail;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Meta\DataDetailFormRequest;
+use App\Http\Requests\DataDetail\DataDetailFormRequest;
 use App\Libs\ExceptionMessage;
 use App\Models\DataDetail\DataDetail;
+use App\Models\DataLoader\DataLoaderJob;
 use App\Models\ReferenceData\ReferenceData;
 use App\Models\SubjectArea\SubjectArea;
 use App\Services\DataTable\QueryDataTable;
+use App\Services\DataTable\SetupDataTable;
+use App\Services\SubjectArea\CreateDataTable;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -38,16 +43,12 @@ class DataDetailController extends Controller
     public function create(): Response
     {
 
-        $subjectAreas = SubjectArea::select(['id', 'name'])
-            ->get();
-
         $referenceData = ReferenceData::fullData()
             ->where('domain', 'Data Detail')
             ->where('parameter', 'Type')
             ->get();
 
         return Inertia::render('DataDetail/DataDetailCreate', [
-            'subjectAreas' => $subjectAreas,
             'types' => $referenceData,
         ]);
     }
@@ -71,21 +72,29 @@ class DataDetailController extends Controller
     }
 
     public function store(
-        DataDetailFormRequest $request
+        DataDetailFormRequest $request,
+        CreateDataTable $createDataTable,
+        SetupDataTable $setupDataTable
     ): RedirectResponse {
+
         try {
-            $record = DataDetail::create([
-                ...$request->all(),
-                'created_by' => auth()->id(),
-            ]);
+            $result = $setupDataTable->setup($request);
         } catch (Exception $e) {
+
             return back()->with([
                 'error' => ExceptionMessage::getMessage($e),
             ]);
         }
 
+        if ($result->error) {
+
+            return back()->with([
+                'error' => $result->message,
+            ]);
+        }
+
         return redirect()
-            ->route('data-detail.show', $record->id);
+            ->route('data-detail.show', $result->message);
     }
 
     public function update(
@@ -107,25 +116,44 @@ class DataDetailController extends Controller
             ->route('data-detail.show', $dataDetail->id);
     }
 
-    public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable): RedirectResponse|Response
+    public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable, Request $request): RedirectResponse|Response
     {
         $dataDetail->load('dateFields', 'dimensionFields.structure', 'measureFields', 'subjectArea');
-        if (
-            $dataDetail->dateFields->count() === 0
-            && $dataDetail->dimensionFields->count() === 0
-            && $dataDetail->measureFields->count() === 0
-        ) {
-            return redirect()
-                ->route('data-detail-fields-info.create', [
-                    'detail_id' => $dataDetail->id,
-                ]);
-        }
 
-        $dataTable = $queryDataTable->query($dataDetail->subjectArea->table_name ?? '', $dataDetail->id)->get();
+        $dataTable = $queryDataTable->query($dataDetail)
+            ->paginate(50)
+            ->withQueryString();
+
+        $jobs = DataLoaderJob::where('data_detail_id', $dataDetail->id)
+            ->with('lastStatus')
+            ->get();
 
         return Inertia::render('DataDetail/DataDetailShow', [
             'detail' => $dataDetail,
             'dataTableItems' => $dataTable,
+            'jobs' => $jobs,
+            'tab' => $request->input('tab', 'data'),
         ]);
+    }
+
+    public function destroy(DataDetail $dataDetail): RedirectResponse
+    {
+
+        try {
+            $dataDetail->delete();
+        } catch (Exception $exception) {
+            Schema::drop($dataDetail->table_name);
+
+            return back()->with([
+                'error' => ExceptionMessage::getMessage($exception),
+            ]);
+        }
+
+        return redirect()
+            ->route('data-detail.show', $dataDetail->id)
+            ->with([
+                'message' => "Data Detail $dataDetail->name deleted successfully.",
+            ]);
+
     }
 }

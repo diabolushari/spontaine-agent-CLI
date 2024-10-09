@@ -6,11 +6,11 @@ import { cn } from '@/utils'
 interface Properties {
   label: string
   onClick?: (e: React.FormEvent<HTMLButtonElement>) => void
-  type?: string
+  variant?: string
   processing?: boolean
   disabled?: boolean
   link?: string
-  buttonType?: 'reset' | 'submit' | 'button'
+  type?: 'reset' | 'submit' | 'button'
 }
 
 export const chooseButtonColor = (type: string): [string, string] => {
@@ -55,13 +55,13 @@ export const chooseButtonColor = (type: string): [string, string] => {
 export default function Button({
   label,
   onClick,
-  type = 'primary',
+  variant = 'primary',
   processing = false,
   disabled = false,
-  buttonType = 'submit',
+  type = 'submit',
   link,
 }: Properties) {
-  const [buttonStyle, svgStyle] = chooseButtonColor(type)
+  const [buttonStyle, svgStyle] = chooseButtonColor(variant)
 
   return (
     <>
@@ -87,7 +87,7 @@ export default function Button({
               ' ease-in-out focus:outline-none focus:ring-4',
             buttonStyle
           )}
-          type={buttonType}
+          type={type}
         >
           {label}
         </button>

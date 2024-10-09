@@ -1,12 +1,12 @@
 import { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
-import Card from '@/ui/Card/Card'
-import NormalText from '@/typograpy/NormalText'
-import { useMemo } from 'react'
-import SubHeading from '@/typograpy/SubHeading'
-import { Link } from '@inertiajs/react'
+import NormalText from '@/typography/NormalText'
+import StrongText from '@/typography/StrongText'
+import SubHeading from '@/typography/SubHeading'
 import AddButton from '@/ui/button/AddButton'
+import Card from '@/ui/Card/Card'
 import { cn } from '@/utils'
-import StrongText from '@/typograpy/StrongText'
+import { Link } from '@inertiajs/react'
+import React, { useMemo } from 'react'
 
 interface Props<
   U extends keyof T,
@@ -16,15 +16,14 @@ interface Props<
   keys: ListItemKeys<T>[]
   primaryKey: keyof T
   rows: T[]
-  addUrl?: string
+  onAddClick?: (e: React.MouseEvent<HTMLButtonElement>) => unknown
   gridStyles?: string
   cardStyles?: string
-  handleCardClick?: (id: number | string) => void
+  onCardClick?: (id: number | string) => void
   layoutStyles?: string
-  addButtonText?: string
 }
 
-export default function ListResourceCard<
+export default function CardGridView<
   U extends keyof T,
   T extends Record<U, string | number | null | undefined> &
     Record<'actions', { url: string; title: string; boxStyles?: string; textStyles?: string }[]>,
@@ -32,13 +31,12 @@ export default function ListResourceCard<
   keys,
   primaryKey,
   rows,
-  addUrl,
+  onAddClick,
   cardStyles,
   gridStyles,
-  handleCardClick,
+  onCardClick,
   layoutStyles,
-  addButtonText,
-}: Props<U, T>) {
+}: Readonly<Props<U, T>>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
   }, [keys])
@@ -48,39 +46,28 @@ export default function ListResourceCard<
   }, [titleKey])
 
   const handleCardDivClick = (id: number | string) => {
-    if (isUsingTitleClick || handleCardClick == null) {
+    if (isUsingTitleClick || onCardClick == null) {
       return
     }
-    handleCardClick(id)
+    onCardClick(id)
   }
 
   const handleTitleClick = (id: number | string) => {
-    if (!isUsingTitleClick || handleCardClick == null) {
+    if (!isUsingTitleClick || onCardClick == null) {
       return
     }
-    handleCardClick(id)
+    onCardClick(id)
   }
-  // console.log(titleKey?.boxStyles)
+
   return (
     <div
-      className={cn(
-        'grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
-        layoutStyles
-      )}
+      className={`${cn('grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4', layoutStyles)}`}
     >
-      <AddButton
-        link={addUrl}
-        buttonText={addButtonText ?? 'Add new'}
-      />
+      <AddButton onClick={onAddClick} />
       {rows.map((row) => {
         return (
           <Card
-            className={cn(
-              `bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
-              row['viewStyle'],
-              cardStyles
-            )}
-            // className={`bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
+            className={`bg-[#F5F5FA] p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
             key={row[primaryKey] as string}
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
@@ -102,13 +89,14 @@ export default function ListResourceCard<
                     // onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
                     {!(rowKey.hideLabel ?? false) && (
-                      <StrongText className='small-1stop'>{rowKey.label as string}</StrongText>
+                      <StrongText className='body-1stop'>{rowKey.label as string}</StrongText>
                     )}
                     <NormalText
                       className={
-                        'text-base' + rowKey.textStyles != null
+                        'text-base ' +
+                        (rowKey.textStyles != null
                           ? (row[rowKey.textStyles as keyof typeof row] as string)
-                          : ''
+                          : '')
                       }
                     >
                       {row[rowKey.key] as string}
@@ -120,7 +108,7 @@ export default function ListResourceCard<
                   <Link
                     as='a'
                     href={action.url}
-                    className={`small-1stop text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
+                    className={`text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
                     key={action.title}
                   >
                     {action.title}
