@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { ReferenceData, ReferenceDataDomain } from '@/interfaces/data_interfaces'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   domains: ReferenceDataDomain[]
@@ -62,6 +63,17 @@ const ReferenceDataEdit = ({ domains, referenceData }: Props) => {
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, domains, formData.domain_id])
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Reference Data index',
+      link: route('reference-data.index', { type: 'config', subtype: 'reference-data' }),
+    },
+    {
+      item: 'Reference Data Edit',
+      link: '',
+    },
+  ]
+
   return (
     <FormPage
       formItems={formItems}
@@ -72,6 +84,7 @@ const ReferenceDataEdit = ({ domains, referenceData }: Props) => {
       isPatchRequest
       type='config'
       subtype='reference-data'
+      breadCrumbs={breadCrumb}
     />
   )
 }

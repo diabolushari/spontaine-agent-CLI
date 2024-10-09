@@ -13,6 +13,7 @@ import {
   WEEKLY_CRON,
 } from '@/interfaces/data_interfaces'
 import { daysOfWeek, monthList } from '@/libs/dates'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -186,6 +187,17 @@ export default function DataLoaderJobCreate({
         })
   }, [dataDetail, job])
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Loader jobs',
+      link: '/loader-jobs',
+    },
+    {
+      item: 'Loader job create',
+      link: '',
+    },
+  ]
+
   return (
     <FormPage
       url={job == null ? route('loader-jobs.store') : route('loader-jobs.update', job.id)}
@@ -197,6 +209,7 @@ export default function DataLoaderJobCreate({
       type='data'
       subtype='data-tables'
       isPatchRequest={job != null}
+      breadCrumbs={breadCrumb}
     />
   )
 }

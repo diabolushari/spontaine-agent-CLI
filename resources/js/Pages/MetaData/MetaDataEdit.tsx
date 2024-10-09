@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
 import FormPage from '@/FormBuilder/FormPage'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   metaData: MetaData
@@ -15,7 +16,20 @@ export default function MetaDataEdit({ metaData, structures }: Props) {
     description: metaData.description,
     meta_structure_id: metaData.meta_structure_id.toString(),
   })
-
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta data index',
+      link: '/meta-data',
+    },
+    {
+      item: 'Meta data show',
+      link: route('meta-data.show', metaData.id),
+    },
+    {
+      item: 'Meta data edit',
+      link: '',
+    },
+  ]
   const formItems = useMemo(<
     T,
     U extends keyof T,
@@ -55,6 +69,7 @@ export default function MetaDataEdit({ metaData, structures }: Props) {
       isPatchRequest
       type='definitions'
       subtype='metadata'
+      breadCrumbs={breadCrumb}
     />
   )
 }

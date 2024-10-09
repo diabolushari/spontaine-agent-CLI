@@ -2,6 +2,7 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Properties {
   type?: string
@@ -34,6 +35,16 @@ export default function MetaGroupCreate({ type, subtype }: Properties) {
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta group index',
+      link: '/meta-data-group',
+    },
+    {
+      item: 'Meta group create',
+      link: '',
+    },
+  ]
   return (
     <FormPage
       url={route('meta-data-group.store')}
@@ -44,6 +55,7 @@ export default function MetaGroupCreate({ type, subtype }: Properties) {
       formStyles='w-1/2 md:grid-cols-1'
       type={type}
       subtype={subtype}
+      breadCrumbs={breadCrumb}
     />
   )
 }

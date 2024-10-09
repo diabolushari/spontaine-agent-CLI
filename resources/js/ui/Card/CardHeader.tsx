@@ -4,6 +4,8 @@ import React from 'react'
 import AddButton from '@/ui/button/AddButton'
 import EditButton from '@/ui/button/EditButton'
 import DeleteButton from '@/ui/button/DeleteButton'
+import BreadcrumbItemLink from '@/Components/breadcrumb-item-link'
+import BreadCrumbs from '@/Components/BreadCrumbs'
 
 interface Props {
   title: string
@@ -16,6 +18,7 @@ interface Props {
   onEditClick?: () => unknown
   onDeleteClick?: () => unknown
   subheading?: string
+  breadCrumb?: BreadcrumbItemLink[]
 }
 
 export default function CardHeader({
@@ -29,6 +32,7 @@ export default function CardHeader({
   deleteUrl,
   onDeleteClick,
   subheading,
+  breadCrumb,
 }: Props) {
   CardHeader
   return (
@@ -41,8 +45,12 @@ export default function CardHeader({
               onClick={onBackClick}
             />
           )}
-          <Heading className='subheader-1stop uppercase'>{title}</Heading>
+          <div className='flex flex-col'>
+            <Heading className='subheader-1stop uppercase'>{title}</Heading>
+            <BreadCrumbs breadcrumbItems={breadCrumb} />
+          </div>
         </div>
+
         <div className='flex flex-wrap gap-2'>
           {(editUrl != null || onEditClick != null) && (
             <EditButton

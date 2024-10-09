@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useRef } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
@@ -7,6 +7,7 @@ import SubHeading from '@/typography/SubHeading'
 import NormalText from '@/typography/NormalText'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import BreadCrumbs from '../BreadCrumbs'
+import BreadcrumbItemLink from '../breadcrumb-item-link'
 
 export interface ShowPageItem {
   id: number
@@ -32,6 +33,7 @@ interface Props {
   type?: string
   cardStyle?: string
   subtype?: string
+  breadCrumbs?: BreadcrumbItemLink[]
 }
 
 export default function ShowResourcePage({
@@ -49,54 +51,65 @@ export default function ShowResourcePage({
   type,
   subtype,
   cardStyle,
+  breadCrumbs,
 }: Props) {
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleCardRef = useCallback(() => {
+    if (cardRef.current == null) {
+      return
+    }
+    cardRef.current.scrollIntoView({ behavior: 'smooth' })
+  }, [])
   return (
     <AnalyticsDashboardLayout
       type={type}
       subtype={subtype}
+      handleCardRef={handleCardRef}
     >
       <DashboardPadding>
-        <Card className={cardStyle}>
-          <CardHeader
-            title={title}
-            backUrl={backUrl}
-            onBackClick={onBackClick}
-            editUrl={editUrl}
-            onEditClick={onEditClick}
-            deleteUrl={deleteUrl}
-            onDeleteClick={onDeleteClick}
-            addUrl={addUrl}
-            onAddClick={onAddClick}
-          />
-          <div className='flex flex-col gap-5 px-10 py-5'>
-            {items.map((item) => (
-              <div
-                className='grid grid-cols-1 gap-x-5 md:grid-cols-3'
-                key={item.id.toString()}
-              >
-                <div>
-                  <SubHeading>{item.label}</SubHeading>
+        <div ref={cardRef}>
+          <Card>
+            <CardHeader
+              title={title}
+              backUrl={backUrl}
+              onBackClick={onBackClick}
+              editUrl={editUrl}
+              onEditClick={onEditClick}
+              deleteUrl={deleteUrl}
+              onDeleteClick={onDeleteClick}
+              addUrl={addUrl}
+              onAddClick={onAddClick}
+              breadCrumb={breadCrumbs}
+            />
+            <div className='flex flex-col gap-5 px-10 py-5'>
+              {items.map((item) => (
+                <div
+                  className='grid grid-cols-1 gap-x-5 md:grid-cols-3'
+                  key={item.id.toString()}
+                >
+                  <div>
+                    <SubHeading>{item.label}</SubHeading>
+                  </div>
+                  <div className='md:col-span-2'>
+                    {item.type === 'text' && <NormalText>{item.content}</NormalText>}
+                    {item.type === 'link' && (
+                      <a
+                        target='_blank'
+                        href={item.content as string}
+                        className='link'
+                        rel='noreferrer'
+                      >
+                        {item.contentDescription}
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <div className='md:col-span-2'>
-                  {item.type === 'text' && (
-                    <NormalText className={'body-1stop'}>{item.content}</NormalText>
-                  )}
-                  {item.type === 'link' && (
-                    <a
-                      target='_blank'
-                      href={item.content as string}
-                      className='link body-1stop'
-                      rel='noreferrer'
-                    >
-                      {item.contentDescription}
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-        {children}
+              ))}
+            </div>
+          </Card>
+          {children}
+        </div>
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

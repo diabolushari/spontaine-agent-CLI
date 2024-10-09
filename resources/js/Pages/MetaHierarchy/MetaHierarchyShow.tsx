@@ -1,3 +1,4 @@
+import BreadcrumbItemLink from '@/Components/breadcrumb-item-link'
 import MetaHierarchyTree from '@/Components/MetaData/MetaHierarchy/MetaHierarchyTree'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import {
@@ -14,6 +15,17 @@ interface Props {
   hierarchyList: MetaHierarchyItem[]
   levelInfos: MetaHierarchyLevelInfo[]
 }
+
+const breadCrumb: BreadcrumbItemLink[] = [
+  {
+    item: 'Meta hierarchy index',
+    link: '/meta-hierarchy',
+  },
+  {
+    item: 'Meta hierarchy show',
+    link: '',
+  },
+]
 
 export default function MetaHierarchyShow({
   metaHierarchy,
@@ -66,6 +78,7 @@ export default function MetaHierarchyShow({
       onDeleteClick={handleDeleteClick}
       type={'definitions'}
       subtype={'hierarchies'}
+      breadCrumbs={breadCrumb}
     >
       <MetaHierarchyTree
         metaHierarchy={metaHierarchy}
