@@ -3,6 +3,7 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   structures: Pick<MetaStructure, 'id' | 'structure_name'>[]
@@ -14,6 +15,16 @@ export default function MetaDataCreate({ structures }: Props) {
     description: '',
     meta_structure_id: '',
   })
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta data index',
+      link: '/meta-data',
+    },
+    {
+      item: 'Meta data create',
+      link: '',
+    },
+  ]
 
   const formItems = useMemo(<
     T,
@@ -54,6 +65,7 @@ export default function MetaDataCreate({ structures }: Props) {
       formStyles='w-1/2 md:grid-cols-1'
       type='definitions'
       subtype='metadata'
+      breadCrumbs={breadCrumb}
     />
   )
 }

@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { MetaStructure } from '@/interfaces/meta_interfaces'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   metaStructure: MetaStructure
@@ -13,6 +14,16 @@ export default function MetaStructureEdit({ metaStructure }: Props) {
     structure_name: metaStructure.structure_name,
     description: metaStructure.description ?? '',
   })
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta structure index',
+      link: '/meta-structure',
+    },
+    {
+      item: 'Meta structure edit',
+      link: '',
+    },
+  ]
 
   const formItems = useMemo(() => {
     return {
@@ -33,13 +44,14 @@ export default function MetaStructureEdit({ metaStructure }: Props) {
     <FormPage
       formItems={formItems}
       formData={formData}
-      title={'Create Meta Structure'}
+      title={'Update Meta Structure'}
       url={route('meta-structure.update', { id: metaStructure.id })}
       backUrl={route('meta-structure.index')}
       formStyles='md:w-1/2  md:grid-cols-1'
       isPatchRequest
       type={'definitions'}
       subtype={'blocks'}
+      breadCrumbs={breadCrumb}
     />
   )
 }

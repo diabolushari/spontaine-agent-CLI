@@ -4,6 +4,7 @@ import DeleteModal from '@/ui/Modal/DeleteModal'
 import { DataLoaderConnection } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
 import AlertMessage from '@/ui/Alert/AlertMessage'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   dataLoaderConnection: DataLoaderConnection
@@ -70,6 +71,17 @@ export default function MetaGroupShow({
     ] as ShowPageItem[]
   }, [dataLoaderConnection])
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Data sources',
+      link: route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' }),
+    },
+    {
+      item: 'Data source show',
+      link: '',
+    },
+  ]
+
   return (
     <ShowResourcePage
       title={''}
@@ -77,13 +89,13 @@ export default function MetaGroupShow({
       backUrl={route('loader-connections.index', { type: 'loaders', subtype: 'data-sources' })}
       editUrl={route('loader-connections.edit', {
         id: dataLoaderConnection.id,
-       
       })}
       onDeleteClick={() => {
         setShowDeleteModal(true)
       }}
       type={type}
       subtype={subtype}
+      breadCrumbs={breadCrumb}
     >
       <Card className='px-10 py-4'>
         <AlertMessage

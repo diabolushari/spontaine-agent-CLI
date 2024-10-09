@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import MetaGroupAddItem from '@/Components/MetaData/MetaDataGroup/MetaGroupAddItem'
 import { Paginator } from '@/ui/ui_interfaces'
 import MetaGroupItemList from '@/Components/MetaData/MetaDataGroup/MetaGroupItemList'
+import BreadcrumbItemLink from '@/Components/breadcrumb-item-link'
 
 interface Props {
   metaDataGroup: MetaDataGroup
@@ -12,6 +13,16 @@ interface Props {
   subtype?: string
   itemCount?: string
 }
+const breadCrumb: BreadcrumbItemLink[] = [
+  {
+    item: 'Meta group index',
+    link: '/meta-data-group',
+  },
+  {
+    item: 'Meta group show',
+    link: '',
+  },
+]
 
 export default function MetaGroupShow({
   metaDataGroup,
@@ -50,6 +61,7 @@ export default function MetaGroupShow({
       backUrl={route('meta-data-group.index', { type: 'definitions', subtype: 'groups' })}
       type={type ?? 'definitions'}
       subtype={subtype ?? 'groups'}
+      breadCrumbs={breadCrumb}
     >
       <MetaGroupAddItem metaDataGroup={metaDataGroup} />
       <MetaGroupItemList

@@ -5,6 +5,7 @@ import { DataLoaderQuery } from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
 import AlertMessage from '@/ui/Alert/AlertMessage'
 import NormalText from '@/typography/NormalText'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   dataLoaderQuery: DataLoaderQuery
@@ -20,6 +21,17 @@ export default function MetaGroupShow({
   result,
 }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Extraction Statements',
+      link: route('loader-queries.index', { type: 'loaders', subtype: 'queries' }),
+    },
+    {
+      item: 'Extraction Statement Show',
+      link: '',
+    },
+  ]
 
   const displayedValues = useMemo(() => {
     return [
@@ -62,6 +74,7 @@ export default function MetaGroupShow({
       }}
       type='loaders'
       subtype='queries'
+      breadCrumbs={breadCrumb}
     >
       <Card className='my-10 px-2 py-5'>
         <AlertMessage

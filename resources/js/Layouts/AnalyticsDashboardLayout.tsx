@@ -64,8 +64,8 @@ export default function AnalyticsDashboardLayout({
     }
     return null
   }, [userInfo])
-  const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : 'G'
-  const userName = User?.name || 'Guest'
+  const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : ''
+  const userName = User?.name || ''
 
   const changeTab = (newTab: string) => {
     setActiveTab(newTab)

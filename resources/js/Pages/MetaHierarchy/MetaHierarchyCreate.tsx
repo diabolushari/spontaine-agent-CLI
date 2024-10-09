@@ -1,3 +1,4 @@
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import useCustomForm from '@/hooks/useCustomForm'
@@ -38,6 +39,16 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
     initLevelInfo(levelInfos)
   )
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta hierarchy index',
+      link: '/meta-hierarchy',
+    },
+    {
+      item: 'Meta hierarchy create',
+      link: '',
+    },
+  ]
   useEffect(() => {
     setHierarchyLevelInfos((oldValues) => {
       const noOfLevels = Number(formData.no_of_levels)
@@ -123,6 +134,7 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
       isPatchRequest={metaHierarchy != null}
       type={'definitions'}
       subtype={'hierarchies'}
+      breadCrumbs={breadCrumb}
     >
       {hierarchyLevelInfos.length > 0 && (
         <>
