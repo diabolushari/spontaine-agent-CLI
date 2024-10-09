@@ -60,6 +60,16 @@ const ReferenceDataCreate = ({ domains }: Props) => {
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue, domains, formData.domain_id])
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Reference Data index',
+      link: route('reference-data.index', { type: 'config', subtype: 'reference-data' }),
+    },
+    {
+      item: 'Reference Data create',
+      link: '',
+    },
+  ]
 
   return (
     <FormPage
@@ -70,6 +80,7 @@ const ReferenceDataCreate = ({ domains }: Props) => {
       backUrl={route('reference-data.index', { type: 'config', subtype: 'reference-data' })}
       type='config'
       subtype='reference-data'
+      breadCrumbs={breadCrumb}
     />
   )
 }

@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   metaHierarchy: MetaHierarchy
@@ -35,17 +36,33 @@ export default function MetaHierarchyEdit({ metaHierarchy }: Props) {
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta hierarchy index',
+      link: '/meta-hierarchy',
+    },
+    {
+      item: 'Meta hierarchy show',
+      link: '/meta-hierarchy.show',
+    },
+    {
+      item: 'Meta hierarchy edit',
+      link: '',
+    },
+  ]
+
   return (
     <FormPage
       url={route('meta-hierarchy.edit', metaHierarchy.id)}
       formData={formData}
       formItems={formItems}
-      title='Create Meta Hierarchy'
+      title='Edit Meta Hierarchy'
       backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest
       type={'definitions'}
       subtype={'hierarchies'}
+      breadCrumbs={breadCrumb}
     />
   )
 }

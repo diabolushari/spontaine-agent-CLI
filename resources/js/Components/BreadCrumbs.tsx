@@ -1,22 +1,29 @@
 import React from 'react'
 import { Link } from '@inertiajs/react'
 
-interface Props {
-  item?: string | null
-  searchLink?: string | null
+export interface BreadcrumbItemLink {
+  item: string
+  link: string
 }
 
-const BreadCrumbs = ({ item, searchLink }: Props) => {
+const BreadCrumbs = ({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItemLink[] }) => {
   return (
     <div className='flex'>
-      <Link
-        href={searchLink ?? ''}
-        className='small-1stop cursor-pointer'
-      >
-        {item} search
-      </Link>
-      <span className='small-1stop mx-2'>{'>'}</span>
-      <span className='small-1stop font-bold'>{item} detail</span>
+      {breadcrumbItems?.map((breadcrumb, index) => (
+        <div
+          key={index}
+          className='flex items-center'
+        >
+          <Link
+            href={breadcrumb.link}
+            className={`small-1stop ${breadcrumb.link == '' ? 'cursor-text font-semibold' : 'hover:underline'}`}
+          >
+            {breadcrumb.item}
+          </Link>
+
+          {index < breadcrumbItems.length - 1 && <span className='mx-1'>{'>'}</span>}
+        </div>
+      ))}
     </div>
   )
 }

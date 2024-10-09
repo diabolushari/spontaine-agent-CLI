@@ -12,6 +12,7 @@ import CardGridView from '@/Components/ListingPage/CardGridView'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import { router } from '@inertiajs/react'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   detail: DataDetail
@@ -61,6 +62,16 @@ export default function DataDetailShow({
   const handleJobCardClick = (id: number | string) => {
     router.get(route('loader-jobs.show', id))
   }
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Data detail index',
+      link: '/data-detail',
+    },
+    {
+      item: 'Data detail show',
+      link: '',
+    },
+  ]
 
   return (
     <AnalyticsDashboardLayout
@@ -72,6 +83,7 @@ export default function DataDetailShow({
           <CardHeader
             title={`Data Table: ${detail.name}`}
             backUrl={route('data-detail.index', { type: 'data', subtype: 'data-tables' })}
+            breadCrumb={breadCrumb}
           />
           <Tab
             tabItems={tabItems}

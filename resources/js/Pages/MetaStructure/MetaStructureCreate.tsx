@@ -2,6 +2,7 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Properties {
   type?: string
@@ -14,6 +15,16 @@ export default function MetaStructureCreate({ type, subtype }: Properties) {
     description: '',
   })
 
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Meta structure index',
+      link: '/meta-structure',
+    },
+    {
+      item: 'Meta structure create',
+      link: '',
+    },
+  ]
   const formItems = useMemo(() => {
     return {
       structure_name: {
@@ -39,6 +50,7 @@ export default function MetaStructureCreate({ type, subtype }: Properties) {
       formStyles='md:w-1/2  md:grid-cols-1'
       type={'definitions'}
       subtype={'blocks'}
+      breadCrumbs={breadCrumb}
     />
   )
 }
