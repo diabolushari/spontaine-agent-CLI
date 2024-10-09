@@ -61,7 +61,10 @@ export default function CardGridView<
 
   return (
     <div
-      className={`${cn('grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4', layoutStyles)}`}
+      className={cn(
+        'grid grid-cols-1 gap-5 rounded bg-white p-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+        layoutStyles
+      )}
     >
       <AddButton onClick={onAddClick} />
       {rows.map((row) => {
@@ -84,7 +87,10 @@ export default function CardGridView<
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
                   <div
-                    className={`${cn(`flex gap-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`, rowKey.boxStyles)}`}
+                    className={cn(
+                      `flex gap-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
+                      rowKey.boxStyles
+                    )}
                     key={rowKey.key as string}
                     // onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
@@ -108,7 +114,7 @@ export default function CardGridView<
                   <Link
                     as='a'
                     href={action.url}
-                    className={`text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
+                    className={`small-1stop text-blue-500 underline hover:text-blue-600 ${action.textStyles}`}
                     key={action.title}
                   >
                     {action.title}
