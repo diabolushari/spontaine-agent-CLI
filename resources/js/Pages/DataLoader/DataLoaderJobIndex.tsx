@@ -58,7 +58,7 @@ export default function DataLoaderJobIndex({
       { key: 'rows', isShownInCard: true, boxStyles: 'ml-auto' },
     ] as ListItemKeys<Partial<DataLoaderJob>>[]
   }, [])
-  console.log(dataLoaderJobs.data)
+
   //table data
   const data = useMemo(() => {
     return dataLoaderJobs.data.map((record) => {

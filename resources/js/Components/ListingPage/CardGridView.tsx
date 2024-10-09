@@ -75,7 +75,11 @@ export default function CardGridView<
       {rows.map((row) => {
         return (
           <Card
-            className={`bg-[#F5F5FA] p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'} ${cardStyles}`}
+            className={cn(
+              `bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
+              row['viewStyle' as keyof typeof row] as string | undefined,
+              cardStyles
+            )}
             key={row[primaryKey] as string}
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
