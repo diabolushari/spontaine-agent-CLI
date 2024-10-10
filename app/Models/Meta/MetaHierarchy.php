@@ -34,7 +34,7 @@ class MetaHierarchy extends Model
     /**
      * @return HasMany<MetaHierarchyLevelInfo>
      */
-    public function levelInfos()
+    public function levelInfos(): HasMany
     {
         return $this->hasMany(MetaHierarchyLevelInfo::class, 'meta_hierarchy_id', 'id');
     }

@@ -160,7 +160,7 @@ export default function MetaHierarchyCreate({ metaHierarchy, levelInfos }: Reado
                     displayKey='structure_name'
                     placeholder={`Level ${item.level}`}
                     value={item.meta_structure}
-                    url={route('meta-strucure-search', {
+                    url={route('meta-structure-search', {
                       search: '',
                     })}
                   />

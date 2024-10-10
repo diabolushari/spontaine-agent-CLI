@@ -1,4 +1,3 @@
-import BreadcrumbItemLink from '@/Components/breadcrumb-item-link'
 import MetaHierarchyTree from '@/Components/MetaData/MetaHierarchy/MetaHierarchyTree'
 import ShowResourcePage, { ShowPageItem } from '@/Components/ShowPage/ShowResourcePage'
 import {
@@ -6,9 +5,9 @@ import {
   MetaHierarchyItem,
   MetaHierarchyLevelInfo,
 } from '@/interfaces/meta_interfaces'
-import NormalText from '@/typography/NormalText'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { useMemo, useState } from 'react'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Props {
   metaHierarchy: MetaHierarchy
@@ -73,7 +72,7 @@ export default function MetaHierarchyShow({
     <ShowResourcePage
       title={metaHierarchy.name}
       items={displayItems}
-      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'heirarchies' })}
+      backUrl={route('meta-hierarchy.index', { type: 'definitions', subtype: 'hierarchies' })}
       editUrl={route('meta-hierarchy.edit', metaHierarchy.id)}
       onDeleteClick={handleDeleteClick}
       type={'definitions'}

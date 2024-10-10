@@ -1,13 +1,11 @@
 import React, { useCallback, useRef } from 'react'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import SubHeading from '@/typography/SubHeading'
 import NormalText from '@/typography/NormalText'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
-import BreadCrumbs from '../BreadCrumbs'
-import BreadcrumbItemLink from '../breadcrumb-item-link'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 export interface ShowPageItem {
   id: number
@@ -15,6 +13,7 @@ export interface ShowPageItem {
   content?: string | number | null
   contentDescription?: string
   type: 'text' | 'link' | 'date' | 'html' | 'image' | 'video'
+  boxStyles?: string
 }
 
 interface Props {
@@ -30,6 +29,7 @@ interface Props {
   deleteUrl?: string
   onDeleteClick?: (e?: React.MouseEvent<HTMLButtonElement>) => unknown
   type?: string
+  cardStyle?: string
   subtype?: string
   breadCrumbs?: BreadcrumbItemLink[]
 }
@@ -51,13 +51,13 @@ export default function ShowResourcePage({
   breadCrumbs,
 }: Props) {
   const cardRef = useRef<HTMLDivElement>(null)
-
   const handleCardRef = useCallback(() => {
     if (cardRef.current == null) {
       return
     }
     cardRef.current.scrollIntoView({ behavior: 'smooth' })
   }, [])
+
   return (
     <AnalyticsDashboardLayout
       type={type}
