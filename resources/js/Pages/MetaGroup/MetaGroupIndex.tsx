@@ -13,7 +13,7 @@ interface Props {
   oldValues?: Record<string, string>
 }
 
-export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Props) {
+export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm({
     search: '',
     type: 'definitions',
@@ -69,17 +69,9 @@ export default function MetaGroupIndex({ groups, type, subtype, oldValues }: Pro
         boxStyles: 'items-center gap-0',
         textStyles: 'small-1stop ',
       },
-      // {
-      //   key: 'items_count',
-      //   isShownInCard: true,
-      //   boxStyles: 'items-center gap-0',
-      //   textStyles: 'small-1stop ',
-      //   isLink: true,
-      // },
     ] as ListItemKeys<{
       name: string
       description: string | null | undefined
-      items_count: string
     }>[]
   }, [])
 

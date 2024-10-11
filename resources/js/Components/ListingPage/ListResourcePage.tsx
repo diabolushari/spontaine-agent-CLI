@@ -86,7 +86,6 @@ export default function ListResourcePage<
   onEditClick,
   deleteUrl,
   onDeleteClick,
-  pageDescription,
   type,
   subtype,
   oldValues,
@@ -178,17 +177,6 @@ export default function ListResourcePage<
           layoutStyles={layoutStyle}
         />
         {paginator != null && <Pagination pagination={paginator} />}
-
-        {/* {viewType === 'table' && (
-          <Card className='p-5'>
-            <ListResourceTable
-              keys={keys}
-              primaryKey={primaryKey}
-              rows={rows}
-            />
-            {paginator != null && <Pagination pagination={paginator} />}
-          </Card>
-        )} */}
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )
