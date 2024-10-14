@@ -1,5 +1,3 @@
-import { svg } from 'framer-motion/client'
-
 interface SvgImage {
   svg: string
 }
