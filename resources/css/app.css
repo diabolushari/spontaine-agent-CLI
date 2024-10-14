@@ -59,12 +59,23 @@ body {
 @layer base {
   :root {
     /* 1stop */
-    --colour-1stop-accent1: #e3fe3c;
+
     --colour-1stop-dark: #262626;
+
+    /* --colour-1stop-accent1: #e3fe3c;
     --colour-1stop-accent2: #eff0a6;
     --colour-1stop-highlight: #91ad48;
-    --colour-1stop-highlight2: #d2ddca;
-    --colour-1stop-gray: #d9dee8;
+    --colour-1stop-highlight2: #d2ddca; */
+
+    --colour-1stop-accent1: #0091ff;
+    /* --colour-1stop-accent2: #73ade1; */
+    --colour-1stop-accent2: #c5dff0;
+    --colour-1stop-highlight: #235cc0;
+    /* --colour-1stop-highlight2: #97c7e4; */
+    --colour-1stop-highlight2: #73ade1;
+
+    /* --colour-1stop-gray: #d9dee8; */
+    --colour-1stop-gray: #8e97a7;
     --colour-1stop-white: #f5f5fa;
     --colour-chart-1: #a93053;
     --colour-chart-2: #508d81;
@@ -76,6 +87,7 @@ body {
     --colour-chart-main: #e3fe3c;
     --colour-chart-dark: #262626;
     --colour-1stop-link: #5da4b8;
+    --colour-1stop-background: #ffffff;
 
     --color-header-dark: #585388;
     --color-accent-light: #f5efef;
