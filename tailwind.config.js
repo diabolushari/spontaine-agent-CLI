@@ -24,7 +24,7 @@ export default {
       },
 
       colors: {
-        primary: '#91ad48',
+        primary: 'var(--colour-1stop-highlight)',
         // one stop
         '1stop-accent1': 'var(--colour-1stop-accent1)',
         '1stop-dark': 'var(--colour-1stop-dark)',
@@ -34,6 +34,7 @@ export default {
         '1stop-gray': 'var(--colour-1stop-gray)',
         '1stop-white': 'var(--colour-1stop-white)',
         '1stop-link': 'var(--colour-1stop-link)',
+        '1stop-background': 'var(--colour-1stop-background)',
         'header-dark': 'var(--color-header-dark)',
         'accent-light': 'var(--color-accent-light)',
         'accent-hover': 'var(--color-accent-hover)',

@@ -6,7 +6,8 @@ import dashboardMenuItems from '@/Layouts/dashboard-menu-items'
 import MetaTags from '@/Components/MetaTags'
 import { showError, showSuccess } from '@/ui/alerts'
 import { ToastContainer } from 'react-toastify'
-import oneStopLogo from '../../../public/one-stop-logo.svg'
+// import oneStopLogo from '../../../public/one-stop-logo.svg'
+import ApplicationLogo from '@/Components/ApplicationLogo'
 
 interface Properties {
   children?: ReactNode
@@ -87,12 +88,13 @@ export default function AnalyticsDashboardLayout({
   }
 
   return (
-    <div className='min-h-screen'>
+    <div className='bg-1stop-background min-h-screen rounded-2xl'>
       <MetaTags
         title={title}
         description={description}
       />
       <ToastContainer />
+
       <div className='mx-auto mt-4 hidden w-11/12 flex-col px-4 py-10 sm:flex 2xl:w-10/12'>
         <div className='flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0'>
           <div className='flex-shrink-0'>
@@ -100,11 +102,13 @@ export default function AnalyticsDashboardLayout({
               href='/meta-structure'
               className='cursor-pointer hover:opacity-50'
             >
-              <img
+              {/* <img
                 src={oneStopLogo}
                 alt='Logo'
                 className='h-24 w-auto rounded-2xl'
-              />
+              /> */}
+
+              <ApplicationLogo className='h-24 w-auto rounded-2xl' />
             </Link>
           </div>
 
@@ -237,7 +241,7 @@ export default function AnalyticsDashboardLayout({
           </div>
         )}
         <button
-          className='fixed bottom-12 left-4 flex h-8 w-8 items-center justify-center rounded bg-1stop-highlight hover:opacity-50 hover:shadow-xl'
+          className='fixed bottom-12 left-4 flex h-8 w-8 items-center justify-center rounded bg-1stop-accent2 hover:opacity-50 hover:shadow-xl'
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <svg
@@ -269,11 +273,13 @@ export default function AnalyticsDashboardLayout({
                 href='/meta-structure'
                 className='cursor-pointer hover:opacity-50'
               >
-                <img
+                {/* <img
                   src={oneStopLogo}
                   alt='Logo'
                   className='h-24 w-auto rounded-2xl'
-                />
+                /> */}
+
+                <ApplicationLogo className='h-24 w-auto rounded-2xl' />
               </Link>
             </div>
             <div className='flex'>
