@@ -66,16 +66,19 @@ class MetaStructureController extends Controller
             ->with(['message' => 'Meta structure '.$request->structureName.' created successfully']);
     }
 
-    public function show(int $id):Response
+    public function show( MetaStructure $metaStructure, Request $request):Response
     {
-        $metaStructure = MetaStructure::find($id);
-        return Inertia::render('MetaStructure/MetaStructureShow',['metaStructure' => $metaStructure]);
+        
+        $pageNo = $request->query('page', '1');
+        return Inertia::render('MetaStructure/MetaStructureShow',['metaStructure' => $metaStructure,'pageNo' => $pageNo ,]);
     }
 
-    public function edit(MetaStructure $metaStructure): Response
-    {
+    public function edit(MetaStructure $metaStructure,Request $request): Response
+    {  
+        $pageNo = $request->query('page', '1');
         return Inertia::render('MetaStructure/MetaStructureEdit', [
             'metaStructure' => $metaStructure,
+            'pageNo' => $pageNo,
         ]);
     }
 
@@ -89,7 +92,7 @@ class MetaStructureController extends Controller
         }
 
         return redirect()
-            ->route('meta-structure.index')
+            ->route('meta-structure.show',$metaStructure)
             ->with(['message' => 'Meta structure '.$request->structureName.' updated successfully']);
     }
 

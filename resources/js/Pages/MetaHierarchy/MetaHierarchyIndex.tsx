@@ -77,7 +77,7 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
     })
   }, [hierarchies])
   const handleCardClick = useCallback((id: number | string) => {
-    router.get(route('meta-hierarchy.show', { id: id }))
+    router.get(route('meta-hierarchy.show', { metaHierarchy: id, page: hierarchies.current_page }))
   }, [])
 
   return (

@@ -57,7 +57,7 @@ class MetaHierarchyController extends Controller
         ]);
     }
 
-    public function edit(MetaHierarchy $metaHierarchy): Response
+    public function edit(MetaHierarchy $metaHierarchy,Request $request): Response
     {
         $structures = MetaStructure::select(['id', 'structure_name'])->get();
         $metaHierarchy->load('levelInfos.structure');
@@ -74,13 +74,14 @@ class MetaHierarchyController extends Controller
         Request $request,
         HierarchyList $hierarchyList
     ): Response {
-
+        
         $metaHierarchy->load('levelInfos', 'levelInfos.structure:id,structure_name');
-
+        $pageNo = $request->query('page', '1');
         return Inertia::render('MetaHierarchy/MetaHierarchyShow', [
             'metaHierarchy' => $metaHierarchy,
             'hierarchyList' => $hierarchyList->getHierarchy($metaHierarchy),
             'levelInfos' => $metaHierarchy->levelInfos,
+            'pageNo' => $pageNo,
         ]);
     }
 
