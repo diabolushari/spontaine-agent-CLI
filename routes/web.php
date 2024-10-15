@@ -56,7 +56,8 @@ Route::get('cascaded-ref-data', [ReferenceDataAPIController::class, 'cascadedVal
     ->name('cascaded-ref-data');
 
 //meta data
-Route::resource('meta-structure', MetaStructureController::class);
+Route::resource('meta-structure', MetaStructureController::class)
+    ->parameters(['meta-structure' => 'metaStructure']);
 Route::resource('meta-data', MetaDataController::class)
     ->parameters(['meta-data' => 'metaData']);
 Route::resource('meta-data-group', MetaDataGroupController::class)

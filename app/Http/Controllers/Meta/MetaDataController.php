@@ -35,7 +35,6 @@ class MetaDataController extends Controller
 
         $structures = MetaStructure::select(['id', 'structure_name'])
             ->get();
-        //dd($request->all());
         $records = MetaData::with([
             'metaStructure:id,structure_name',
             'hierarchyItem',
@@ -76,22 +75,23 @@ class MetaDataController extends Controller
         ]);
     }
 
-    public function edit(MetaData $metaData): Response
+    public function edit(MetaData $metaData, Request $request): Response
     {
         $structures = MetaStructure::select(['id', 'structure_name'])
             ->get();
-
+         $pageNo = $request->query('page', '1');
         return Inertia::render('MetaData/MetaDataEdit', [
             'metaData' => $metaData,
             'structures' => $structures,
+            'pageNo' => $pageNo ,
         ]);
     }
 
-    public function show(MetaData $metaData): Response
-    {
+    public function show(MetaData $metaData, Request $request): Response
+    { 
         $metaData->load('hierarchyItem.metaHierarchy');
         $metaData->load('groupItem.metaDataGroup');
-
+        $pageNo = $request->query('page', '1');
         $metaGroup = MetaGroup::select('id', 'name')
             ->get();
 
@@ -104,6 +104,7 @@ class MetaDataController extends Controller
             ]),
             'metaGroup' => $metaGroup,
             'metaHierarchy' => $metaHierarchy,
+            'pageNo' => $pageNo 
         ]);
     }
 
