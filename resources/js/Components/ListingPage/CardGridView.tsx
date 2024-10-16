@@ -22,6 +22,7 @@ interface Props<
   onCardClick?: (id: number | string) => void
   layoutStyles?: string
   addButtonText?: string
+  isAddButton?: boolean
 }
 
 export default function CardGridView<
@@ -38,6 +39,7 @@ export default function CardGridView<
   onCardClick,
   layoutStyles,
   addButtonText,
+  isAddButton = true,
 }: Readonly<Props<U, T>>) {
   const titleKey = useMemo(() => {
     return keys.find((key) => key.isCardHeader)
@@ -68,10 +70,13 @@ export default function CardGridView<
         layoutStyles
       )}
     >
-      <AddButton
-        onClick={onAddClick}
-        buttonText={addButtonText ?? 'Add new'}
-      />
+      {isAddButton && (
+        <AddButton
+          onClick={onAddClick}
+          buttonText={addButtonText ?? 'Add new'}
+        />
+      )}
+
       {rows.map((row) => {
         return (
           <Card
