@@ -19,9 +19,6 @@ class RunLoaderQuery
     {
         $connectionName = 'connection'.$connection->id;
 
-        /** @var string|null $vpnPassword */
-        $vpnPassword = config('app.vpn_password');
-
         Config::set("database.connections.$connectionName", [
             'driver' => $connection->driver,
             'host' => $connection->host,
