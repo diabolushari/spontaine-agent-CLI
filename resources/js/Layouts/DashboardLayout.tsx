@@ -4,6 +4,8 @@ import React, { ReactNode, useMemo, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { SvgImage } from './dashboard-menu-items'
 import { cn } from '@/utils'
+import { motion } from 'framer-motion'
+import styles from './DashboardLayout.module.css'
 interface Properties {
   children?: ReactNode
   type?: string
@@ -162,7 +164,7 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
     <div className='relative flex min-h-screen flex-col'>
       <div className='relative flex min-h-screen'>
         <div
-          className='absolute top-0 z-40 flex min-h-screen transform flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6 transition delay-700 duration-700 ease-in-out hover:min-w-fit'
+          className={`absolute top-0 z-40 flex min-h-screen flex-col items-center border-r border-gray-200 bg-1stop-white px-5 py-6 ${styles['sidebar']} `}
           onMouseOut={() => setFocused(false)}
           onMouseOver={() => setFocused(true)}
         >
@@ -186,7 +188,9 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
                     dangerouslySetInnerHTML={{ __html: item.image.svg }}
                   />
 
-                  {focused && <span className='body-1stop uppercase'>{item.name}</span>}
+                  <span className={`body-1stop uppercase ${focused ? '' : 'hidden'}`}>
+                    {item.name}
+                  </span>
                 </Link>
               )
             })}
@@ -292,9 +296,19 @@ export default function DashboardLayout({ children, type = 'Service delivery' }:
         </div>
       </div>
 
-      <div className={cn(`fixed inset-0 ml-24 mt-20 flex flex-col`, `${focused ? 'ml-64' : ''}`)}>
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 100 }}
+        transition={{ duration: 0.3 }}
+        className='fixed inset-0'
+      >
+        <main className={cn(`ml-24 mt-20 flex flex-col`, `${focused ? 'ml-64' : ''}`)}>
+          {children}
+        </main>
+      </motion.div>
+      {/* <div className={cn(`fixed inset-0 ml-24 mt-20 flex flex-col`, `${focused ? 'ml-64' : ''}`)}>
         {children}
-      </div>
+      </div> */}
     </div>
   )
 }
