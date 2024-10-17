@@ -114,8 +114,6 @@ Route::get('export-data-table/{dataDetail}', ExportDataTableController::class)
 Route::post('import-data-table/{dataDetail}', DataTableExcelUploadController::class)
     ->name('import-data-table');
 
-
-
 Route::resource('service-delivery', ServiceDeliveryController::class);
 Route::resource('operation', OperationsController::class);
 Route::resource('finance', FinancialController::class);
@@ -133,4 +131,3 @@ Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
     ->name('subset.preview');
 
 require __DIR__.'/auth.php';
-require __DIR__ . '/auth.php';
