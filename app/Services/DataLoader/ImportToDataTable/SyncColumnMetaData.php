@@ -12,7 +12,7 @@ readonly class SyncColumnMetaData
      *  array('meta_data_name' => meta_data_id)
      *
      *
-     * @param  string[]  $values
+     * @param  (string|null)[]  $values
      * @return array<string, int>
      *
      * @throws Exception

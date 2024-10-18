@@ -57,8 +57,6 @@ readonly class ImportToDataTable
         //map fieldInfo/data into data table
         $dataTable = $this->convertToDataTable->convert($fieldInfo, $data, $dataDetail->id);
 
-        dd(array_slice($dataTable, 0, 5));
-
         //insert new MetaData found in data to MetaData table and fetch id's of all present metadata
         /** @var array<string, array<string, int>> $metaDataIds */
         $metaDataIds = [];
