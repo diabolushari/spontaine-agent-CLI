@@ -31,6 +31,7 @@ use App\Http\Controllers\Subset\SubsetDeleteController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\TabController;
+use App\Services\DistributionHierarchy\DistributionHierarchy;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -133,6 +134,10 @@ Route::get('subset-preview/{subsetDetail}', SubsetPreviewController::class)
 
 Route::delete('subset/{detail}', SubsetDeleteController::class)
     ->name('subset.destroy');
+
+Route::get('test', function (DistributionHierarchy $findDistributionLevel) {
+    return $findDistributionLevel->findAllSection('4001');
+});
 
 //Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
 //

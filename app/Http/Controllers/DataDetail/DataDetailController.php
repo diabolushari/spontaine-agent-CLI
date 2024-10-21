@@ -32,29 +32,25 @@ class DataDetailController extends Controller
 
     public function index(Request $request): Response
     {
-    
+
         $details = DataDetail::when($request->filled('search'), function (Builder $builder) use ($request) {
-                $builder->where('name', 'like', '%' . $request->input('search') . '%');
-               
-            })->when($request->filled('type'), function (Builder $builder) use ($request) {
-                $builder->where('subject_area',$request->type);})
+            $builder->where('name', 'like', '%'.$request->input('search').'%');
+
+        })->when($request->filled('type'), function (Builder $builder) use ($request) {
+            $builder->where('subject_area', $request->type);
+        })
             ->paginate(20);
 
-        
-        
-         $referenceData = ReferenceData::fullData()
+        $referenceData = ReferenceData::fullData()
             ->where('domain', 'Data Detail')
             ->where('parameter', 'Type')
             ->get();
-        
+
         return Inertia::render('DataDetail/DataDetailIndex', [
             'details' => $details,
-            'types' => $referenceData
+            'types' => $referenceData,
         ]);
     }
-
-
-
 
     public function create(): Response
     {
