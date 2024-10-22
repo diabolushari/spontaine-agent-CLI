@@ -1,15 +1,15 @@
 import RequestsCompleted from '@/Components/Dashboard/RequestsCompleted'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import React, { ReactNode, useMemo, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import SelectList from '@/ui/form/SelectList'
 
 const ServideDeliveryIndexPage = () => {
   const [title, setTitle] = useState('')
-  const categoryList: CategoryList[] = [{ name: 'test 1' }, { name: 'test 2' }]
-  const tariffList: TariffList[] = [{ name: 'test 1' }, { name: 'test 2' }]
+  const categoryList = [{ name: 'test 1' }, { name: 'test 2' }]
+  const tariffList = [{ name: 'test 1' }, { name: 'test 2' }]
   return (
     <DashboardLayout>
       <DashboardPadding>
@@ -102,7 +102,7 @@ const ServideDeliveryIndexPage = () => {
                     <SelectList
                       setValue={() => setTitle}
                       list={categoryList}
-                      dataKey='id'
+                      dataKey='name'
                       displayKey='name'
                       label='ALL CATEGORIES'
                       showAllOption
