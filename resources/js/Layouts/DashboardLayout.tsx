@@ -1,30 +1,15 @@
 import { Link, usePage } from '@inertiajs/react'
 import { Model, User } from '@/interfaces/data_interfaces'
 import React, { ReactNode, useMemo, useRef, useState } from 'react'
-import SelectList from '@/ui/form/SelectList'
-import { SvgImage } from './dashboard-menu-items'
 import { cn } from '@/utils'
 import { motion } from 'framer-motion'
 import styles from './DashboardLayout.module.css'
-
-import Button from '@/ui/button/Button'
-import {
-  Cloud,
-  LifeBuoy,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  UserPlus,
-} from 'lucide-react'
+import { Mail, MessageSquare, PlusCircle, UserPlus } from 'lucide-react'
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuSub,
@@ -58,7 +43,7 @@ interface OfficeInfo extends Model {
   subdivision_name?: string
 }
 
-interface DropdownVales {
+interface OfficeStructure {
   circle_name: string
   circle_code: string
   divisions: {
@@ -203,28 +188,90 @@ const dashboardSidebarItems = [
   },
 ]
 
+const findDivisions = (circleCode: string, officesInCircle: OfficeInfo[]) => {
+  const divisions: {
+    division_code: string
+    division_name: string
+    subdivisions: {
+      subdivision_code: string
+      subdivision_name: string
+      sections: { section_code: string; section_name: string }[]
+    }[]
+  }[] = []
+  officesInCircle.forEach((office) => {
+    const ifExists = divisions.find((division) => division.division_code === office.division_code)
+    if (ifExists == null) {
+      divisions.push({
+        division_code: office.division_code ?? '',
+        division_name: office.division_name ?? '',
+        subdivisions: findSubdivisions(office.division_code ?? '', officesInCircle),
+      })
+    }
+  })
+  return divisions
+}
+
+const findSubdivisions = (divisionCode: string, officesInCircle: OfficeInfo[]) => {
+  const subdivisions: {
+    subdivision_code: string
+    subdivision_name: string
+    sections: { section_code: string; section_name: string }[]
+  }[] = []
+
+  officesInCircle.forEach((office) => {
+    const ifExists = subdivisions.find(
+      (subdivision) => subdivision.subdivision_code === office.subdivision_code
+    )
+    if (ifExists == null) {
+      subdivisions.push({
+        subdivision_code: office.subdivision_code ?? '',
+        subdivision_name: office.subdivision_name ?? '',
+        sections: findSections(office.subdivision_code ?? '', officesInCircle),
+      })
+    }
+  })
+
+  return subdivisions
+}
+
+const findSections = (subdivisionCode: string, officesInCircle: OfficeInfo[]) => {
+  const sections: { section_code: string; section_name: string }[] = []
+
+  officesInCircle.forEach((office) => {
+    if (office.subdivision_code === subdivisionCode) {
+      sections.push({
+        section_code: office.section_code ?? '',
+        section_name: office.section_name ?? '',
+      })
+    }
+  })
+
+  return sections
+}
+
 export default function DashboardLayout({ children, type = 'Service delivery' }: Properties) {
   const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
 
-  const tempObject = useMemo(() => {
-    const circles: DropdownVales[] = []
+  const officeStructures = useMemo(() => {
+    const circles: OfficeStructure[] = []
     dropdownValues.forEach((officeInfo) => {
       const ifExist = circles.find((circle) => circle.circle_code === officeInfo.circle_code)
       if (ifExist == null) {
+        const officesInCircle = dropdownValues.filter(
+          (office) => officeInfo.circle_code === office.circle_code
+        )
         circles.push({
           circle_name: officeInfo.circle_name ?? '',
           circle_code: officeInfo.circle_code ?? '',
-          divisions: dropdownValues
-            .filter((office) => officeInfo.circle_code === office.circle_code)
-            .map((divison) => {
-              return null
-            }),
+          divisions: findDivisions(officeInfo.circle_code ?? '', officesInCircle),
         })
       }
     })
     return circles
   }, [dropdownValues])
-  console.log(tempObject)
+
+  console.log(officeStructures)
+
   const [focused, setFocused] = useState(false)
 
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
