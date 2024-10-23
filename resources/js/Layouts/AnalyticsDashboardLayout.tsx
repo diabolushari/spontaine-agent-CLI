@@ -59,7 +59,7 @@ export default function AnalyticsDashboardLayout({
   const findDescription = (tabName: string) => {
     return dashboardMenuItems.find((item) => item.value === activeTab)?.tabDescription
   }
-  const userInfo = usePage().props.auth as unknown as { user: User | null }
+  const userInfo = usePage().props.auth as unknown as { user: User }
   const User = useMemo(() => {
     if (userInfo.user) {
       return userInfo.user
@@ -88,7 +88,7 @@ export default function AnalyticsDashboardLayout({
   }
 
   return (
-    <div className='bg-1stop-background min-h-screen rounded-2xl'>
+    <div className='min-h-screen rounded-2xl bg-1stop-background'>
       <MetaTags
         title={title}
         description={description}
