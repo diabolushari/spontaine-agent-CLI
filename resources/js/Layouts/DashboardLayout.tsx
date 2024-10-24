@@ -1,11 +1,8 @@
 import { Link, usePage } from '@inertiajs/react'
 import { Model, User } from '@/interfaces/data_interfaces'
 import React, { ReactNode, useMemo, useRef, useState } from 'react'
-import SelectList from '@/ui/form/SelectList'
 import { cn } from '@/utils'
-import { motion } from 'framer-motion'
 import SideBar from './SideBar'
-import { Mail, MessageSquare, PlusCircle, UserPlus } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu'
 import useFetchList from '@/hooks/useFetchList'
+import * as motion from 'framer-motion/client'
 
 interface Properties {
   children?: ReactNode
