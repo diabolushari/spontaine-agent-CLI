@@ -12,28 +12,32 @@ use App\Services\Subset\SubsetQueryBuilder;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SubsetPreviewController extends Controller
+class SubsetTableController extends Controller
 {
-    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $builder): Response
+    public static function middleware()
+    {
+        return [
+            'auth',
+        ];
+    }
+
+    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder): Response
     {
 
-        $dataDetail = DataDetail::find($subsetDetail->data_detail_id);
+        $dataDetail = DataDetail::findOrFail($subsetDetail->data_detail_id);
 
         $dates = SubsetDetailDate::where('subset_detail_id', $subsetDetail->id)
             ->select('field_id')
-            ->get()
             ->pluck('field_id')
             ->toArray();
 
         $dimensions = SubsetDetailDimension::where('subset_detail_id', $subsetDetail->id)
             ->select('field_id')
-            ->get()
             ->pluck('field_id')
             ->toArray();
 
         $measures = SubsetDetailMeasure::where('subset_detail_id', $subsetDetail->id)
             ->select('field_id')
-            ->get()
             ->pluck('field_id')
             ->toArray();
 
@@ -43,10 +47,10 @@ class SubsetPreviewController extends Controller
             'measureFields' => fn ($query) => $query->whereIn('id', $measures),
         ]);
 
-        return Inertia::render('Subset/SubsetPreview', [
+        return Inertia::render('Subset/SubsetTablePage', [
             'subset' => $subsetDetail,
             'dataDetail' => $dataDetail,
-            'data' => $builder->query($subsetDetail)
+            'data' => $queryBuilder->query($subsetDetail)
                 ->paginate(50)
                 ->withQueryString(),
         ]);
