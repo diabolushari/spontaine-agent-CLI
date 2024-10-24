@@ -7,6 +7,8 @@ import CardHeader from '@/ui/Card/CardHeader'
 import SelectList from '@/ui/form/SelectList'
 import InactiveGraph from '@/Components/ServiceDelivery/Graphs/InactiveGraph'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
+import SlaPerformance from '@/Components/Dashboard/SlaPerformance'
+import PendancyCard from '@/Components/Dashboard/PendancyCard'
 
 const ServideDeliveryIndexPage = () => {
   const [title, setTitle] = useState('')
@@ -32,50 +34,10 @@ const ServideDeliveryIndexPage = () => {
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>
             <Card className='w-full p-10 md:w-2/3'>
-              <div className='h3-1stop'>Category-wise SLA Performance</div>
-              <div className='pt-7'>
-                <img
-                  src='SLA Performance.png'
-                  alt=''
-                />
-              </div>
+              <SlaPerformance />
             </Card>
             <Card className='w-full md:w-1/3'>
-              <div className='h3-1stop pl-10 pt-10'>Pendancy Beyond SLA</div>
-              <div className='flex w-full flex-col gap-2 p-2'>
-                <div className='flex justify-end'>
-                  <div className='mr-7 flex w-48 flex-col'>
-                    <SelectList
-                      setValue={() => setTitle}
-                      list={categoryList}
-                      dataKey='name'
-                      displayKey='name'
-                      label='ALL CATEGORIES'
-                      showAllOption
-                      value={title}
-                    />
-                  </div>
-                </div>
-                <div className='flex justify-end'>
-                  <div className='mr-7 flex w-48 flex-col pt-2'>
-                    <SelectList
-                      setValue={() => setTitle}
-                      list={tariffList}
-                      dataKey='name'
-                      displayKey='name'
-                      label='ALL TARIFFS'
-                      showAllOption
-                      value={title}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className='flex justify-center p-5'>
-                <img
-                  src='SLA.png'
-                  alt=''
-                />
-              </div>
+              <PendancyCard />
             </Card>
           </div>
           <div className='flex flex-col gap-5 md:flex-row'>

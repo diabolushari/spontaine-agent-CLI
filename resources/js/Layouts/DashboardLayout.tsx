@@ -1,9 +1,9 @@
 import { Link, usePage } from '@inertiajs/react'
 import { Model, User } from '@/interfaces/data_interfaces'
 import React, { ReactNode, useMemo, useRef, useState } from 'react'
+import SelectList from '@/ui/form/SelectList'
 import { cn } from '@/utils'
 import { motion } from 'framer-motion'
-import styles from './DashboardLayout.module.css'
 import SideBar from './SideBar'
 import { Mail, MessageSquare, PlusCircle, UserPlus } from 'lucide-react'
 import {
@@ -287,7 +287,7 @@ export default function DashboardLayout({
 
   const [isProfileDropdown, setIsProfileDropdown] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
-  const userInfo = usePage().props.auth as unknown as { user: User | null }
+  const userInfo = usePage().props.auth as unknown as { user: User }
   const User = useMemo(() => {
     if (userInfo.user) {
       return userInfo.user
@@ -426,27 +426,33 @@ export default function DashboardLayout({
                     <p className='small-1stop text-gray-900'>Logged in as {userName}</p>
                   </div>
                   <hr />
-                  <div className='flex px-4 py-2'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      className='icon icon-tabler icon-tabler-logout'
-                      width={20}
-                      height={20}
-                      viewBox=''
-                      strokeWidth='1.5'
-                      stroke='currentColor'
-                      fill='none'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
+                  <div className='py-2'>
+                    <Link
+                      href='/logout'
+                      method='post'
+                      className='text-black-700 small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
                     >
-                      <path
-                        stroke='none'
-                        d='M0 0h24v24H0z'
-                      />
-                      <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
-                      <path d='M7 12h14l-3 -3m0 6l3 -3' />
-                    </svg>
-                    <span className='ml-2'>Sign out</span>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='icon icon-tabler icon-tabler-logout'
+                        width={20}
+                        height={20}
+                        viewBox='0 0 24 24'
+                        strokeWidth='1.5'
+                        stroke='currentColor'
+                        fill='none'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      >
+                        <path
+                          stroke='none'
+                          d='M0 0h24v24H0z'
+                        />
+                        <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+                        <path d='M7 12h14l-3 -3m0 6l3 -3' />
+                      </svg>
+                      <span className='ml-2 text-sm'>Sign out</span>
+                    </Link>
                   </div>
                 </div>
               </div>

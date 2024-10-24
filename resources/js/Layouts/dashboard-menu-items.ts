@@ -20,12 +20,12 @@ const dashboardMenuItems: DashboardMenuItem[] = [
   {
     name: 'Data',
     value: 'data',
-    url: '/data-detail?type=data&subtype=data-tables',
+    url: '/data-detail',
     tabDescription: 'Explore data tables and subsets by subject areas.',
     links: [
       {
         title: 'DATA TABLES',
-        link: '/data-detail?type=data&subtype=data-tables',
+        link: '/data-detail',
         image: {
           svg: `<svg width={80} height={80} viewBox='0 0 80 80' fill='none'  xmlns='http://www.w3.org/2000/svg'>
 <rect x='9' y='12' width='62' height='56' rx='2' fill='var(--colour-1stop-dark)'/>

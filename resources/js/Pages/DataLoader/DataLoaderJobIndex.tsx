@@ -35,6 +35,7 @@ export default function DataLoaderJobIndex({
       search: {
         label: 'Search',
         type: 'text',
+        placeholder: 'Search by job',
         setValue: setFormValue('search'),
       } as FormItem<string, never, never, never>,
     }

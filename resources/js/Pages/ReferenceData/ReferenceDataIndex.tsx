@@ -58,6 +58,7 @@ const ReferenceDataIndex = ({
       value: {
         label: 'Value',
         type: 'text',
+        placeholder: 'Search by value',
         setValue: setFormValue('value'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
