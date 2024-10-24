@@ -34,6 +34,7 @@ export default function DataLoaderQueryIndex({
       search: {
         label: 'Search',
         type: 'text',
+        placeholder: 'Search by Extraction Statements',
         setValue: setFormValue('search'),
       } as FormItem<string, never, never, never>,
     }

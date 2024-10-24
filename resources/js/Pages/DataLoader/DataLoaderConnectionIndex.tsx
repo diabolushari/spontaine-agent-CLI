@@ -34,6 +34,7 @@ export default function DataLoaderConnectionIndex({
       search: {
         label: 'Search',
         type: 'text',
+        placeholder: 'Search by Data Sources',
         setValue: setFormValue('search'),
       } as FormItem<string, never, never, never>,
     }
