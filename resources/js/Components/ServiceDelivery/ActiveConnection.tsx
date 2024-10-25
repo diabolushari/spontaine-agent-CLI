@@ -32,7 +32,6 @@ const ActiveConnection = ({ section_code }: Properties) => {
 
     return activeSum
   }, [graphValues])
-  console.log(graphValues)
   const LTConnection = useMemo(() => {
     let LTSum = 0
     graphValues.forEach((graphValue) => {
