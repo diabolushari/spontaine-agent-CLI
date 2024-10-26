@@ -15,19 +15,29 @@ const ServideDeliveryIndexPage = () => {
   const categoryList = [{ name: 'test 1' }, { name: 'test 2' }]
   const tariffList = [{ name: 'test 1' }, { name: 'test 2' }]
   const [sectionCode, setSectionCode] = useState('')
+  const [levelName, setLevelName] = useState('')
+  const [levelCode, setLevelCode] = useState('')
   return (
     <DashboardLayout
       sectionCode={sectionCode}
       setSectionCode={setSectionCode}
+      levelName={levelName}
+      setLevelName={setLevelName}
+      levelCode={levelCode}
+      setLevelCode={setLevelCode}
     >
       <DashboardPadding>
         <CardHeader
           title='CONNECTION'
-          titleClassName='text-white'
+          titleClassName='text-white' 
         />
         <div className='ml-3 flex flex-col gap-5'>
           <div className='flex flex-col gap-5 md:flex-row'>
-            <ActiveConnection section_code={sectionCode} />
+            <ActiveConnection
+              section_code={sectionCode}
+              levelCode={levelCode}
+              levelName={levelName}
+            />
             <Card className=''>
               <RequestsCompleted />
             </Card>

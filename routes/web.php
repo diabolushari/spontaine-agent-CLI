@@ -25,6 +25,7 @@ use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
+use App\Http\Controllers\Subset\FindLevelController;
 use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
@@ -139,6 +140,7 @@ Route::delete('subset/{detail}', SubsetDeleteController::class)
 
 Route::get('subset-level', SubsetDropdownApiController::class)
     ->name('subset.level');
+Route::get('find-level', FindLevelController::class);
 Route::get('test', function (DistributionHierarchy $findDistributionLevel) {
     return $findDistributionLevel->findAllSection('4502');
 });

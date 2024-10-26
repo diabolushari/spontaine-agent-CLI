@@ -19,12 +19,17 @@ import {
   DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu'
 import useFetchList from '@/hooks/useFetchList'
+import DropdownAccordion from './DropdownAccordion'
 
 interface Properties {
   children?: ReactNode
   type?: string
   sectionCode?: string
   setSectionCode?: React.Dispatch<React.SetStateAction<string>>
+  setLevelName: React.Dispatch<React.SetStateAction<string>>
+  levelName: string
+  setLevelCode: React.Dispatch<React.SetStateAction<string>>
+  levelCode: string
 }
 
 interface OfficeInfo extends Model {
@@ -44,9 +49,10 @@ interface OfficeInfo extends Model {
   subdivision_code?: string
   subdivision_id?: string
   subdivision_name?: string
+  level_name?: string
 }
 
-interface OfficeStructure {
+export interface OfficeStructure {
   circle_name: string
   circle_code: string
   divisions: {
@@ -262,11 +268,20 @@ export default function DashboardLayout({
   type = 'Service delivery',
   sectionCode,
   setSectionCode,
+  levelName,
+  setLevelName,
+  levelCode,
+  setLevelCode,
 }: Properties) {
   const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
+  const [level] = useFetchList('find-level')
+
   const [sectionName, setSectionName] = useState('SELECT SECTION')
   const officeStructures = useMemo(() => {
     const circles: OfficeStructure[] = []
+    if (dropdownValues == null) {
+      return
+    }
     dropdownValues.forEach((officeInfo) => {
       const ifExist = circles.find((circle) => circle.circle_code === officeInfo.circle_code)
       if (ifExist == null) {
@@ -302,6 +317,7 @@ export default function DashboardLayout({
     }
     setSectionName(section_name)
   }
+
   return (
     <div className='flex h-full flex-col border-r sm:relative'>
       <div className={`flex h-full border-r sm:relative ${isShowSideBar ? 'z-[999]' : ''}`}>
@@ -311,8 +327,14 @@ export default function DashboardLayout({
           type={type}
         />
 
-        <div className='right-0 ml-auto mr-10 flex gap-16 pt-10'>
-          <DropdownMenu>
+        <div className='absolute right-0 z-[9999] ml-auto mr-10 flex gap-16 pt-10'>
+          <DropdownAccordion
+            officeStructures={officeStructures}
+            level={levelName}
+            setLevel={setLevelName}
+            setLevelCode={setLevelCode}
+          />
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 className='flex items-center gap-2 rounded-xl bg-white p-2 text-black'
@@ -337,7 +359,7 @@ export default function DashboardLayout({
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
               <DropdownMenuGroup>
-                {officeStructures.map((circle) => {
+                {officeStructures?.map((circle) => {
                   return (
                     <DropdownMenuSub key={circle.circle_code}>
                       <DropdownMenuSubTrigger>{circle.circle_name} </DropdownMenuSubTrigger>
@@ -389,7 +411,7 @@ export default function DashboardLayout({
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
 
           <div className=''>
             <div
@@ -467,7 +489,7 @@ export default function DashboardLayout({
         transition={{ duration: 0.3 }}
         className='inset-0'
       >
-        <main className={cn(`ml-24 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
+        <main className={cn(`ml-24 mt-10 flex flex-col`, `${isShowSideBar ? '' : 'z-[999]'}`)}>
           {children}
         </main>
       </motion.div>
