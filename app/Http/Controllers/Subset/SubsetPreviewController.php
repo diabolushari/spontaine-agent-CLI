@@ -27,7 +27,7 @@ class SubsetPreviewController extends Controller implements HasMiddleware
 
     public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $builder): Response
     {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info');
+        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
 
         $dataDetail = DataDetail::find($subsetDetail->data_detail_id);
 

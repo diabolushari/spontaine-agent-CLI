@@ -1,7 +1,7 @@
 import { DataDetail, SubsetDateField, TableDateField } from '@/interfaces/data_interfaces'
 import StrongText from '@/typography/StrongText'
 import Modal from '@/ui/Modal/Modal'
-import { SetStateAction, useCallback, useMemo, useState } from 'react'
+import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
 import CardGridView from '../ListingPage/CardGridView'
 import { ListItemKeys } from '../ListingPage/ListResourcePage'
 import AddSubsetDateForm from './CreateForm/AddSubsetDateForm'

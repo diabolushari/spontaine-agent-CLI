@@ -1,15 +1,6 @@
 import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Properties {
   section_code?: string
@@ -73,7 +64,10 @@ const SlaPerformance = ({ section_code }: Properties) => {
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis
               dataKey='name'
-              tick={{ angle: -45, textAnchor: 'end' }}
+              tick={{
+                // angle: -45,
+                textAnchor: 'end',
+              }}
               height={80}
               interval={0}
               tickFormatter={(name) => (name.length > 10 ? `${name.slice(0, 9)}...` : name)}

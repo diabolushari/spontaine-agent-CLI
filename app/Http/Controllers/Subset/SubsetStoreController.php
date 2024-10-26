@@ -11,6 +11,7 @@ use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ class SubsetStoreController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(DataDetail $dataDetail, SubsetFormRequest $request)
+    public function __invoke(DataDetail $dataDetail, SubsetFormRequest $request): RedirectResponse
     {
         DB::beginTransaction();
 

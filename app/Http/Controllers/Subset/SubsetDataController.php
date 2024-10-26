@@ -29,7 +29,7 @@ class SubsetDataController extends Controller implements HasMiddleware
         SubsetQueryBuilder $queryBuilder,
         SubsetFilterBuilder $filterBuilder
     ): Collection {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info');
+        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
 
         $query = $queryBuilder->query($subsetDetail);
 
