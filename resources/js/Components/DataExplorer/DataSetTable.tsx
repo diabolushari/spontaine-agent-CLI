@@ -37,13 +37,13 @@ export default function DataSetTable({ dataDetail, dataTableItems }: Readonly<Pr
       cols.push({
         name: fieldName ?? '',
         source: measure.column ?? '',
-        type: 'string',
+        type: 'number',
       })
       if (measure.unit_column != null) {
         cols.push({
           name: measure.unit_field_name ?? '',
           source: measure.unit_column ?? '',
-          type: 'number',
+          type: 'string',
         })
       }
     })
@@ -73,7 +73,9 @@ export default function DataSetTable({ dataDetail, dataTableItems }: Readonly<Pr
                     key={index}
                     className='standard-td'
                   >
-                    {item[col.source as keyof DataTableItem]}
+                    {col.type === 'number'
+                      ? (item[col.source as keyof DataTableItem] as number | null)?.toFixed(2)
+                      : item[col.source as keyof DataTableItem]}
                   </td>
                 )
               })}
