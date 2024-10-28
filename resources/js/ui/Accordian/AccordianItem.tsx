@@ -12,7 +12,6 @@ const AccordionItem = ({ title, children, openAccordion, setOpenAccordion }: Pro
   const [open, setOpen] = useState(false)
   const openAccordionList = () => {
     setOpen(!open)
-    setOpenAccordion(code)
   }
   return (
     // <div>

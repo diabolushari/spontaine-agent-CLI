@@ -5,6 +5,7 @@ import { Paginator } from '@/ui/ui_interfaces'
 import Card from '@/ui/Card/Card'
 import DataSetTable from '@/Components/DataExplorer/DataSetTable'
 import Pagination from '@/ui/Pagination/Pagination'
+import { useState } from 'react'
 
 interface Props {
   subset: SubsetDetail
@@ -13,8 +14,19 @@ interface Props {
 }
 
 export default function SubsetTablePage({ subset, dataDetail, data }: Readonly<Props>) {
+  const [sectionCode, setSectionCode] = useState('')
+  const [levelName, setLevelName] = useState('')
+  const [levelCode, setLevelCode] = useState('')
   return (
-    <DashboardLayout type='financial'>
+    <DashboardLayout
+      type='financial'
+      sectionCode={sectionCode}
+      setSectionCode={setSectionCode}
+      levelName={levelName}
+      setLevelName={setLevelName}
+      levelCode={levelCode}
+      setLevelCode={setLevelCode}
+    >
       <DashboardPadding>
         <Card className='snap-y snap-mandatory p-2'>
           <h1 className='font-h1-stop'>{subset.name}</h1>
