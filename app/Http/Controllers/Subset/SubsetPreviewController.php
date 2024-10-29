@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
-use App\Models\DataDetail\DataDetail;
 use App\Models\Subset\SubsetDetail;
-use App\Models\Subset\SubsetDetailDate;
-use App\Models\Subset\SubsetDetailDimension;
-use App\Models\Subset\SubsetDetailMeasure;
+use App\Services\Subset\SubsetFilterBuilder;
 use App\Services\Subset\SubsetQueryBuilder;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
@@ -25,40 +22,23 @@ class SubsetPreviewController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $builder): Response
+    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $builder, SubsetFilterBuilder $filterBuilder): Response
     {
         $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
 
-        $dataDetail = DataDetail::find($subsetDetail->data_detail_id);
+        $query = $builder->query($subsetDetail);
 
-        $dates = SubsetDetailDate::where('subset_detail_id', $subsetDetail->id)
-            ->select('field_id')
-            ->pluck('field_id')
-            ->toArray();
-
-        $dimensions = SubsetDetailDimension::where('subset_detail_id', $subsetDetail->id)
-            ->where('filter_only', '0')
-            ->select('field_id')
-            ->pluck('field_id')
-            ->toArray();
-
-        $measures = SubsetDetailMeasure::where('subset_detail_id', $subsetDetail->id)
-            ->select('field_id')
-            ->pluck('field_id')
-            ->toArray();
-
-        $dataDetail->load([
-            'dateFields' => fn ($query) => $query->whereIn('id', $dates),
-            'dimensionFields' => fn ($query) => $query->whereIn('id', $dimensions),
-            'measureFields' => fn ($query) => $query->whereIn('id', $measures),
-        ]);
+        $filterBuilder->filter(
+            $query,
+            $subsetDetail,
+            request()->all()
+        );
 
         return Inertia::render('Subset/SubsetPreview', [
             'subset' => $subsetDetail,
-            'dataDetail' => $dataDetail,
-            'data' => $builder->query($subsetDetail)
-                ->paginate(50)
+            'data' => $query->paginate(50)
                 ->withQueryString(),
+            'filters' => request()->all(),
         ]);
     }
 }

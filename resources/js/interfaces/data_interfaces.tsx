@@ -78,6 +78,10 @@ export interface SubsetDetail extends Model {
   name: string
   description: string | null
   group_data: 0 | 1
+  data_detail_id: number
+  dates?: Partial<SubsetDateField>[]
+  dimensions?: Partial<SubsetDimensionField>[]
+  measures?: Partial<SubsetMeasureField>[]
 }
 
 export interface SubsetDateField extends Model {
@@ -95,6 +99,7 @@ export interface SubsetDateField extends Model {
   dynamic_end_type: string | null
   dynamic_end_offset: number | null
   dynamic_end_unit: string | null
+  info?: Partial<TableDateField>
 }
 
 export interface SubsetDimensionField extends Model {
@@ -104,6 +109,7 @@ export interface SubsetDimensionField extends Model {
   column_expression: string | null
   filters: number[] | null
   filter_values?: Partial<MetaData>[] | null
+  info?: Partial<TableDimensionField>
 }
 
 export interface SubsetMeasureField extends Model {
@@ -112,6 +118,7 @@ export interface SubsetMeasureField extends Model {
   aggregation: string | null
   expression: string | null
   weight_field_id: number | null
+  info?: Partial<TableMeasureField>
 }
 
 export interface DataLoaderConnection extends Model {
