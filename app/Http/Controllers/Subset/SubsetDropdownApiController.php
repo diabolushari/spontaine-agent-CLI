@@ -20,7 +20,7 @@ class SubsetDropdownApiController extends Controller implements HasMiddleware
 
     public function __invoke(Request $request, DistributionHierarchy $findDistributionLevel)
     {
-       
+
         return  $findDistributionLevel->findAllSection(Auth::user()->office_code);
     }
 }

@@ -9,6 +9,7 @@ import DivisionLevel from '@/Components/LayoutAccordions/DivisionLevel'
 import SectionLevel from '@/Components/LayoutAccordions/SectionLevel'
 import SubdivisionLevel from '@/Components/LayoutAccordions/SubdivisionLevel'
 import useFetchList from '@/hooks/useFetchList'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface Properties {
   officeStructures: OfficeStructure[] | undefined
@@ -25,12 +26,12 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
     setLevel(level ?? '')
     setLevelCode(levelCode ?? '')
   }
-  const [levelType] = useFetchList<LevelType>('find-level')
+  const [levelType] = useFetchRecord<LevelType>('find-level')
   const [office, setOffice] = useState(officeStructures)
   useEffect(() => {
     setOffice(officeStructures)
   }, [officeStructures])
-  console.log(levelType)
+
   const [accordionOpen, setAccordionOpen] = useState(false)
   const onAccortdionClick = (
     regionCode?: string,
@@ -144,10 +145,10 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
       })
     })
   }
-  console.log(office)
+  console.log(levelType?.level)
   return (
     <div className='min-w-80'>
-      {levelType.level === 'region' && (
+      {levelType?.level === 'region' && (
         <RegionLevel
           office={office}
           onAccortdionClick={onAccortdionClick}
@@ -156,7 +157,7 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
           setLevelAndCode={setLevelAndCode}
         />
       )}
-      {levelType.level === 'circle' && (
+      {levelType?.level === 'circle' && (
         <CircleLevel
           office={office}
           onAccortdionClick={onAccortdionClick}
@@ -166,7 +167,7 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
         />
       )}
 
-      {levelType.level === 'division' && (
+      {levelType?.level === 'division' && (
         <DivisionLevel
           office={office}
           onAccortdionClick={onAccortdionClick}
@@ -176,7 +177,7 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
         />
       )}
 
-      {levelType.level === 'subdivision' && (
+      {levelType?.level === 'subdivision' && (
         <SubdivisionLevel
           office={office}
           onAccortdionClick={onAccortdionClick}
@@ -185,7 +186,7 @@ const DropdownAccordion = ({ officeStructures, setLevel, level, setLevelCode }: 
           setLevelAndCode={setLevelAndCode}
         />
       )}
-      {levelType.level === 'section' && (
+      {levelType?.level === 'section' && (
         <SectionLevel
           office={office}
           onAccortdionClick={onAccortdionClick}

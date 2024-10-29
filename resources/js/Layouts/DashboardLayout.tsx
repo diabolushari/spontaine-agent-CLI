@@ -189,7 +189,7 @@ export default function DashboardLayout({
   const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
 
   const [level] = useFetchList('find-level')
-
+console.log(level)
   const [sectionName, setSectionName] = useState('SELECT SECTION')
   const officeStructures = useMemo(() => {
     const regions: OfficeStructure[] = []
