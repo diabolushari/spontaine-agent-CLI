@@ -154,9 +154,8 @@ class DataDetailController extends Controller implements HasMiddleware
 
         try {
             $dataDetail->delete();
-        } catch (Exception $exception) {
             Schema::drop($dataDetail->table_name);
-
+        } catch (Exception $exception) {
             return back()->with([
                 'error' => ExceptionMessage::getMessage($exception),
             ]);
