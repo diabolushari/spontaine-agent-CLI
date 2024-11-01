@@ -29,6 +29,7 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
   const [graphValues] = useFetchList<SlaPerformanceValues>(`subset/23?office_code=${levelCode}`)
   console.log(graphValues)
 
+  // Group and aggregate data by `service_group`
   const groupedData = Array.from(
     new Map(
       graphValues.map(({ service_group, within_sla_cnt, beyond_sla_cnt }) => [
@@ -70,8 +71,7 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
         ) : (
           <ResponsiveContainer
             width='100%'
-            minWidth={700}
-            height={400}
+            height={300}
           >
             <BarChart
               data={groupedData}

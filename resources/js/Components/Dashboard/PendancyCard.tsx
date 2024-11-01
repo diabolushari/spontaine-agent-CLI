@@ -3,8 +3,6 @@ import SelectList from '@/ui/form/SelectList'
 import MoreButton from '../MoreButton'
 import useFetchList from '@/hooks/useFetchList'
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
 
 interface Properties {
   section_code?: string
@@ -22,76 +20,44 @@ export interface PendencyGraphValues {
 }
 
 const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
-  const [title, setTitle] = useState('All Categories')
+  const [title, setTitle] = useState('Load Change')
   const [graphValues] = useFetchList<PendencyGraphValues>(`subset/28?office_code=${levelCode}`)
 
-  const sumValues = graphValues.reduce(
-    (acc, value) => {
-      acc.cnt_lt_5day += value.cnt_lt_5day
-      acc.cnt_5_15day += value.cnt_5_15day
-      acc.cnt_16_30day += value.cnt_16_30day
-      acc.cnt_gt_30day += value.cnt_gt_30day
-      return acc
-    },
-    { cnt_lt_5day: 0, cnt_5_15day: 0, cnt_16_30day: 0, cnt_gt_30day: 0 }
-  )
-
-  const selectedValues =
-    title === 'All Categories'
-      ? sumValues
-      : graphValues.find((value) => value.service_group === title) || {
-          cnt_lt_5day: 0,
-          cnt_5_15day: 0,
-          cnt_16_30day: 0,
-          cnt_gt_30day: 0,
-        }
-
-  const lessThan5Days = selectedValues.cnt_lt_5day
-  const betweem515Days = selectedValues.cnt_5_15day
-  const betweem1630Days = selectedValues.cnt_16_30day
-  const greaterThan30Days = selectedValues.cnt_gt_30day
+  const lessThan5Days = graphValues.find((value) => value.service_group === title)?.cnt_lt_5day || 0
+  const betweem515Days =
+    graphValues.find((value) => value.service_group === title)?.cnt_5_15day || 0
+  const betweem1630Days =
+    graphValues.find((value) => value.service_group === title)?.cnt_16_30day || 0
+  const greaterThan30Days =
+    graphValues.find((value) => value.service_group === title)?.cnt_gt_30day || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
-  const isLoading = !graphValues || graphValues.length === 0
 
   return (
-    <div className='rounded-lg bg-white p-4 md:p-6'>
-      <div className='pl-6 pt-4 text-lg font-bold md:pl-10 md:pt-10 md:text-xl'>
-        PENDENCY BEYOND SLA
-      </div>
+    <div className='flex w-full flex-col gap-4 rounded-lg bg-white p-4'>
+      <p className='h3-1stop pt-5'>Pendency Beyond SLA</p>
 
-      <div className='flex w-1/2 flex-col justify-end p-4 md:flex-row md:justify-end md:p-2'>
-        {isLoading ? (
-          <Skeleton
-            height={50}
-            width={200}
-          />
-        ) : (
+      <div className='mt-1 flex flex-col items-start justify-start md:flex-row'>
+        <div className='w-full md:w-2/3'>
           <SelectList
             setValue={setTitle}
-            list={[{ service_group: 'All Categories' }, ...graphValues]}
+            list={graphValues}
             displayKey='service_group'
             dataKey='service_group'
+            showAllOption
             value={title}
-            className='w-full md:w-48'
+            style='1stop'
           />
-        )}
+        </div>
       </div>
 
-      <div className='body-1stop pl-6 pt-4 text-center md:pl-10 md:pt-10 md:text-left'>
-        Requests Pending beyond SLA
-      </div>
+      <div className='mt-4 flex flex-col gap-1'>
+        <p className='subheader-sm-1stop'>Requests Pending beyond SLA</p>
 
-      <div className='flex justify-center p-4 md:p-5'>
-        {isLoading ? (
-          <Skeleton
-            height={100}
-            width={300}
-          />
-        ) : (
+        <div className='flex justify-center'>
           <BarChart
             width={300}
-            height={100}
+            height={60}
             data={data}
             layout='vertical'
           >
@@ -126,37 +92,28 @@ const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
               fill='#D467B3'
             />
           </BarChart>
-        )}
+        </div>
       </div>
-
-      <div className='flex flex-row flex-nowrap justify-center gap-4 pl-6 md:justify-start md:gap-10 md:pl-14'>
+      <div className='grid grid-cols-2 justify-center gap-2 md:justify-start md:gap-5'>
         <div className='text-center'>
-          <div className='text-xl font-semibold'>
-            {isLoading ? <Skeleton width={40} /> : lessThan5Days}
-          </div>
+          <div className='smmetric-1stop'>{lessThan5Days}</div>
           <div className='small-1stop'>{'<5 days'}</div>
         </div>
         <div className='text-center'>
-          <div className='text-xl font-semibold'>
-            {isLoading ? <Skeleton width={40} /> : betweem515Days}
-          </div>
+          <div className='smmetric-1stop'>{betweem515Days}</div>
           <div className='small-1stop'>5-15 days</div>
         </div>
         <div className='text-center'>
-          <div className='text-xl font-semibold'>
-            {isLoading ? <Skeleton width={40} /> : betweem1630Days}
-          </div>
+          <div className='smmetric-1stop'>{betweem1630Days}</div>
           <div className='small-1stop'>16-30 days</div>
         </div>
         <div className='text-center'>
-          <div className='text-xl font-semibold'>
-            {isLoading ? <Skeleton width={40} /> : greaterThan30Days}
-          </div>
+          <div className='smmetric-1stop'>{greaterThan30Days}</div>
           <div className='small-1stop'>{'>30 days'}</div>
         </div>
       </div>
 
-      <div className='mt-4 flex w-full justify-end p-4 hover:cursor-pointer hover:opacity-50'>
+      <div className='mt-9 flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
         <MoreButton />
       </div>
     </div>

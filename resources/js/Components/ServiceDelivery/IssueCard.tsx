@@ -31,20 +31,20 @@ const IssueCard = ({ section_code, levelName, levelCode }: Properties) => {
     <div className='flex flex-col items-center rounded-lg'>
       <div className='grid w-full max-w-md grid-cols-2 gap-4 p-6'>
         <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'>
-          <div className='h2-1stop'>{isLoading ? <Skeleton width={60} /> : totalComplaints}</div>
-          <div className='body-1stop'>Total Complaints</div>
+          <p className='xlmetric-1stop'>{isLoading ? <Skeleton width={60} /> : totalComplaints}</p>
+          <p className='small-1stop-header text-center'>Total Complaints</p>
         </div>
-        <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'>
-          <div className='h3-1stop'>{isLoading ? <Skeleton width={60} /> : powerFailure}</div>
-          <div className='small-1stop'>Power Failure</div>
+        <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
+          <p className='mdmetric-1stop'>{isLoading ? <Skeleton width={60} /> : powerFailure}</p>
+          <p className='small-1stop-header text-center'>Power Failures</p>
         </div>
-        <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'>
-          <div className='h3-1stop'>{isLoading ? <Skeleton width={60} /> : serviceWireIssue}</div>
-          <div className='small-1stop'>Service Wire Issues</div>
+        <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
+          <p className='mdmetric-1stop'>{isLoading ? <Skeleton width={60} /> : serviceWireIssue}</p>
+          <p className='small-1stop-header text-center'>Service Wire Issues</p>
         </div>
-        <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-5 hover:bg-1stop-highlight2'>
-          <div className='h3-1stop'>{isLoading ? <Skeleton width={60} /> : lineFault}</div>
-          <div className='small-1stop'>Line Fault</div>
+        <div className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-5 hover:bg-1stop-highlight2'>
+          <p className='mdmetric-1stop'>{isLoading ? <Skeleton width={60} /> : lineFault}</p>
+          <p className='small-1stop-header text-center'>Line Faults</p>
         </div>
       </div>
       <div className='flex w-full max-w-md cursor-pointer justify-end p-4'>

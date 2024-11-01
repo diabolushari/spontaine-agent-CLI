@@ -35,8 +35,8 @@ const PowerInterruptionTrend = ({ section_code, levelName, levelCode }: Properti
   }, [graphValues])
   const isLoading = !graphValues || graphValues.length === 0
   return (
-    <div className='w-full max-w-md rounded-lg p-4'>
-      <h2 className='body-1stop mb-4'>10-day Power Interruption Trend</h2>
+    <div className='w-full rounded-lg p-4'>
+      <p className='h3-1stop mb-6'>10-day Power Interruption Trend</p>
       <div className='pl-5'>
         {isLoading ? (
           <Skeleton
