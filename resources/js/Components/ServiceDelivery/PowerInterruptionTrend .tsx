@@ -33,17 +33,17 @@ const PowerInterruptionTrend = ({ section_code, levelName, levelCode }: Properti
   }, [graphValues])
 
   return (
-    <div className='w-full max-w-md rounded-lg p-4'>
-      <h2 className='body-1stop mb-4'>10-day Power Interruption Trend</h2>
+    <div className='w-full rounded-lg p-4'>
+      <p className='h3-1stop mb-6'>10-day Power Interruption Trend</p>
       <div className='pl-5'>
         <ResponsiveContainer
-          width='200%'
-          height={200}
+          width='100%'
+          height={300}
         >
           <AreaChart data={chartData}>
             <XAxis
               dataKey='day'
-              hide
+              className='axial-label-1stop'
             />
             <YAxis hide />
             <Tooltip />
@@ -51,7 +51,7 @@ const PowerInterruptionTrend = ({ section_code, levelName, levelCode }: Properti
               type='monotone'
               dataKey='interruptions'
               stroke='#0091ff'
-              fill='#0091ff'
+              fill='var(--colour-chart-3)'
             />
           </AreaChart>
         </ResponsiveContainer>

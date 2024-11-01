@@ -219,7 +219,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
               }}
             />{' '}
             <Link
-              href=''
+              href='/data-detail'
               className='flex'
             >
               <span className='small-1stop-header pl-2 pt-2 font-bold'>Admin</span>

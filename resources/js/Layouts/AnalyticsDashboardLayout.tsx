@@ -8,6 +8,7 @@ import { showError, showSuccess } from '@/ui/alerts'
 import { ToastContainer } from 'react-toastify'
 // import oneStopLogo from '../../../public/one-stop-logo.svg'
 import ApplicationLogo from '@/Components/ApplicationLogo'
+import { url } from 'inspector'
 
 interface Properties {
   children?: ReactNode
@@ -48,8 +49,8 @@ export default function AnalyticsDashboardLayout({
   const cardRef = useRef<HTMLDivElement>(null)
 
   const headings = [
-    { name: 'MANAGE', value: 'manage' },
-    { name: 'DASHBOARD', value: 'dashboard' },
+    { name: 'MANAGE', value: 'manage', url: '/data-detail' },
+    { name: 'DASHBOARD', value: 'dashboard', url: '/service-delivery' },
   ]
 
   const menuItems = useMemo(() => {
@@ -119,11 +120,13 @@ export default function AnalyticsDashboardLayout({
                 className={`cursor-pointer pb-2 tracking-widest ${activeHeading === heading.value ? 'subheader-1stop 1stop-highlight' : '1stop-gray'}`}
                 onClick={() => setActiveHeading(heading.value)}
               >
-                <h1
-                  className={`subheader-1stop ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-1stop-gray'}`}
-                >
-                  {heading.name}
-                </h1>
+                <Link href={heading.url}>
+                  <h1
+                    className={`subheader-1stop ${activeHeading === heading.value ? 'text-1stop-highlight' : 'text-1stop-gray'}`}
+                  >
+                    {heading.name}
+                  </h1>
+                </Link>
               </div>
             ))}
           </div>

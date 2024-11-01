@@ -9,6 +9,7 @@ import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
 import IssueCard from '@/Components/ServiceDelivery/IssueCard'
 import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterruptionTrend '
+import MoreButton from '@/Components/MoreButton'
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
@@ -40,15 +41,15 @@ const ServideDeliveryIndexPage = () => {
               />
             </Card>
           </div>
-          <div className='flex flex-col gap-2 sm:flex-row'>
-            <Card className='w-full p-6 sm:w-2/3 sm:p-10'>
+          <div className='flex flex-col gap-2 lg:flex-row'>
+            <Card className='w-full p-6 sm:p-10 lg:w-2/3'>
               <SlaPerformance
                 section_code={sectionCode}
                 levelCode={levelCode}
                 levelName={levelName}
               />
             </Card>
-            <Card className='w-full p-6 sm:w-1/3 sm:p-4'>
+            <Card className='w-full p-6 sm:p-4 lg:w-1/3'>
               <PendancyCard
                 section_code={sectionCode}
                 levelCode={levelCode}
@@ -57,14 +58,14 @@ const ServideDeliveryIndexPage = () => {
             </Card>
           </div>
           <div className='flex flex-col gap-2 sm:flex-row'>
-            <Card className='w-2/5 p-6 sm:w-1/3 sm:p-4'>
+            <Card className='w-full p-6 sm:p-4 lg:w-1/3'>
               <IssueCard
                 section_code={sectionCode}
                 levelCode={levelCode}
                 levelName={levelName}
               />
             </Card>
-            <Card className='w-3/5 flex-grow p-6 sm:p-4'>
+            <Card className='flex w-full p-6 sm:p-4 lg:w-2/3'>
               <PowerInterruptionTrend
                 section_code={sectionCode}
                 levelCode={levelCode}

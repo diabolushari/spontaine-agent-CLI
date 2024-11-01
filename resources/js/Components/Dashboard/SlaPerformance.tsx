@@ -61,13 +61,13 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
       <div>
         <ResponsiveContainer
           width='100%'
-          minWidth={700}
-          height={400}
+          //   minWidth={700}
+          height={300}
         >
           <BarChart
             data={groupedData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            barSize={40}
+            barSize={20}
           >
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis
@@ -81,12 +81,12 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
             <Bar
               dataKey='within_sla_cnt'
               stackId='a'
-              fill='#1b50b3'
+              fill='var(--colour-1stop-highlight)'
             />
             <Bar
               dataKey='beyond_sla_cnt'
               stackId='a'
-              fill='#76a5ff'
+              fill='var(--colour-1stop-accent2)'
             />
           </BarChart>
         </ResponsiveContainer>
