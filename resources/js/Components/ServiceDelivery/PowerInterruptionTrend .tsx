@@ -1,6 +1,8 @@
 import useFetchList from '@/hooks/useFetchList'
 import React, { useEffect, useState } from 'react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 interface Properties {
   section_code?: string
@@ -31,30 +33,37 @@ const PowerInterruptionTrend = ({ section_code, levelName, levelCode }: Properti
       setChartData(formattedData)
     }
   }, [graphValues])
-
+  const isLoading = !graphValues || graphValues.length === 0
   return (
     <div className='w-full rounded-lg p-4'>
       <p className='h3-1stop mb-6'>10-day Power Interruption Trend</p>
       <div className='pl-5'>
-        <ResponsiveContainer
-          width='100%'
-          height={300}
-        >
-          <AreaChart data={chartData}>
-            <XAxis
-              dataKey='day'
-              className='axial-label-1stop'
-            />
-            <YAxis hide />
-            <Tooltip />
-            <Area
-              type='monotone'
-              dataKey='interruptions'
-              stroke='#0091ff'
-              fill='var(--colour-chart-3)'
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+        {isLoading ? (
+          <Skeleton
+            height={300}
+            width={1000}
+          />
+        ) : (
+          <ResponsiveContainer
+            width='160%'
+            height={200}
+          >
+            <AreaChart data={chartData}>
+              <XAxis
+                dataKey='day'
+                hide
+              />
+              <YAxis hide />
+              <Tooltip />
+              <Area
+                type='monotone'
+                dataKey='interruptions'
+                stroke='#0091ff'
+                fill='#0091ff'
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )

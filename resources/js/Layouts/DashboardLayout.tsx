@@ -7,6 +7,12 @@ import useFetchList from '@/hooks/useFetchList'
 import * as motion from 'framer-motion/client'
 import DropdownAccordion from './DropdownAccordion'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import {
+  displayName,
+  findCircles,
+  OfficeInfo,
+  OfficeStructure,
+} from '@/interfaces/dashboard_accordion'
 
 interface Properties {
   children?: ReactNode
@@ -19,201 +25,42 @@ interface Properties {
   levelCode: string
 }
 
-interface OfficeInfo extends Model {
-  circle_code?: string
-  circle_id?: string
-  circle_name?: string
-  data_date?: string
-  division_code?: string
-  division_id?: string
-  division_name?: string
-  region_code?: string
-  region_id?: string
-  region_name?: string
-  section_code?: string
-  section_id?: string
-  section_name?: string
-  subdivision_code?: string
-  subdivision_id?: string
-  subdivision_name?: string
-  level_name?: string
-}
-
-export interface OfficeStructure {
-  region_code: string
-  region_name: string
-  isOpen: boolean
-  displayAll: boolean
-  circles: {
-    circle_name: string
-    circle_code: string
-    isOpen: boolean
-    displayAll: boolean
-    divisions: {
-      division_code: string
-      division_name: string
-      isOpen: boolean
-      displayAll: boolean
-      subdivisions: {
-        subdivision_code: string
-        subdivision_name: string
-        displayAll: boolean
-        isOpen: boolean
-        sections: { section_code: string; section_name: string }[]
-      }[]
-    }[]
-  }[]
-}
-
-const findCircles = (regionCode: string, officesInCircle: OfficeInfo[]) => {
-  const circles: {
-    circle_code: string
-    circle_name: string
-    isOpen: boolean
-    displayAll: boolean
-    divisions: {
-      division_code: string
-      division_name: string
-      isOpen: boolean
-      displayAll: boolean
-      subdivisions: {
-        subdivision_code: string
-        subdivision_name: string
-        isOpen: boolean
-        displayAll: boolean
-        sections: { section_code: string; section_name: string }[]
-      }[]
-    }[]
-  }[] = []
-  officesInCircle.forEach((office) => {
-    if (office.region_code != regionCode) return
-    const ifExists = circles.find((circle) => circle.circle_code === office.circle_code)
-    if (ifExists == null) {
-      circles.push({
-        circle_code: office.circle_code ?? '',
-        circle_name: office.circle_name ?? '',
-        isOpen: false,
-        displayAll: true,
-        divisions: findDivisions(office.circle_code ?? '', officesInCircle),
-      })
-    }
-  })
-  return circles
-}
-
-const findDivisions = (circleCode: string, officesInCircle: OfficeInfo[]) => {
-  const divisions: {
-    division_code: string
-    division_name: string
-    isOpen: boolean
-    displayAll: boolean
-    subdivisions: {
-      subdivision_code: string
-      subdivision_name: string
-      isOpen: boolean
-      displayAll: boolean
-      sections: { section_code: string; section_name: string }[]
-    }[]
-  }[] = []
-  officesInCircle.forEach((office) => {
-    if (office.circle_code != circleCode) return
-    const ifExists = divisions.find((division) => division.division_code === office.division_code)
-    if (ifExists == null) {
-      divisions.push({
-        division_code: office.division_code ?? '',
-        division_name: office.division_name ?? '',
-        isOpen: false,
-        displayAll: true,
-        subdivisions: findSubdivisions(office.division_code ?? '', officesInCircle),
-      })
-    }
-  })
-  return divisions
-}
-
-const findSubdivisions = (divisionCode: string, officesInCircle: OfficeInfo[]) => {
-  const subdivisions: {
-    subdivision_code: string
-    subdivision_name: string
-    isOpen: boolean
-    displayAll: boolean
-    sections: { section_code: string; section_name: string }[]
-  }[] = []
-
-  officesInCircle.forEach((office) => {
-    if (office.division_code != divisionCode) return
-    const ifExists = subdivisions.find(
-      (subdivision) => subdivision.subdivision_code === office.subdivision_code
-    )
-    if (ifExists == null) {
-      subdivisions.push({
-        subdivision_code: office.subdivision_code ?? '',
-        subdivision_name: office.subdivision_name ?? '',
-        isOpen: false,
-        displayAll: true,
-        sections: findSections(office.subdivision_code ?? '', officesInCircle),
-      })
-    }
-  })
-
-  return subdivisions
-}
-
-const findSections = (subdivisionCode: string, officesInCircle: OfficeInfo[]) => {
-  const sections: { section_code: string; section_name: string }[] = []
-
-  officesInCircle.forEach((office) => {
-    if (office.subdivision_code === subdivisionCode) {
-      const ifExists = sections.find((section) => section.section_code === office.section_code)
-      if (ifExists == null) {
-        sections.push({
-          section_code: office.section_code ?? '',
-          section_name: office.section_name ?? '',
-        })
-      }
-    }
-  })
-
-  return sections
-}
-
 export default function DashboardLayout({
   children,
   type = 'Service delivery',
-  sectionCode,
-  setSectionCode,
   levelName,
   setLevelName,
-  levelCode,
   setLevelCode,
 }: Properties) {
-  const [dropdownValues] = useFetchList<OfficeInfo>('subset-level')
+  const [dropdownValues] = useFetchList<OfficeInfo>(route('subset.level'))
   const [levelType, setLevelType] = useState('')
-  const [levelTypeName, setLevelTypename] = useState('')
+  const [levelTypeName, setLevelTypeName] = useState('')
   const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>('find-level')
   useEffect(() => {
-    if (level?.level === 'region') {
-      setLevelName('office_code')
-      setLevelCode(level.record.region_code ?? '')
-    }
-    if (level?.level === 'circle') {
-      setLevelName('office_code')
-      setLevelCode(level.record.circle_code ?? '')
-    }
-    if (level?.level === 'division') {
-      setLevelName('office_code')
-      setLevelCode(level.record.division_code ?? '')
-    }
-    if (level?.level === 'subdivision') {
-      setLevelName('office_code')
-      setLevelCode(level.record.subdivision_code ?? '')
-    }
-    if (level?.level === 'section') {
-      setLevelName('section_code')
-      setLevelCode(level.record.section_code ?? '')
+    switch (level?.level) {
+      case 'region':
+        setLevelName('office_code')
+        setLevelCode(level.record.region_code ?? '')
+        break
+      case 'circle':
+        setLevelName('office_code')
+        setLevelCode(level.record.circle_code ?? '')
+        break
+      case 'division':
+        setLevelName('office_code')
+        setLevelCode(level.record.division_code ?? '')
+        break
+      case 'subdivision':
+        setLevelName('office_code')
+        setLevelCode(level.record.subdivision_code ?? '')
+        break
+      case 'section':
+        setLevelName('section_code')
+        setLevelCode(level.record.section_code ?? '')
+        break
     }
   }, [level, setLevelCode, setLevelName])
-  const [sectionName, setSectionName] = useState('SELECT SECTION')
+
   const officeStructures = useMemo(() => {
     const regions: OfficeStructure[] = []
     if (dropdownValues == null) {
@@ -250,20 +97,6 @@ export default function DashboardLayout({
   }, [userInfo])
   const userInitial = User?.name ? User.name.charAt(0).toUpperCase() : ''
   const userName = User?.name || ''
-  const selectSection = (section_code: string, section_name: string) => {
-    if (setSectionCode != null) {
-      setSectionCode(section_code)
-    }
-    setSectionName(section_name)
-  }
-
-  const displayName = () => {
-    if (level?.level === 'region') return level.record.region_name
-    if (level?.level === 'circle') return level.record.circle_name
-    if (level?.level === 'division') return level?.record.division_name
-    if (level?.level === 'subdivision') return level?.record.subdivision_name
-    if (level?.level === 'section') return level?.record.section_name
-  }
 
   return (
     <div className='flex w-full flex-col sm:relative'>
@@ -279,7 +112,7 @@ export default function DashboardLayout({
             <p className='subheader-1stop'>{type}</p>
             <p className='small-1stop-header'>
               {levelType !== '' ? levelType : level?.level}:{' '}
-              <b>{levelTypeName !== '' ? levelTypeName : displayName()}</b>
+              <b>{levelTypeName !== '' ? levelTypeName : displayName(level)}</b>
             </p>
           </div>
           <div className='z-[999] hidden gap-5 md:flex md:flex-row'>
@@ -289,7 +122,7 @@ export default function DashboardLayout({
               setLevel={setLevelName}
               setLevelCode={setLevelCode}
               setLevelType={setLevelType}
-              setLevelTypename={setLevelTypename}
+              setLevelTypeName={setLevelTypeName}
             />
             <div className='flex flex-col items-start justify-start'>
               <div
@@ -373,9 +206,6 @@ export default function DashboardLayout({
           {children}
         </main>
       </motion.div>
-      {/* <div className={cn(`fixed inset-0 ml-24 mt-20 flex flex-col`, `${focused ? 'ml-64' : ''}`)}>
-        {children}
-      </div> */}
     </div>
   )
 }

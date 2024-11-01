@@ -2,6 +2,8 @@ import useFetchList from '@/hooks/useFetchList'
 import React from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import MoreButton from '../MoreButton'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 interface Properties {
   section_code?: string
@@ -55,41 +57,49 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
     )
   }
 
+  const isLoading = !graphValues || graphValues.length === 0
+
   return (
     <div className='rounded-lg bg-white p-4'>
       <h3 className='h3-1stop pb-5'>Category-wise SLA Performance</h3>
       <div>
-        <ResponsiveContainer
-          width='100%'
-          //   minWidth={700}
-          height={300}
-        >
-          <BarChart
-            data={groupedData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            barSize={20}
+        {isLoading ? (
+          <Skeleton
+            height={400}
+            width={1000}
+          />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={300}
           >
-            <CartesianGrid strokeDasharray='3 3' />
-            <XAxis
-              dataKey='name'
-              tick={<CustomTick />}
-              height={80}
-              interval={0}
-            />
-            <YAxis hide />
-            <Tooltip />
-            <Bar
-              dataKey='within_sla_cnt'
-              stackId='a'
-              fill='var(--colour-1stop-highlight)'
-            />
-            <Bar
-              dataKey='beyond_sla_cnt'
-              stackId='a'
-              fill='var(--colour-1stop-accent2)'
-            />
-          </BarChart>
-        </ResponsiveContainer>
+            <BarChart
+              data={groupedData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              barSize={40}
+            >
+              <CartesianGrid strokeDasharray='3 3' />
+              <XAxis
+                dataKey='name'
+                tick={<CustomTick />}
+                height={80}
+                interval={0}
+              />
+              <YAxis hide />
+              <Tooltip />
+              <Bar
+                dataKey='within_sla_cnt'
+                stackId='a'
+                fill='#1b50b3'
+              />
+              <Bar
+                dataKey='beyond_sla_cnt'
+                stackId='a'
+                fill='#76a5ff'
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
       <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
         <MoreButton />

@@ -1,15 +1,13 @@
-import AccordionItem from '@/ui/Accordian/AccordianItem'
 import React, { useEffect, useState } from 'react'
-import { OfficeStructure } from './DashboardLayout'
-import CheckBox from '@/ui/form/CheckBox'
+
 import RegionLevel from '@/Components/LayoutAccordions/RegionLevel'
-import { off } from 'process'
 import CircleLevel from '@/Components/LayoutAccordions/CircleLevel'
 import DivisionLevel from '@/Components/LayoutAccordions/DivisionLevel'
 import SectionLevel from '@/Components/LayoutAccordions/SectionLevel'
 import SubdivisionLevel from '@/Components/LayoutAccordions/SubdivisionLevel'
-import useFetchList from '@/hooks/useFetchList'
+
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { OfficeStructure } from '@/interfaces/dashboard_accordion'
 
 interface Properties {
   officeStructures: OfficeStructure[] | undefined
@@ -17,7 +15,7 @@ interface Properties {
   level: string
   setLevelCode: React.Dispatch<React.SetStateAction<string>>
   setLevelType: React.Dispatch<React.SetStateAction<string>>
-  setLevelTypename: React.Dispatch<React.SetStateAction<string>>
+  setLevelTypeName: React.Dispatch<React.SetStateAction<string>>
 }
 interface LevelType {
   level: string
@@ -26,10 +24,9 @@ interface LevelType {
 const DropdownAccordion = ({
   officeStructures,
   setLevel,
-  level,
   setLevelCode,
   setLevelType,
-  setLevelTypename,
+  setLevelTypeName,
 }: Properties) => {
   const setLevelAndCode = (
     level: string,
@@ -40,15 +37,18 @@ const DropdownAccordion = ({
     setLevel(level ?? '')
     setLevelCode(levelCode ?? '')
     setLevelType(levelType ?? '')
-    setLevelTypename(levelTypeName ?? '')
+    setLevelTypeName(levelTypeName ?? '')
+    setTimeout(() => setAccordionOpen(!accordionOpen), 500)
   }
+
   const [levelType] = useFetchRecord<LevelType>('find-level')
-  const [office, setOffice] = useState(officeStructures)
+  const [office, setOffice] = useState<OfficeStructure[] | undefined>(officeStructures)
   useEffect(() => {
     setOffice(officeStructures)
   }, [officeStructures])
 
   const [accordionOpen, setAccordionOpen] = useState(false)
+
   const onAccortdionClick = (
     regionCode?: string,
     circleCode?: string | null,
@@ -60,22 +60,22 @@ const DropdownAccordion = ({
         if (region.region_code === regionCode) {
           return {
             ...region,
-            isOpen: true,
+            isOpen: circleCode != null ? region.isOpen : !region.isOpen,
             circles: region.circles.map((circle) => {
               if (circle.circle_code === circleCode) {
                 return {
                   ...circle,
-                  isOpen: true,
+                  isOpen: divisionCode != null ? circle.isOpen : !circle.isOpen,
                   divisions: circle.divisions.map((division) => {
                     if (division.division_code === divisionCode) {
                       return {
                         ...division,
-                        isOpen: true,
+                        isOpen: subDivisionCode != null ? division.isOpen : !division.isOpen,
                         subdivisions: division.subdivisions.map((subdivision) => {
                           if (subdivision.subdivision_code === subDivisionCode) {
                             return {
                               ...subdivision,
-                              isOpen: true,
+                              isOpen: !subdivision.isOpen,
                               sections: subdivision.sections.map((section) => {
                                 return {
                                   ...section,
@@ -211,114 +211,6 @@ const DropdownAccordion = ({
           setLevelAndCode={setLevelAndCode}
         />
       )}
-
-      {/* <AccordionItem
-        title='Set Reporting Level'
-        onAccortdionClick={() => setAccordionOpen(!accordionOpen)}
-        isOpen={accordionOpen}
-      >
-        {office?.map((region) => {
-          return (
-            <AccordionItem
-              key={region.region_code}
-              title={`${region.region_name} (Region)`}
-              isOpen={region.isOpen}
-              onAccortdionClick={() => onAccortdionClick(region.region_code, null, null, null)}
-            >
-              {region.displayAll && (
-                <CheckBox
-                  toggleValue={() => setLevelAndCode('office_code', region.region_code)}
-                  label='Select all divisions'
-                />
-              )}
-              {region.circles?.map((circle) => {
-                return (
-                  <AccordionItem
-                    key={circle.circle_code}
-                    title={`${circle.circle_name} (Circle)`}
-                    isOpen={circle.isOpen}
-                    onAccortdionClick={() =>
-                      onAccortdionClick(region.region_code, circle.circle_code, null, null)
-                    }
-                  >
-                    {circle.displayAll && (
-                      <CheckBox
-                        toggleValue={() => setLevelAndCode('office_code', circle.circle_code)}
-                        label='Select all divisions'
-                      />
-                    )}
-                    {circle.divisions?.map((division) => {
-                      return (
-                        <AccordionItem
-                          key={division.division_code}
-                          title={`${division.division_name} (Division)`}
-                          isOpen={division.isOpen}
-                          onAccortdionClick={() =>
-                            onAccortdionClick(
-                              region.region_code,
-                              circle.circle_code,
-                              division.division_code,
-                              null
-                            )
-                          }
-                        >
-                          {division.displayAll && (
-                            <CheckBox
-                              toggleValue={() =>
-                                setLevelAndCode('office_code', division.division_code)
-                              }
-                              label='Select all subdivisions'
-                            />
-                          )}
-                          {division.subdivisions?.map((subdivision) => {
-                            return (
-                              <AccordionItem
-                                key={subdivision.subdivision_code}
-                                title={`${subdivision.subdivision_name} (Subdivision)`}
-                                isOpen={subdivision.isOpen}
-                                onAccortdionClick={() =>
-                                  onAccortdionClick(
-                                    region.region_code,
-                                    circle.circle_code,
-                                    division.division_code,
-                                    subdivision.subdivision_code
-                                  )
-                                }
-                              >
-                                {subdivision.displayAll && (
-                                  <CheckBox
-                                    toggleValue={() =>
-                                      setLevelAndCode('office_code', subdivision.subdivision_code)
-                                    }
-                                    label='Select all sections'
-                                  />
-                                )}
-                                {subdivision.sections.map((section) => {
-                                  return (
-                                    <button
-                                      className='small-1stop px-6 text-left text-gray-500 hover:bg-1stop-highlight hover:text-white'
-                                      key={section.section_code}
-                                      onClick={() =>
-                                        setLevelAndCode('section_code', section.section_code)
-                                      }
-                                    >
-                                      {section.section_name}
-                                    </button>
-                                  )
-                                })}
-                              </AccordionItem>
-                            )
-                          })}
-                        </AccordionItem>
-                      )
-                    })}
-                  </AccordionItem>
-                )
-              })}
-            </AccordionItem>
-          )
-        })}
-      </AccordionItem> */}
     </div>
   )
 }
