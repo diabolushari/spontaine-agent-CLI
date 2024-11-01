@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { OfficeStructure } from './DashboardLayout'
+
 import RegionLevel from '@/Components/LayoutAccordions/RegionLevel'
 import CircleLevel from '@/Components/LayoutAccordions/CircleLevel'
 import DivisionLevel from '@/Components/LayoutAccordions/DivisionLevel'
@@ -7,6 +7,7 @@ import SectionLevel from '@/Components/LayoutAccordions/SectionLevel'
 import SubdivisionLevel from '@/Components/LayoutAccordions/SubdivisionLevel'
 
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { OfficeStructure } from '@/interfaces/dashboard_accordion'
 
 interface Properties {
   officeStructures: OfficeStructure[] | undefined
@@ -41,7 +42,7 @@ const DropdownAccordion = ({
   }
 
   const [levelType] = useFetchRecord<LevelType>('find-level')
-  const [office, setOffice] = useState(officeStructures)
+  const [office, setOffice] = useState<OfficeStructure[] | undefined>(officeStructures)
   useEffect(() => {
     setOffice(officeStructures)
   }, [officeStructures])
@@ -59,22 +60,22 @@ const DropdownAccordion = ({
         if (region.region_code === regionCode) {
           return {
             ...region,
-            isOpen: true,
+            isOpen: circleCode != null ? region.isOpen : !region.isOpen,
             circles: region.circles.map((circle) => {
               if (circle.circle_code === circleCode) {
                 return {
                   ...circle,
-                  isOpen: true,
+                  isOpen: divisionCode != null ? circle.isOpen : !circle.isOpen,
                   divisions: circle.divisions.map((division) => {
                     if (division.division_code === divisionCode) {
                       return {
                         ...division,
-                        isOpen: true,
+                        isOpen: subDivisionCode != null ? division.isOpen : !division.isOpen,
                         subdivisions: division.subdivisions.map((subdivision) => {
                           if (subdivision.subdivision_code === subDivisionCode) {
                             return {
                               ...subdivision,
-                              isOpen: true,
+                              isOpen: !subdivision.isOpen,
                               sections: subdivision.sections.map((section) => {
                                 return {
                                   ...section,
