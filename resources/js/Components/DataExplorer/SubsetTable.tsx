@@ -34,6 +34,14 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
           source: dimension.info.column ?? '',
           type: 'string',
         })
+        //if column is section_code then add section_name
+        if (dimension.info.column === 'section_code') {
+          cols.push({
+            name: 'Section Name',
+            source: 'section_name',
+            type: 'string',
+          })
+        }
       })
 
     subset.measures?.forEach((measure) => {
