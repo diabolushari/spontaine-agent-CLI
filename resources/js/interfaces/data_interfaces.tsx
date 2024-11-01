@@ -252,3 +252,5 @@ export interface JobStatuses extends Model {
   error_message?: string
   total_records: string
 }
+
+
