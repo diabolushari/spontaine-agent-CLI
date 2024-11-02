@@ -143,7 +143,9 @@ Route::delete('subset/{detail}', SubsetDeleteController::class)
 
 Route::get('subset-level', SubsetDropdownApiController::class)
     ->name('subset.level');
-Route::get('find-level', FindLevelController::class);
+
+Route::get('find-level', FindLevelController::class)
+    ->name('find-level');
 
 Route::get('dataset/{subsetDetail}', SubsetTableController::class)
     ->name('subset.table');

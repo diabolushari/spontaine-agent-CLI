@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react'
-import { Model, User } from '@/interfaces/data_interfaces'
+import { User } from '@/interfaces/data_interfaces'
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/utils'
 import SideBar from './SideBar'
@@ -35,7 +35,8 @@ export default function DashboardLayout({
   const [dropdownValues] = useFetchList<OfficeInfo>(route('subset.level'))
   const [levelType, setLevelType] = useState('')
   const [levelTypeName, setLevelTypeName] = useState('')
-  const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>('find-level')
+  const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
+
   useEffect(() => {
     switch (level?.level) {
       case 'region':

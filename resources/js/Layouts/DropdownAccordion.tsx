@@ -17,10 +17,12 @@ interface Properties {
   setLevelType: React.Dispatch<React.SetStateAction<string>>
   setLevelTypeName: React.Dispatch<React.SetStateAction<string>>
 }
+
 interface LevelType {
   level: string
   record: string
 }
+
 const DropdownAccordion = ({
   officeStructures,
   setLevel,
@@ -41,7 +43,7 @@ const DropdownAccordion = ({
     setTimeout(() => setAccordionOpen(!accordionOpen), 500)
   }
 
-  const [levelType] = useFetchRecord<LevelType>('find-level')
+  const [levelType] = useFetchRecord<LevelType>(route('find-level'))
   const [office, setOffice] = useState<OfficeStructure[] | undefined>(officeStructures)
   useEffect(() => {
     setOffice(officeStructures)
