@@ -67,6 +67,8 @@ readonly class SubsetQueryBuilder
             );
         }
 
+        //        dd($groupingColumns);
+
         $selectStatement = implode(',', [
             ...$selectColumns,
             ...$measureColumns,
@@ -191,7 +193,7 @@ readonly class SubsetQueryBuilder
     ): void {
         //if office info is included in the subset then include the hierarchy table
         $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query) {
-            if ($dimension->info == null || $dimension->info->column !== 'section_code') {
+            if ($dimension->info == null || $dimension->info->column !== 'section_code' || $dimension->filter_only === 1) {
                 return;
             }
             $hierarchyTable = $this->getDetail();
@@ -201,15 +203,7 @@ readonly class SubsetQueryBuilder
             $hierarchyQuery = $this->joinDataTable->join($hierarchyTable)
                 ->selectRaw(
                     'section_name_record.name as section_name, '
-                    .'section_code as hierarchy_section_code, '
-                    .'region_code_record.name as region_code, '
-                    .'region_name_record.name as region_name, '
-                    .'circle_code_record.name as circle_code, '
-                    .'circle_name_record.name as circle_name, '
-                    .'division_code_record.name as division_code, '
-                    .'division_name_record.name as division_name, '
-                    .'subdivision_code_record.name as subdivision_code,'
-                    .'subdivision_name_record.name as subdivision_name'
+                    .'section_code as hierarchy_section_code'
                 );
 
             $query->joinSub($hierarchyQuery, 'hierarchy', function ($join) use ($detail) {
@@ -221,24 +215,9 @@ readonly class SubsetQueryBuilder
             });
 
             $selectColumns[] = 'hierarchy.section_name as section_name';
-            $selectColumns[] = 'hierarchy.region_code as region_code';
-            $selectColumns[] = 'hierarchy.region_name as region_name';
-            $selectColumns[] = 'hierarchy.circle_code as circle_code';
-            $selectColumns[] = 'hierarchy.circle_name as circle_name';
-            $selectColumns[] = 'hierarchy.division_code as division_code';
-            $selectColumns[] = 'hierarchy.division_name as division_name';
-            $selectColumns[] = 'hierarchy.subdivision_code as subdivision_code';
-            $selectColumns[] = 'hierarchy.subdivision_name as subdivision_name';
+
             if ($subsetDetail->group_data === 1) {
                 $groupingColumns[] = 'hierarchy.section_name';
-                $groupingColumns[] = 'hierarchy.region_code';
-                $groupingColumns[] = 'hierarchy.region_name';
-                $groupingColumns[] = 'hierarchy.circle_code';
-                $groupingColumns[] = 'hierarchy.circle_name';
-                $groupingColumns[] = 'hierarchy.division_code';
-                $groupingColumns[] = 'hierarchy.division_name';
-                $groupingColumns[] = 'hierarchy.subdivision_code';
-                $groupingColumns[] = 'hierarchy.subdivision_name';
             }
         });
     }
