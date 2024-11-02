@@ -21,7 +21,7 @@ export default function Table({
               return (
                 <th
                   scope='col'
-                  className='px-3 py-3 text-left text-sm text-gray-600'
+                  className='small-1stop px-3 py-3 text-left text-gray-600'
                   key={head}
                 >
                   {head}
@@ -31,7 +31,7 @@ export default function Table({
             {editColumn && (
               <th
                 scope='col'
-                className='subheader-sm-1stop px-3 py-3 text-left text-base text-gray-500'
+                className='axial-label-1stop px-3 py-3 text-left text-base text-gray-500'
               ></th>
             )}
           </tr>

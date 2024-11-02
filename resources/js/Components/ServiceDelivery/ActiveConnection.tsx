@@ -5,6 +5,7 @@ import useFetchList from '@/hooks/useFetchList'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
 
 interface Properties {
   section_code?: string
@@ -83,7 +84,9 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
         </div>
       </div>
       <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
-        <MoreButton />
+        <Link href='/dataset/17'>
+          <MoreButton />
+        </Link>
       </div>
     </Card>
   )

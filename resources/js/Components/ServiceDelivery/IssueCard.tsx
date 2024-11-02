@@ -3,6 +3,7 @@ import MoreButton from '../MoreButton'
 import useFetchList from '@/hooks/useFetchList'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
 
 interface Properties {
   section_code?: string
@@ -48,7 +49,9 @@ const IssueCard = ({ section_code, levelName, levelCode }: Properties) => {
         </div>
       </div>
       <div className='flex w-full max-w-md cursor-pointer justify-end p-4'>
-        <MoreButton />
+        <Link href='/dataset/36'>
+          <MoreButton />
+        </Link>
       </div>
     </div>
   )

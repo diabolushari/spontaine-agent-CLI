@@ -41,11 +41,11 @@ const PowerInterruptionTrend = ({ section_code, levelName, levelCode }: Properti
         {isLoading ? (
           <Skeleton
             height={300}
-            width={1000}
+            width='100%'
           />
         ) : (
           <ResponsiveContainer
-            width='160%'
+            width='100%'
             height={200}
           >
             <AreaChart data={chartData}>

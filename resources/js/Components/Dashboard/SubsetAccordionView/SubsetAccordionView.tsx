@@ -28,9 +28,9 @@ export default function SubsetAccordionView({ subset }: Readonly<Props>) {
           ? `${measure.info.field_name} (${measure.info.unit_field_name})`
           : measure.info.field_name
 
-      if (subset.group_data === 1) {
-        fieldName += ` (${measure.aggregation})`
-      }
+      //   if (subset.group_data === 1) {
+      //     fieldName += ` (${measure.aggregation})`
+      //   }
 
       cols.push({
         name: fieldName ?? '',

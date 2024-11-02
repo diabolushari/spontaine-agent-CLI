@@ -4,6 +4,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
 
 interface Properties {
   section_code?: string
@@ -66,7 +67,7 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
         {isLoading ? (
           <Skeleton
             height={400}
-            width={1000}
+            width='100%'
           />
         ) : (
           <ResponsiveContainer
@@ -102,7 +103,9 @@ const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
         )}
       </div>
       <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
-        <MoreButton />
+        <Link href='/dataset/38'>
+          <MoreButton />
+        </Link>
       </div>
     </div>
   )

@@ -3,6 +3,7 @@ import SelectList from '@/ui/form/SelectList'
 import MoreButton from '../MoreButton'
 import useFetchList from '@/hooks/useFetchList'
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
+import { Link } from '@inertiajs/react'
 
 interface Properties {
   section_code?: string
@@ -114,7 +115,9 @@ const PendancyCard = ({ section_code, levelName, levelCode }: Properties) => {
       </div>
 
       <div className='mt-9 flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
-        <MoreButton />
+        <Link href='/dataset/39'>
+          <MoreButton />
+        </Link>
       </div>
     </div>
   )

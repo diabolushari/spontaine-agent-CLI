@@ -5,7 +5,7 @@ interface Properties {
   svgSize?: string
 }
 
-export default function Spinner({ svgStyle, svgSize = 'w-8 h-8' }: Properties) {
+export default function Spinner({ svgStyle, svgSize = 'w-14 h-14' }: Properties) {
   return (
     <span className={svgStyle}>
       <svg
@@ -16,6 +16,7 @@ export default function Spinner({ svgStyle, svgSize = 'w-8 h-8' }: Properties) {
         <circle
           className='spinner_circle'
           stroke='currentColor'
+          fill='var(--colour-1stop-accent2)'
           cx='50'
           cy='50'
           r='45'

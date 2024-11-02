@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recha
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Link } from '@inertiajs/react'
 
 interface Properties {
   section_code?: string
@@ -19,8 +20,8 @@ export interface NewConnectionGraphValues {
   section_code: number
   within_sla_cnt: number
   beyond_sla_cnt: number
-  avg_beyond_sla_days: Float32Array
-  avg_within_sla_days: Float32Array
+  avg_beyond_sla_days: number
+  avg_within_sla_days: number
 }
 
 const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
@@ -28,11 +29,35 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
 
   const isLoading = !graphValues || graphValues.length === 0
 
-  const receivedCount = isLoading ? 0 : graphValues[0]?.received_cnt || 0
-  const withinSlaCount = isLoading ? 0 : graphValues[0]?.within_sla_cnt || 0
-  const beyondSlaCount = isLoading ? 0 : graphValues[0]?.beyond_sla_cnt || 0
-  const avgBeyondSlaDays = isLoading ? 0 : graphValues[0]?.avg_beyond_sla_days || 0
-  const avgWithinSlaDays = isLoading ? 0 : graphValues[0]?.avg_within_sla_days || 0
+  const totalReceivedCnt = graphValues.reduce((sum, value) => sum + value.received_cnt, 0)
+  const totalSlaCount = graphValues.reduce((sum, value) => sum + value.within_sla_cnt, 0)
+  const totalBeyondSlaCount = graphValues.reduce((sum, value) => sum + value.beyond_sla_cnt, 0)
+
+  const receivedCount = isLoading ? 0 : totalReceivedCnt || 0
+  const withinSlaCount = isLoading ? 0 : totalSlaCount || 0
+  const beyondSlaCount = isLoading ? 0 : totalBeyondSlaCount || 0
+
+  const totalBeyondSlaDays = graphValues.reduce(
+    (sum, value) => sum + value.beyond_sla_cnt * value.avg_beyond_sla_days,
+    0
+  )
+  const avgBeyondSlaDays = isLoading
+    ? 0
+    : beyondSlaCount > 0
+      ? totalBeyondSlaDays / beyondSlaCount
+      : 0
+
+  const totalWithinSlaDays = graphValues.reduce(
+    (sum, value) => sum + value.within_sla_cnt * value.avg_within_sla_days,
+    0
+  )
+  const avgWithinSlaDays = isLoading
+    ? 0
+    : withinSlaCount > 0
+      ? totalWithinSlaDays / withinSlaCount
+      : 0
+
+  //   const avgWithinSlaDays = isLoading ? 0 : graphValues[0]?.avg_within_sla_days || 0
 
   const data = [
     { name: 'Completed within SLA', value: withinSlaCount },
@@ -72,7 +97,7 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
         <div className='flex flex-col gap-2'>
           <div className='flex flex-col gap-1 py-2'>
             <p className='xlmetric-1stop'>
-              {isLoading ? <Skeleton width={50} /> : `${withinSlaCount}/${receivedCount}`}
+              {isLoading ? <Skeleton width='50%' /> : `${withinSlaCount}/${receivedCount}`}
             </p>
             <p className='small-1stop-header'>
               New Svc Connections <br /> Completed Within SLA
@@ -159,9 +184,9 @@ const NewConnections = ({ section_code, levelName, levelCode }: Properties) => {
         )}
       </div>
 
-      <div className='flex w-full justify-end hover:cursor-pointer hover:opacity-50'>
+      <Link href='/dataset/37'>
         <MoreButton />
-      </div>
+      </Link>
 
       {/* <p className='small-1stop-header mt-4 self-end text-right'>Last Updated {latestDataDate}</p> */}
     </div>
