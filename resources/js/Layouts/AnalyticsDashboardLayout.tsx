@@ -96,7 +96,7 @@ export default function AnalyticsDashboardLayout({
       />
       <ToastContainer />
 
-      <div className='mx-auto mt-4 hidden w-11/12 flex-col px-4 py-10 sm:flex 2xl:w-10/12'>
+      <div className='mt-4 hidden w-full flex-col px-5 py-10 sm:flex'>
         <div className='flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0'>
           <div className='flex-shrink-0'>
             <Link

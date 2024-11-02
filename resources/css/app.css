@@ -19,7 +19,7 @@ body {
 }
 
 .standard-td {
-  @apply max-w-xs break-words px-3 py-6;
+  @apply axial-label-1stop max-w-xs break-words px-3 py-6;
 }
 
 .link {

@@ -32,7 +32,7 @@ const AccordionItem = ({ title, children, isOpen, onAccortdionClick }: Propertie
         />
       </div>
       {isOpen && (
-        <div className='flex flex-col gap-3 px-4 pb-2 pt-4 text-sm text-gray-500'>{children}</div>
+        <div className='flex flex-col gap-3 px-4 pb-2 pt-4 text-sm text-slate-700'>{children}</div>
       )}
     </div>
     // </div>

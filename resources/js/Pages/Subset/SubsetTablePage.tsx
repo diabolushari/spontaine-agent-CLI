@@ -37,7 +37,7 @@ export default function SubsetTablePage({ subset }: Readonly<Props>) {
             </Card>
           </div>
           <div className='flex flex-col gap-5'>
-            <Card className='p-2'>
+            <Card className='bg-1stop-white p-2 rounded-2xl'>
               <AccordionItem
                 title={'Filters'}
                 onAccortdionClick={() => setIsFilterOpen((old) => !old)}

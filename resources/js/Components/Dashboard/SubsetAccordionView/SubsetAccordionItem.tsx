@@ -24,29 +24,37 @@ export default function SubsetAccordionItem({ office, subset, summary, cols }: R
         } body-1stop flex w-full justify-between border-b px-2 py-2 text-1stop-gray`}
         onClick={() => setIsOpen((old) => !old)}
       >
-        <div className='flex flex-col gap-2 px-4 py-1'>
-          <p className='small-1stop capitalize text-black'>
+        <div className='m-2 flex w-full flex-col gap-2 rounded-2xl bg-1stop-white p-4'>
+          <p className='subheader-sm-1stop uppercase text-black'>
             {office.level} : <b>{office.office_name}</b>
           </p>
-          <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4'>
+          <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3'>
             {cols.map((col) => (
               <div
                 className='flex flex-col'
                 key={col.source}
               >
-                <p>{col.name}</p>
-                <p>{summaryRecord == null ? '-' : (summaryRecord[col.source] ?? '-')}</p>
+                <p className=''>{col.name}</p>
+                <p className='mdmetric-1stop text-black'>
+                  {summaryRecord == null
+                    ? '-'
+                    : /^\d+\.\d+$/.test(summaryRecord[col.source])
+                      ? Number(summaryRecord[col.source]).toFixed(2)
+                      : summaryRecord[col.source]}
+                </p>
               </div>
             ))}
           </div>
         </div>
-        <ChevronDownIcon
-          className={`${
-            isOpen
-              ? 'rotate-180 transition-transform duration-200 ease-linear'
-              : 'transition-transform duration-200 ease-linear'
-          } ml-auto h-5 w-5 self-center rounded-lg`}
-        />
+        <div className='flex justify-center rounded-full bg-1stop-accent2 p-4 hover:cursor-pointer hover:bg-1stop-highlight'>
+          <ChevronDownIcon
+            className={`${
+              isOpen
+                ? 'rotate-180 transition-transform duration-200 ease-linear'
+                : 'transition-transform duration-200 ease-linear'
+            } ml-auto h-5 w-5 self-center rounded-lg`}
+          />
+        </div>
       </div>
       {isOpen && (
         <div className='flex flex-col gap-3 px-4 pb-2 pl-6 pt-4 text-sm text-gray-500'>
