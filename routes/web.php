@@ -35,6 +35,8 @@ use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\TabController;
+use App\Models\DataLoader\DataLoaderJob;
+use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -150,12 +152,12 @@ Route::get('find-level', FindLevelController::class)
 Route::get('dataset/{subsetDetail}', SubsetTableController::class)
     ->name('subset.table');
 
-//Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
-//
-//    $dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
-//
-//    return $job->run($dataLoaderJob);
-//
-//});
+Route::get('test/{dataLoaderJob}', function (DataLoaderJob $dataLoaderJob, RunScheduledJob $job) {
+
+    $dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
+
+    return $job->run($dataLoaderJob);
+
+});
 
 require __DIR__.'/auth.php';
