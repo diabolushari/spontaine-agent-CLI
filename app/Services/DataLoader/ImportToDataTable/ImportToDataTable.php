@@ -95,14 +95,14 @@ readonly class ImportToDataTable
 
         //save data
         try {
-            DB::transaction(function () use ($dataTable, $dataDetail, $deleteExistingData) {
-                if ($deleteExistingData) {
-                    DB::table($dataDetail->table_name)->truncate();
-                }
-                foreach (array_chunk($dataTable, 1000) as $chunk) {
-                    DB::table($dataDetail->table_name)->insert($chunk);
-                }
-            });
+            //            DB::transaction(function () use ($dataTable, $dataDetail, $deleteExistingData) {
+            if ($deleteExistingData) {
+                DB::table($dataDetail->table_name)->truncate();
+            }
+            foreach (array_chunk($dataTable, 1000) as $chunk) {
+                DB::table($dataDetail->table_name)->insert($chunk);
+            }
+            //            });
 
         } catch (Exception $e) {
             $status['error_message'] = $e->getMessage();
