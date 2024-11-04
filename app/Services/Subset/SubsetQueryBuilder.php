@@ -103,7 +103,7 @@ readonly class SubsetQueryBuilder
                 $groupingColumns[] = $date->date_field_expression;
                 $selectColumns[] = $date->date_field_expression.' as `'.$date->info->column.'`';
             } else {
-                $groupingColumns[] = $date->info->column;
+                $groupingColumns[] = '`'.$date->info->column.'`';
                 $selectColumns[] = '`'.$date->info->column.'`';
             }
         });
@@ -133,7 +133,7 @@ readonly class SubsetQueryBuilder
                 return;
             }
 
-            $groupingColumns[] = $dimension->info->column;
+            $groupingColumns[] = '`'.$dimension->info->column.'`';
             $selectColumns[] = $dimension->info->column.'_record.name as `'.$dimension->info->column.'`';
         });
     }
@@ -154,7 +154,7 @@ readonly class SubsetQueryBuilder
             }
             if ($measure->info->unit_column != null) {
                 $measureColumns[] = '`'.$measure->info->unit_column.'`';
-                $groupingColumns[] = $measure->info->unit_column;
+                $groupingColumns[] = '`'.$measure->info->unit_column.'`';
             }
             if ($measure->expression != null) {
                 $measureColumns[] = $measure->expression.' as `'.$measure->info->column.'`';
