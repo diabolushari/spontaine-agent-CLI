@@ -17,7 +17,7 @@ const OperationsIndexPage = () => {
       setLevelCode={setLevelCode}
     >
       <DashboardPadding>
-        <div className=''>Operations</div>
+        <div className=''></div>
       </DashboardPadding>
     </DashboardLayout>
   )
