@@ -101,10 +101,10 @@ readonly class SubsetQueryBuilder
             }
             if ($date->date_field_expression != null) {
                 $groupingColumns[] = $date->date_field_expression;
-                $selectColumns[] = $date->date_field_expression.' as '.$date->info->column;
+                $selectColumns[] = $date->date_field_expression.' as `'.$date->info->column.'`';
             } else {
                 $groupingColumns[] = $date->info->column;
-                $selectColumns[] = $date->info->column;
+                $selectColumns[] = '`'.$date->info->column.'`';
             }
         });
     }
@@ -128,13 +128,13 @@ readonly class SubsetQueryBuilder
             }
             if ($dimension->column_expression != null) {
                 $groupingColumns[] = $dimension->column_expression;
-                $selectColumns[] = $dimension->column_expression.' as '.$dimension->info->column;
+                $selectColumns[] = $dimension->column_expression.' as `'.$dimension->info->column.'`';
 
                 return;
             }
 
             $groupingColumns[] = $dimension->info->column;
-            $selectColumns[] = $dimension->info->column.'_record.name as '.$dimension->info->column;
+            $selectColumns[] = $dimension->info->column.'_record.name as `'.$dimension->info->column.'`';
         });
     }
 
@@ -153,11 +153,11 @@ readonly class SubsetQueryBuilder
                 return;
             }
             if ($measure->info->unit_column != null) {
-                $measureColumns[] = $measure->info->unit_column;
+                $measureColumns[] = '`'.$measure->info->unit_column.'`';
                 $groupingColumns[] = $measure->info->unit_column;
             }
             if ($measure->expression != null) {
-                $measureColumns[] = $measure->expression.' as '.$measure->info->column;
+                $measureColumns[] = $measure->expression.' as `'.$measure->info->column.'`';
 
                 return;
             }
@@ -168,13 +168,13 @@ readonly class SubsetQueryBuilder
                         return;
                     }
                     $measureColumns[] = 'SUM('.$measure->info->column.' * '.$measure->weightInfo->column.') / SUM('
-                        .$measure->weightInfo->column.') as '.$measure->info->column;
+                        .$measure->weightInfo->column.') as `'.$measure->info->column.'`';
 
                     return;
                 }
-                $measureColumns[] = $measure->aggregation.'('.$measure->info->column.') as '.$measure->info->column;
+                $measureColumns[] = $measure->aggregation.'('.$measure->info->column.') as `'.$measure->info->column.'`';
             } else {
-                $measureColumns[] = $measure->info->column;
+                $measureColumns[] = '`'.$measure->info->column.'`';
             }
 
         });
