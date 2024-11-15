@@ -87,9 +87,9 @@ readonly class SubsetQueryBuilder
             $query->limit($subsetDetail->max_rows_to_fetch);
         }
 
-        //        foreach ($orderColumns as $order) {
-        //            $query->orderBy($order->column, $order->sortOrder);
-        //        }
+        foreach ($orderColumns as $order) {
+            $query->orderByRaw($order->column.' '.$order->sortOrder);
+        }
 
         return $query->selectRaw($selectStatement);
 
