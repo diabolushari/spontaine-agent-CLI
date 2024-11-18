@@ -7,6 +7,7 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { Link } from '@inertiajs/react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import MonthPicker from '@/ui/form/MonthPicker'
 
 interface Properties {
   section_code?: string
@@ -233,12 +234,13 @@ const ActiveConnection = ({ section_code, levelName, levelCode }: Properties) =>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>
         <p className='h3-1stop'>Active connections</p>
-        <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 px-4'>
-          {graphValues.length > 0 &&
+        <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
+          {/* {graphValues.length > 0 &&
             new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
               month: 'short',
               year: 'numeric',
-            })}
+            })} */}
+          <MonthPicker />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link href='/dataset/17'>
