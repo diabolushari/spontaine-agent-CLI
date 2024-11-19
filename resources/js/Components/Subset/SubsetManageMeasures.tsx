@@ -97,7 +97,7 @@ export default function SubsetManageMeasures({
 
   const handleCardSelection = useCallback(
     (id: number | string) => {
-      const field = addedMeasureFields.find((field) => field.field_id === id)
+      const field = addedMeasureFields.find((field) => field.subset_column === id)
       if (field != null) {
         setSelectedField(field)
         setShowDateForm(true)

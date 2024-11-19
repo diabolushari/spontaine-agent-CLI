@@ -114,7 +114,7 @@ export default function SubsetManageDimensions({
 
   const handleFieldSelection = useCallback(
     (id: number | string) => {
-      const field = addedDimensionFields.find((field) => field.field_id === id)
+      const field = addedDimensionFields.find((field) => field.subset_column === id)
       if (field != null) {
         setSelectedField(field)
         setShowDateForm(true)

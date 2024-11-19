@@ -112,7 +112,7 @@ function SubsetManageDates({
 
   const handleCardSelection = useCallback(
     (id: number | string) => {
-      const record = addedDateFields.find((field) => field.field_id == id)
+      const record = addedDateFields.find((field) => field.subset_column == id)
       if (record != null) {
         setShowDateForm(true)
         setSelectedField(record)
