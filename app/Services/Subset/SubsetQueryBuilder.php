@@ -158,7 +158,7 @@ readonly class SubsetQueryBuilder
 
             if ($dimension->sort_order != null) {
                 $orderColumns[] = new SubsetFieldOrderInfo(
-                    '`'.$dimension->info->column.'`',
+                    $dimension->info->column.'_record.name',
                     $dimension->sort_order
                 );
             }

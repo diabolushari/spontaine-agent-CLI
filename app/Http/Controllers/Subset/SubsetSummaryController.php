@@ -31,38 +31,25 @@ class SubsetSummaryController extends Controller implements HasMiddleware
 
         $filterParams = $request->all();
 
-        if ($subsetDetail->group_data === 0) {
+        if ($subsetDetail->group_data == 0) {
             return response()->json();
         }
 
-        $levels = [
-            'region',
-            'circle',
-            'division',
-            'subdivision',
-            'section',
-        ];
+        $query = $queryBuilder->query(
+            $subsetDetail,
+            true,
+            $request->level ?? 'region'
+        );
 
-        $result = [];
-        foreach ($levels as $level) {
-            $query = $queryBuilder->query($subsetDetail, true, $level);
+        $filterBuilder->filter(
+            $query,
+            $subsetDetail,
+            $filterParams
+        );
 
-            $filterBuilder->filter(
-                $query,
-                $subsetDetail,
-                $filterParams
-            );
+        $levelResult = $query->get();
 
-            $levelResult = $query->get();
-
-            $result = [
-                ...$result,
-                ...$levelResult,
-            ];
-
-        }
-
-        return response()->json($result);
+        return response()->json($levelResult);
 
     }
 }
