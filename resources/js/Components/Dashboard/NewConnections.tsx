@@ -68,7 +68,7 @@ const CustomLegend = ({ payload }: LegendProps) => {
 }
 
 const NewConnections = () => {
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
   const [graphValues] = useFetchList<NewConnectionGraphValues>(
     `subset/59?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
   )

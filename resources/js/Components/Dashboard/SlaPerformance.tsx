@@ -21,7 +21,7 @@ export interface SlaPerformanceValues {
   request_type: string
 }
 const SlaPerformance = ({ section_code, levelName, levelCode }: Properties) => {
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
   const [graphValues] = useFetchList<SlaPerformanceValues>(
     `subset/61?month_year=${selectedMonth?.getFullYear()}${selectedMonth?.getMonth() + 1}`
   )
