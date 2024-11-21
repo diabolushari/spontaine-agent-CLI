@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\SubsetFilterBuilder;
 use App\Services\Subset\SubsetQueryBuilder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Collection;
 
@@ -28,7 +29,7 @@ class SubsetDataController extends Controller implements HasMiddleware
         SubsetDetail $subsetDetail,
         SubsetQueryBuilder $queryBuilder,
         SubsetFilterBuilder $filterBuilder
-    ): Collection {
+    ): JsonResponse {
         $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
 
         $query = $queryBuilder->query($subsetDetail);
@@ -39,7 +40,9 @@ class SubsetDataController extends Controller implements HasMiddleware
             request()->all()
         );
 
-        return $query->get();
+        return response()->json([
+            'data' => $query->get(),
+        ]);
 
     }
 }
