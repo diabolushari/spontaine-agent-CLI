@@ -72,6 +72,7 @@ export default function SubjectAreaIndex({ subjectAreas }: Props) {
   const handleCardClick = useCallback((id: number | string) => {
     router.get(route('subject-area.show', { id: id }))
   }, [])
+
   return (
     <ListResourcePage
       keys={keys}
