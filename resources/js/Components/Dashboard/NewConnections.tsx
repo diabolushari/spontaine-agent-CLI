@@ -73,13 +73,6 @@ const NewConnections = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
 
-  const [pendancyValues] = useFetchRecord<{
-    data: NewConnectionGraphValues[]
-    date: number
-    month: number
-    year: number
-  }>(`subset/67?latest=date`)
-  console.log(pendancyValues)
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
     month: number

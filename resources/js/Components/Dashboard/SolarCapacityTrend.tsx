@@ -6,6 +6,7 @@ import { useState } from 'react'
 import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 export interface SolarCapacityTrendValues {
   month_year: string
@@ -17,7 +18,12 @@ export interface SolarCapacityTrendValues {
 const SolarCapacityTrend = () => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
-  const [graphValues] = useFetchList<SolarCapacityTrendValues>(`subset/71`)
+  const [graphValues] = useFetchRecord<{
+    data: SolarCapacityTrendValues[]
+    month: number
+    year: number
+  }>(`/subset/71?latest=month_year`)
+  console.log(graphValues)
   console.log(graphValues)
   const dateEarlier = [
     '3 MONTHS',
@@ -36,9 +42,9 @@ const SolarCapacityTrend = () => {
 
   console.log('MOnthYear', monthYear)
 
-  const filteredValues = graphValues.filter((value) => value.month_year === monthYear)
+  const filteredValues = graphValues?.data.filter((value) => value.month_year === monthYear)
   console.log('filteredValues', filteredValues)
-  const totalCapacityKw = filteredValues.reduce((sum, value) => sum + value.capacity_kw, 0)
+  const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
   console.log('totalCapacityKw', totalCapacityKw)
 
   // Calculate months in the selected range
@@ -61,8 +67,8 @@ const SolarCapacityTrend = () => {
 
   // Filter and group data for the selected range
   const chartData = selectedMonths.map((month) => {
-    const filteredValues = graphValues.filter((value) => value.month_year === month)
-    const totalCapacityKw = filteredValues.reduce((sum, value) => sum + value.capacity_kw, 0)
+    const filteredValues = graphValues?.data.filter((value) => value.month_year === month)
+    const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
     return { month, capacity_kw: totalCapacityKw }
   })
 
