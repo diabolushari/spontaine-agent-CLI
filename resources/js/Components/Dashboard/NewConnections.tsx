@@ -10,6 +10,7 @@ import Card from '@/ui/Card/Card'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -418,6 +419,7 @@ const NewConnections = () => {
             </div>
           </div>
         )}
+        {selectedLevel === 2 && <NewConnectionTrend selectedMonth={selectedMonth} />}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>

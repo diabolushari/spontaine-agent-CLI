@@ -1,17 +1,14 @@
-import useFetchList from '@/hooks/useFetchList'
-import React, { useState } from 'react'
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import MoreButton from '../MoreButton'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
-import { Link } from '@inertiajs/react'
+import TooglePercentage from '@/Components/ui/TogglePercentage'
+import ToogleNumber from '@/Components/ui/ToogleNumber'
+import useFetchRecord from '@/hooks/useFetchRecord'
 import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
-import ToogleNumber from '../ui/ToogleNumber'
-import TooglePercentage from '../ui/TogglePercentage'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import { select } from 'framer-motion/client'
-import ActiveConnectionTrend from '../ServiceDelivery/ActiveConnection/ActiveConnectionTrend'
+import { Link } from 'lucide-react'
+import { useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import SlaTrend from './SlaTrend'
+import MoreButton from '@/Components/MoreButton'
 
 export interface SlaPerformanceValues {
   compl_beyond_sla__: number
@@ -308,6 +305,7 @@ const SlaPerformance = () => {
             </div>
           </div>
         )}
+        {selectedLevel === 2 && <SlaTrend selectedMonth={selectedMonth} />}
       </div>
 
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-white px-4'>

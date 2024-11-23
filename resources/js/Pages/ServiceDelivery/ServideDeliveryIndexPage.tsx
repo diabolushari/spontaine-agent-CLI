@@ -3,7 +3,6 @@ import DashboardPadding from '@/Layouts/DashboardPadding'
 import React, { useEffect, useState } from 'react'
 import Card from '@/ui/Card/Card'
 import ActiveConnection from '@/Components/ServiceDelivery/ActiveConnection'
-import SlaPerformance from '@/Components/Dashboard/SlaPerformance'
 import PendancyCard from '@/Components/Dashboard/PendancyCard'
 import NewConnections from '@/Components/Dashboard/NewConnections'
 import IssueCard from '@/Components/ServiceDelivery/Issues/IssueCard'
@@ -11,6 +10,7 @@ import PowerInterruptionTrend from '@/Components/ServiceDelivery/PowerInterrupti
 
 import Solar from '@/Components/ServiceDelivery/Solar/Solar'
 import SolarCapacityTrend from '@/Components/ServiceDelivery/Solar/SolarCapacityTrend'
+import SlaPerformance from '@/Components/ServiceDelivery/SLA/SlaPerformance'
 
 const ServideDeliveryIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
