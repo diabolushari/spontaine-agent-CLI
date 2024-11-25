@@ -9,7 +9,6 @@ use App\Models\SubsetGroup\SubsetGroupItem;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class DataExplorerController extends Controller implements HasMiddleware
 {
@@ -23,7 +22,7 @@ class DataExplorerController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(string $subsetGroup, Request $request): Response
+    public function __invoke(string $subsetGroup, Request $request)
     {
 
         return $subsetGroup;
