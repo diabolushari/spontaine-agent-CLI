@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import InactiveGraph from './Graphs/InactiveGraph'
 import Card from '@/ui/Card/Card'
-import useFetchList from '@/hooks/useFetchList'
 import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -88,9 +86,20 @@ const ActiveConnection = () => {
 
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [voltageType, setVoltageType] = useState('Total')
+
+  const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
+
+  console.log(
+    `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${levelName}=${levelCode}`
+  )
+
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[] }>(
     `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
+
+  useEffect(() => {
+    console.log(graphValues)
+  }, [graphValues])
 
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
 
