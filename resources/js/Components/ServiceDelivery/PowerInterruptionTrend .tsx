@@ -66,7 +66,7 @@ const PowerInterruptionTrend = () => {
   const [referenceData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
     `subset/72?month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than=${Number(monthYear)}`
   )
-  console.log(chartData?.data)
+
   const dateEarlier: { name: string; value: number }[] = [
     { name: 'PREVIOUS MONTH', value: 1 },
     { name: '2 MONTHS', value: 2 },

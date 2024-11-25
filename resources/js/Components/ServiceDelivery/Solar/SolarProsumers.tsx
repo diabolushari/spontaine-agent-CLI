@@ -114,8 +114,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const convertToMW = (value: string, isCount: boolean) => {
     return Number(MWCount(value, isCount) ?? 0) / 1000
   }
-  console.log(convertToMW('Total', false).toFixed(3))
-  console.log(graphValues)
+
   const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
   return (
     <div className='flex w-full flex-col'>
