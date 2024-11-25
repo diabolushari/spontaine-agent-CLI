@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
+use App\Libs\ArrayPagination;
 use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\SubsetFilterBuilder;
 use App\Services\Subset\SubsetQueryBuilder;
@@ -49,10 +50,10 @@ class SubsetSummaryController extends Controller implements HasMiddleware
             $filterParams
         );
 
-        $levelResult = $query->paginate(5)->withQueryString();
+        $levelResult = $query->get()->toArray();
 
         return response()->json([
-            'data' => $levelResult,
+            'data' => (new ArrayPagination($levelResult, 5))->paginate(),
         ]);
     }
 }

@@ -175,10 +175,6 @@ Route::get('office-list', OfficeListController::class)
 //
 //});
 
-Route::get('phpinfo', function () {
-    phpinfo();
-});
-
 Route::get('data-explorer/{subsetGroup}', DataExplorerController::class);
 
 Route::resource('subset-groups', SubsetGroupController::class)
