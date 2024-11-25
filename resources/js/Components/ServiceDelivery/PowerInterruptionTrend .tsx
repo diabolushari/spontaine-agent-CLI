@@ -36,9 +36,8 @@ const PowerInterruptionTrend = () => {
   const [selectedRange, setSelectedRange] = useState('1')
   const [selectedLevel, setSelectedLevel] = useState(1)
 
-  const [graphValues] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?latest=month_year`
-  )
+  const [graphValues] = useFetchRecord<{ latest_value: string }>(`subset/72?latest=month_year`)
+  const [data] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(`subset/72`)
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -54,9 +53,9 @@ const PowerInterruptionTrend = () => {
     }
   }, [selectedMonth])
 
-  const chartData = graphValues?.data.filter((value) => value.month_year == monthYear)
+  const chartData = data?.data.filter((value) => value.month_year == monthYear)
 
-  const referenceData = graphValues?.data.filter(
+  const referenceData = data?.data.filter(
     (value) =>
       Number(value.month_year) >= Number(monthYear) - Number(selectedRange) &&
       Number(value.month_year) < Number(monthYear)
@@ -107,7 +106,7 @@ const PowerInterruptionTrend = () => {
       },
     ]
   }, [chartData, referenceData])
-  const isLoading = !graphValues || graphValues?.data.length === 0
+  const isLoading = !data || data?.data.length === 0
 
   return (
     <Card className='flex w-full flex-col'>
