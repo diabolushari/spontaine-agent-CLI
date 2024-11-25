@@ -1,15 +1,6 @@
 import { useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
 
 export interface NewConnectionGraphValues {
@@ -33,8 +24,12 @@ interface Properties {
 const NewConnectionTrend = ({ selectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
 
-  const [graphValues] = useFetchRecord<{ data: NewConnectionGraphValues[] }>(
-    `subset/63?latest=month_year`
+  const [graphValues] = useFetchRecord<{
+    data: NewConnectionGraphValues[]
+    month: number
+    year: number
+  }>(
+    `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
   const dateEarlier = [
@@ -83,7 +78,6 @@ const NewConnectionTrend = ({ selectedMonth }: Properties) => {
     return { month, RequestCompletedBeyondSla: completedBeyondSla }
   })
   console.log(chartData)
-
   return (
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -113,9 +107,11 @@ const NewConnectionTrend = ({ selectedMonth }: Properties) => {
               <BarChart data={chartData}>
                 <XAxis
                   dataKey='month'
-                  hide
+                  tickFormatter={
+                    (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
+                  }
                 />
-                <YAxis hide />
+                <YAxis />
                 <Tooltip
                   formatter={(value: number) => value.toString()}
                   labelFormatter={(month) => month || 'Unknown'}

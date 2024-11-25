@@ -27,7 +27,9 @@ const SlaPerformance = () => {
     data: SlaPerformanceValues[]
     month: number
     year: number
-  }>(`/subset/64?latest=month_year`)
+  }>(
+    `subset/64?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+  )
 
   const groupedDataPercentage = Array.from(
     new Map(

@@ -34,12 +34,11 @@ const PendancyCard = () => {
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
-
   const [graphValues] = useFetchRecord<{
     data: PendencyGraphValues[]
     date: string
-  }>(`/subset/67?latest=data_date`)
-  console.log(graphValues)
+  }>(`/subset/67?${selectedDate == null ? 'latest=data_date' : `month_year=${selectedDate}`}`)
+
   const lessThan5Days = toggleValue
     ? graphValues?.data.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
     : graphValues?.data.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
@@ -58,7 +57,6 @@ const PendancyCard = () => {
     : graphValues?.data.find((value) => value.category === title)?.compl_within_sla_cnt || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
-  console.log(data)
 
   return (
     <Card className='flex w-full flex-col'>
