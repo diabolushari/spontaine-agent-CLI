@@ -62,10 +62,6 @@ const ActiveConnectionTrend = ({ selectedMonth }: Properties) => {
       (value) => value.voltage === selectedVoltage && value.month_year === month
     )
 
-    console.log('graphValues', graphValues)
-    console.log('Month:', month)
-    console.log('Filtered Values:', filteredValues)
-
     const totalConsumerCount = filteredValues?.reduce((sum, value) => sum + value.consumer_count, 0)
 
     return { month, consumer_count: totalConsumerCount || 0 } // Default to 0 if no values

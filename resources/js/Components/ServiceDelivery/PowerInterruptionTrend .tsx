@@ -53,14 +53,20 @@ const PowerInterruptionTrend = () => {
     }
   }, [selectedMonth])
 
-  const chartData = data?.data.filter((value) => value.month_year == monthYear)
-
-  const referenceData = data?.data.filter(
-    (value) =>
-      Number(value.month_year) >= Number(monthYear) - Number(selectedRange) &&
-      Number(value.month_year) < Number(monthYear)
+  // const chartData = data?.data.filter((value) => value.month_year == monthYear)
+  const [chartData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
+    `subset/72?month_year=${monthYear}`
   )
 
+  // const referenceData = data?.data.filter(
+  //   (value) =>
+  //     Number(value.month_year) >= Number(monthYear) - Number(selectedRange) &&
+  //     Number(value.month_year) < Number(monthYear)
+  // )
+  const [referenceData] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
+    `subset/72?month_year_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_year_less_than=${Number(monthYear)}`
+  )
+  console.log(chartData?.data)
   const dateEarlier: { name: string; value: number }[] = [
     { name: 'PREVIOUS MONTH', value: 1 },
     { name: '2 MONTHS', value: 2 },
@@ -80,33 +86,33 @@ const PowerInterruptionTrend = () => {
       {
         name: 'Power Failures',
         current:
-          chartData?.find((value) => value.complaint_type == 'NO POWER SUPPLY')?.complaint_count ??
-          0,
-        previous: referenceData
-          ?.filter((value) => value.complaint_type == 'NO POWER SUPPLY')
+          chartData?.data.find((value) => value.complaint_type == 'NO POWER SUPPLY')
+            ?.complaint_count ?? 0,
+        previous: referenceData?.data
+          .filter((value) => value.complaint_type == 'NO POWER SUPPLY')
           ?.reduce((sum, value) => sum + value.complaint_count, 0),
       },
       {
         name: 'Voltage Related',
         current:
-          chartData?.find((value) => value.complaint_type == 'VOLTAGE RELATED')?.complaint_count ??
-          0,
-        previous: referenceData
-          ?.filter((value) => value.complaint_type == 'VOLTAGE RELATED')
+          chartData?.data.find((value) => value.complaint_type == 'VOLTAGE RELATED')
+            ?.complaint_count ?? 0,
+        previous: referenceData?.data
+          .filter((value) => value.complaint_type == 'VOLTAGE RELATED')
           ?.reduce((sum, value) => sum + value.complaint_count, 0),
       },
       {
         name: 'Service Connection Related',
         current:
-          chartData?.find((value) => value.complaint_type == 'SERVICE CONNECTION RELATED')
+          chartData?.data.find((value) => value.complaint_type == 'SERVICE CONNECTION RELATED')
             ?.complaint_count ?? 0,
-        previous: referenceData
-          ?.filter((value) => value.complaint_type == 'SERVICE CONNECTION RELATED')
+        previous: referenceData?.data
+          .filter((value) => value.complaint_type == 'SERVICE CONNECTION RELATED')
           ?.reduce((sum, value) => sum + value.complaint_count, 0),
       },
     ]
   }, [chartData, referenceData])
-  const isLoading = !data || data?.data.length === 0
+  const isLoading = !chartData || chartData?.data.length === 0
 
   return (
     <Card className='flex w-full flex-col'>

@@ -28,13 +28,13 @@ const ServideDeliveryIndexPage = () => {
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-24'>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <ActiveConnection />
-            {/* <Card className=''>
+            <Card className=''>
               <NewConnections />
-            </Card> */}
+            </Card>
           </div>
           <div className='flex flex-col items-stretch gap-2 lg:flex-row'>
             <div className='flex w-full flex-col p-6 sm:p-4 lg:w-2/3'>
-              {/* <SlaPerformance /> */}
+              <SlaPerformance />
             </div>
             <div className='flex w-full flex-col p-6 sm:p-4 lg:w-1/3'>
               <PendancyCard />

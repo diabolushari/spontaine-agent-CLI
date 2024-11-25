@@ -77,48 +77,22 @@ export const formatNumber = (value: number) => {
     return (value / 10000000).toFixed(2) + ' Cr'
   } else if (value >= 100000) {
     return (value / 100000).toFixed(2) + ' L'
+  } else if (value >= 1000) {
+    return (value / 1000).toFixed(2) + 'K'
   }
   return value.toString()
 }
 
 const ActiveConnection = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-  const [levelName, setLevelName] = useState('')
-  const [levelCode, setLevelCode] = useState('')
+
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [voltageType, setVoltageType] = useState('Total')
-
-  const [level] = useFetchRecord<{ level: string; record: OfficeInfo }>(route('find-level'))
   const [graphValues] = useFetchRecord<{ data: InactiveGraphValues[] }>(
-    `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}&${levelName}=${levelCode}`
+    `subset/57?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
   graphValues?.data.sort((a, b) => a.consumer_count - b.consumer_count).reverse()
-
-  useEffect(() => {
-    switch (level?.level) {
-      case 'region':
-        setLevelName('office_code')
-        setLevelCode(level.record.region_code ?? '')
-        break
-      case 'circle':
-        setLevelName('office_code')
-        setLevelCode(level.record.circle_code ?? '')
-        break
-      case 'division':
-        setLevelName('office_code')
-        setLevelCode(level.record.division_code ?? '')
-        break
-      case 'subdivision':
-        setLevelName('office_code')
-        setLevelCode(level.record.subdivision_code ?? '')
-        break
-      case 'section':
-        setLevelName('section_code')
-        setLevelCode(level.record.section_code ?? '')
-        break
-    }
-  }, [level])
 
   const filters = (value: InactiveGraphValues, index: number) => {
     if (index < 3) {
