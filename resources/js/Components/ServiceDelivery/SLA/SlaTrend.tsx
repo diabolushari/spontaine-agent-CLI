@@ -124,22 +124,11 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 <YAxis tickFormatter={(value) => formatNumber(value)} />
                 <Tooltip
                   labelFormatter={(month: string) => `${month.slice(4)}/${month.slice(0, 4)}`}
-                  formatter={(value: number | string) => {
-                    // Convert string value to a number for consistent formatting
-                    const numericValue = typeof value === 'string' ? parseFloat(value) : value
-
-                    // Format based on the toggle state
-                    const formattedValue = toogleValue
-                      ? numericValue.toLocaleString() // Use locale formatting for counts
-                      : `${numericValue.toFixed(2)}%` // Format percentages with two decimals and a '%'
-
-                    // Determine the label
-                    const label = toogleValue
-                      ? 'SLA Performance Count'
-                      : 'SLA Performance Percentage'
-
-                    return [formattedValue, label]
-                  }}
+                  formatter={
+                    toogleValue
+                      ? (value: number) => formatNumber(value)
+                      : (value: number) => `${value.toFixed(2)}%`
+                  }
                 />
 
                 <Area
