@@ -415,15 +415,12 @@ const NewConnections = () => {
                     height={200}
                   >
                     <Tooltip
-                      formatter={(value: number) => value.toFixed(2)}
-                      labelStyle={{ fontSize: '10' }}
-                    />
-                    <Tooltip
                       formatter={
                         toggleValue
                           ? (value: number) => formatNumber(value)
                           : (value: number) => `${value.toFixed(2)}%`
                       }
+                      labelStyle={{ fontSize: '10' }}
                     />
 
                     <Pie
@@ -472,7 +469,7 @@ const NewConnections = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/59'>
+          <Link href='/data-explorer/SLA Performance - New Connection Requests'>
             <MoreButton />
           </Link>
         </div>
