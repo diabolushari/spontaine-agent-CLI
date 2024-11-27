@@ -8,15 +8,15 @@ import { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import SlaTrend from './SlaTrend'
-import MoreButton from '@/Components/MoreButton'
 import { formatNumber } from '../ActiveConnection'
+import MoreButton from '@/Components/MoreButton'
 
 export interface SlaPerformanceValues {
-  requests_beyond_sla____: number
-  requests_within_sla____: number
-  month_year: string
+  month: string
   request_type: string
-  requests_beyond_sla_count_: number
+  requests_beyond_sla____: number
+  requests_beyond_sla__count_: number
+  requests_within_sla____: number
   requests_within_sla__count_: number
 }
 
@@ -31,7 +31,7 @@ const SlaPerformance = () => {
     year: number
     latest_value: string
   }>(
-    `subset/82?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `subset/82?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
   console.log(selectedMonth)
 
@@ -57,9 +57,9 @@ const SlaPerformance = () => {
   const groupedDataNumber = Array.from(
     new Map(
       graphValues?.data.map(
-        ({ request_type, requests_within_sla__count_, requests_beyond_sla_count_ }) => [
+        ({ request_type, requests_within_sla__count_, requests_beyond_sla__count_ }) => [
           request_type,
-          { name: request_type, requests_within_sla__count_, requests_beyond_sla_count_ },
+          { name: request_type, requests_within_sla__count_, requests_beyond_sla__count_ },
         ]
       )
     ).values()
