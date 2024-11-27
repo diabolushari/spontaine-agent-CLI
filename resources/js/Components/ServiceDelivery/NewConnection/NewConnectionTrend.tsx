@@ -44,7 +44,6 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       ? `subset/90?month_year_greater_than_or_equal=${selectedMonths[0]}&month_year_less_than_or_equal=${selectedMonths[selectedMonths.length - 1]}`
       : 'subset/90?latest=month_year'
   )
-  console.log(graphValues)
 
   useEffect(() => {
     if (!selectedMonth && graphValues?.latest_value) {
@@ -54,33 +53,40 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
     }
   }, [graphValues, selectedMonth, setSelectedMonth])
 
-  const chartData = selectedMonths.map((month) => {
-    const value = graphValues?.data.find((v) => v.month === month)
-    return {
-      month,
-      RequestsBreachingSla: value?.requests_breaching_sla__count_ ?? 0,
-    }
-  })
+  const chartData = selectedMonths
+    .map((month) => {
+      const value = graphValues?.data.find((v) => v.month === month)
+      return {
+        month,
+        RequestsBreachingSla: value?.requests_breaching_sla__count_ ?? 0,
+      }
+    })
+    .reverse()
 
   return (
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
         <div className='flex w-11/12 flex-col gap-4 p-2'>
           <div className='flex'>
-            <span className='small-1stop ml-10 p-5'>Requests breaching SLAs</span>
-            <div>
-              <SelectList
-                list={dateEarlier.map((month, index) => ({
-                  key: index,
-                  value: month,
-                  text: month,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption={false}
-                value={selectedValue}
-                setValue={setSelectedValue}
-              />
+            <div className='ml-2 flex'>
+              <span className='subheader-sm-1stop'>Trend of Requests Completed beyond SLA</span>
+            </div>
+            <div className='mx-4 flex w-full justify-end'>
+              <div>
+                <SelectList
+                  list={dateEarlier.map((month, index) => ({
+                    key: index,
+                    value: month,
+                    text: month,
+                  }))}
+                  dataKey='value'
+                  displayKey='text'
+                  showAllOption={false}
+                  value={selectedValue}
+                  setValue={setSelectedValue}
+                  style='1stop-small'
+                />
+              </div>
             </div>
           </div>
           <div className='w-full'>
@@ -92,8 +98,12 @@ const NewConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 <XAxis
                   dataKey='month'
                   tickFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
+                  style={{ fontSize: '10' }}
                 />
-                <YAxis tickFormatter={(value) => formatNumber(value)} />
+                <YAxis
+                  tickFormatter={(value) => formatNumber(value)}
+                  style={{ fontSize: '10' }}
+                />
                 <Tooltip
                   formatter={(value: number) => [`${value} `, 'Requests breaching SLAs']}
                   labelFormatter={(month) => `${month.slice(4)}/${month.slice(0, 4)}`}
