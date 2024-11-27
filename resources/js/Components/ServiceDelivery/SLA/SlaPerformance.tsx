@@ -64,7 +64,7 @@ const SlaPerformance = () => {
       )
     ).values()
   )
-
+  console.log('Grouped Data Count', groupedDataNumber)
   const groupedData = toggleValue ? groupedDataNumber : groupedDataPercentage
   console.log(groupedData)
 
@@ -319,7 +319,7 @@ const SlaPerformance = () => {
                         />
                         <Bar
                           dataKey={
-                            toggleValue ? 'requests_beyond_sla_count_' : 'requests_beyond_sla____'
+                            toggleValue ? 'requests_beyond_sla__count_' : 'requests_beyond_sla____'
                           }
                           stackId='a'
                           fill='#76a5ff'
