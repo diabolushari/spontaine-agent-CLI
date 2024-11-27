@@ -6,9 +6,11 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import SlaTrend from './SlaTrend'
+import SlaTrend, { SlaTrendValues } from './SlaTrend'
 import { Link } from '@inertiajs/react'
 import MoreButton from '@/Components/MoreButton'
+import TopList from '../TopList'
+import SlaList from './SlaList'
 import { formatNumber } from '../ActiveConnection'
 
 export interface SlaPerformanceValues {
@@ -22,7 +24,7 @@ export interface SlaPerformanceValues {
 
 const SlaPerformance = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
-
+  const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
   const [graphValues] = useFetchRecord<{
@@ -33,9 +35,26 @@ const SlaPerformance = () => {
   }>(
     `subset/82?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-  console.log(selectedMonth)
-
-  console.log(graphValues)
+  const monthYear = selectedMonth
+    ? `${selectedMonth.getFullYear()}${(selectedMonth.getMonth() + 1).toString().padStart(2, '0')}`
+    : null
+  const [SlaTrendValues] = useFetchRecord<{
+    data: SlaTrendValues[]
+    latest_value: string
+  }>(
+    `subset/78?${
+      selectedMonth == null
+        ? 'latest=month_year'
+        : `month_year_less_than_or_equal=${Number(monthYear)}`
+    }`
+  )
+  useEffect(() => {
+    setCategories(
+      Array.from(new Set(SlaTrendValues?.data?.map((item) => item.sla_svc_group) || [])).map(
+        (sla_svc_group) => ({ sla_svc_group })
+      )
+    )
+  }, [setCategories, SlaTrendValues])
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -342,6 +361,19 @@ const SlaPerformance = () => {
           <SlaTrend
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
+            categories={categories}
+            setCategories={setCategories}
+          />
+        )}
+        {selectedLevel === 3 && (
+          <SlaList
+            column1='State'
+            column2='Requests within SLA count'
+            subset_id='82'
+            default_level='state'
+            displayKey='sla_count'
+            sortBy='requests_within_sla__count_'
+            categories={categories}
           />
         )}
       </div>

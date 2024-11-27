@@ -10,6 +10,7 @@ import { User } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { OfficeInfo } from '@/interfaces/dashboard_accordion'
 import ActiveConnectionTrend from './ActiveConnection/ActiveConnectionTrend'
+import TopList from './TopList'
 
 interface Properties {
   section_code?: string
@@ -488,6 +489,16 @@ const ActiveConnection = () => {
           <ActiveConnectionTrend
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
+          />
+        )}
+        {selectedLevel === 3 && (
+          <TopList
+            column1='State'
+            column2='Consumer count'
+            subset_id='57'
+            default_level='section'
+            displayKey='consumer_count'
+            sortBy='consumer_count'
           />
         )}
       </div>
