@@ -354,7 +354,7 @@ const SlaPerformance = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/61'>
+          <Link href='/data-explorer/SLA Performance Comparison'>
             <MoreButton />
           </Link>
         </div>

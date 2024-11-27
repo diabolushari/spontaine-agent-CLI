@@ -500,7 +500,7 @@ const ActiveConnection = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/17'>
+          <Link href='/data-explorer/Active Connections Summary'>
             <MoreButton />
           </Link>
         </div>

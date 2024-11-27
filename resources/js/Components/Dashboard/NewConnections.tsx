@@ -460,7 +460,7 @@ const NewConnections = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/dataset/59'>
+          <Link href='/data-explorer/SLA Performance - New Connection Requests'>
             <MoreButton />
           </Link>
         </div>
