@@ -114,7 +114,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const convertToMW = (value: string, isCount: boolean) => {
     return Number(MWCount(value, isCount) ?? 0) / 1000
   }
-
+  console.log(graphValues)
   const COLORS = ['#3E80E4', '#EA5BA5', '#FCB216', '#E3FE3C']
   return (
     <div className='flex w-full flex-col'>
@@ -192,7 +192,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 {graphValues?.data.length ? formatNumber(MWCount('LT', true) ?? 0) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>LT consumers </p>
+                <p className='small-1stop-header'>LT Prosumers </p>
                 <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                   <input
                     type='radio'
@@ -213,7 +213,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 {graphValues?.data.length ? formatNumber(MWCount('HT', true) ?? 0) : <Skeleton />}
               </p>
               <div className='flex flex-row justify-between'>
-                <p className='small-1stop-header'>HT consumers </p>
+                <p className='small-1stop-header'>HT Prosumers </p>
                 <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                   <input
                     type='radio'

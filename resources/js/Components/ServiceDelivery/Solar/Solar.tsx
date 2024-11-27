@@ -5,10 +5,16 @@ import { Link } from '@inertiajs/react'
 import MoreButton from '../../MoreButton'
 import SolarProsumers from './SolarProsumers'
 import SolarCapacityTrend from './SolarCapacityTrend'
+import TopList from '../TopList'
+import SolarList from './SolarList'
 
 const Solar = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-
+  const [categories, setCategories] = useState<
+    {
+      voltage: string
+    }[]
+  >([])
   const [selectedLevel, setSelectedLevel] = useState(1)
 
   return (
@@ -200,6 +206,25 @@ const Solar = () => {
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
           />
+        )}
+        {selectedLevel === 3 && (
+          <SolarList
+            column1='Division'
+            column2='Capacity'
+            subset_id='71'
+            default_level='section'
+            sortBy='capacity_kw'
+          />
+          //   <TopList
+          //   listTypes={listTypes}
+          //   levelTypes={levelTypes}
+          //   column1='State'
+          //   column2='Requests within SLA count'
+          //   subset_id='82'
+          //   default_level='state'
+          //   displayKey='sla_count'
+          //   sortOrder='requests_within_sla__count_'
+          // />
         )}
       </div>
 

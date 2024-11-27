@@ -11,6 +11,7 @@ import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
+import TopList from '../ServiceDelivery/TopList'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -424,6 +425,16 @@ const NewConnections = () => {
           <NewConnectionTrend
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
+          />
+        )}
+        {selectedLevel === 3 && (
+          <TopList
+            column1='Section'
+            column2='SLA count'
+            subset_id='63'
+            default_level='section'
+            displayKey='sla'
+            sortBy='sla_perf_cnt'
           />
         )}
       </div>

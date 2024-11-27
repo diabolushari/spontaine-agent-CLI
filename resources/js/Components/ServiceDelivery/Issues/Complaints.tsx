@@ -6,10 +6,16 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import IssueCard from './IssueCard'
 import ComplaintList from './ComplaintList'
+import TopList from '../TopList'
 
 const Complaints = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [selectedLevel, setSelectedLevel] = useState(1)
+  const [categories, setCategories] = useState<
+    {
+      complaint_type: string
+    }[]
+  >([])
 
   return (
     <Card className='flex h-full w-full flex-col'>
@@ -166,12 +172,18 @@ const Complaints = () => {
           <IssueCard
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
+            setCategories={setCategories}
           />
         )}
+
         {selectedLevel === 2 && (
           <ComplaintList
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
+            column1='Division'
+            column2='Complaint count'
+            subset_id='72'
+            displayKey='complaint_count'
+            setCategories={setCategories}
+            categories={categories}
           />
         )}
       </div>

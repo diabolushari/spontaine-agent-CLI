@@ -15,9 +15,19 @@ export interface SlaTrendValues {
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
+  categories: {
+    sla_svc_group: string
+  }[]
+  setCategories: React.Dispatch<
+    React.SetStateAction<
+      {
+        sla_svc_group: string
+      }[]
+    >
+  >
 }
 
-const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
+const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }: Properties) => {
   const [toogleValue, setToogleValue] = useState(true)
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [title, setTitle] = useState('Ownership change')
@@ -27,7 +37,6 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const monthYear = selectedMonth
     ? `${selectedMonth.getFullYear()}${(selectedMonth.getMonth() + 1).toString().padStart(2, '0')}`
     : null
-
   const [graphValues] = useFetchRecord<{
     data: SlaTrendValues[]
     latest_value: string
@@ -42,6 +51,13 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   )
   console.log(graphValues)
 
+  useEffect(() => {
+    setCategories(
+      Array.from(new Set(graphValues?.data?.map((item) => item.sla_svc_group) || [])).map(
+        (sla_svc_group) => ({ sla_svc_group })
+      )
+    )
+  }, [setCategories, graphValues?.data])
   useEffect(() => {
     if (selectedMonth == null && graphValues?.latest_value) {
       const year = Math.trunc(Number(graphValues.latest_value) / 100)
@@ -95,9 +111,7 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <div className='p-5'>
               <SelectList
                 setValue={setTitle}
-                list={Array.from(
-                  new Set(graphValues?.data?.map((item) => item.sla_svc_group) || [])
-                ).map((sla_svc_group) => ({ sla_svc_group }))}
+                list={categories}
                 displayKey='sla_svc_group'
                 dataKey='sla_svc_group'
                 value={title}
