@@ -16,7 +16,9 @@ interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
 }
-
+export const convertToMW = (value: number) => {
+  return (Number(value) / 1000).toFixed(2)
+}
 const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [monthYear, setMonthYear] = useState('')
@@ -88,10 +90,10 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
     .map((month) => {
       const filteredValues = graphValues?.data.filter((value) => value.month_year === month)
       const totalCapacityKw = filteredValues?.reduce((sum, value) => sum + value.capacity_kw, 0)
-      return { month, capacity_kw: totalCapacityKw }
+      return { month, capacity_mw: totalCapacityKw }
     })
     .reverse()
-
+ 
   return (
     <div className='flex w-full flex-col p-4'>
       <div className='flex w-full flex-col gap-2'>
@@ -135,11 +137,18 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
                 />
                 <Tooltip
                   labelFormatter={(month: string) => `${month.slice(4, 6)}/${month.slice(2, 4)}`}
-                  formatter={(value: number) => formatNumber(value)}
+                  formatter={(value: number) => [
+                    `${
+                      value > 1000
+                        ? formatNumber(Number(convertToMW(value)))
+                        : Number(convertToMW(value)).toFixed(2)
+                    }`,
+                    'Capacity (MW)',
+                  ]}
                 />
                 <Area
                   type='monotone'
-                  dataKey='capacity_kw'
+                  dataKey='capacity_mw'
                   stroke='#0091ff'
                   fill='#0091ff'
                 />

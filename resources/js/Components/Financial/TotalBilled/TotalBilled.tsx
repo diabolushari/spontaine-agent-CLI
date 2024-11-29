@@ -415,7 +415,7 @@ const TotalBilled = () => {
                 <div className='flex w-1/2 flex-col border p-2'>
                   <p className='mdmetric-1stop'>
                     {graphValues?.data.length ? (
-                      formatNumber(cunsumerCount('LT', '', false) ?? 0)
+                      formatNumber(cunsumerCount('HT', '', false) ?? 0)
                     ) : (
                       <Skeleton />
                     )}
@@ -514,7 +514,7 @@ const TotalBilled = () => {
       {/* //Footer */}
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-button-muted px-4 pl-14'>
         <div className='py-4'>
-          <p className='h3-1stop'>Active Connections</p>
+          <p className='h3-1stop'>Billing / Total Demand</p>
         </div>
         <div className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 px-4'>
           <MonthPicker
@@ -523,7 +523,7 @@ const TotalBilled = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/Demand Analysis'>
+          <Link href={`/data-explorer/Demand Analysis?route=${route('finance.index')}`}>
             <MoreButton />
           </Link>
         </div>

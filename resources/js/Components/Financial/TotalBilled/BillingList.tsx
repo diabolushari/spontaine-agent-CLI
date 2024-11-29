@@ -4,6 +4,7 @@ import { Model } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Paginator } from '@/ui/ui_interfaces'
+import { Link } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 
 interface Properties {
@@ -118,12 +119,24 @@ const BillingList = ({
             )
           })}
         </tbody>
-        {graphValues?.data != null && (
-          <RestPagination
-            pagination={graphValues.data}
-            onNewPage={setPage}
-          />
-        )}
+        <div className='flex w-full items-center gap-5'>
+          <div className='flex min-w-full flex-col'>
+            {graphValues?.data != null && (
+              <RestPagination
+                pagination={graphValues.data}
+                onNewPage={setPage}
+              />
+            )}
+          </div>
+          <div className='ml-auto flex w-full justify-end pt-3'>
+            <Link
+              href={`office-rankings/Demand Analysis?route=${route('finance.index')}`}
+              className='rounded bg-1stop-highlight px-2 py-1 text-white hover:opacity-75 hover:shadow-lg focus:ring-1'
+            >
+              Details
+            </Link>
+          </div>
+        </div>
       </table>
     </div>
   )

@@ -13,6 +13,7 @@ import {
   OfficeStructure,
 } from '@/interfaces/dashboard_accordion'
 import { ToastContainer } from 'react-toastify'
+import BreadCrumbs, { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 interface Properties {
   children?: ReactNode
@@ -23,6 +24,7 @@ interface Properties {
   levelName: string
   setLevelCode: React.Dispatch<React.SetStateAction<string>>
   levelCode: string
+  breadCrumbs?: BreadcrumbItemLink[]
 }
 
 export default function DashboardLayout({
@@ -31,6 +33,7 @@ export default function DashboardLayout({
   levelName,
   setLevelName,
   setLevelCode,
+  breadCrumbs,
 }: Properties) {
   const filters = usePage().props.filters as unknown as {
     office_code?: string | null
@@ -108,12 +111,15 @@ export default function DashboardLayout({
           type={type}
         />
         <div className='absolute flex w-full justify-between gap-2 pl-28 pr-5 pt-10'>
-          <div className=''>
+          <div className={`${isShowSideBar ? '' : 'z-[99999]'}`}>
             <p className='subheader-1stop'>{type}</p>
             <p className='small-1stop-header'>
               {levelType !== '' ? levelType : level?.level}:{' '}
               <b>{levelTypeName !== '' ? levelTypeName : displayName(level)}</b>
             </p>
+            <div className=''>
+              <BreadCrumbs breadcrumbItems={breadCrumbs} />
+            </div>
           </div>
           <div className='z-[999] hidden gap-5 md:flex md:flex-row'>
             {/* <DropdownAccordion

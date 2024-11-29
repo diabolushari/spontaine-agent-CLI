@@ -221,16 +221,6 @@ const Solar = () => {
             default_level='section'
             sortBy='capacity_kw'
           />
-          //   <TopList
-          //   listTypes={listTypes}
-          //   levelTypes={levelTypes}
-          //   column1='State'
-          //   column2='Requests within SLA count'
-          //   subset_id='82'
-          //   default_level='state'
-          //   displayKey='sla_count'
-          //   sortOrder='requests_within_sla__count_'
-          // />
         )}
       </div>
 
@@ -250,7 +240,9 @@ const Solar = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/Solar Prosumer Statistics'>
+          <Link
+            href={`/data-explorer/Solar Prosumer Statistics?route=${route('service-delivery.index')}`}
+          >
             <MoreButton />
           </Link>
         </div>

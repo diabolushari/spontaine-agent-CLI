@@ -208,7 +208,9 @@ const Complaints = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/Customer Complaints Summary'>
+          <Link
+            href={`/data-explorer/Customer Complaints Summary?route=${route('service-delivery.index')}`}
+          >
             <MoreButton />
           </Link>
         </div>

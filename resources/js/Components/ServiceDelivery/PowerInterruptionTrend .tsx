@@ -23,6 +23,7 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import SelectList from '@/ui/form/SelectList'
 import { Model } from '@/interfaces/data_interfaces'
 import { monthList } from '@/libs/dates'
+import { formatNumber } from './ActiveConnection'
 
 interface ComplaintValues extends Model {
   complaint_count: number
@@ -284,7 +285,7 @@ const PowerInterruptionTrend = () => {
                       padding={{ top: 50 }}
                     />
                     <Legend formatter={(value) => <span className='text-black'>{value}</span>} />
-                    <Tooltip />
+                    <Tooltip formatter={(value: number) => formatNumber(value)} />
                     <Bar
                       dataKey='current'
                       fill={'#1b50b3'}
@@ -327,7 +328,9 @@ const PowerInterruptionTrend = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/Complaint Volumes Comparison'>
+          <Link
+            href={`/data-explorer/Complaint Volumes Comparison?route=${route('service-delivery.index')}`}
+          >
             <MoreButton />
           </Link>
         </div>

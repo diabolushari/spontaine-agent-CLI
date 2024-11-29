@@ -460,6 +460,7 @@ const NewConnections = () => {
             default_level='section'
             displayKey='sla'
             sortBy='sla_perf_cnt'
+            route={`office-rankings/SLA Performance - New Connection Requests?route=${route('service-delivery.index')}`}
           />
         )}
       </div>
@@ -480,7 +481,9 @@ const NewConnections = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/SLA Performance - New Connection Requests'>
+          <Link
+            href={`/data-explorer/SLA Performance - New Connection Requests?route=${route('service-delivery.index')}`}
+          >
             <MoreButton />
           </Link>
         </div>

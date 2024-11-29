@@ -6,6 +6,7 @@ import SelectList from '@/ui/form/SelectList'
 import OfficeLevelExplorerTable from '@/Components/DataExplorer/OfficeLevelExplorerTable'
 import Card from '@/ui/Card/Card'
 import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 
 const tabItems = [
   { name: 'State', value: 'state' },
@@ -22,6 +23,7 @@ interface Props {
   oldTab: string
   oldSubsetName: string | null
   oldFilters: Record<string, string>
+  oldRoute?: string
 }
 
 export interface OfficeData {
@@ -50,7 +52,18 @@ export default function DataExplorer({
   oldTab,
   oldSubsetName,
   oldFilters,
+  oldRoute,
 }: Readonly<Props>) {
+  const breadCrumb: BreadcrumbItemLink[] = [
+    {
+      item: 'Home',
+      link: oldRoute ?? route('service-delivery.index'),
+    },
+    {
+      item: subsetGroup.name,
+      link: '',
+    },
+  ]
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
@@ -84,6 +97,7 @@ export default function DataExplorer({
       setLevelName={setLevelName}
       levelCode={levelCode}
       setLevelCode={setLevelCode}
+      breadCrumbs={breadCrumb}
     >
       <DashboardPadding>
         <div className='flex w-full flex-col gap-5 pl-12 pt-8 sm:pt-24'>
@@ -96,6 +110,7 @@ export default function DataExplorer({
                 setValue={setSelectedSubsetId}
                 value={selectedSubsetId}
                 showAllOption
+                label='Select An Analysis Set'
                 allOptionText='Select Subset'
               />
             </div>
