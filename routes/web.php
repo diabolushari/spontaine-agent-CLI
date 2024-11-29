@@ -177,4 +177,7 @@ Route::apiResource('subset-group-items', SubsetGroupItemController::class)
 Route::get('subset-export/{subsetDetail}', SubsetExportController::class)
     ->name('subset-export');
 
+Route::get('office-rankings/{SubsetGroup}', \App\Http\Controllers\Subset\OfficeRankingsController::class)
+    ->name('office-rankings');
+
 require __DIR__.'/auth.php';
