@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
-import DashboardLayout from '@/Layouts/DashboardLayout'
-import DashboardPadding from '@/Layouts/DashboardPadding'
 import { SubsetDetail, SubsetGroup, SubsetGroupItem } from '@/interfaces/data_interfaces'
+import { useMemo, useState } from 'react'
+import DashboardLayout from '@/Layouts/DashboardLayout'
+import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import { initSelectedSubset } from '@/Pages/DataExplorer/DataExplorer'
+import DashboardPadding from '@/Layouts/DashboardPadding'
 import SelectList from '@/ui/form/SelectList'
-import OfficeLevelExplorerTable from '@/Components/DataExplorer/OfficeLevelExplorerTable'
 import Card from '@/ui/Card/Card'
 import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
-import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
-import { showError } from '@/ui/alerts'
+import OfficeRanking from '@/Components/DataExplorer/OfficeRanking'
 
 interface Props {
   subsetGroup: SubsetGroup
@@ -18,37 +18,11 @@ interface Props {
   oldRoute?: string
 }
 
-export interface OfficeData {
-  office_code: string | number
-  office_name: string | number
-}
-
-export const initSelectedSubset = (
-  subsetGroupItems: SubsetGroupItem[],
-  oldSubsetName: string | null
-): string => {
-  if (subsetGroupItems.length === 0) {
-    return ''
-  }
-  if (oldSubsetName == null) {
-    return subsetGroupItems[0].id.toString()
-  }
-  //find the one with matching name
-  const subset = subsetGroupItems.find(
-    (subset) => subset.name.toLowerCase() == oldSubsetName.toLowerCase()
-  )
-  if (subset != null) {
-    return subset.id.toString()
-  }
-  return subsetGroupItems[0].id.toString()
-}
-
-export default function DataExplorer({
+export default function OfficeRankingPage({
   subsetGroup,
   subsetItems,
   oldTab,
   oldSubsetName,
-  oldFilters,
   oldRoute,
 }: Readonly<Props>) {
   const breadCrumb: BreadcrumbItemLink[] = useMemo(() => {
@@ -67,8 +41,6 @@ export default function DataExplorer({
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
-  const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)
-  const [selectedSubdivision, setSelectedSubdivision] = useState<OfficeData | null>(null)
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     initSelectedSubset(subsetItems, oldSubsetName)
@@ -83,23 +55,6 @@ export default function DataExplorer({
     return subsetItems.find((subsetItem) => subsetItem.id.toString() == selectedSubsetId)
       ?.subset as SubsetDetail | null | undefined
   }, [subsetItems, selectedSubsetId])
-
-  useEffect(() => {
-    setSelectedDivision(null)
-    setSelectedSubdivision(null)
-  }, [selectedSubset, setSelectedDivision, setSelectedSubdivision])
-
-  const changeTab = (tab: string) => {
-    if (tab === 'subdivision' && selectedDivision == null) {
-      showError('Please select a division first')
-      return
-    }
-    if (tab === 'section' && selectedSubdivision == null) {
-      showError('Please select a subdivision first')
-      return
-    }
-    setActiveTab(tab)
-  }
 
   return (
     <DashboardLayout
@@ -131,17 +86,12 @@ export default function DataExplorer({
           <Card className='p-2'>
             <OfficeLevelTabs
               activeTab={activeTab}
-              setActiveTab={changeTab}
+              setActiveTab={setActiveTab}
             />
             {selectedSubset != null && (
-              <OfficeLevelExplorerTable
+              <OfficeRanking
                 subset={selectedSubset}
                 officeLevel={activeTab}
-                oldFilters={oldFilters}
-                selectedDivision={selectedDivision}
-                setSelectedDivision={setSelectedDivision}
-                selectedSubdivision={selectedSubdivision}
-                setSelectedSubdivision={setSelectedSubdivision}
               />
             )}
           </Card>

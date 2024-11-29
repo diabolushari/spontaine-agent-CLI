@@ -53,7 +53,7 @@ class SubsetSummaryController extends Controller implements HasMiddleware
         $levelResult = $query->get()->toArray();
 
         return response()->json([
-            'data' => (new ArrayPagination($levelResult, 5))->paginate(),
+            'data' => (new ArrayPagination($levelResult, $request->per_page ?? 5))->paginate(),
         ]);
     }
 }

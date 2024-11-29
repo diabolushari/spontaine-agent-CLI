@@ -16,6 +16,7 @@ interface Properties {
   sortOrder?: string
   route: string
 }
+
 const listTypes: { name: string }[] = [
   { name: 'Top 3' },
   { name: 'Top 5' },
@@ -30,6 +31,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Region', value: 'region' },
   { name: 'Section', value: 'section' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -38,6 +40,7 @@ interface ConsumerList extends Model {
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
 }
+
 const TopList = ({
   subset_id,
   column1,
@@ -55,7 +58,6 @@ const TopList = ({
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
     `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${sortBy}&sort_order=${topOrBottom}&limit=${listType.split(' ')[1]}&page=${page}`
-    // 'subset-summary/82?level=section&sort_by=requests_within_sla__count_&sort_order=desc&limit=10'
   )
 
   useEffect(() => {

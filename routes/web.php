@@ -28,6 +28,7 @@ use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\FindLevelController;
+use App\Http\Controllers\Subset\OfficeRankingsController;
 use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
@@ -177,7 +178,7 @@ Route::apiResource('subset-group-items', SubsetGroupItemController::class)
 Route::get('subset-export/{subsetDetail}', SubsetExportController::class)
     ->name('subset-export');
 
-Route::get('office-rankings/{SubsetGroup}', \App\Http\Controllers\Subset\OfficeRankingsController::class)
+Route::get('office-rankings/{subsetGroupName}', OfficeRankingsController::class)
     ->name('office-rankings');
 
 require __DIR__.'/auth.php';

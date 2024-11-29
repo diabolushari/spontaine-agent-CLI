@@ -44,7 +44,7 @@ class DataExplorerController extends Controller implements HasMiddleware
             'oldTab' => $request->input('tab', 'state'),
             'oldSubsetName' => $request->input('subset', null),
             'oldFilters' => $request->all(),
-            'oldRoute' => $request->input('route')
+            'oldRoute' => $request->input('route'),
         ]);
     }
 }

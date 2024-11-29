@@ -1,35 +1,21 @@
-import { OfficeData } from '@/Pages/DataExplorer/DataExplorer'
 import handleEnterPress from '@/libs/handle-enter'
 import Dropdown from '@/ui/button/DropDown'
-import { showError } from '@/ui/alerts'
 
 interface Props {
-  tabItems: { name: string; value: string }[]
   activeTab: string
   setActiveTab: (tab: string) => void
-  selectedDivision: OfficeData | null
-  selectedSubdivision: OfficeData | null
 }
 
-export default function OfficeLevelTabs({
-  tabItems,
-  activeTab,
-  setActiveTab,
-  selectedDivision,
-  selectedSubdivision,
-}: Props) {
-  const changeTab = (tab: string) => {
-    if (tab === 'subdivision' && selectedDivision == null) {
-      showError('Please select a division first')
-      return
-    }
-    if (tab === 'section' && selectedSubdivision == null) {
-      showError('Please select a subdivision first')
-      return
-    }
-    setActiveTab(tab)
-  }
+const tabItems = [
+  { name: 'State', value: 'state' },
+  { name: 'Regions', value: 'region' },
+  { name: 'Circles', value: 'circle' },
+  { name: 'Divisions', value: 'division' },
+  { name: 'Sub Divisions *', value: 'subdivision' },
+  { name: 'Sections *', value: 'section' },
+]
 
+export default function OfficeLevelTabs({ activeTab, setActiveTab }: Props) {
   return (
     <div
       className='w-full items-center border-gray-200 sm:flex'
@@ -44,10 +30,10 @@ export default function OfficeLevelTabs({
                 ? 'border-1stop-highlight'
                 : 'border-transparent hover:border-1stop-highlight'
             }`}
-            onClick={() => changeTab(tab.value)}
+            onClick={() => setActiveTab(tab.value)}
             tabIndex={0}
             role='tab'
-            onKeyDown={(event) => handleEnterPress(event, () => changeTab(tab.value))}
+            onKeyDown={(event) => handleEnterPress(event, () => setActiveTab(tab.value))}
           >
             <p
               className={`subheader-sm-1stop leading-none ${
@@ -67,7 +53,7 @@ export default function OfficeLevelTabs({
           dataKey='value'
           displayKey='name'
           value={activeTab}
-          setValue={changeTab}
+          setValue={setActiveTab}
         />
       </div>
     </div>
