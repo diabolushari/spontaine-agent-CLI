@@ -16,10 +16,22 @@ export default function useAppliedFilters(
   measures: SubsetMeasureField[],
   filters: Record<string, string>
 ) {
-  const [appliedFilters, setAppliedFilters] = useState<{ id: number; filter: string }[]>([])
+  const [appliedFilters, setAppliedFilters] = useState<
+    {
+      id: number
+      filter: string
+      filterKey: string
+      filterValue: string
+    }[]
+  >([])
 
   useEffect(() => {
-    const newFilters: { id: number; filter: string }[] = []
+    const newFilters: {
+      id: number
+      filter: string
+      filterKey: string
+      filterValue: string
+    }[] = []
 
     let uuidCounter = 1
 
@@ -30,6 +42,8 @@ export default function useAppliedFilters(
           newFilters.push({
             id: uuidCounter++,
             filter: `${date.subset_field_name} ${dateOperation.operation} ${filters[filter]}`,
+            filterKey: filter,
+            filterValue: filters[filter],
           })
         }
       })
@@ -42,6 +56,8 @@ export default function useAppliedFilters(
           newFilters.push({
             id: uuidCounter++,
             filter: `${dimension.subset_field_name} ${dimensionOperation.operation} ${filters[filter]}`,
+            filterKey: filter,
+            filterValue: filters[filter],
           })
         }
       })
@@ -54,6 +70,8 @@ export default function useAppliedFilters(
           newFilters.push({
             id: uuidCounter++,
             filter: `${measure.subset_field_name} ${measureOperation.operation} ${filters[filter]}`,
+            filterKey: filter,
+            filterValue: filters[filter],
           })
         }
       })

@@ -219,48 +219,95 @@ export default function OfficeLevelExplorerTable({
     }
   }
 
+  const removeFilter = (filterKey: string) => {
+    setSearchParams((oldValues) => {
+      const keys = Object.keys(oldValues)
+      const remainingFilters: Record<string, string> = {}
+
+      keys
+        .filter((key) => key != filterKey)
+        .forEach((key) => {
+          remainingFilters[key] = oldValues[key]
+        })
+
+      return remainingFilters
+    })
+  }
+
   return (
     <FullSpinnerWrapper processing={loading}>
-      <div className='flex justify-end gap-5 pr-2'>
-        <button
-          className='rounded bg-blue-500 p-2 text-white hover:bg-blue-400'
-          onClick={() => setShowModal(true)}
-        >
-          <i className='la la-filter'></i>
-        </button>
-        <a
-          className='flex items-center justify-center rounded bg-blue-500 p-2 text-white hover:bg-blue-400'
-          href={route('subset-export', {
-            ...searchParams,
-            subsetDetail: subset.id,
-            level: officeLevel,
-            office_code: getOfficeCode(officeLevel, selectedDivision, selectedSubdivision),
-          })}
-          target='_blank'
-          rel='noreferrer'
-        >
-          <i className='la la-file-excel'></i>
-        </a>
+      <div className='my-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+        {/*  Filters and Export Block*/}
+        <div className='flex flex-col gap-3 rounded bg-gray-200 p-2 md:col-start-2 lg:col-start-3'>
+          <div className='flex justify-end gap-5'>
+            <button
+              className='rounded bg-blue-500 p-2 text-white hover:bg-blue-400'
+              onClick={() => setShowModal(true)}
+            >
+              <i className='la la-filter'></i>
+            </button>
+            <a
+              className='flex items-center justify-center rounded bg-blue-500 p-2 text-white hover:bg-blue-400'
+              href={route('subset-export', {
+                ...searchParams,
+                subsetDetail: subset.id,
+                level: officeLevel,
+                office_code: getOfficeCode(officeLevel, selectedDivision, selectedSubdivision),
+              })}
+              target='_blank'
+              rel='noreferrer'
+            >
+              <i className='la la-file-excel'></i>
+            </a>
+          </div>
+          {appliedFilters.length > 0 && (
+            <div className='flex gap-5'>
+              <span className='font-semibold'>Filters Applied</span>
+            </div>
+          )}
+          {appliedFilters.length === 0 && (
+            <div className='flex gap-5'>
+              <span className='font-semibold'>No Filters Applied</span>
+            </div>
+          )}
+          <div className='flex flex-col gap-2'>
+            {appliedFilters.map((filter) => {
+              return (
+                <div
+                  className='flex justify-between gap-5'
+                  key={filter.id}
+                >
+                  <span>{filter.filter}</span>
+                  <button onClick={() => removeFilter(filter.filterKey)}>
+                    <i className='la la-close' />
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       </div>
       <div className='flex flex-col gap-2'>
-        {appliedFilters.map((filter) => {
-          return (
-            <div
-              className='font-semibold'
-              key={filter.id}
-            >
-              {filter.filter}
-            </div>
-          )
-        })}
         {officeLevel === 'subdivision' && selectedDivision != null && (
-          <div className='font-semibold'>
-            SubDivision: {selectedDivision.office_name} ({selectedDivision.office_code})
+          <div className='my-5 flex flex-col gap-2'>
+            <span>
+              Showing Subdivisions under{' '}
+              <b>
+                {selectedDivision.office_name} ({selectedDivision.office_code})
+              </b>
+            </span>
+            <span className='text-xs'>You can select division under Divisions Tab.</span>
           </div>
         )}
         {officeLevel === 'section' && selectedSubdivision != null && (
-          <div className='font-semibold'>
-            Section: {selectedSubdivision.office_name} ({selectedSubdivision.office_code})
+          <div className='my-5 flex flex-col gap-2'>
+            <span>
+              Showing Sections under{' '}
+              <b>
+                {selectedSubdivision.office_name} ({selectedSubdivision.office_code})
+              </b>
+            </span>
+            <span className='text-xs'>You can select subdivision under SubDivisions Tab.</span>
           </div>
         )}
       </div>
