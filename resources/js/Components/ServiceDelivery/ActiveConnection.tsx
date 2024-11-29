@@ -499,6 +499,7 @@ const ActiveConnection = () => {
             default_level='section'
             displayKey='consumer_count'
             sortBy='consumer_count'
+            route={`/office-rankings/Active Connections Summary?route=${route('service-delivery.index')}`}
           />
         )}
       </div>
@@ -519,7 +520,9 @@ const ActiveConnection = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/Active Connections Summary'>
+          <Link
+            href={`/data-explorer/Active Connections Summary?route=${route('service-delivery.index')}`}
+          >
             <MoreButton />
           </Link>
         </div>

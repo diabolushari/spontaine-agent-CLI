@@ -51,10 +51,10 @@ const ServideDeliveryIndexPage = () => {
           </div>
 
           <div className='flex flex-col gap-2 lg:flex-row'>
-            <div className='flex w-full lg:w-1/3'>
+            <div className='flex w-full lg:w-1/2'>
               <Solar />
             </div>
-            <div className='flex w-full lg:w-2/3'>
+            <div className='flex w-full lg:w-1/2'>
               <SolarGeneration />
             </div>
           </div>

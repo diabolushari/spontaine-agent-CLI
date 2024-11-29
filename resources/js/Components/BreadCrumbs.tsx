@@ -7,6 +7,7 @@ export interface BreadcrumbItemLink {
 }
 
 const BreadCrumbs = ({ breadcrumbItems }: { breadcrumbItems?: BreadcrumbItemLink[] }) => {
+  console.log(breadcrumbItems)
   return (
     <div className='flex'>
       {breadcrumbItems?.map((breadcrumb, index) => (

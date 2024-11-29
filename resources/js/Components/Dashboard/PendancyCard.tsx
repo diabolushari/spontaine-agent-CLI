@@ -278,7 +278,9 @@ const PendancyCard = () => {
           />
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link href='/data-explorer/Requests Completion Report'>
+          <Link
+            href={`/data-explorer/Requests Completion Report?route=${route('service-delivery.index')}`}
+          >
             <MoreButton />
           </Link>
         </div>
