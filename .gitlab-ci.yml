@@ -79,6 +79,8 @@ test:
     # set it in your package.json script
     # comment this out if you don't have a frontend test
     - npm run tsc-check
+    - ./vendor/bin/pint --test
+    - ./vendor/bin/phpstan
 
 deploy:
   stage: deploy
