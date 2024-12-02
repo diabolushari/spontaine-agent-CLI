@@ -6,7 +6,7 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import IssueCard from './IssueCard'
 import ComplaintList from './ComplaintList'
-import TopList from '../TopList'
+import TopList from '../NewConnectionsList'
 
 const Complaints = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)

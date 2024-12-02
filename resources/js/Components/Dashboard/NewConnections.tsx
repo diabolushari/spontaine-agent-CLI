@@ -10,9 +10,10 @@ import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import NewConnectionTrend from '../ServiceDelivery/NewConnection/NewConnectionTrend'
-import TopList from '../ServiceDelivery/TopList'
+
 import { div } from 'framer-motion/client'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import NewConnectionsList from '../ServiceDelivery/NewConnectionsList'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -74,18 +75,17 @@ const CustomLegend = ({ payload }: LegendProps) => {
 
 const NewConnections = () => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
-  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date())
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
   const [selectedLevel, setSelectedLevel] = useState(1)
 
   const [graphValues] = useFetchRecord<{
     data: NewConnectionGraphValues[]
-    month: number
-    year: number
     latest_value: string
   }>(
     `subset/63?${selectedMonth == null ? 'latest=month_year' : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
+
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -135,6 +135,7 @@ const NewConnections = () => {
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
+
   return (
     <Card className='flex w-full flex-col'>
       <div className='flex w-full'>
@@ -402,7 +403,7 @@ const NewConnections = () => {
               </div>
             </div>
 
-            <div className='flex w-1/2 justify-center pt-2'>
+            <div className='relative flex w-1/2 justify-center pt-2'>
               {isLoading ? (
                 <Skeleton
                   circle={true}
@@ -443,6 +444,9 @@ const NewConnections = () => {
                   </PieChart>
                 </ResponsiveContainer>
               )}
+              {/* <span className='subheader-sm-1stop absolute bottom-11'>
+                REQUESTS SERVICED: SLA PERFORMANCE SPLIT
+              </span> */}
             </div>
           </div>
         )}
@@ -453,9 +457,9 @@ const NewConnections = () => {
           />
         )}
         {selectedLevel === 3 && (
-          <TopList
+          <NewConnectionsList
             column1='Section'
-            column2='SLA count'
+            column2='Overall SLA Compliant Requests (count)'
             subset_id='63'
             default_level='section'
             displayKey='sla'

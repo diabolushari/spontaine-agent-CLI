@@ -5,7 +5,7 @@ import { Link } from '@inertiajs/react'
 import MoreButton from '../../MoreButton'
 import SolarProsumers from './SolarProsumers'
 import SolarCapacityTrend from './SolarCapacityTrend'
-import TopList from '../TopList'
+import TopList from '../NewConnectionsList'
 import SolarList from './SolarList'
 
 const Solar = () => {
