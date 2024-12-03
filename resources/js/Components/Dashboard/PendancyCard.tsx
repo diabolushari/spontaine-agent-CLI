@@ -13,18 +13,21 @@ import { format } from 'path'
 import DataShowIcon from '../ui/DatashowIcon'
 
 export interface PendencyGraphValues {
-  category: string
-  compl_cnt_5_15_days: number
-  compl_cnt_16_30_days: number
-  compl_cnt_gt_30_days: number
-  compl_cnt_lt_5_days: number
-  compl_perc_5_15_days: number
-  compl_perc_16_30_days: number
-  compl_perc_gt_30_days: number
-  compl_perc_lt_5_days: number
-  compl_within_sla_cnt: number
-  compl_within_sla_perc: number
-  data_date: string
+  date: string
+  request_type: string
+  requests_completed_5_15_days____: number
+  requests_completed_5_15_days__count_: number
+  requests_completed_16_30_days____: number
+  requests_completed_16_30_days__count_: number
+  requests_completed__5_days____: number
+  requests_completed__5_days__count_: number
+  requests_completed__30_days____: number
+  requests_completed__30_days__count_: number
+  requests_completed__count_: number
+  requests_completed_within_sla____: number
+  requests_completed_within_sla__count_: number
+  requests_received__count_: number
+  sla_days: number
 }
 
 const PendancyCard = () => {
@@ -41,29 +44,40 @@ const PendancyCard = () => {
     data: PendencyGraphValues[]
     date: string
     latest_value: string
-  }>(`/subset/67?${selectedDate == null ? 'latest=data_date' : `data_date=${selectedDate}`}`)
+  }>(`/subset/96?${selectedDate == null ? 'latest=date' : `date=${selectedDate}`}`)
   useEffect(() => {
     if (selectedDate == null && graphValues != null) {
       setSelectedDate(graphValues.latest_value)
     }
   }, [setSelectedDate, graphValues, selectedDate])
+  console.log(graphValues)
 
   const lessThan5Days = toggleValue
-    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_lt_5_days || 0
-    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_lt_5_days || 0
+    ? graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed__30_days____ || 0
+    : graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed__5_days__count_ || 0
 
   const betweem515Days = toggleValue
-    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_5_15_days || 0
-    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_5_15_days || 0
+    ? graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_5_15_days____ || 0
+    : graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_5_15_days__count_ || 0
   const betweem1630Days = toggleValue
-    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_16_30_days || 0
-    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_16_30_days || 0
+    ? graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_16_30_days____ || 0
+    : graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_16_30_days__count_ || 0
   const greaterThan30Days = toggleValue
-    ? graphValues?.data.find((value) => value.category === title)?.compl_perc_gt_30_days || 0
-    : graphValues?.data.find((value) => value.category === title)?.compl_cnt_gt_30_days || 0
+    ? graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed__30_days____ || 0
+    : graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed__30_days__count_ || 0
   const complWithinSLa = toggleValue
-    ? graphValues?.data.find((value) => value.category === title)?.compl_within_sla_perc || 0
-    : graphValues?.data.find((value) => value.category === title)?.compl_within_sla_cnt || 0
+    ? graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_within_sla____ || 0
+    : graphValues?.data.find((value) => value.request_type === title)
+        ?.requests_completed_within_sla__count_ || 0
 
   const data = [{ name: 'days', lessThan5Days, betweem515Days, betweem1630Days, greaterThan30Days }]
 
@@ -111,8 +125,8 @@ const PendancyCard = () => {
                     <SelectList
                       setValue={setTitle}
                       list={graphValues?.data ?? []}
-                      displayKey='category'
-                      dataKey='category'
+                      displayKey='request_type'
+                      dataKey='request_type'
                       showAllOption
                       value={title}
                     />
@@ -180,25 +194,25 @@ const PendancyCard = () => {
                 </div>
               </div>
               <div className='grid grid-cols-4 justify-center gap-2 pb-5 md:justify-start md:gap-5'>
-                <div className='text-center text-[#A2B899]'>
+                <div className='text-center'>
                   <div className='smmetric-1stop'>
                     {toggleValue ? `${lessThan5Days.toFixed(2)}%` : formatNumber(lessThan5Days)}
                   </div>
                   <div className='small-1stop'>{'<5 days'}</div>
                 </div>
-                <div className='text-center text-[#EFF0A6]'>
+                <div className='text-center'>
                   <div className='smmetric-1stop'>
                     {toggleValue ? `${betweem515Days.toFixed(2)}%` : formatNumber(betweem515Days)}
                   </div>
                   <div className='small-1stop'>5-15 days</div>
                 </div>
-                <div className='text-center text-[#E9BF7C]'>
+                <div className='text-center'>
                   <div className='smmetric-1stop'>
                     {toggleValue ? `${betweem1630Days.toFixed(2)}%` : formatNumber(betweem1630Days)}
                   </div>
                   <div className='small-1stop'>16-30 days</div>
                 </div>
-                <div className='text-center text-[#D467B3]'>
+                <div className='text-center'>
                   <div className='smmetric-1stop'>
                     {toggleValue
                       ? `${greaterThan30Days.toFixed(2)}%`
@@ -218,7 +232,7 @@ const PendancyCard = () => {
         </div>
         <div className='small-1stop-header flex h-full items-center bg-1stop-accent2 px-4 py-4'>
           {/* {graphValues.length > 0 &&
-            new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
+            new Date(graphValues[0].date).toLocaleDateString('en-US', {
               month: 'short',
               year: 'numeric',
             })} */}
@@ -229,7 +243,7 @@ const PendancyCard = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Requests Completion Report?latest=data_date?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Requests Completion Report?latest=date?route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>

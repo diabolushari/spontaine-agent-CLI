@@ -29,7 +29,7 @@ interface Properties {
 }
 
 const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }: Properties) => {
-  const [toogleValue, setToogleValue] = useState(true)
+  const [toogleValue, setToogleValue] = useState(false)
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [title, setTitle] = useState('Ownership change')
 
@@ -107,9 +107,9 @@ const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }
           </div>
           <div className='flex'>
             <div className='p-5'>
-              <button onClick={handleToogleChange}>
+              {/* <button onClick={handleToogleChange}>
                 {toogleValue ? <ToogleNumber /> : <TooglePercentage />}
-              </button>
+              </button> */}
             </div>
             <div className='p-5'>
               <SelectList

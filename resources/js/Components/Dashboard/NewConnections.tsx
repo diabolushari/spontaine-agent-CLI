@@ -48,8 +48,6 @@ const NewConnections = () => {
 
   const [selectedLevel, setSelectedLevel] = useState(1)
 
-
-
   const CustomLegend = ({ payload }: LegendProps) => {
     return (
       <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
@@ -346,7 +344,7 @@ const NewConnections = () => {
             default_level='section'
             displayKey='sla'
             sortBy='sla_perf_cnt'
-            route={`office-rankings/SLA Performance - New Connection Requests?route=${route('service-delivery.index')}`}
+            route={`office-rankings/SLA Compliance Analysis - New Connection Requests&latest=month_year?route=${route('service-delivery.index')}`}
           />
         )}
       </div>
@@ -368,7 +366,7 @@ const NewConnections = () => {
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?latest=month_year?route=${route('service-delivery.index')}`}
+            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?latest=month?route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>
