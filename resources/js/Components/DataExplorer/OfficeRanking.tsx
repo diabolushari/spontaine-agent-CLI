@@ -7,6 +7,8 @@ import { Paginator } from '@/ui/ui_interfaces'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import Table from '@/ui/Table/Table'
 import RestPagination from '@/ui/Pagination/RestPagination'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 
 interface Props {
   subset: SubsetDetail
@@ -52,6 +54,7 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
   const [graphValues, loading] = useFetchRecord<{ data: Paginator<DataTableItem> }>(
     `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${sortData.sortOrder}&limit=${sortData.limit}&page=${page}&per_page=10`
   )
+  console.log(graphValues)
 
   const tableCols = useMemo(() => {
     const cols: TableColName[] = []
@@ -101,9 +104,50 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
   const colHeads = useMemo(() => {
     return tableCols.map((col) => col.name)
   }, [tableCols])
+  const chartData = useMemo(() => {
+    return (
+      graphValues?.data?.data.map((item) => ({
+        office_name: item.office_name,
+        count: item[selectedSortField as keyof typeof item] || 0,
+      })) || []
+    )
+  }, [graphValues, selectedSortField])
+  console.log(chartData)
+
+  const handleTooltipClick = () => {
+    console.log('Clicked on Tooltip')
+  }
 
   return (
     <FullSpinnerWrapper processing={loading}>
+      <div>
+        <ResponsiveContainer
+          width='100%'
+          height={400}
+        >
+          <BarChart
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray='3 3' />
+            <XAxis
+              dataKey='office_name'
+              style={{ fontSize: '10' }}
+            />
+            <YAxis
+              tickFormatter={(value) => formatNumber(value)}
+              style={{ fontSize: '10' }}
+            />
+            <Tooltip formatter={(value: number) => `${formatNumber(value)}`} />
+            <Bar
+              dataKey='count'
+              fill='#235CC0'
+              barSize={70}
+              onClick={handleTooltipClick}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
       <div className='mt-10 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4'>
         <div className='flex flex-col'>
           <SelectList
