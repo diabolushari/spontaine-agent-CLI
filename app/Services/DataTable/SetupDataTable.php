@@ -21,7 +21,6 @@ readonly class SetupDataTable
 
     public function setup(DataDetailFormRequest $formRequest): OperationResult
     {
-
         try {
             $this->createDataTable->create($formRequest);
         } catch (Exception $exception) {
@@ -29,7 +28,7 @@ readonly class SetupDataTable
 
             return OperationResult::from([
                 'error' => true,
-                'message' => ExceptionMessage::getMessage($exception),
+                'message' => 'on table create: '.ExceptionMessage::getMessage($exception),
             ]);
         }
 
@@ -43,7 +42,7 @@ readonly class SetupDataTable
 
             return OperationResult::from([
                 'error' => true,
-                'message' => ExceptionMessage::getMessage($e),
+                'message' => 'On Detail Create: '.ExceptionMessage::getMessage($e),
             ]);
         }
 
@@ -60,7 +59,7 @@ readonly class SetupDataTable
 
             return OperationResult::from([
                 'error' => true,
-                'message' => ExceptionMessage::getMessage($exception),
+                'message' => 'here: '.ExceptionMessage::getMessage($exception),
             ]);
         }
 
@@ -84,7 +83,7 @@ readonly class SetupDataTable
     private function initDates(DataDetail $dataDetail, DataDetailFormRequest $request): array
     {
         $dateFields = [];
-        $createdBy = request()->user()->id;
+        $createdBy = request()->user()?->id;
         $now = now()->toDateString();
 
         if ($request->dates != null) {
@@ -119,7 +118,7 @@ readonly class SetupDataTable
     private function initDimensions(DataDetail $dataDetail, DataDetailFormRequest $request): array
     {
         $dimensionFields = [];
-        $createdBy = request()->user()->id;
+        $createdBy = request()->user()?->id;
         $now = now()->toDateString();
 
         if ($request->dimensions != null) {
@@ -155,7 +154,7 @@ readonly class SetupDataTable
     private function initMeasures(DataDetail $dataDetail, DataDetailFormRequest $request): array
     {
         $measureFields = [];
-        $createdBy = request()->user()->id;
+        $createdBy = request()->user()?->id;
         $now = now()->toDateString();
 
         if ($request->measures != null) {

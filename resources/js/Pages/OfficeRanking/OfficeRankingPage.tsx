@@ -2,7 +2,11 @@ import { SubsetDetail, SubsetGroup, SubsetGroupItem } from '@/interfaces/data_in
 import { useMemo, useState } from 'react'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
-import { initSelectedSubset } from '@/Pages/DataExplorer/DataExplorer'
+import {
+  initSelectedSubset,
+  OfficeData,
+  SelectedOfficeContext,
+} from '@/Pages/DataExplorer/DataExplorer'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import SelectList from '@/ui/form/SelectList'
 import Card from '@/ui/Card/Card'
@@ -41,6 +45,10 @@ export default function OfficeRankingPage({
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
+  const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
+  const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)
+  const [selectedSubdivision, setSelectedSubdivision] = useState<OfficeData | null>(null)
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     initSelectedSubset(subsetItems, oldSubsetName)
@@ -88,12 +96,25 @@ export default function OfficeRankingPage({
               activeTab={activeTab}
               setActiveTab={setActiveTab}
             />
-            {selectedSubset != null && (
-              <OfficeRanking
-                subset={selectedSubset}
-                officeLevel={activeTab}
-              />
-            )}
+            <SelectedOfficeContext.Provider
+              value={{
+                region: selectedRegion,
+                setRegion: setSelectedRegion,
+                circle: selectedCircle,
+                setCircle: setSelectedCircle,
+                division: selectedDivision,
+                setDivision: setSelectedDivision,
+                subdivision: selectedSubdivision,
+                setSubdivision: setSelectedSubdivision,
+              }}
+            >
+              {selectedSubset != null && (
+                <OfficeRanking
+                  subset={selectedSubset}
+                  officeLevel={activeTab}
+                />
+              )}
+            </SelectedOfficeContext.Provider>
           </Card>
         </div>
       </DashboardPadding>

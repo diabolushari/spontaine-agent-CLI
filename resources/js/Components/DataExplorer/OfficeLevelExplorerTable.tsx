@@ -6,52 +6,60 @@ import {
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
-import Table from '@/ui/Table/Table'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import Modal from '@/ui/Modal/Modal'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import useAppliedFilters from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
-import { OfficeData } from '@/Pages/DataExplorer/DataExplorer'
+import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorer'
+import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 
 interface Props {
   subset: SubsetDetail
   officeLevel: string
   oldFilters: Record<string, string>
-  selectedDivision: OfficeData | null
-  setSelectedDivision: React.Dispatch<React.SetStateAction<OfficeData | null>>
-  selectedSubdivision: OfficeData | null
-  setSelectedSubdivision: React.Dispatch<React.SetStateAction<OfficeData | null>>
-}
-
-const getOfficeCode = (
-  officeLevel: string,
-  selectedDivision: OfficeData | null,
-  selectedSubDivision: OfficeData | null
-) => {
-  if (officeLevel === 'subdivision') {
-    return selectedDivision?.office_code ?? ''
-  }
-  if (officeLevel === 'section') {
-    return selectedSubDivision?.office_code ?? ''
-  }
-  return ''
 }
 
 export default function OfficeLevelExplorerTable({
   subset,
   officeLevel,
   oldFilters,
-  selectedDivision,
-  selectedSubdivision,
-  setSelectedDivision,
-  setSelectedSubdivision,
 }: Readonly<Props>) {
+  const { region, circle, division, subdivision } = useContext(SelectedOfficeContext)
+
   const [searchParams, setSearchParams] = useState<Record<string, string>>({
     level: officeLevel,
     ...oldFilters,
   })
+
+  const selectedOffice = useMemo(() => {
+    switch (officeLevel) {
+      case 'region':
+        return region
+      case 'circle':
+        return circle
+      case 'division':
+        return division
+      case 'subdivision':
+        return subdivision
+      default:
+        return null
+    }
+  }, [officeLevel, region, subdivision, circle, division])
+
+  const prevLevelOffice = useMemo(() => {
+    switch (officeLevel) {
+      case 'subdivision':
+        return division
+      case 'section':
+        return subdivision
+      case 'division':
+        return circle
+      case 'circle':
+        return region
+    }
+  }, [officeLevel, region, subdivision, circle, division])
 
   const { appliedFilters } = useAppliedFilters(
     subset.dates as SubsetDateField[],
@@ -65,7 +73,7 @@ export default function OfficeLevelExplorerTable({
       ...oldFilters,
       subsetDetail: subset.id,
       level: officeLevel,
-      office_code: getOfficeCode(officeLevel, selectedDivision, selectedSubdivision),
+      office_code: prevLevelOffice?.office_code,
     })
   )
 
@@ -75,10 +83,10 @@ export default function OfficeLevelExplorerTable({
         ...searchParams,
         subsetDetail: subset.id,
         level: officeLevel,
-        office_code: getOfficeCode(officeLevel, selectedDivision, selectedSubdivision),
+        office_code: prevLevelOffice?.office_code,
       })
     )
-  }, [subset, officeLevel, searchParams, selectedDivision, selectedSubdivision])
+  }, [subset, officeLevel, searchParams, division, subdivision, prevLevelOffice])
 
   const [dataTable, loading] = useFetchRecord<{
     data: DataTableItem[]
@@ -179,10 +187,6 @@ export default function OfficeLevelExplorerTable({
     return cols
   }, [subset, officeLevel])
 
-  const colHeads = useMemo(() => {
-    return tableCols.map((col) => col.name)
-  }, [tableCols])
-
   const onSubmit = useCallback(
     (query: string | null) => {
       setShowModal(false)
@@ -199,26 +203,6 @@ export default function OfficeLevelExplorerTable({
     [officeLevel]
   )
 
-  const selectOffice = (row: DataTableItem) => {
-    if (officeLevel === 'division' && row['office_code' as keyof typeof row] != null) {
-      setSelectedDivision({
-        office_name:
-          (row['office_name' as keyof typeof row] as string) ??
-          (row['office_code' as keyof typeof row] as string),
-        office_code: row['office_code' as keyof typeof row] as string,
-      })
-      setSelectedSubdivision(null)
-    }
-    if (officeLevel === 'subdivision' && row['office_code' as keyof typeof row] != null) {
-      setSelectedSubdivision({
-        office_name:
-          (row['office_name' as keyof typeof row] as string) ??
-          (row['office_code' as keyof typeof row] as string),
-        office_code: row['office_code' as keyof typeof row] as string,
-      })
-    }
-  }
-
   const removeFilter = (filterKey: string) => {
     setSearchParams((oldValues) => {
       const keys = Object.keys(oldValues)
@@ -232,15 +216,6 @@ export default function OfficeLevelExplorerTable({
 
       return remainingFilters
     })
-  }
-
-  const removeDivision = () => {
-    setSelectedDivision(null)
-    setSelectedSubdivision(null)
-  }
-
-  const removeSubdivision = () => {
-    setSelectedSubdivision(null)
   }
 
   return (
@@ -261,7 +236,7 @@ export default function OfficeLevelExplorerTable({
                 ...searchParams,
                 subsetDetail: subset.id,
                 level: officeLevel,
-                office_code: getOfficeCode(officeLevel, selectedDivision, selectedSubdivision),
+                office_code: prevLevelOffice?.office_code,
               })}
               target='_blank'
               rel='noreferrer'
@@ -296,109 +271,13 @@ export default function OfficeLevelExplorerTable({
           </div>
         </div>
       </div>
-      <div className='flex flex-col gap-2'>
-        {officeLevel === 'subdivision' && selectedDivision != null && (
-          <div className='my-5 flex flex-col gap-2'>
-            <span>
-              Showing Subdivisions under{' '}
-              <b>
-                {selectedDivision.office_name} ({selectedDivision.office_code})
-              </b>
-            </span>
-            <span className='text-xs'>You can select division under Divisions Tab.</span>
-          </div>
-        )}
-        {officeLevel === 'section' && selectedSubdivision != null && (
-          <div className='my-5 flex flex-col gap-2'>
-            <span>
-              Showing Sections under{' '}
-              <b>
-                {selectedSubdivision.office_name} ({selectedSubdivision.office_code})
-              </b>
-            </span>
-            <span className='text-xs'>You can select subdivision under SubDivisions Tab.</span>
-          </div>
-        )}
-        {officeLevel === 'division' && selectedDivision != null && (
-          <div className='flex'>
-            <div className='flex items-center justify-between gap-5 border-2 border-blue-500 p-2'>
-              <span>
-                {selectedDivision.office_name} ({selectedDivision.office_code})
-              </span>
-              <button
-                className=''
-                onClick={removeDivision}
-              >
-                <i className='la la-close' />
-              </button>
-            </div>
-          </div>
-        )}
-        {officeLevel === 'subdivision' && selectedSubdivision != null && (
-          <div className='flex'>
-            <div className='flex items-center justify-between gap-5 border-2 border-blue-500 p-2'>
-              <span>
-                {selectedSubdivision.office_name} ({selectedSubdivision.office_code})
-              </span>
-              <button
-                className=''
-                onClick={removeSubdivision}
-              >
-                <i className='la la-close' />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      <Table
-        heads={colHeads}
-        className='h-[70vh]'
-        editColumn
-      >
-        <tbody>
-          {dataTable?.data.map((item, index) => {
-            return (
-              <tr
-                key={index}
-                className={`standard-tr ${
-                  selectedDivision != null &&
-                  selectedDivision.office_code === item['office_code' as keyof typeof item]
-                    ? 'bg-green-200'
-                    : ''
-                } ${
-                  selectedDivision != null &&
-                  selectedDivision.office_code === item['office_code' as keyof typeof item]
-                    ? 'bg-green-200'
-                    : ''
-                } ${officeLevel.length === 0} ${officeLevel === 'division' || officeLevel === 'subdivision' ? 'cursor-pointer hover:bg-gray-100' : ''} `}
-                onClick={() => selectOffice(item)}
-              >
-                {tableCols.map((col, index) => {
-                  return (
-                    <td
-                      key={index}
-                      className='standard-td'
-                    >
-                      {col.type === 'number'
-                        ? (item[col.source as keyof DataTableItem] as number | null)?.toFixed(2)
-                        : item[col.source as keyof DataTableItem]}
-                    </td>
-                  )
-                })}
-                <td className='standard-td'>
-                  {selectedDivision != null &&
-                    selectedDivision.office_code === item['office_code' as keyof typeof item] && (
-                      <i className='la la-check'></i>
-                    )}
-                  {selectedSubdivision != null &&
-                    selectedSubdivision.office_code ===
-                      item['office_code' as keyof typeof item] && <i className='la la-check'></i>}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </Table>
+      <OfficeLevelSubsetTable
+        officeLevel={officeLevel}
+        tableCols={tableCols}
+        prevLevel={prevLevelOffice}
+        selectedOffice={selectedOffice}
+        tableData={dataTable?.data}
+      />
       {showModal && (
         <Modal
           title='Search'

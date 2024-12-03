@@ -29,6 +29,7 @@ use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\FindLevelController;
 use App\Http\Controllers\Subset\OfficeRankingsController;
+use App\Http\Controllers\Subset\SubsetColumSearchController;
 use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
@@ -43,24 +44,12 @@ use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-
-    Cache::set('key', 'value', 60);
-
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
+
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -139,6 +128,9 @@ Route::post('subset/{dataDetail}', SubsetStoreController::class)
 
 Route::get('subset/{subsetDetail}', SubsetDataController::class)
     ->name('subset.show');
+
+Route::get('subset-column-search/{subsetDetail}', SubsetColumSearchController::class)
+    ->name('subset.column.search');
 
 Route::get('subset-summary/{subsetDetail}', SubsetSummaryController::class)
     ->name('subset.summary');

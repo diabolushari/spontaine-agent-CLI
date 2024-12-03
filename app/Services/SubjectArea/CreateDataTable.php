@@ -14,21 +14,26 @@ class CreateDataTable
         Schema::create($request->tableName, function (Blueprint $table) use ($request) {
             $table->id();
 
-            foreach ($request->dates as $date) {
-                $table->date($date->column)->nullable()
-                    ->index();
+            if ($request->dates != null) {
+                foreach ($request->dates as $date) {
+                    $table->date($date->column)->nullable()
+                        ->index();
+                }
+            }
+            if ($request->dimensions != null) {
+                foreach ($request->dimensions as $dimension) {
+                    $table->foreignId($dimension->column)
+                        ->nullable()
+                        ->constrained('meta_data');
+                }
             }
 
-            foreach ($request->dimensions as $dimension) {
-                $table->foreignId($dimension->column)
-                    ->nullable()
-                    ->constrained('meta_data');
-            }
-
-            foreach ($request->measures as $measure) {
-                $table->double($measure->column)->nullable();
-                if ($measure->unitColumn != null && $measure->unitFieldName != null) {
-                    $table->string($measure->unitColumn)->nullable();
+            if ($request->measures != null) {
+                foreach ($request->measures as $measure) {
+                    $table->double($measure->column)->nullable();
+                    if ($measure->unitColumn != null && $measure->unitFieldName != null) {
+                        $table->string($measure->unitColumn)->nullable();
+                    }
                 }
             }
 

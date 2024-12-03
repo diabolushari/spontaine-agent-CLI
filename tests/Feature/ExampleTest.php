@@ -1,7 +1,11 @@
 <?php
 
-it('returns a successful response', function () {
-    $response = $this->get('/');
+use function Pest\Laravel\assertGuest;
+use function Pest\Laravel\get;
 
-    $response->assertStatus(200);
+it('main url redirects to dashboard', function () {
+    $response = get('/');
+    assertGuest();
+    $response->assertStatus(302);
+    $response->assertRedirect(route('dashboard'));
 });

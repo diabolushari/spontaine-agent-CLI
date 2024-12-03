@@ -1,14 +1,15 @@
 import { DataTableItem, SubsetDetail, SubsetMeasureField } from '@/interfaces/data_interfaces'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import SelectList from '@/ui/form/SelectList'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Paginator } from '@/ui/ui_interfaces'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
-import Table from '@/ui/Table/Table'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorer'
+import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 
 interface Props {
   subset: SubsetDetail
@@ -26,14 +27,51 @@ const listTypes: { name: string }[] = [
 export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) {
   const [page, setPage] = useState(1)
   const [selectedListType, setSelectedListType] = useState('Top 10')
+  const {
+    region,
+    circle,
+    division,
+    subdivision,
+    setRegion,
+    setSubdivision,
+    setCircle,
+    setDivision,
+  } = useContext(SelectedOfficeContext)
 
   useEffect(() => {
     setPage(1)
   }, [officeLevel, subset])
 
+  const selectedOffice = useMemo(() => {
+    switch (officeLevel) {
+      case 'region':
+        return region
+      case 'circle':
+        return circle
+      case 'division':
+        return division
+      case 'subdivision':
+        return subdivision
+      default:
+        return null
+    }
+  }, [officeLevel, region, subdivision, circle, division])
+
+  const prevLevelOffice = useMemo(() => {
+    switch (officeLevel) {
+      case 'subdivision':
+        return division
+      case 'section':
+        return subdivision
+      case 'division':
+        return circle
+      case 'circle':
+        return region
+    }
+  }, [officeLevel, region, subdivision, circle, division])
+
   const sortData = useMemo(() => {
     const [sortOrder, limit] = selectedListType.split(' ')
-
     return { sortOrder: sortOrder === 'Top' ? 'DESC' : 'ASC', limit: limit }
   }, [selectedListType])
 
@@ -52,9 +90,9 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
   }, [measureFields])
 
   const [graphValues, loading] = useFetchRecord<{ data: Paginator<DataTableItem> }>(
-    `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${sortData.sortOrder}&limit=${sortData.limit}&page=${page}&per_page=10`
+    `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${sortData.sortOrder}&office_Code=${prevLevelOffice?.office_code ?? ''}` +
+      `&limit=${sortData.limit}&page=${page}&per_page=10`
   )
-  console.log(graphValues)
 
   const tableCols = useMemo(() => {
     const cols: TableColName[] = []
@@ -101,21 +139,44 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
     return cols
   }, [subset, officeLevel, selectedSortField])
 
-  const colHeads = useMemo(() => {
-    return tableCols.map((col) => col.name)
-  }, [tableCols])
   const chartData = useMemo(() => {
     return (
       graphValues?.data?.data.map((item) => ({
         office_name: item.office_name,
+        office_code: item.office_code,
         count: item[selectedSortField as keyof typeof item] || 0,
       })) || []
     )
   }, [graphValues, selectedSortField])
-  console.log(chartData)
 
-  const handleTooltipClick = () => {
-    console.log('Clicked on Tooltip')
+  const handleTooltipClick = (data: { office_code: string | null; office_name: string | null }) => {
+    if (officeLevel === 'state') {
+      return
+    }
+    const office = {
+      office_name:
+        (data['office_name' as keyof typeof data] as string) ??
+        (data['office_code' as keyof typeof data] as string),
+      office_code: data['office_code' as keyof typeof data] as string,
+    }
+    if (officeLevel === 'region') {
+      setRegion?.(office)
+      setCircle?.(null)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'circle') {
+      setCircle?.(office)
+      setDivision?.(null)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'division') {
+      setDivision?.(office)
+      setSubdivision?.(null)
+    }
+    if (officeLevel === 'subdivision') {
+      setSubdivision?.(office)
+    }
   }
 
   return (
@@ -168,35 +229,13 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
           />
         </div>
       </div>
-      <Table
-        heads={colHeads}
-        className='h-[70vh]'
-        editColumn
-      >
-        <tbody>
-          {graphValues?.data.data.map((item, index) => {
-            return (
-              <tr
-                key={index}
-                className={`standard-tr`}
-              >
-                {tableCols.map((col, index) => {
-                  return (
-                    <td
-                      key={index}
-                      className='standard-td'
-                    >
-                      {col.type === 'number'
-                        ? (item[col.source as keyof DataTableItem] as number | null)?.toFixed(2)
-                        : item[col.source as keyof DataTableItem]}
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </Table>
+      <OfficeLevelSubsetTable
+        officeLevel={officeLevel}
+        tableCols={tableCols}
+        tableData={graphValues?.data.data}
+        selectedOffice={selectedOffice}
+        prevLevel={prevLevelOffice}
+      />
       <div className='flex w-full flex-col'>
         {graphValues?.data != null && (
           <RestPagination

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { SubsetDetail, SubsetGroup, SubsetGroupItem } from '@/interfaces/data_interfaces'
@@ -43,6 +43,17 @@ export const initSelectedSubset = (
   return subsetGroupItems[0].id.toString()
 }
 
+export const SelectedOfficeContext = createContext<{
+  region?: OfficeData | null
+  setRegion?: Dispatch<SetStateAction<OfficeData | null>>
+  circle?: OfficeData | null
+  setCircle?: Dispatch<SetStateAction<OfficeData | null>>
+  division?: OfficeData | null
+  setDivision?: Dispatch<SetStateAction<OfficeData | null>>
+  subdivision?: OfficeData | null
+  setSubdivision?: Dispatch<SetStateAction<OfficeData | null>>
+}>({})
+
 export default function DataExplorer({
   subsetGroup,
   subsetItems,
@@ -67,6 +78,8 @@ export default function DataExplorer({
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
   const [levelCode, setLevelCode] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
+  const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
   const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)
   const [selectedSubdivision, setSelectedSubdivision] = useState<OfficeData | null>(null)
 
@@ -128,23 +141,32 @@ export default function DataExplorer({
               />
             </div>
           </div>
-          <Card className='p-2'>
-            <OfficeLevelTabs
-              activeTab={activeTab}
-              setActiveTab={changeTab}
-            />
-            {selectedSubset != null && (
-              <OfficeLevelExplorerTable
-                subset={selectedSubset}
-                officeLevel={activeTab}
-                oldFilters={oldFilters}
-                selectedDivision={selectedDivision}
-                setSelectedDivision={setSelectedDivision}
-                selectedSubdivision={selectedSubdivision}
-                setSelectedSubdivision={setSelectedSubdivision}
+          <SelectedOfficeContext.Provider
+            value={{
+              region: selectedRegion,
+              setRegion: setSelectedRegion,
+              circle: selectedCircle,
+              setCircle: setSelectedCircle,
+              division: selectedDivision,
+              setDivision: setSelectedDivision,
+              subdivision: selectedSubdivision,
+              setSubdivision: setSelectedSubdivision,
+            }}
+          >
+            <Card className='p-2'>
+              <OfficeLevelTabs
+                activeTab={activeTab}
+                setActiveTab={changeTab}
               />
-            )}
-          </Card>
+              {selectedSubset != null && (
+                <OfficeLevelExplorerTable
+                  subset={selectedSubset}
+                  officeLevel={activeTab}
+                  oldFilters={oldFilters}
+                />
+              )}
+            </Card>
+          </SelectedOfficeContext.Provider>
         </div>
       </DashboardPadding>
     </DashboardLayout>

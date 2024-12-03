@@ -217,6 +217,7 @@ export interface JobStatus extends Model {
 
 export interface DataTableItem extends Model {
   office_name?: string | null
+  office_code?: string | null
   data_detail_id?: number
   date_1?: string | null
   date_2?: string | null
