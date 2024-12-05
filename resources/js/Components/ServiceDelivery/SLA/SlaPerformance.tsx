@@ -143,7 +143,6 @@ const SlaPerformance = () => {
 
   return (
     <Card className='flex w-full flex-col'>
-      
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
           <button
