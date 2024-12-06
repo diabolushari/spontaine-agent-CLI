@@ -15,6 +15,7 @@ import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '../CustomTooltip'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 import TotalCollectionList from './TotalCollectionList'
+import TotalCollectionTrend from './TotalCollectionTrend'
 
 interface Properties {
   section_code?: string
@@ -351,9 +352,10 @@ const TotalCollected = () => {
           </div>
         )}
         {selectedLevel === 2 && (
-          <div>
-            <p>Trend Of Totalcollected</p>
-          </div>
+          <TotalCollectionTrend
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
         )}
         {selectedLevel === 3 && (
           <TotalCollectionList

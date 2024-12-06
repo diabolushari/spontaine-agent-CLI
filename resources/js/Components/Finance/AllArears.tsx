@@ -161,9 +161,7 @@ const AllArears = () => {
           </div>
         </div>
         <div className='hover:cursor-pointer hover:opacity-50'>
-          <Link
-            href={`/data-explorer/Collection Summary?latest=month&route=${route('finance.index')}`}
-          >
+          <Link href={`/data-explorer/Total Arrears?latest=month&route=${route('finance.index')}`}>
             <MoreButton />
           </Link>
         </div>
