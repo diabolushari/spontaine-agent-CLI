@@ -386,7 +386,7 @@ const ActiveConnection = () => {
           <p className='mdmetric-1stop'>Active Connections</p>
         </div>
         <div
-          className='small-1stop-header flex h-full w-1/3 items-center bg-1stop-accent2 bg-opacity-50 px-4'
+          className='small-1stop-header flex h-full items-center bg-1stop-accent2 bg-opacity-50'
           //   style={{ backgroundBlendMode: 'overlay', opacity: 0.7 }}
         >
           <div style={{ opacity: 1 }}>
@@ -396,7 +396,7 @@ const ActiveConnection = () => {
             />
           </div>
         </div>
-        <div className='hover:cursor-pointer hover:opacity-50'>
+        <div className='flex justify-end hover:cursor-pointer hover:opacity-50'>
           <Link
             href={`/data-explorer/Active Connections Summary?latest=month_year?route=${route('service-delivery.index')}`}
           >

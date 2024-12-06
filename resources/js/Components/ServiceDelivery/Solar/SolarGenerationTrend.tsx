@@ -4,6 +4,8 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '../ActiveConnection'
 import { convertToMW } from './SolarCapacityTrend'
+import Skeleton from 'react-loading-skeleton'
+import { solidColors } from '@/ui/ui_interfaces'
 
 export interface SolarGenerationTrendValues {
   consumer_category: string
@@ -92,91 +94,101 @@ const SolarGenerationTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
     const convertedValue = Number(convertToMW(value))
     return value > 1000 ? formatNumber(convertedValue) : convertedValue.toFixed(2)
   }
+  const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
+      const value = payload[0].value
+      const formattedValue =
+        value > 1000
+          ? formatNumber(Number(convertToMW(value)))
+          : Number(convertToMW(value)).toFixed(2)
 
-  return (
-    <div className='flex w-full flex-col'>
-      <div className='flex w-full'>
-        <div className='flex w-11/12 flex-col gap-4 p-2'>
-          <div className='ml-2 flex gap-2'>
-            <span className='subheader-sm-1stop'>Trend of Solar Generation</span>
-
-            {/* <div className=''>
-              <SelectList
-                list={dateEarlier.map((month, index) => ({
-                  key: index,
-                  value: month,
-                  text: month,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption={false}
-                value={selectedValue}
-                setValue={setSelectedValue}
-              />
-            </div> */}
-          </div>
-          <div className='mx-4 flex w-full justify-end gap-2'>
-            <div>
-              <SelectList
-                list={voltageType.map((voltage) => ({
-                  key: voltage,
-                  value: voltage,
-                  text: voltage,
-                }))}
-                dataKey='value'
-                displayKey='text'
-                showAllOption={false}
-                value={selectedVoltage}
-                setValue={setSelectedVoltage}
-                style='1stop-small'
-              />
-            </div>
-            <span className='subheader-sm-1stop flex items-center'>CONSUMERS, PREVIOUS</span>
-            <div>
-              <SelectList
-                list={dateEarlier}
-                dataKey='value'
-                displayKey='name'
-                value={selectedRange}
-                setValue={(value) => setSelectedValue(`${value} MONTHS`)}
-                style='1stop-small'
-              />
-            </div>
-          </div>
-          <div className='w-full'>
-            <ResponsiveContainer
-              width='100%'
-              height={200}
-            >
-              <AreaChart data={chartData}>
-                <XAxis
-                  dataKey='month'
-                  tickFormatter={
-                    (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
-                  }
-                  style={{ fontSize: 10 }}
-                />
-                <YAxis
-                  tickFormatter={(value: number) => `${formatValue(value)} (MWh)`}
-                  style={{ fontSize: 10 }}
-                />
-
-                <Tooltip
-                  formatter={(value: number) => [`${formatValue(value)}`, 'Generation (MWh)']}
-                  labelFormatter={(month) =>
-                    month ? `${month.slice(4)}/${month.slice(0, 4)}` : ''
-                  }
-                />
-                <Area
-                  type='monotone'
-                  dataKey='Generation'
-                  stroke='#0091ff'
-                  fill='#0091ff'
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+      return (
+        <div className='rounded-xl border-2 bg-white p-4 shadow-lg'>
+          <div className='small-1stop mb-2 font-bold'>{formattedLabel}</div>
+          <div>
+            <span className='small-1stop'>
+              Generation (MWh): <span className='small-1stop font-bold'>{formattedValue}</span>
+            </span>
           </div>
         </div>
+      )
+    }
+    return null
+  }
+  return (
+    <div className='flex w-full flex-col pb-10 pr-4'>
+      <div className='mt-2 flex w-full justify-end gap-2 p-2'>
+        <span className='subheader-sm-1stop'>Trend of Solar Generation</span>
+      </div>
+
+      <div className='flex w-full justify-end gap-2 px-2'>
+        <div>
+          <SelectList
+            list={voltageType.map((voltage) => ({
+              key: voltage,
+              value: voltage,
+              text: voltage,
+            }))}
+            dataKey='value'
+            displayKey='text'
+            showAllOption={false}
+            value={selectedVoltage}
+            setValue={setSelectedVoltage}
+            style='1stop-small'
+          />
+        </div>
+        <span className='small-1stop-header flex items-center'>CONSUMERS, PREVIOUS</span>
+        <div>
+          <SelectList
+            list={dateEarlier}
+            dataKey='value'
+            displayKey='name'
+            value={selectedRange}
+            setValue={(value) => setSelectedValue(`${value} MONTHS`)}
+            style='1stop-small'
+          />
+        </div>
+      </div>
+      <div className='w-full'>
+        {isLoading ? (
+          <Skeleton
+            height={200}
+            width='100%'
+          />
+        ) : (
+          <ResponsiveContainer
+            width='100%'
+            height={200}
+          >
+            <AreaChart data={chartData}>
+              <XAxis
+                dataKey='month'
+                tickFormatter={
+                  (month) => `${month.slice(4)}/${month.slice(0, 4)}` // Format YYYYMM to MM/YYYY
+                }
+                style={{ fontSize: 10 }}
+              />
+              <YAxis
+                tickFormatter={(value: number) => `${formatValue(value)} (MWh)`}
+                style={{ fontSize: 10 }}
+              />
+
+              {/* <Tooltip
+                formatter={(value: number) => [`${formatValue(value)}`, 'Generation (MWh)']}
+                labelFormatter={(month) => (month ? `${month.slice(4)}/${month.slice(0, 4)}` : '')}
+              /> */}
+              <Tooltip content={renderCustomTooltip} />
+              <Area
+                type='monotone'
+                dataKey='Generation'
+                stroke={solidColors[0]}
+                fill={solidColors[1]}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )
