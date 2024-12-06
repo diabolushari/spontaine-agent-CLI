@@ -38,7 +38,7 @@ class DataExplorerController extends Controller implements HasMiddleware
             ->orderBy('item_number')
             ->get();
 
-        return Inertia::render('DataExplorer/DataExplorer', [
+        return Inertia::render('DataExplorer/DataExplorerPage', [
             'subsetGroup' => $subsetGroup,
             'subsetItems' => $groups,
             'oldTab' => $request->input('tab', 'state'),

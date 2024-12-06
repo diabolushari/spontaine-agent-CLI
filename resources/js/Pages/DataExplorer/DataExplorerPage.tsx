@@ -54,7 +54,7 @@ export const SelectedOfficeContext = createContext<{
   setSubdivision?: Dispatch<SetStateAction<OfficeData | null>>
 }>({})
 
-export default function DataExplorer({
+export default function DataExplorerPage({
   subsetGroup,
   subsetItems,
   oldTab,

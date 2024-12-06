@@ -1,4 +1,4 @@
-import { OfficeData } from '@/Pages/DataExplorer/DataExplorer'
+import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 import { useMemo } from 'react'
 
 export default function useOfficeLevelSelection(

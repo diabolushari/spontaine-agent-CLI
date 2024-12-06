@@ -12,7 +12,7 @@ import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import Modal from '@/ui/Modal/Modal'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import useAppliedFilters from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
-import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorer'
+import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 

@@ -6,7 +6,7 @@ import {
   initSelectedSubset,
   OfficeData,
   SelectedOfficeContext,
-} from '@/Pages/DataExplorer/DataExplorer'
+} from '@/Pages/DataExplorer/DataExplorerPage'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import SelectList from '@/ui/form/SelectList'
 import Card from '@/ui/Card/Card'

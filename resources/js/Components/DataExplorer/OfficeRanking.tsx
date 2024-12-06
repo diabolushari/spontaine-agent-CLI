@@ -8,7 +8,7 @@ import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
-import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorer'
+import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 

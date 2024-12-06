@@ -1,5 +1,5 @@
 import { DataTableItem } from '@/interfaces/data_interfaces'
-import { OfficeData, SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorer'
+import { OfficeData, SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import React, { useContext, useMemo } from 'react'
 import Table from '@/ui/Table/Table'
