@@ -96,7 +96,7 @@ const ActiveConnection = () => {
         : `month_year=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`
     }`
   )
-  console.log(graphValues)
+
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -382,7 +382,7 @@ const ActiveConnection = () => {
       </div>
       {/* //Footer */}
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
-        <div className='flex py-2'>
+        <div className='py-4'>
           <p className='mdmetric-1stop'>Active Connections</p>
         </div>
         <div
