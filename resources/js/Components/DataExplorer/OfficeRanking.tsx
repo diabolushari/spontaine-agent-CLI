@@ -10,6 +10,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
 import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorer'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
+import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 
 interface Props {
   subset: SubsetDetail
@@ -38,37 +39,17 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
     setDivision,
   } = useContext(SelectedOfficeContext)
 
+  const { selectedOffice, prevLevelOffice } = useOfficeLevelSelection(
+    officeLevel,
+    region,
+    circle,
+    division,
+    subdivision
+  )
+
   useEffect(() => {
     setPage(1)
   }, [officeLevel, subset])
-
-  const selectedOffice = useMemo(() => {
-    switch (officeLevel) {
-      case 'region':
-        return region
-      case 'circle':
-        return circle
-      case 'division':
-        return division
-      case 'subdivision':
-        return subdivision
-      default:
-        return null
-    }
-  }, [officeLevel, region, subdivision, circle, division])
-
-  const prevLevelOffice = useMemo(() => {
-    switch (officeLevel) {
-      case 'subdivision':
-        return division
-      case 'section':
-        return subdivision
-      case 'division':
-        return circle
-      case 'circle':
-        return region
-    }
-  }, [officeLevel, region, subdivision, circle, division])
 
   const sortData = useMemo(() => {
     const [sortOrder, limit] = selectedListType.split(' ')
@@ -90,7 +71,7 @@ export default function OfficeRanking({ subset, officeLevel }: Readonly<Props>) 
   }, [measureFields])
 
   const [graphValues, loading] = useFetchRecord<{ data: Paginator<DataTableItem> }>(
-    `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${sortData.sortOrder}&office_Code=${prevLevelOffice?.office_code ?? ''}` +
+    `/subset-summary/${subset.id}?level=${officeLevel}&sort_by=${selectedSortField}&sort_order=${sortData.sortOrder}&office_code=${prevLevelOffice?.office_code ?? ''}` +
       `&limit=${sortData.limit}&page=${page}&per_page=10`
   )
 

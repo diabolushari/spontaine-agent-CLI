@@ -14,6 +14,7 @@ import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilte
 import useAppliedFilters from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
 import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorer'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
+import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 
 interface Props {
   subset: SubsetDetail
@@ -33,33 +34,13 @@ export default function OfficeLevelExplorerTable({
     ...oldFilters,
   })
 
-  const selectedOffice = useMemo(() => {
-    switch (officeLevel) {
-      case 'region':
-        return region
-      case 'circle':
-        return circle
-      case 'division':
-        return division
-      case 'subdivision':
-        return subdivision
-      default:
-        return null
-    }
-  }, [officeLevel, region, subdivision, circle, division])
-
-  const prevLevelOffice = useMemo(() => {
-    switch (officeLevel) {
-      case 'subdivision':
-        return division
-      case 'section':
-        return subdivision
-      case 'division':
-        return circle
-      case 'circle':
-        return region
-    }
-  }, [officeLevel, region, subdivision, circle, division])
+  const { prevLevelOffice, selectedOffice } = useOfficeLevelSelection(
+    officeLevel,
+    region,
+    circle,
+    division,
+    subdivision
+  )
 
   const { appliedFilters } = useAppliedFilters(
     subset.dates as SubsetDateField[],
