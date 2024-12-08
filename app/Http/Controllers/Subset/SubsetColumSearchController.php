@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
+use App\Services\Subset\SubsetFilterBuilder;
 use App\Services\Subset\SubsetGroupedByColumn;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,20 +22,56 @@ class SubsetColumSearchController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail, SubsetGroupedByColumn $groupedByColumn, Request $request): JsonResponse
-    {
+    public function __invoke(
+        SubsetDetail $subsetDetail,
+        SubsetGroupedByColumn $groupedByColumn,
+        Request $request,
+        SubsetFilterBuilder $filterBuilder
+    ): JsonResponse {
 
         $subsetDetail->load('measures.info', 'dates.info', 'dimensions.info', 'measures.weightInfo');
 
-        if (! $request->filled('column')) {
+        if (! $request->filled('column') || ! $request->filled('search')) {
             return response()
                 ->json();
         }
 
-        $data = $groupedByColumn->getQuery(
+        //loop through columns and apply filter
+        //to make sure column is valid
+        $columnName = null;
+        /** @var array<array-key, array{subset_column: string}> $allColumns */
+        $allColumns = [
+            ...$subsetDetail->dates->toArray(),
+            ...$subsetDetail->dimensions->toArray(),
+            ...$subsetDetail->measures->toArray(),
+        ];
+
+        foreach ($allColumns as $column) {
+            if (strtolower($column['subset_column']) == strtolower($request->input('column'))) {
+                $columnName = $column['subset_column'];
+            }
+        }
+
+        if ($columnName == null) {
+            return response()
+                ->json();
+        }
+
+        $queryBuilder = $groupedByColumn->getQuery(
             $subsetDetail,
-            $request->input('column'),
-        )->get();
+            $columnName
+        );
+
+        $filterBuilder->filter(
+            $queryBuilder,
+            $subsetDetail,
+            [
+                $columnName.'_like' => $request->input('search'),
+            ]
+        );
+
+        $data = $queryBuilder->limit(10)
+            ->get();
 
         return response()
             ->json($data);

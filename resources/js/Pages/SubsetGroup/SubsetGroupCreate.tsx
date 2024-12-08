@@ -44,11 +44,11 @@ export default function SubsetGroupCreate({ subsetGroup }: Readonly<Props>) {
       }
       formData={formData}
       formItems={formItems}
-      title='Create SubsetGroup'
+      title={subsetGroup == null ? 'Create Subset Group' : 'Update Subset Group'}
       backUrl={
         subsetGroup == null
           ? route('subset-groups.index')
-          : route('service-delivery.show', subsetGroup.id)
+          : route('subset-groups.show', subsetGroup.id)
       }
       formStyles='w-1/2 md:grid-cols-1'
       isPatchRequest={subsetGroup != null}

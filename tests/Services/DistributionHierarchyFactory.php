@@ -118,7 +118,7 @@ class DistributionHierarchyFactory
 
         $fileContents = Excel::toArray(
             new DataTableImport,
-            base_path().'/tests/TestData/data_table_distribution_hierarchy.csv'
+            base_path().'/tests/TestData/data-table.xlsx'
         );
 
         $dataTableItems = [];

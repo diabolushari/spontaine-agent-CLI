@@ -124,7 +124,7 @@ export default function MetaGroupShow({ subsetGroup }: Readonly<Props>) {
       )}
       {showItemDeleteModal && selectedGroupItem != null && (
         <DeleteModal
-          setShowModal={setShowDeleteModal}
+          setShowModal={setShowItemDeleteModal}
           title='Delete Item'
           url={route('subset-group-items.destroy', selectedGroupItem.id)}
         >

@@ -37,7 +37,7 @@ class DataTableExport implements FromCollection
         $this->dataDetail->dimensionFields->each(function ($dimensionField) use (&$columns) {
             $columns[] = [
                 'fieldName' => $dimensionField->field_name,
-                'column' => $dimensionField->column.'_name',
+                'column' => $dimensionField->column,
             ];
         });
 

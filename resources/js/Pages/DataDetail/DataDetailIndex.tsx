@@ -5,7 +5,6 @@ import { DataDetail, ReferenceData } from '@/interfaces/data_interfaces'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import { useCallback, useMemo } from 'react'
-import { types } from 'util'
 
 interface Props {
   details: Paginator<DataDetail>
