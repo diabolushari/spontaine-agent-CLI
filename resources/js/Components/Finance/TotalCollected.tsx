@@ -309,7 +309,6 @@ const TotalCollected = () => {
                 </div>
               </div>
 
-              {/* EHT */}
               <div className='flex flex-col border p-2'>
                 <p className='mdmetric-1stop'>
                   {graphValues?.data.length ? (
