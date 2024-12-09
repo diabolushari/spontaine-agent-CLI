@@ -150,10 +150,9 @@ const ComboBox = <
         >
           <div className='flex flex-col'>
             <div className='flex justify-between'>
-              <label className='small-1stop mb-1 text-sm tracking-normal text-gray-800'>
-                {label}
-              </label>
-
+              {label != null && (
+                <label className='small-1stop mb-1 tracking-normal text-gray-800'>{label}</label>
+              )}
               <a
                 className={`link small-1stop flex flex-col justify-center text-xs ${linkText != null ? '' : 'hidden'}`}
                 href={redirectLink ?? ''}

@@ -2,6 +2,7 @@ import {
   DataTableItem,
   SubsetDateField,
   SubsetDetail,
+  SubsetDimensionField,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 import ShowResourcePage from '@/Components/ShowPage/ShowResourcePage'
@@ -45,7 +46,7 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
         <SubsetFilterForm
           dates={subset.dates as SubsetDateField[]}
           measures={subset.measures as SubsetMeasureField[]}
-          dimensions={subset.dimensions as SubsetDateField[]}
+          dimensions={subset.dimensions as SubsetDimensionField[]}
           subset={subset}
           filters={filters}
           onSubmit={handleSubmit}

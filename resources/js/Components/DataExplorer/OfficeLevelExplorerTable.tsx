@@ -54,7 +54,7 @@ export default function OfficeLevelExplorerTable({
       ...oldFilters,
       subsetDetail: subset.id,
       level: officeLevel,
-      office_code: prevLevelOffice?.office_code,
+      office_code: prevLevelOffice?.office_code ?? oldFilters['office_code'],
     })
   )
 
@@ -64,7 +64,7 @@ export default function OfficeLevelExplorerTable({
         ...searchParams,
         subsetDetail: subset.id,
         level: officeLevel,
-        office_code: prevLevelOffice?.office_code,
+        office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
       })
     )
   }, [subset, officeLevel, searchParams, division, subdivision, prevLevelOffice])
@@ -217,7 +217,7 @@ export default function OfficeLevelExplorerTable({
                 ...searchParams,
                 subsetDetail: subset.id,
                 level: officeLevel,
-                office_code: prevLevelOffice?.office_code,
+                office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
               })}
               target='_blank'
               rel='noreferrer'

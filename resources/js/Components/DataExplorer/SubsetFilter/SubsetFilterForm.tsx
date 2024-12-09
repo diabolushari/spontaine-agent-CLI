@@ -4,11 +4,16 @@ import {
   SubsetDimensionField,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
-import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import Input from '@/ui/form/Input'
 import Button from '@/ui/button/Button'
-import ButtonBorderIcon from '@/ui/button/ButtonBorderIcon'
+import generateInitialFields from '@/Components/DataExplorer/SubsetFilter/generateInitialFields'
+import ComboBox from '@/ui/form/ComboBox'
+import { XIcon } from 'lucide-react'
+import { availableOperators } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
+import useAvailableSubsetFilters from '@/Components/DataExplorer/SubsetFilter/useAvailableSubsetFilters'
+import DatePicker from '@/ui/form/DatePicker'
 
 interface Props {
   dates: SubsetDateField[]
@@ -19,122 +24,20 @@ interface Props {
   onSubmit: (querystring: string | null) => void
 }
 
-interface FormField {
+export type SubsetFilterFormType = 'date' | 'dimension' | 'number' | 'office' | 'month' | 'string'
+
+export interface SubsetFilterFormField {
   id: number
   field: string
   operator: string
   value: string
-  type: string
-}
-
-export const dateOperations = [
-  { operation: 'equals', value: '=' },
-  { operation: 'not equals', value: '_not' },
-  { operation: 'from', value: '_from' },
-  { operation: 'to', value: '_to' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
-]
-
-export const dimensionOperations = [
-  { operation: 'equals', value: '=' },
-  { operation: 'not equals', value: '_not' },
-  { operation: 'contains', value: '_like' },
-  { operation: 'not containing', value: '_not_like' },
-  { operation: 'greater than', value: '_greater_than' },
-  { operation: 'greater than or equal', value: '_greater_than_or_equal' },
-  { operation: 'less than', value: '_less_than' },
-  { operation: 'less than or equal', value: '_less_than_or_equal' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
-]
-
-export const measureOperations = [
-  { operation: 'equals', value: '=' },
-  { operation: 'not equals', value: '_not' },
-  { operation: 'greater than', value: '_greater_than' },
-  { operation: 'greater than or equal', value: '_greater_than_or_equal' },
-  { operation: 'less than', value: '_less_than' },
-  { operation: 'less than or equal', value: '_less_than_or_equal' },
-  { operation: 'in list', value: '_in' },
-  { operation: 'not in list', value: '_not_in' },
-]
-
-const availableOperators = (type: string) => {
-  switch (type) {
-    case 'date':
-      return dateOperations
-    case 'dimension':
-      return dimensionOperations
-    case 'number':
-      return measureOperations
-    default:
-      return []
-  }
-}
-
-const generateInitialFields = (
-  filters: Record<string, string | undefined | null>,
-  dates: SubsetDateField[],
-  measures: SubsetMeasureField[],
-  dimensions: SubsetDimensionField[]
-) => {
-  const fields: FormField[] = []
-
-  Object.keys(filters).forEach((key) => {
-    dates.forEach((date) => {
-      dateOperations.forEach((dateOperation) => {
-        if (
-          key === `${date.subset_column}${dateOperation.value == '=' ? '' : dateOperation.value}`
-        ) {
-          fields.push({
-            id: 0,
-            field: date.subset_column ?? '',
-            operator: dateOperation.value,
-            value: filters[key] ?? '',
-            type: 'date',
-          })
-        }
-      })
-    })
-    dimensions.forEach((dimension) => {
-      dimensionOperations.forEach((dimensionOperation) => {
-        if (
-          key ===
-          `${dimension.subset_column}${dimensionOperation.value == '=' ? '' : dimensionOperation.value}`
-        ) {
-          fields.push({
-            id: 0,
-            field: dimension.subset_column ?? '',
-            operator: dimensionOperation.value,
-            value: filters[key] ?? '',
-            type: 'dimension',
-          })
-        }
-      })
-    })
-    measures.forEach((measure) => {
-      measureOperations.forEach((measureOperation) => {
-        if (
-          key ===
-          `${measure.subset_column}${measureOperation.value == '=' ? '' : measureOperation.value}`
-        ) {
-          fields.push({
-            id: 0,
-            field: measure.subset_column ?? '',
-            operator: measureOperation.value,
-            value: filters[key] ?? '',
-            type: 'number',
-          })
-        }
-      })
-    })
-  })
-
-  return fields
+  dimensionData: { value: string } | null
+  officeData: { office_name: string; office_code: string } | null
+  type: SubsetFilterFormType
 }
 
 export default function SubsetFilterForm({
+  subset,
   dates,
   measures,
   dimensions,
@@ -142,7 +45,7 @@ export default function SubsetFilterForm({
   onSubmit,
 }: Readonly<Props>) {
   const uuidRef = useRef(1)
-  const [formFields, setFormFields] = useState<FormField[]>(
+  const [formFields, setFormFields] = useState<SubsetFilterFormField[]>(
     generateInitialFields(filters, dates, measures, dimensions).map((formField) => {
       return {
         ...formField,
@@ -158,9 +61,11 @@ export default function SubsetFilterForm({
         {
           id: uuidRef.current++,
           field: '',
-          operator: '',
+          operator: '=',
           value: '',
-          type: '',
+          dimensionData: null,
+          officeData: null,
+          type: 'string',
         },
       ])
       return
@@ -177,9 +82,11 @@ export default function SubsetFilterForm({
           {
             id: uuidRef.current++,
             field: '',
-            operator: '',
+            operator: '=',
             value: '',
-            type: '',
+            officeData: null,
+            dimensionData: null,
+            type: 'string',
           },
         ]
       })
@@ -191,9 +98,13 @@ export default function SubsetFilterForm({
       formFields[formFields.length - 1].field === '' &&
       formFields[formFields.length - 1].operator === '' &&
       formFields[formFields.length - 1].value === '' &&
+      formFields[formFields.length - 1].dimensionData == null &&
+      formFields[formFields.length - 1].officeData == null &&
       formFields[formFields.length - 2].field === '' &&
       formFields[formFields.length - 2].operator === '' &&
-      formFields[formFields.length - 2].value === ''
+      formFields[formFields.length - 2].value === '' &&
+      formFields[formFields.length - 2].dimensionData == null &&
+      formFields[formFields.length - 2].officeData == null
     ) {
       setFormFields((prevFormFields) => {
         return prevFormFields.slice(0, prevFormFields.length - 1)
@@ -201,43 +112,7 @@ export default function SubsetFilterForm({
     }
   }, [formFields])
 
-  const availableFields = useMemo(() => {
-    const fields: {
-      fieldId: number
-      fieldName: string
-      column: string
-      type: string
-    }[] = []
-
-    dates.forEach((date) => {
-      fields.push({
-        fieldId: date.field_id,
-        fieldName: date.subset_field_name ?? '',
-        column: date.subset_column ?? '',
-        type: 'date',
-      })
-    })
-
-    dimensions.forEach((dimension) => {
-      fields.push({
-        fieldId: dimension.field_id,
-        fieldName: dimension.subset_field_name ?? '',
-        column: dimension.subset_column ?? '',
-        type: 'dimension',
-      })
-    })
-
-    measures.forEach((measure) => {
-      fields.push({
-        fieldId: measure.field_id,
-        fieldName: measure.subset_field_name ?? '',
-        column: measure.subset_column ?? '',
-        type: 'number',
-      })
-    })
-
-    return fields
-  }, [dates, measures, dimensions])
+  const availableFields = useAvailableSubsetFilters(dates, dimensions, measures)
 
   const setField = (id: number, value: string) => {
     const field = availableFields.find((field) => field.column === value)
@@ -247,8 +122,11 @@ export default function SubsetFilterForm({
           return {
             ...formField,
             field: value,
-            type: field?.type ?? '',
-            operator: '',
+            type: (field?.type ?? 'string') as SubsetFilterFormType,
+            operator: '=',
+            value: '',
+            officeData: null,
+            dimensionData: null,
           }
         }
         return formField
@@ -263,6 +141,9 @@ export default function SubsetFilterForm({
           return {
             ...formField,
             operator: value,
+            value: '',
+            officeData: null,
+            dimensionData: null,
           }
         }
         return formField
@@ -277,6 +158,8 @@ export default function SubsetFilterForm({
           return {
             ...formField,
             value: value,
+            officeData: null,
+            dimensionData: null,
           }
         }
         return formField
@@ -288,12 +171,22 @@ export default function SubsetFilterForm({
     event.preventDefault()
     const urlParams = new URLSearchParams()
     formFields.forEach((formField) => {
-      if (formField.field == '' || formField.operator == '' || formField.value == '') {
+      if (formField.field == '' || formField.operator == '') {
+        return
+      }
+      let searchValue = formField.value
+      if (formField.type === 'dimension') {
+        searchValue = formField.dimensionData?.value ?? ''
+      }
+      if (formField.type === 'office') {
+        searchValue = formField.officeData?.office_code ?? ''
+      }
+      if (searchValue === '') {
         return
       }
       urlParams.set(
         `${formField.field}${formField.operator == '=' ? '' : formField.operator}`,
-        formField.value
+        searchValue
       )
     })
     onSubmit(urlParams.toString())
@@ -305,6 +198,42 @@ export default function SubsetFilterForm({
     })
   }
 
+  //Autocomplete selection for dimension values
+  const setDimensionFieldValue = (id: number, value: { value: string } | null) => {
+    setFormFields((prevFormFields) => {
+      return prevFormFields.map((formField) => {
+        if (formField.id === id) {
+          return {
+            ...formField,
+            value: '',
+            officeData: null,
+            dimensionData: value,
+          }
+        }
+        return formField
+      })
+    })
+  }
+
+  const setOfficeFieldValue = (
+    id: number,
+    value: { office_code: string; office_name: string } | null
+  ) => {
+    setFormFields((prevFormFields) => {
+      return prevFormFields.map((formField) => {
+        if (formField.id === id) {
+          return {
+            ...formField,
+            value: '',
+            officeData: value,
+            dimensionData: null,
+          }
+        }
+        return formField
+      })
+    })
+  }
+
   return (
     <form
       className='flex flex-col gap-5 py-5'
@@ -312,7 +241,7 @@ export default function SubsetFilterForm({
     >
       {formFields.map((formField) => (
         <div
-          className='grid grid-cols-3 gap-2'
+          className={`grid ${formField.type === 'dimension' || formField.type === 'office' ? 'grid-cols-2' : 'grid-cols-3'} gap-2`}
           key={formField.id}
         >
           <div className='flex flex-col'>
@@ -327,29 +256,70 @@ export default function SubsetFilterForm({
               allOptionText='Select Field'
             />
           </div>
-          <div className='flex flex-col'>
-            <SelectList
-              label='Operator'
-              list={availableOperators(formField.type ?? '')}
-              dataKey='value'
-              displayKey='operation'
-              setValue={(value) => setOperator(formField.id, value)}
-              value={formField.operator}
-              showAllOption
-              allOptionText='Select Operator'
-            />
-          </div>
-          <div className='flex justify-center'>
+          {!(formField.type === 'dimension' || formField.type === 'office') && (
             <div className='flex flex-col'>
-              <Input
-                label='Value'
-                setValue={(value) => setValue(formField.id, value)}
-                value={formField.value}
+              <SelectList
+                label='Operator'
+                list={availableOperators(formField.type ?? '')}
+                dataKey='value'
+                displayKey='operation'
+                setValue={(value) => setOperator(formField.id, value)}
+                value={formField.operator}
+                showAllOption
+                allOptionText='Select Operator'
               />
             </div>
-            <ButtonBorderIcon onClick={() => removeField(formField.id)}>
-              <i className='la la-trash-alt' />
-            </ButtonBorderIcon>
+          )}
+          <div className='flex items-end justify-between'>
+            <div className='flex-grow-1 flex-shrink-1 flex w-full flex-col'>
+              {(formField.type == 'string' || formField.type == 'number') && (
+                <Input
+                  label='Value'
+                  setValue={(value) => setValue(formField.id, value)}
+                  value={formField.value}
+                />
+              )}
+              {formField.type == 'date' && (
+                <DatePicker
+                  setValue={(value) => setValue(formField.id, value)}
+                  value={formField.value}
+                  label='Date'
+                />
+              )}
+              {formField.type == 'office' && (
+                <ComboBox
+                  label='Office'
+                  value={formField.officeData}
+                  dataKey='office_code'
+                  displayKey='office_name'
+                  displayValue2='office_code'
+                  setValue={(value) => setOfficeFieldValue(formField.id, value)}
+                  url={route('office-search', {
+                    search: '',
+                  })}
+                />
+              )}
+              {formField.type == 'dimension' && (
+                <ComboBox
+                  label='Value'
+                  value={formField.dimensionData}
+                  dataKey='value'
+                  displayKey='value'
+                  setValue={(value) => setDimensionFieldValue(formField.id, value)}
+                  url={route('office-search', {
+                    subsetDetail: subset.id,
+                    column: formField.field,
+                    search: '',
+                  })}
+                />
+              )}
+            </div>
+            <button
+              className='mb-2 cursor-pointer rounded-full p-1 hover:bg-gray-50'
+              onClick={() => removeField(formField.id)}
+            >
+              <XIcon />
+            </button>
           </div>
         </div>
       ))}

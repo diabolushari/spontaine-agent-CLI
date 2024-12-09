@@ -10,6 +10,7 @@ use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
 use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
+use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
@@ -158,6 +159,9 @@ Route::get('dataset/{subsetDetail}', SubsetTableController::class)
 
 Route::get('office-list', OfficeListController::class)
     ->name('office-list');
+
+Route::get('office-search', OfficeSearchController::class)
+    ->name('office-search');
 
 Route::get('data-explorer/{subsetGroup}', DataExplorerController::class)
     ->name('data-explorer');

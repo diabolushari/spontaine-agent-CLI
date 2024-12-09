@@ -8,7 +8,7 @@ import {
   dateOperations,
   dimensionOperations,
   measureOperations,
-} from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
+} from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
 
 export default function useAppliedFilters(
   dates: SubsetDateField[],
@@ -76,6 +76,15 @@ export default function useAppliedFilters(
         }
       })
     })
+
+    if (filters['office_code'] != null) {
+      newFilters.push({
+        id: uuidCounter++,
+        filter: `Office Code ${filters['office_code']}`,
+        filterKey: 'office_code',
+        filterValue: filters['office_code'],
+      })
+    }
 
     setAppliedFilters(newFilters)
   }, [dates, dimensions, measures, filters])

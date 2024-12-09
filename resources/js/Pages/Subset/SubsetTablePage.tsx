@@ -1,6 +1,11 @@
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import { SubsetDateField, SubsetDetail, SubsetMeasureField } from '@/interfaces/data_interfaces'
+import {
+  SubsetDateField,
+  SubsetDetail,
+  SubsetDimensionField,
+  SubsetMeasureField,
+} from '@/interfaces/data_interfaces'
 import Card from '@/ui/Card/Card'
 import { useCallback, useMemo, useState } from 'react'
 import SubsetAccordionView from '@/Components/Dashboard/SubsetAccordionView/SubsetAccordionView'
@@ -103,7 +108,7 @@ export default function SubsetTablePage({ subset, filters }: Readonly<Props>) {
                   <SubsetFilterForm
                     dates={subset.dates as SubsetDateField[]}
                     measures={subset.measures as SubsetMeasureField[]}
-                    dimensions={subset.dimensions as SubsetDateField[]}
+                    dimensions={subset.dimensions as SubsetDimensionField[]}
                     subset={subset}
                     filters={filters}
                     onSubmit={handleSearch}
