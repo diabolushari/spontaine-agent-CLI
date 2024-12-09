@@ -38,6 +38,7 @@ export default {
         '1stop-highlight2': 'var(--colour-1stop-highlight2)',
         '1stop-gray': 'var(--colour-1stop-gray)',
         '1stop-alt-gray': 'var(--colour-1stop-alt-gray)',
+        '1stop-dark-gray': 'var(--colour-1stop-dark-gray)',
         '1stop-white': 'var(--colour-1stop-white)',
         '1stop-link': 'var(--colour-1stop-link)',
         '1stop-background': 'var(--colour-1stop-background)',
