@@ -85,30 +85,28 @@ export default function OfficeRanking({
       })
     }
 
-    subset.measures
-      ?.filter((measure) => measure.subset_column == selectedSortField)
-      .forEach((measure) => {
-        if (measure.info == null) {
-          return
-        }
-        const fieldName =
-          measure.info.unit_field_name != null && measure.info.unit_column == null
-            ? `${measure.subset_field_name} (${measure.info.unit_field_name})`
-            : measure.subset_field_name
+    subset.measures.forEach((measure) => {
+      if (measure.info == null) {
+        return
+      }
+      const fieldName =
+        measure.info.unit_field_name != null && measure.info.unit_column == null
+          ? `${measure.subset_field_name} (${measure.info.unit_field_name})`
+          : measure.subset_field_name
 
-        cols.push({
-          name: fieldName ?? '',
-          source: measure.subset_column ?? '',
-          type: 'number',
-        })
-        if (measure.info.unit_column != null) {
-          cols.push({
-            name: measure.info.unit_field_name ?? '',
-            source: measure.info.unit_column ?? '',
-            type: 'string',
-          })
-        }
+      cols.push({
+        name: fieldName ?? '',
+        source: measure.subset_column ?? '',
+        type: 'number',
       })
+      if (measure.info.unit_column != null) {
+        cols.push({
+          name: measure.info.unit_field_name ?? '',
+          source: measure.info.unit_column ?? '',
+          type: 'string',
+        })
+      }
+    })
 
     return cols
   }, [subset, officeLevel, selectedSortField])

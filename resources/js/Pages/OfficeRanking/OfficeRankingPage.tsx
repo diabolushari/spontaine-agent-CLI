@@ -73,6 +73,7 @@ export default function OfficeRankingPage({
   }, [subsetItems, selectedSubsetId])
 
   const measureFields = useMemo(() => {
+    console.log(selectedSubset?.measures)
     return (selectedSubset?.measures ?? []) as SubsetMeasureField[]
   }, [selectedSubset])
 
