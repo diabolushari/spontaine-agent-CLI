@@ -8,6 +8,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import SelectList from '@/ui/form/SelectList'
 import { Cat } from 'lucide-react'
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+
 import Skeleton from 'react-loading-skeleton'
 import { CustomTooltip } from '../CustomTooltip'
 import { solidColors } from '@/ui/ui_interfaces'
@@ -65,57 +66,7 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
     [selectedVoltageType, selectedMonth]
   )
   return (
-    <div className='flex w-full flex-col '>
-      {/* <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
-          <button
-            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <button
-            className={`border px-2 py-7 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(2)
-            }}
-          >
-            <p></p>
-          </button>
-          <button
-            className={`border px-2 py-7 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.circle_code ?? '')
-              setSelectedLevel(3)
-            }}
-          >
-            <p></p>
-          </button>
-          <button
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.division_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
-          <button
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('section_code')
-              // setLevelCode(level?.record.section_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
-        </div> */}
+    <div className='flex w-full flex-col'>
       <div className='flex-col'>
         <div className='mt-4 flex w-full gap-2 p-2 pt-5'>
           <span className='subheader-sm-1stop'>Arrears By Category</span>
@@ -152,18 +103,15 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 <Bar
                   dataKey='TotalArrears'
                   fill={solidColors[0]}
-                  onClick={handleGraphSelection}
                 />
 
                 <Bar
                   dataKey='UndisputedArrears'
                   fill={solidColors[1]}
-                  onClick={handleGraphSelection}
                 />
                 <Bar
                   dataKey='DisputedArrears'
                   fill={solidColors[2]}
-                  onClick={handleGraphSelection}
                 />
               </BarChart>
             </ResponsiveContainer>

@@ -70,12 +70,16 @@ export default function SubsetFilterForm({
       ])
       return
     }
+    console.log(formFields[formFields.length - 1])
     //if last form field is filled, add a new form field
     if (
       formFields[formFields.length - 1].field !== '' &&
       formFields[formFields.length - 1].operator !== '' &&
-      formFields[formFields.length - 1].value !== ''
+      (formFields[formFields.length - 1].type == 'dimension' ||
+        formFields[formFields.length - 1].type == 'office' ||
+        formFields[formFields.length - 1].value !== '')
     ) {
+      console.log('here')
       setFormFields((prevFormFields) => {
         return [
           ...prevFormFields,
