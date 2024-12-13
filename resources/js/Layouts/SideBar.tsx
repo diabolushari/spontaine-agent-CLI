@@ -235,22 +235,37 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                 </div>
               ))}
             </div>
+
             <div className='mt-auto'>
+              <div className='mt-48 py-2'>
+                <Link
+                  href='/data-detail'
+                  className='small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
+                >
+                  <div
+                    className='rounded-full'
+                    dangerouslySetInnerHTML={{
+                      __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
+<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
+</svg>`,
+                    }}
+                  />
+                  <span className='small-1stop-header ml-2 pl-2 pt-2 font-bold hover:text-xs'>
+                    Admin
+                  </span>
+                </Link>
+              </div>
               <div
-                className='ml-4 mt-52 flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
+                className='ml-28 mt-52 flex flex-shrink-0 justify-center sm:relative sm:justify-normal'
                 ref={profileRef}
               >
                 <button
-                  className={`h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-2xl text-black ${
-                    isProfileDropdown
-                      ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2'
-                      : 'border-1stop-gray bg-1stop-accent2'
-                  }`}
+                  className={`h1-stop 'border-1stop-highlight to-1stop-accent2' flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-1stop-highlight text-2xl text-black`}
                   onClick={() => setIsProfileDropdown(!isProfileDropdown)}
                 >
                   {userInitial}
                 </button>
-                <p className='small-1stop small-1stop-header ml-5'>Logged in as {userName}</p>
               </div>
               <div>
                 <div className='ml-20 py-2'>
@@ -279,23 +294,6 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                       <path d='M7 12h14l-3 -3m0 6l3 -3' />
                     </svg>
                     <span className='ml-2 text-sm'>Sign out</span>
-                  </Link>
-                </div>
-                <div className='ml-20 py-2'>
-                  <Link
-                    href='/data-detail'
-                    className='text-black-700 small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
-                  >
-                    <div
-                      className='rounded-full'
-                      dangerouslySetInnerHTML={{
-                        __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
-<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
-</svg>`,
-                      }}
-                    />
-                    <span className='ml-2 mt-2 text-sm'>Admin</span>
                   </Link>
                 </div>
               </div>
@@ -327,17 +325,30 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                 </button>
               ))}
             </div>
+
             <div className='mt-auto'>
+              <div className='mt-48 py-2'>
+                <Link
+                  href='/data-detail'
+                  className='small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
+                >
+                  <div
+                    className='rounded-full'
+                    dangerouslySetInnerHTML={{
+                      __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
+<path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
+</svg>`,
+                    }}
+                  />
+                </Link>
+              </div>
               <div
                 className='ml-4 mt-52 flex flex-shrink-0 items-center justify-center sm:relative sm:justify-normal'
                 ref={profileRef}
               >
                 <button
-                  className={`h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-2xl text-black ${
-                    isProfileDropdown
-                      ? 'border-1stop-highlight bg-gradient-to-b from-1stop-highlight to-1stop-accent2'
-                      : 'border-1stop-gray bg-1stop-accent2'
-                  }`}
+                  className={`h1-stop flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-1stop-gray bg-1stop-accent2 text-2xl text-black`}
                   onClick={() => setIsProfileDropdown(!isProfileDropdown)}
                 >
                   {userInitial}
@@ -396,22 +407,68 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
                     </div>
                   ))}
                 </div>
-                <div className='ml-4 mt-auto flex items-center gap-3 rounded-full pt-10'>
-                  <div
-                    className='rounded-full p-2'
-                    dangerouslySetInnerHTML={{
-                      __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                <div className='mt-auto'>
+                  <div className='mt-48 py-2'>
+                    <Link
+                      href='/data-detail'
+                      className='small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
+                    >
+                      <div
+                        className='rounded-full'
+                        dangerouslySetInnerHTML={{
+                          __html: `<svg width="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M15.7087 6.02695C16.2714 6.83393 16.6673 7.76584 16.8466 8.77271H19V11.2273H16.8466C16.6673 12.2342 16.2714 13.1661 15.7087 13.973L17.2318 15.4962L15.4962 17.2318L13.973 15.7087C13.1661 16.2714 12.2342 16.6673 11.2273 16.8466V19H8.77271V16.8466C7.76584 16.6673 6.83393 16.2714 6.02695 15.7087L4.50383 17.2318L2.76823 15.4962L4.2913 13.973C3.72862 13.1661 3.33267 12.2342 3.1534 11.2273H1V8.77271H3.1534C3.33267 7.76584 3.72862 6.83393 4.2913 6.02695L2.76823 4.50383L4.50383 2.76823L6.02695 4.2913C6.83393 3.72862 7.76584 3.33267 8.77271 3.1534V1H11.2273V3.1534C12.2342 3.33267 13.1661 3.72862 13.973 4.2913L15.4962 2.76823L17.2318 4.50383L15.7087 6.02695Z" stroke="#333333" stroke-width="1 " stroke-linejoin="round"/>
 <path d="M10 12.25C11.2426 12.25 12.25 11.2426 12.25 10C12.25 8.75737 11.2426 7.75 10 7.75C8.75737 7.75 7.75 8.75737 7.75 10C7.75 11.2426 8.75737 12.25 10 12.25Z" stroke="#333333" stroke-width="1" stroke-linejoin="round"/>
 </svg>`,
-                    }}
-                  />
-                  <Link
-                    href='/data-detail'
-                    className='flex'
+                        }}
+                      />
+                      <span className='small-1stop-header ml-2 pl-2 pt-2 font-bold hover:text-xs'>
+                        Admin
+                      </span>
+                    </Link>
+                  </div>
+                  <div
+                    className='mt-52 flex flex-shrink-0 justify-center sm:relative sm:justify-normal'
+                    ref={profileRef}
                   >
-                    <span className='small-1stop-header pl-2 pt-2 font-bold'>Admin</span>
-                  </Link>
+                    <button
+                      className={`h1-stop 'border-1stop-highlight to-1stop-accent2' ml-10 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-1stop-highlight text-2xl text-black`}
+                      onClick={() => setIsProfileDropdown(!isProfileDropdown)}
+                    >
+                      {userInitial}
+                    </button>
+                  </div>
+                  <div>
+                    <div className='ml-20 py-2'>
+                      <Link
+                        href='/logout'
+                        method='post'
+                        className='text-black-700 small-1stop flex w-full rounded px-4 py-2 text-left hover:bg-1stop-gray'
+                      >
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          className='icon icon-tabler icon-tabler-logout'
+                          width={20}
+                          height={20}
+                          viewBox='0 0 24 24'
+                          strokeWidth='1.5'
+                          stroke='currentColor'
+                          fill='none'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        >
+                          <path
+                            stroke='none'
+                            d='M0 0h24v24H0z'
+                          />
+                          <path d='M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2' />
+                          <path d='M7 12h14l-3 -3m0 6l3 -3' />
+                        </svg>
+                        <span className='text-sm'>Sign out</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
