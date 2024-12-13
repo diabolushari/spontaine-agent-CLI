@@ -6,7 +6,6 @@ import MonthPicker from '@/ui/form/MonthPicker'
 import Card from '@/ui/Card/Card'
 import IssueCard from './IssueCard'
 import ComplaintList from './ComplaintList'
-import TopList from '../NewConnectionsList'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
 import PowerInterruptionTrend2 from '../PowerInterruptionTrend2'
@@ -91,7 +90,7 @@ const Complaints = () => {
         </div>
         <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Customer Complaints Summary?latest=month&route=${route('service-delivery.index')}`}
+            href={`/data-explorer/Customer Complaints Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
           >
             <MoreButton />
           </Link>
