@@ -294,7 +294,7 @@ const SideBar = ({ isShowSideBar = false, type, setIsShowSideBar }: Properties) 
               <ApplicationLogo className='h-20 w-20' />
             </Link>
           </div>
-          <div className='py-10'>
+          <div className='justify-left py-10'>
             <span className='subheader-1stop ml-3 mt-5 p-5'>ANALYTICS</span>
             <span className='subheader-1stop ml-3 mt-5 p-5'> DASHBOARD</span>
           </div>
