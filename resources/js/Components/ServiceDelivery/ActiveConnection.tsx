@@ -400,7 +400,7 @@ const ActiveConnection = () => {
             subset_id='198'
             default_level='section'
             sortBy='total_consumer_count'
-            route={`/office-rankings/Active Connections Summary?route=${route('service-delivery.index')}`}
+            route={`/office-rankings/Active Connections?route=${route('service-delivery.index')}`}
           />
         )}
       </div>
