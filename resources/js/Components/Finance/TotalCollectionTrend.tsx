@@ -39,7 +39,7 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
     data: TotalCollectionTrendValues[]
     latest_value: string
   }>(
-    `subset/152?${
+    `subset/225?${
       selectedMonth == null
         ? 'latest=month'
         : `month_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_less_than_or_equal=${Number(monthYear)}`

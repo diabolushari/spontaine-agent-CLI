@@ -80,16 +80,6 @@ export default function DetailDashboardLayout({
               <p className='axial-label-1stop ml-1'>{subsetGroup.description}</p>
             </div>
             <div className='flex flex-col gap-5 p-4'>
-              {appliedFilters.length > 0 && (
-                <div className='flex gap-5'>
-                  <span className='font-semibold'>Filters Applied</span>
-                </div>
-              )}
-              {appliedFilters.length === 0 && (
-                <div className='flex gap-5'>
-                  <span className='font-semibold'>No Filters Applied</span>
-                </div>
-              )}
               <div className='flex flex-col gap-2'>
                 {appliedFilters.map((filter) => {
                   return (

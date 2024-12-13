@@ -44,11 +44,12 @@ const Complaints = () => {
           >
             <Top10Icon />
           </button>
+          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
         </div>
 
         {selectedLevel === 1 && (
-          <div className='flex w-full flex-row'>
-            <div className='flex w-1/3'>
+          <div className='flex w-full flex-col md:flex-row'>
+            <div className='flex md:w-1/3'>
               <IssueCard
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}

@@ -22,7 +22,6 @@ interface Props {
   setSelectedOfficeLevel: Dispatch<SetStateAction<string>>
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  searchParams: Record<string, string>
 }
 
 export default function OfficeRanking({
@@ -34,7 +33,6 @@ export default function OfficeRanking({
   setSelectedOfficeLevel,
   selectedMonth,
   setSelectedMonth,
-  searchParams,
 }: Readonly<Props>) {
   const [page, setPage] = useState(1)
   const {
@@ -66,7 +64,6 @@ export default function OfficeRanking({
   }>(
     route('subset.summary', {
       subsetDetail: subset.id,
-      ...searchParams,
       level: officeLevel,
       month: dateToYearMonth(selectedMonth),
       sort_by: selectedSortField,
@@ -74,7 +71,7 @@ export default function OfficeRanking({
       limit: selectedLimit,
       page: page,
       per_page: 10,
-      office_code: prevLevelOffice?.office_code ?? searchParams['office_code'],
+      office_code: prevLevelOffice?.office_code ?? '',
     })
   )
 

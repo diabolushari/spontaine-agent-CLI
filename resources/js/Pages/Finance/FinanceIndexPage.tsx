@@ -8,6 +8,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import React, { useState } from 'react'
+import ArrearsCountAndGraph from '@/Components/Finance/ArrearsCountAndGraph'
 const FinanceIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
@@ -27,17 +28,13 @@ const FinanceIndexPage = () => {
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-24'>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <TotalBilled />
-            <Card className=''>
-              <TotalCollected />
-            </Card>
+
+            <TotalCollected />
           </div>
 
           <div className='flex flex-col gap-2 lg:flex-row'>
-            <div className='flex w-full lg:w-2/6'>
-              <AllArears />
-            </div>
-            <div className='flex w-full lg:w-4/6'>
-              <ArrearsCategory />
+            <div className='flex w-full'>
+              <ArrearsCountAndGraph />
             </div>
           </div>
           <div className='flex flex-col gap-2 lg:flex-row'>
