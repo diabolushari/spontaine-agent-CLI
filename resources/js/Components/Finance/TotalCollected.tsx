@@ -43,8 +43,6 @@ interface LegendProps {
   }[]
 }
 
-
-
 const TotalCollected = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [toggleValue, settoggleValue] = useState<boolean>(true)
@@ -227,7 +225,7 @@ const TotalCollected = () => {
                       name='radio'
                       checked={voltageType === 'Total'}
                       onClick={() => setVoltageType('Total')}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 bg-1stop-alt-highlight checked:border-none focus:outline-none'
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>
@@ -371,7 +369,7 @@ const TotalCollected = () => {
           <TotalCollectionList
             column1='Section'
             column2='Collection'
-            subset_id='152'
+            subset_id='225'
             default_level='section'
             sortBy='total_collection'
             route={`office-rankings/Collection Summary?route=${route('finance.index')}`}

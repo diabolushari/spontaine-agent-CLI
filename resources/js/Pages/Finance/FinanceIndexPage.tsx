@@ -28,7 +28,7 @@ const FinanceIndexPage = () => {
         <div className='flex flex-col gap-5 pl-10 pt-8 sm:pt-24'>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <TotalBilled />
-            {/* <TotalBilled /> */}
+
             <TotalCollected />
           </div>
 
@@ -36,9 +36,6 @@ const FinanceIndexPage = () => {
             <div className='flex w-full'>
               <ArrearsCountAndGraph />
             </div>
-            {/* <div className='flex w-full lg:w-4/6'>
-              <ArrearsCategory />
-            </div> */}
           </div>
           <div className='flex flex-col gap-2 lg:flex-row'>
             <ArriersHT />

@@ -250,7 +250,7 @@ const ActiveConnection = () => {
                       name='radio'
                       checked={voltageType === 'Total'}
                       onClick={() => setVoltageType('Total')}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 bg-1stop-alt-highlight checked:border-none focus:outline-none'
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>

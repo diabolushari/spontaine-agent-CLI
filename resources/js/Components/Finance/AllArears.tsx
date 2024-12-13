@@ -50,56 +50,6 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
   return (
     <div className='flex w-full flex-col'>
-      {/* <div className='small-1stop-header flex w-14 flex-col rounded-2xl'>
-          <button
-            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(2)
-            }}
-          >
-            <TrendIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.circle_code ?? '')
-              setSelectedLevel(3)
-            }}
-          >
-            <Top10Icon />
-          </button>
-          <button
-            className={`border px-2 py-7 ${selectedLevel === 4 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.division_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
-          <button
-            className={`px-2 py-7 ${selectedLevel === 5 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('section_code')
-              // setLevelCode(level?.record.section_code ?? '')
-            }}
-          >
-            <p></p>
-          </button>
-        </div> */}
       {selectedLevel === 1 && (
         <div className='ml-10 p-5 pl-10 pt-10'>
           <Card className='w-full bg-1stop-accent2 p-5'>

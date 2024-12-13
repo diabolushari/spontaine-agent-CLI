@@ -66,11 +66,11 @@ export const CustomLegend = ({ payload }: LegendProps) => {
 }
 
 const TotalBilled = () => {
+  const [voltageType, setVoltageType] = useState('Total')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [toggleValue, settoggleValue] = useState<boolean>(true)
 
   const [selectedLevel, setSelectedLevel] = useState(1)
-  const [voltageType, setVoltageType] = useState('Total')
 
   const [graphValues] = useFetchRecord<{ data: BillingValues[]; latest_value: string }>(
     `subset/120?${
@@ -264,7 +264,7 @@ const TotalBilled = () => {
                       type='radio'
                       name='radio'
                       onClick={() => setVoltageType('Total')}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 bg-1stop-alt-highlight checked:border-none focus:outline-none'
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
                 </div>
