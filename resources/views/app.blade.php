@@ -21,8 +21,8 @@
 </head>
 
 <body
-    class="font-sans antialiased bg-gradient-to-r from-1stop-gradient-left to-1stop-gradient-right pb-4 snap-mandatory max-w-full overflow-hidden">
-    @inertia
+    class="font-sans antialiased bg-gradient-to-r from-1stop-gradient-left to-1stop-gradient-right pb-4 snap-mandatory max-w-full">
+@inertia
 </body>
 
 </html>
