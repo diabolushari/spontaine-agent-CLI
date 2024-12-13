@@ -1,12 +1,10 @@
 import {
-  SubsetDateField,
   SubsetDetail,
-  SubsetDimensionField,
   SubsetGroup,
   SubsetGroupItem,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   initSelectedSubset,
   OfficeData,
@@ -17,9 +15,6 @@ import OfficeLevelTabs from '@/Components/DataExplorer/OfficeLevelTabs'
 import OfficeRanking from '@/Components/DataExplorer/OfficeRanking'
 import MonthPicker from '@/ui/form/MonthPicker'
 import DetailDashboardLayout from '@/Layouts/DetailDashboardLayout'
-import useAppliedFilters from '@/Components/DataExplorer/SubsetFilter/useAppliedFilters'
-import Modal from '@/ui/Modal/Modal'
-import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
 
 interface Props {
@@ -45,7 +40,6 @@ export default function OfficeRankingPage({
   const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
   const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)
   const [selectedSubdivision, setSelectedSubdivision] = useState<OfficeData | null>(null)
-  const [showSearchModal, setShowSearchModal] = useState(false)
 
   const [selectedSubsetId, setSelectedSubsetId] = useState(
     initSelectedSubset(subsetItems, oldSubsetName)
@@ -75,34 +69,7 @@ export default function OfficeRankingPage({
     yearMonthToDate(oldFilters['month'])
   )
 
-  const [searchParams, setSearchParams] = useState<Record<string, string>>({
-    level: activeTab,
-    ...oldFilters,
-  })
-
-  const { appliedFilters } = useAppliedFilters(
-    searchParams,
-    selectedMonth,
-    selectedSubset?.dates as SubsetDateField[] | undefined,
-    selectedSubset?.dimensions as SubsetDimensionField[] | undefined,
-    selectedSubset?.measures as SubsetMeasureField[] | undefined
-  )
-
-  const onSubmit = useCallback(
-    (query: string | null) => {
-      setShowSearchModal(false)
-      if (query == null) {
-        return
-      }
-      const searchParams = new URLSearchParams(query)
-      const params = Object.fromEntries(searchParams.entries())
-      setSearchParams({
-        ...params,
-        level: activeTab,
-      })
-    },
-    [activeTab]
-  )
+  const [searchParams, setSearchParams] = useState({})
 
   return (
     <DetailDashboardLayout
@@ -110,7 +77,7 @@ export default function OfficeRankingPage({
       oldRoute={oldRoute}
       setSearchParams={setSearchParams}
       setSelectedMonth={setSelectedMonth}
-      appliedFilters={appliedFilters}
+      appliedFilters={[]}
     >
       <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
         <div className='flex flex-col pt-4'>
@@ -189,13 +156,7 @@ export default function OfficeRankingPage({
                   setSelectedMonth={setSelectedMonth}
                 />
               </div>
-              <div
-                onClick={() => setShowSearchModal(true)}
-                className='place-items-center rounded-br-lg bg-1stop-highlight2'
-              >
-                <i className='la la-filter'></i>
-                <p className='small-1stop-header'>Filters</p>
-              </div>
+              <div className='place-items-center rounded-br-lg bg-1stop-highlight2'></div>
             </div>
           </div>
         </div>
@@ -226,27 +187,9 @@ export default function OfficeRankingPage({
               setSelectedOfficeLevel={setActiveTab}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
-              searchParams={searchParams}
             />
           )}
         </SelectedOfficeContext.Provider>
-        {showSearchModal && selectedSubset != null && (
-          <Modal
-            title='Search'
-            setShowModal={setShowSearchModal}
-          >
-            <div className='p-2'>
-              <SubsetFilterForm
-                dates={selectedSubset.dates as SubsetDateField[]}
-                measures={selectedSubset.measures as SubsetMeasureField[]}
-                dimensions={selectedSubset.dimensions as SubsetDimensionField[]}
-                subset={selectedSubset}
-                filters={searchParams}
-                onSubmit={onSubmit}
-              />
-            </div>
-          </Modal>
-        )}
       </div>
     </DetailDashboardLayout>
   )
