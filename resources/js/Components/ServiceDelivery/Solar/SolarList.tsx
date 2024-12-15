@@ -16,6 +16,7 @@ interface Properties {
   sortBy?: string
   sortOrder?: string
 }
+
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
@@ -24,6 +25,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Circle', value: 'circle' },
   { name: 'Region', value: 'region' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -256,7 +258,7 @@ const SolarList = ({
               </div>
               <div className='ml-auto flex w-full justify-end pt-3'>
                 <Link
-                  href={`office-rankings/Solar Prosumer Statistics?route=${route('service-delivery.index')}`}
+                  href={`office-rankings/Solar Prosumers Analysis?route=${route('service-delivery.index')}`}
                   className='link small-1stop'
                 >
                   Details

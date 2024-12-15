@@ -1,5 +1,3 @@
-import TooglePercentage from '@/Components/ui/TogglePercentage'
-import ToogleNumber from '@/Components/ui/ToogleNumber'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Model } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
@@ -29,6 +27,7 @@ interface Properties {
     complaint_type: string
   }[]
 }
+
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
@@ -37,6 +36,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Circle', value: 'circle' },
   { name: 'Region', value: 'region' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -45,6 +45,7 @@ interface ConsumerList extends Model {
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
 }
+
 const ComplaintList = ({
   subset_id,
   column1,
@@ -261,7 +262,7 @@ const ComplaintList = ({
             </div>
             <div className='ml-auto flex w-full justify-end pt-3'>
               <Link
-                href={`office-rankings/Customer Complaints Summary?route=${route('service-delivery.index')}`}
+                href={`office-rankings/Customer Complaints Analysis?route=${route('service-delivery.index')}`}
                 className='link small-1stop'
               >
                 Details

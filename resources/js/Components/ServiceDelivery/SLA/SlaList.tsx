@@ -23,6 +23,7 @@ interface Properties {
     sla_svc_group: string
   }[]
 }
+
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
@@ -31,6 +32,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Subdivision', value: 'subdivision' },
   { name: 'Division', value: 'division' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -40,6 +42,7 @@ interface ConsumerList extends Model {
   requests_within_sla__count_?: number
   requests_within_sla____?: number
 }
+
 const SlaList = ({
   subset_id,
   column1,
@@ -284,7 +287,7 @@ const SlaList = ({
           </div>
           <div className='ml-auto flex w-full justify-end pt-3'>
             <Link
-              href={`office-rankings/SLA Performance Comparison?route=${route('service-delivery.index')}`}
+              href={`office-rankings/SLA Performance Analysis?route=${route('service-delivery.index')}`}
               className='link small-1stop'
             >
               Details
