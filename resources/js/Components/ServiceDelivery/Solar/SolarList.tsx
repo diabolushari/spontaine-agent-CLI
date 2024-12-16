@@ -6,6 +6,7 @@ import { Paginator } from '@/ui/ui_interfaces'
 import { Link } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import { formatNumber } from '../ActiveConnection'
 
 interface Properties {
   subset_id: string
@@ -240,7 +241,9 @@ const SolarList = ({
                     key={value.office_name}
                   >
                     <td className=''>{value.office_name}</td>
-                    <td className=''>{(value.capacity_kw / 1000).toFixed(2)}</td>
+                    <td className=''>
+                      {formatNumber(Number((value.capacity_kw / 1000).toFixed(2)) ?? null)}
+                    </td>
                   </tr>
                 )
               })}

@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import ToogleNumber from '../ui/ToogleNumber'
 import TooglePercentage from '../ui/TogglePercentage'
 import Skeleton from 'react-loading-skeleton'
+import { formatNumber } from './ActiveConnection'
 
 interface Properties {
   subset_id: string
@@ -249,7 +250,9 @@ const NewConnectionsList = ({
                   >
                     <td className=''>{value.office_name}</td>
                     <td className='pl-2 text-start'>
-                      {toggleValue ? value.sla_perf_cnt : value.sla_perf__?.toFixed(2)}
+                      {toggleValue
+                        ? formatNumber(value.sla_perf_cnt ?? null)
+                        : value.sla_perf__?.toFixed(2)}
                     </td>
                   </tr>
                 )

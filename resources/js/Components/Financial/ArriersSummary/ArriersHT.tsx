@@ -505,7 +505,7 @@ const ArriersHT = () => {
             column2='Arrear count'
             subset_id='180'
             default_level='section'
-            route={`/office-rankings/Active Connections Summary?route=${route('service-delivery.index')}`}
+            route={`/office-rankings/HT Arrears Analysis?route=${route('service-delivery.index')}`}
           />
         )}
       </div>

@@ -327,7 +327,7 @@ const TotalCollected = () => {
                     height={100}
                   >
                     <Tooltip
-                      formatter={(value: number) => `${formatNumber(value.toFixed(2))}`}
+                      formatter={(value: number) => `${formatNumber(Number(value.toFixed(2)))}`}
                       content={<CustomTooltip />}
                     />
 
@@ -374,7 +374,7 @@ const TotalCollected = () => {
             subset_id='225'
             default_level='section'
             sortBy='total_collection'
-            route={`office-rankings/Collection Summary?route=${route('finance.index')}`}
+            route={`office-rankings/Collection Analysis?route=${route('finance.index')}`}
           />
         )}
       </div>

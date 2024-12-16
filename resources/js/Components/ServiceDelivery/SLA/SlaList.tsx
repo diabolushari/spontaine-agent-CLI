@@ -9,6 +9,7 @@ import { Link } from '@inertiajs/react'
 
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import { formatNumber } from '../ActiveConnection'
 
 interface Properties {
   subset_id: string
@@ -265,7 +266,7 @@ const SlaList = ({
                     <td className=''>{value.office_name}</td>
                     <td className='pl-2 text-start'>
                       {toggleValue
-                        ? value.requests_within_sla__count_
+                        ? formatNumber(value.requests_within_sla__count_ ?? null)
                         : value.requests_within_sla____?.toFixed(2)}
                     </td>
                   </tr>
