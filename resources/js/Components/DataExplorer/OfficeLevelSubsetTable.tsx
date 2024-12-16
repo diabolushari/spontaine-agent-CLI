@@ -96,7 +96,7 @@ export default function OfficeLevelSubsetTable({
   }
 
   const colHeads = useMemo(() => {
-    return tableCols.map((col) => col.name)
+    return tableCols.filter((col) => col.name !== 'Office Code').map((col) => col.name)
   }, [tableCols])
 
   const removeOffice = () => {
@@ -130,14 +130,12 @@ export default function OfficeLevelSubsetTable({
         {prevLevel != null && (
           <div className='my-5 flex flex-col gap-2'>
             <span>
-              Showing {currentLevelName}s under{' '}
+              Showing {currentLevelName}s under {prevLevelName} -
               <b>
                 {prevLevel.office_name} ({prevLevel.office_code})
               </b>
             </span>
-            <span className='text-xs'>
-              You can select {prevLevelName} under {prevLevelName}s Tab.
-            </span>
+            <span className='text-xs'>You can change this under {prevLevelName}s Tab.</span>
           </div>
         )}
       </div>
@@ -186,28 +184,30 @@ export default function OfficeLevelSubsetTable({
                 } ${officeLevel != 'state' ? 'cursor-pointer hover:bg-gray-100' : ''} `}
                 onClick={() => selectOffice(item)}
               >
-                {tableCols.map((col, index) => {
-                  return (
-                    <td
-                      key={index}
-                      className='standard-td'
-                    >
-                      {col.name === 'Office Name' ? (
-                        <>
-                          <p className='small-1stop'>{item[col.source as keyof DataTableItem]}</p>
+                {tableCols
+                  .filter((col) => col.name !== 'Office Code')
+                  .map((col, index) => {
+                    return (
+                      <td
+                        key={index}
+                        className='standard-td'
+                      >
+                        {col.name === 'Office Name' ? (
+                          <>
+                            <p className='small-1stop'>{item[col.source as keyof DataTableItem]}</p>
 
-                          <p className='axial-label-1stop pt-2 text-1stop-dark-gray'>
-                            {item['office_code' as keyof DataTableItem]}
-                          </p>
-                        </>
-                      ) : col.type === 'number' ? (
-                        formatNumber(item[col.source as keyof DataTableItem] as number | null)
-                      ) : (
-                        item[col.source as keyof DataTableItem]
-                      )}
-                    </td>
-                  )
-                })}
+                            <p className='axial-label-1stop pt-2 text-1stop-dark-gray'>
+                              {item['office_code' as keyof DataTableItem]}
+                            </p>
+                          </>
+                        ) : col.type === 'number' ? (
+                          formatNumber(item[col.source as keyof DataTableItem] as number | null)
+                        ) : (
+                          item[col.source as keyof DataTableItem]
+                        )}
+                      </td>
+                    )
+                  })}
                 <td className='standard-td'></td>
               </tr>
             )

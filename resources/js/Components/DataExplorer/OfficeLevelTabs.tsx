@@ -13,8 +13,8 @@ const tabItems = [
   { name: 'Regions', value: 'region' },
   { name: 'Circles', value: 'circle' },
   { name: 'Divisions', value: 'division' },
-  { name: 'Sub Divisions*', value: 'subdivision' },
-  { name: 'Sections*', value: 'section' },
+  { name: 'Sub Divisions', value: 'subdivision' },
+  { name: 'Sections', value: 'section' },
 ]
 
 export function getNextOfficeLevel(currentLevel: string) {
