@@ -128,7 +128,7 @@ export default function OfficeRankingPage({
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
-                  <p className='small-1stop-header'>Top Value</p>
+                  <p className='small-1stop-header'>Top</p>
                 </div>
                 <div className='flex flex-row items-center gap-2'>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
@@ -141,7 +141,7 @@ export default function OfficeRankingPage({
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
-                  <p className='small-1stop-header'>Bottom Value</p>
+                  <p className='small-1stop-header'>Bottom</p>
                 </div>
               </div>{' '}
               <div className='mx-4 flex flex-col pt-1'>
@@ -155,14 +155,11 @@ export default function OfficeRankingPage({
                 />
               </div>
             </div>
-            <div className='col-span-1 grid grid-rows-2 rounded-lg'>
-              <div className='place-items-center rounded-tr-lg bg-1stop-accent2'>
-                <MonthPicker
-                  selectedMonth={selectedMonth}
-                  setSelectedMonth={setSelectedMonth}
-                />
-              </div>
-              <div className='place-items-center rounded-br-lg bg-1stop-highlight2'></div>
+            <div className='grid grid-rows-1 place-items-center rounded-lg rounded-tr-lg bg-1stop-accent2'>
+              <MonthPicker
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+              />
             </div>
           </div>
         </div>
