@@ -130,7 +130,6 @@ const PowerInterruptionTrend2 = ({ selectedMonth, setSelectedMonth }: Props) => 
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
-      console.log(data.name)
       router.get(
         route('data-explorer', {
           subsetGroup: 'Complaint Volumes Comparison',

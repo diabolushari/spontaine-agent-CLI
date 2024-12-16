@@ -185,7 +185,6 @@ const TotalBilled = () => {
     : 0
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
-      console.log(data)
       router.get(
         route('data-explorer', {
           subsetGroup: 'Demand Analysis',

@@ -83,7 +83,7 @@ const TotalCollectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) =
     .reverse()
 
   const voltageType = ['LT', 'HT', 'EHT']
-  console.log(chartData)
+
   const dateEarlier = Array.from({ length: 10 }, (_, i) => ({
     name: `${i + 3} MONTHS`,
     value: i + 3,

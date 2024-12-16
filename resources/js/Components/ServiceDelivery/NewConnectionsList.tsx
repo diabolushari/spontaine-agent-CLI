@@ -61,7 +61,6 @@ const NewConnectionsList = ({
       toggleValue ? 'sla_perf_cnt' : 'sla_perf__'
     }&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
-  console.log(graphValues)
 
   useEffect(() => {
     setHeaders([

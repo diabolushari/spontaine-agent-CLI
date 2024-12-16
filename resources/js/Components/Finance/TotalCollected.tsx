@@ -60,16 +60,6 @@ const TotalCollected = () => {
     }`
   )
 
-  const graphData = useMemo(() => {
-    if (graphValues?.data == null) {
-      return []
-    }
-    return [...graphValues.data]
-      .sort((a, b) => a.total_collection - b.total_collection)
-      .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
-      .reverse()
-  }, [graphValues, voltageType])
-  console.log(graphValues)
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -135,7 +125,7 @@ const TotalCollected = () => {
         .reduce((sum, value) => sum + value.total_collection, 0)
     }
   }
-  console.log(graphData.filter((value) => value.payment_channel_group == 'ONLINE'))
+
   const data = [
     {
       name: 'ONLINE',
@@ -146,7 +136,7 @@ const TotalCollected = () => {
       value: findValue('Offline'),
     },
   ]
-  // console.log(data)
+
   const ltPercent = TotalCollection('LT')
     ? (TotalCollection('LT') * 100) / TotalCollection('Total')
     : 0
