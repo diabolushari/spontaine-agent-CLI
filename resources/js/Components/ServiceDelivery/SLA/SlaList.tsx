@@ -284,7 +284,7 @@ const SlaList = ({
               </div>
               <div className='ml-auto flex w-full justify-end pt-3'>
                 <Link
-                  href={`office-rankings/SLA Performance Comparison?route=${route('service-delivery.index')}`}
+                  href={`office-rankings/SLA Performance Analysis?route=${route('service-delivery.index')}`}
                   className='small-1stop'
                 >
                   <div className='rounded-md bg-1stop-highlight2 px-1 text-xl hover:opacity-70'>

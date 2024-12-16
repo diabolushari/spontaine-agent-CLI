@@ -261,8 +261,8 @@ const ComplaintList = ({
             </div>
             <div className='ml-auto flex w-full justify-end pt-3'>
               <Link
-                href={`office-rankings/Customer Complaints Summary?route=${route('service-delivery.index')}`}
-                className='small-1stop'
+                href={`office-rankings/Customer Complaints Analysis?route=${route('service-delivery.index')}`}
+                className='link small-1stop'
               >
                 <div className='rounded-md bg-1stop-highlight2 px-1 text-xl hover:opacity-70'>
                   <i className='las la-expand-arrows-alt'></i>
