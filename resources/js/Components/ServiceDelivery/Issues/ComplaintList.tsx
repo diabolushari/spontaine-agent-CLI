@@ -1,3 +1,5 @@
+import TooglePercentage from '@/Components/ui/TogglePercentage'
+import ToogleNumber from '@/Components/ui/ToogleNumber'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Model } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
@@ -27,7 +29,6 @@ interface Properties {
     complaint_type: string
   }[]
 }
-
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
@@ -36,7 +37,6 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Circle', value: 'circle' },
   { name: 'Region', value: 'region' },
 ]
-
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -45,7 +45,6 @@ interface ConsumerList extends Model {
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
 }
-
 const ComplaintList = ({
   subset_id,
   column1,
@@ -92,7 +91,7 @@ const ComplaintList = ({
 
         <div className='flex cursor-pointer rounded-lg bg-1stop-white p-1'>
           <div
-            className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
+            className={`${topOrBottom == 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setTopOrBottom('desc')
             }}
@@ -143,7 +142,7 @@ const ComplaintList = ({
             </svg>
           </div>
           <div
-            className={`${topOrBottom == 'asc' ? 'bg-1stop-highlight2' : ''} rounded-lg p-1`}
+            className={`${topOrBottom == 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setTopOrBottom('asc')
             }}
@@ -265,7 +264,9 @@ const ComplaintList = ({
                 href={`office-rankings/Customer Complaints Analysis?route=${route('service-delivery.index')}`}
                 className='link small-1stop'
               >
-                Details
+                <div className='rounded-md bg-1stop-highlight2 px-1 text-xl hover:opacity-70'>
+                  <i className='las la-expand-arrows-alt'></i>
+                </div>
               </Link>
             </div>
           </div>
