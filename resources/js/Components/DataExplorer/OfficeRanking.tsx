@@ -11,6 +11,7 @@ import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 import { getNextOfficeLevel } from '@/Components/DataExplorer/OfficeLevelTabs'
+import { CustomTooltip } from '../CustomTooltip'
 
 interface Props {
   subset: SubsetDetail
@@ -179,7 +180,7 @@ export default function OfficeRanking({
               />
               <Tooltip
                 formatter={(value: number) => `${formatNumber(value)}`}
-                // content={<CustomTooltip valueType='percentage' />}
+                content={<CustomTooltip />}
                 cursor={{ fill: 'var(--colour-1stop-accent2)' }}
               />
               <Bar

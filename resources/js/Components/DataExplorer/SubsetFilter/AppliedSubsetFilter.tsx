@@ -34,10 +34,10 @@ export default function AppliedSubsetFilter({
 
   return (
     <div
-      className='flex justify-between gap-5 bg-1stop-gray p-2'
+      className='flex items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'
       key={appliedFilter.id}
     >
-      <span>{appliedFilter.filter}</span>
+      <span className='axial-label-1stop capitalize'>{appliedFilter.filter}</span>
       <button onClick={() => removeFilter(appliedFilter.filterKey)}>
         <i className='la la-close' />
       </button>
