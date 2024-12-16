@@ -292,7 +292,7 @@ const NewConnections = () => {
             </div>
 
             <div className='relative flex flex-col pt-2 md:w-1/2'>
-              <div className='absolute hidden w-full justify-end md:flex'>
+              <div className='absolute hidden w-full justify-end md:z-[9] md:flex'>
                 <button
                   className='small-1stop mb-auto cursor-pointer justify-end'
                   onClick={handleToogleNumber}

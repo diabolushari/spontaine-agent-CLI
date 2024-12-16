@@ -69,6 +69,7 @@ const TotalBilled = () => {
   const [voltageType, setVoltageType] = useState('Total')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [toggleValue, settoggleValue] = useState<boolean>(true)
+  const [exclude, setExclude] = useState(false)
 
   const [selectedLevel, setSelectedLevel] = useState(1)
 
@@ -86,9 +87,13 @@ const TotalBilled = () => {
     }
     return [...graphValues.data]
       .sort((a, b) => a.total_demand - b.total_demand)
-      .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
+      .filter((value) =>
+        !exclude
+          ? voltageType == 'Total' || value.voltage == voltageType
+          : value.voltage == voltageType && value.consumer_category != 'DOMESTIC'
+      )
       .reverse()
-  }, [graphValues, voltageType])
+  }, [graphValues, voltageType, exclude])
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -105,6 +110,10 @@ const TotalBilled = () => {
     if (index < 3) {
       if (voltageType == 'Total') {
         return value.consumer_category === graphData[index].consumer_category
+      } else if (voltageType == 'LT') {
+        return !exclude
+          ? value.consumer_category === 'DOMESTIC' && value.voltage === 'LT'
+          : value.consumer_category != 'DOMESTIC' && value.voltage == 'LT'
       } else {
         return (
           value.consumer_category === graphData[index].consumer_category &&
@@ -263,7 +272,10 @@ const TotalBilled = () => {
                       type='radio'
                       name='radioBilling'
                       value='Total'
-                      onChange={() => setVoltageType('Total')}
+                      onChange={() => {
+                        setVoltageType('Total')
+                        setExclude(false)
+                      }}
                       className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                     />
                   </div>
@@ -291,7 +303,10 @@ const TotalBilled = () => {
                         type='radio'
                         name='radioBilling'
                         value='LT'
-                        onChange={() => setVoltageType('LT')}
+                        onChange={() => {
+                          setVoltageType('LT')
+                          setExclude(false)
+                        }}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -318,7 +333,10 @@ const TotalBilled = () => {
                         type='radio'
                         name='radioBilling'
                         value='LT'
-                        onChange={() => setVoltageType('LT')}
+                        onChange={() => {
+                          setVoltageType('LT')
+                          setExclude(true)
+                        }}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -347,7 +365,10 @@ const TotalBilled = () => {
                         type='radio'
                         name='radioBilling'
                         value='HT'
-                        onChange={() => setVoltageType('HT')}
+                        onChange={() => {
+                          setVoltageType('HT')
+                          setExclude(false)
+                        }}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
@@ -374,7 +395,10 @@ const TotalBilled = () => {
                         type='radio'
                         name='radioBilling'
                         value='EHT'
-                        onChange={() => setVoltageType('EHT')}
+                        onChange={() => {
+                          setVoltageType('EHT')
+                          setExclude(false)
+                        }}
                         className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
                       />
                     </div>
