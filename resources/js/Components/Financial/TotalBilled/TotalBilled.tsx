@@ -185,7 +185,6 @@ const TotalBilled = () => {
     : 0
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
-      console.log(data)
       router.get(
         route('data-explorer', {
           subsetGroup: 'Demand Analysis',
@@ -472,7 +471,7 @@ const TotalBilled = () => {
         </div>
         <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
           <Link
-            href={`/data-explorer/Demand Analysis?month=${dateToYearMonth(selectedMonth)}&route=${route('finance.index')}`}
+            href={`/data-explorer/Demand Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('finance.index')}`}
           >
             <MoreButton />
           </Link>

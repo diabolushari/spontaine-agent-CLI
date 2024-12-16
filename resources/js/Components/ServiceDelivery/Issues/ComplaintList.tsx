@@ -9,6 +9,7 @@ import { Link } from '@inertiajs/react'
 
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import { formatNumber } from '../ActiveConnection'
 
 interface Properties {
   subset_id: string
@@ -244,7 +245,7 @@ const ComplaintList = ({
                   key={value.office_name}
                 >
                   <td className=''>{value.office_name}</td>
-                  <td className='pl-2 text-start'>{value.complaint_count}</td>
+                  <td className='pl-2 text-start'>{formatNumber(value.complaint_count ?? null)}</td>
                 </tr>
               )
             })}

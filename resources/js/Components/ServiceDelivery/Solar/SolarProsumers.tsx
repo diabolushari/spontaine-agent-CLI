@@ -251,7 +251,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
           <div className='flex w-1/2 flex-col border p-2'>
             <p className='mdmetric-1stop'>
               {graphValues?.data.length ? (
-                formatNumber(MWCount('HT', true).toFixed(2))
+                formatNumber(Number(MWCount('HT', true)?.toFixed(2)))
               ) : (
                 <Skeleton />
               )}
@@ -292,7 +292,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
               height={200}
             >
               <Tooltip
-                formatter={(value: number) => `${formatNumber(value.toFixed(2))}`}
+                formatter={(value: number) => `${formatNumber(Number(value.toFixed(2)))}`}
                 content={<CustomTooltip valueType='voltage' />}
               />
               <Pie

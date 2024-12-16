@@ -45,7 +45,6 @@ const ActiveConnectionTrend = ({ selectedMonth, setSelectedMonth }: Properties) 
         : `month_greater_than_or_equal=${Number(monthYear) - Number(selectedRange)}&month_less_than_or_equal=${Number(monthYear)}`
     }`
   )
-  console.log(graphValues)
 
   useEffect(() => {
     if (!selectedMonth && graphValues?.latest_value) {

@@ -267,7 +267,9 @@ const ArriersHTList = ({
                     key={value.office_name}
                   >
                     <td className=''>{value.office_name}</td>
-                    <td className=''>{formatNumber(findValue(value)?.toFixed(2))}</td>
+                    <td className=''>
+                      {formatNumber(Number(findValue(value)?.toFixed(2)) ?? null)}
+                    </td>
                   </tr>
                 )
               })}

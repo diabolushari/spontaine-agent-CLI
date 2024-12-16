@@ -502,7 +502,7 @@ const ArriersLT = () => {
             column2='Consumer count'
             subset_id='186'
             default_level='section'
-            route={`/office-rankings/Active Connections Summary?route=${route('service-delivery.index')}`}
+            route={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
           />
         )}
       </div>

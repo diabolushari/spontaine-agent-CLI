@@ -60,16 +60,6 @@ const TotalCollected = () => {
     }`
   )
 
-  const graphData = useMemo(() => {
-    if (graphValues?.data == null) {
-      return []
-    }
-    return [...graphValues.data]
-      .sort((a, b) => a.total_collection - b.total_collection)
-      .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
-      .reverse()
-  }, [graphValues, voltageType])
-  console.log(graphData)
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -80,33 +70,33 @@ const TotalCollected = () => {
 
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
-  const filters = (value: CollectionGraphValues, index: number) => {
-    if (index < 3) {
-      if (voltageType == 'Total') {
-        return value.payment_channel_group === graphData[index]?.payment_channel_group
-      } else {
-        return (
-          value.payment_channel_group === graphData[index]?.payment_channel_group &&
-          value.voltage == voltageType
-        )
-      }
-    } else {
-      if (voltageType == 'Total') {
-        return (
-          value.payment_channel_group !== graphData[0]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[1]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[2]?.payment_channel_group
-        )
-      } else {
-        return (
-          value.payment_channel_group !== graphData[0]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[1]?.payment_channel_group &&
-          value.payment_channel_group !== graphData[2]?.payment_channel_group &&
-          value.voltage == voltageType
-        )
-      }
-    }
-  }
+  // const filters = (value: CollectionGraphValues, index: number) => {
+  //   if (index < 3) {
+  //     if (voltageType == 'Total') {
+  //       return value.payment_channel_group === graphData[index]?.payment_channel_group
+  //     } else {
+  //       return (
+  //         value.payment_channel_group === graphData[index]?.payment_channel_group &&
+  //         value.voltage == voltageType
+  //       )
+  //     }
+  //   } else {
+  //     if (voltageType == 'Total') {
+  //       return (
+  //         value.payment_channel_group !== graphData[0]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[1]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[2]?.payment_channel_group
+  //       )
+  //     } else {
+  //       return (
+  //         value.payment_channel_group !== graphData[0]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[1]?.payment_channel_group &&
+  //         value.payment_channel_group !== graphData[2]?.payment_channel_group &&
+  //         value.voltage == voltageType
+  //       )
+  //     }
+  //   }
+  // }
 
   const TotalCollection = (voltage: string) => {
     if (voltage != 'Total') {
@@ -118,28 +108,32 @@ const TotalCollected = () => {
     }
   }
 
-  const graphFilter = (index: number) => {
-    return graphData
-      .filter((value) => filters(value, index))
-      .reduce((sum, value) => sum + value.total_collection, 0)
+  // const graphFilter = (index: number) => {
+  //   return graphData
+  //     .filter((value) => filters(value, index))
+  //     .reduce((sum, value) => sum + value.total_collection, 0)
+  // }
+
+  const findValue = (status: string) => {
+    if (voltageType === 'Total') {
+      return graphValues?.data
+        .filter((value) => value.payment_channel_group === status)
+        .reduce((sum, value) => sum + value.total_collection, 0)
+    } else {
+      return graphValues?.data
+        .filter((value) => value.payment_channel_group === status && value.voltage === voltageType)
+        .reduce((sum, value) => sum + value.total_collection, 0)
+    }
   }
 
   const data = [
     {
-      name: graphData[0]?.payment_channel_group,
-      value: graphFilter(0),
+      name: 'ONLINE',
+      value: findValue('Online'),
     },
     {
-      name: graphData[1]?.payment_channel_group,
-      value: graphFilter(1),
-    },
-    {
-      name: graphData[2]?.payment_channel_group,
-      value: graphFilter(2),
-    },
-    {
-      name: 'Other',
-      value: graphFilter(3),
+      name: 'OFFLINE',
+      value: findValue('Offline'),
     },
   ]
 
@@ -333,7 +327,7 @@ const TotalCollected = () => {
                     height={100}
                   >
                     <Tooltip
-                      formatter={(value: number) => `${formatNumber(value.toFixed(2))}`}
+                      formatter={(value: number) => `${formatNumber(Number(value.toFixed(2)))}`}
                       content={<CustomTooltip />}
                     />
 
@@ -380,7 +374,7 @@ const TotalCollected = () => {
             subset_id='225'
             default_level='section'
             sortBy='total_collection'
-            route={`office-rankings/Collection Summary?route=${route('finance.index')}`}
+            route={`office-rankings/Collection Analysis?route=${route('finance.index')}`}
           />
         )}
       </div>

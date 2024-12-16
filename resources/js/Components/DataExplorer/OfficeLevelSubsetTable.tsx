@@ -201,13 +201,7 @@ export default function OfficeLevelSubsetTable({
                           </p>
                         </>
                       ) : col.type === 'number' ? (
-                        item[col.source as keyof DataTableItem] !== null ? (
-                          (item[col.source as keyof DataTableItem] as number) > 1000 ? (
-                            formatNumber(item[col.source as keyof DataTableItem] as number)
-                          ) : (
-                            (item[col.source as keyof DataTableItem] as number).toFixed(2)
-                          )
-                        ) : null
+                        formatNumber(item[col.source as keyof DataTableItem] as number | null)
                       ) : (
                         item[col.source as keyof DataTableItem]
                       )}

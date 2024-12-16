@@ -266,7 +266,7 @@ const ArriersLTList = ({
                     key={value.office_name}
                   >
                     <td className=''>{value.office_name}</td>
-                    <td className=''>{formatNumber(findValue(value))}</td>
+                    <td className=''>{formatNumber(Number(findValue(value)))}</td>
                   </tr>
                 )
               })}

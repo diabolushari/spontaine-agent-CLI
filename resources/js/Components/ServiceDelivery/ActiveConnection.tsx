@@ -66,7 +66,10 @@ export const CustomLegend = ({ payload }: LegendProps) => {
   )
 }
 
-export const formatNumber = (value: number) => {
+export const formatNumber = (value: number | null) => {
+  if (value == null) {
+    return
+  }
   if (value >= 10000000) {
     return (value / 10000000).toFixed(2) + ' Cr'
   } else if (value >= 100000) {
@@ -74,7 +77,7 @@ export const formatNumber = (value: number) => {
   } else if (value >= 1000) {
     return (value / 1000).toFixed(2) + ' K'
   }
-  return value
+  return Number(value).toFixed(2).toString()
 }
 
 export function dateToYearMonth(date?: Date | null) {

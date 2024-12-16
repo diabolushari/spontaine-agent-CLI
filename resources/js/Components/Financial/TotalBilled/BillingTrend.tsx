@@ -14,7 +14,7 @@ export const renderCustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const formattedLabel = `${label.slice(4)}/${label.slice(0, 4)}` // Format MM/YYYY
     const value = payload[0].value
-    console.log(label)
+
     const name = payload[0].dataKey.replace('_', ' ')
 
     return (
