@@ -73,7 +73,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
         <div className='flex justify-center'>
           <div className='grid w-full grid-rows-2 gap-2 p-2 md:max-w-md'>
             <button
-              onClick={() => handleGraphSelection('Arrears By Category - All', null)}
+              onClick={() => handleGraphSelection('Arrears - Aggregate', null)}
               className='flex w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-accent2 p-1 hover:bg-1stop-highlight2 lg:p-5'
             >
               <p className='smmetric-1stop lg:xlmetric-1stop'>
@@ -83,7 +83,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
             </button>
             <div className='grid grid-cols-2 gap-2'>
               <button
-                onClick={() => handleGraphSelection('Arrears By Category - All', 'LT')}
+                onClick={() => handleGraphSelection('Arrears - Aggregate (LT Only)', 'LT')}
                 className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
               >
                 <p className='smmetric-1stop lg:mdmetric-1stop'>
@@ -92,7 +92,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 <p className='small-1stop-header text-center'>LT Arrears</p>
               </button>
               <button
-                onClick={() => handleGraphSelection('Arrears By Category - All', 'HT')}
+                onClick={() => handleGraphSelection('Arrears - Aggregate (HT Only)', 'HT')}
                 className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
               >
                 <p className='smmetric-1stop lg:mdmetric-1stop pt-4'>
@@ -103,35 +103,6 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
             </div>
           </div>
         </div>
-
-        // <div className='px-4 pt-10'>
-        //   <Card className='w-full bg-1stop-accent2 p-5'>
-        //     <div className='text-center'>
-        //       <div className='smmetric-1stop lg:xlmetric-1stop'>
-        //         {isLoading ? <Skeleton width={60} /> : formatNumber(totalArrears)}
-        //       </div>
-        //       <div className='small-1stop-header text-center'>Total Arrears</div>
-        //     </div>
-        //   </Card>
-        //   <div className='flex justify-around gap-5 p-3 pt-7'>
-        //     <Card className='w-1/2 bg-1stop-gray p-5 text-center'>
-        //       <div>
-        //         <div className='smmetric-1stop lg:xlmetric-1stop text-nowrap'>
-        //           {isLoading ? <Skeleton width={60} /> : formatNumber(lTArrears)}
-        //         </div>
-        //         <div className='small-1stop-header text-center'>LT Arrears</div>
-        //       </div>
-        //     </Card>
-        //     <Card className='w-1/2 bg-1stop-white p-5 text-center'>
-        //       <div>
-        //         <div className='smmetric-1stop lg:xlmetric-1stop text-nowrap'>
-        //           {isLoading ? <Skeleton width={60} /> : formatNumber(hTArrears)}
-        //         </div>
-        //         <div className='small-1stop-header text-center'>HT Arrears</div>
-        //       </div>
-        //     </Card>
-        //   </div>
-        // </div>
       )}
     </div>
   )
