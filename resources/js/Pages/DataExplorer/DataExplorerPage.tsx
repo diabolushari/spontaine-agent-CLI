@@ -27,6 +27,7 @@ import useAppliedFilters from '@/Components/DataExplorer/SubsetFilter/useApplied
 import Modal from '@/ui/Modal/Modal'
 import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import { yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
+import DataExplorerTrend from '@/Components/DataExplorer/DataExplorerTrend/DataExplorerTrend'
 
 interface Props {
   subsetGroup: SubsetGroup
@@ -99,12 +100,21 @@ export default function DataExplorerPage({
 
   const [activeTab, setActiveTab] = useState(oldTab)
 
-  const selectedSubset = useMemo(() => {
+  const { selectedSubset, selectedSubsetItem } = useMemo(() => {
     if (selectedSubsetId === '') {
-      return null
+      return {
+        selectedSubset: null,
+        selectedSubsetItem: null,
+      }
     }
-    return subsetItems.find((subsetItem) => subsetItem.id.toString() == selectedSubsetId)
-      ?.subset as SubsetDetail | null | undefined
+    const subsetItem = subsetItems.find(
+      (subsetItem) => subsetItem.id.toString() == selectedSubsetId
+    )
+
+    return {
+      selectedSubset: subsetItem?.subset as SubsetDetail | null | undefined,
+      selectedSubsetItem: subsetItem,
+    }
   }, [subsetItems, selectedSubsetId])
 
   useEffect(() => {
@@ -116,10 +126,6 @@ export default function DataExplorerPage({
     level: activeTab,
     ...oldFilters,
   })
-
-  useEffect(() => {
-    console.log(searchParams)
-  }, [searchParams])
 
   const changeTab = (tab: string) => {
     const office = offices.find((office) => office.office_code == searchParams['office_code'])
@@ -189,6 +195,17 @@ export default function DataExplorerPage({
       appliedFilters={appliedFilters}
     >
       <div className='flex w-full flex-col gap-5 p-5'>
+        <div className='flex justify-center'>
+          {selectedMonth != null &&
+            selectedSubsetItem?.trend_field != null &&
+            selectedSubset != null && (
+              <DataExplorerTrend
+                date={selectedMonth}
+                subset={selectedSubset}
+                trendField={selectedSubsetItem.trend_field}
+              />
+            )}
+        </div>
         <div className='grid w-full grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4'>
           <div className='flex flex-col'>
             <SelectList
@@ -218,6 +235,7 @@ export default function DataExplorerPage({
             </button>
           </div>
         </div>
+
         <div>
           <span className='axial-label-1stop'>
             {' '}

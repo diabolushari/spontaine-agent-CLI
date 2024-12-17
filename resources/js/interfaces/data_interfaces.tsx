@@ -283,6 +283,7 @@ export interface SubsetGroupItem extends Model {
   subset_group_id: number
   subset_detail_id: number
   item_number: number
+  trend_field: string | null
   subset?: Partial<SubsetDetail> | null
 }
 

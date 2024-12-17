@@ -17,5 +17,6 @@ class SubsetGroupItemRequest extends Data
         public int $subsetDetailId,
         #[Exists('subset_groups', 'id')]
         public int $subsetGroupId,
+        public ?string $trendField
     ) {}
 }

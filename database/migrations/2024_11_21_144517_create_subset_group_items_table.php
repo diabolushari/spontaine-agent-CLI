@@ -22,6 +22,8 @@ return new class extends Migration
             $table->foreignId('subset_detail_id')
                 ->constrained('subset_details');
 
+            $table->string('trend_field')->nullable();
+
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()
@@ -31,6 +33,7 @@ return new class extends Migration
                 ->constrained('users');
             $table->timestamps();
         });
+
     }
 
     /**

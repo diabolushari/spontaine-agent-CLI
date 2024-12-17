@@ -1,8 +1,16 @@
 import useCustomForm from '@/hooks/useCustomForm'
-import { SubsetDetail, SubsetGroup, SubsetGroupItem } from '@/interfaces/data_interfaces'
+import {
+  SubsetDateField,
+  SubsetDetail,
+  SubsetDimensionField,
+  SubsetGroup,
+  SubsetGroupItem,
+  SubsetMeasureField,
+} from '@/interfaces/data_interfaces'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
-import { Dispatch, FormEvent, SetStateAction, useCallback, useMemo } from 'react'
+import { Dispatch, FormEvent, SetStateAction, useCallback, useEffect, useMemo } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface Props {
   setShowFormModal: Dispatch<SetStateAction<boolean>>
@@ -26,7 +34,18 @@ export default function SubsetGroupItemForm({
         : ({
             ...selectedItem.subset,
           } as SubsetDetail | null),
+    trend_field: selectedItem?.trend_field ?? '',
   })
+
+  const [fields, loadingFields] = useFetchRecord<{
+    dates: SubsetDateField[]
+    dimensions: SubsetDimensionField[]
+    measures: SubsetMeasureField[]
+  }>(
+    route('subset-fields', {
+      subset_id: formData.subset_detail?.id ?? '',
+    })
+  )
 
   const onCompleted = useCallback(() => {
     setShowFormModal(false)
@@ -46,6 +65,16 @@ export default function SubsetGroupItemForm({
     G extends keyof L,
     L extends Record<K, string | number> & Record<G, string | number | null>,
   >() => {
+    const totalFields = (fields?.dates.length ?? 0) + (fields?.dimensions.length ?? 0)
+
+    let hasMonthDimension = false
+
+    fields?.dimensions.forEach((dimension) => {
+      if (dimension.subset_column === 'month') {
+        hasMonthDimension = true
+      }
+    })
+
     return {
       name: {
         type: 'text',
@@ -67,12 +96,24 @@ export default function SubsetGroupItemForm({
           search: '',
         }),
         setValue: (subsetDetail: SubsetDetail | null) => {
+          setFormValue('trend_field')('')
           setFormValue('subset_detail')(subsetDetail)
         },
         autoCompleteSelection: formData.subset_detail,
       },
+      trend_field: {
+        type: 'select',
+        label: 'Trend',
+        setValue: setFormValue('trend_field'),
+        dataKey: 'subset_column',
+        displayKey: 'subset_field_name',
+        list: fields?.measures ?? [],
+        showAllOption: true,
+        allOptionText: 'Do Not Show Trend',
+        disabled: totalFields !== 1 || !hasMonthDimension,
+      },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, formData.subset_detail])
+  }, [setFormValue, formData.subset_detail, fields])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -82,6 +123,7 @@ export default function SubsetGroupItemForm({
       item_number: formData.item_number,
       subset_group_id: subsetGroup.id,
       subset_detail_id: formData.subset_detail?.id ?? null,
+      trend_field: formData.trend_field,
     })
   }
 

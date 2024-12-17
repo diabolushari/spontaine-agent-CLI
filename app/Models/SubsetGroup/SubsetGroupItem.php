@@ -16,12 +16,13 @@ class SubsetGroupItem extends Model
         'name',
         'subset_group_id',
         'subset_detail_id',
+        'trend_field',
         'created_by',
         'updated_by',
     ];
 
     /**
-     * @return HasOne<SubsetDetail>
+     * @return HasOne<SubsetGroupItem, SubsetDetail>
      */
     public function subset(): HasOne
     {

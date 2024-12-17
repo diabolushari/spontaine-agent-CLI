@@ -1,6 +1,5 @@
 <?php
 
-use App\Events\ScheduledDataLoadEvent;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
@@ -37,6 +36,7 @@ use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
 use App\Http\Controllers\Subset\SubsetDropdownApiController;
 use App\Http\Controllers\Subset\SubsetExportController;
+use App\Http\Controllers\Subset\SubsetFieldsListController;
 use App\Http\Controllers\Subset\SubsetListController;
 use App\Http\Controllers\Subset\SubsetOfficeLevelDataController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
@@ -46,7 +46,6 @@ use App\Http\Controllers\Subset\SubsetTableController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
-use App\Models\DataLoader\DataLoaderJob;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -179,9 +178,7 @@ Route::get('subset-export/{subsetDetail}', SubsetExportController::class)
 
 Route::get('office-rankings/{subsetGroupName}', OfficeRankingsController::class)
     ->name('office-rankings');
+Route::get('subset-fields', SubsetFieldsListController::class)
+    ->name('subset-fields');
 
-Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob) {
-    return ScheduledDataLoadEvent::dispatch($loaderJob);
-});
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

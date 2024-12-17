@@ -41,6 +41,7 @@ export default function MetaGroupShow({ subsetGroup }: Readonly<Props>) {
           name: groupItem.item_number + ') ' + groupItem.name,
           subset: groupItem.subset?.name ?? '',
           dataset: groupItem.subset?.data_detail?.name ?? '',
+          trend: `Trend: ${groupItem.trend_field ?? ''}`,
           actions: [],
         }
       }) ?? []
@@ -52,6 +53,7 @@ export default function MetaGroupShow({ subsetGroup }: Readonly<Props>) {
       { key: 'name', label: 'Name', isCardHeader: true },
       { key: 'subset', label: 'Subset', isShownInCard: true, hideLabel: true },
       { key: 'dataset', label: 'Dataset', isShownInCard: true, hideLabel: true },
+      { key: 'trend', label: 'Trend', isShownInCard: true, hideLabel: true },
     ] as ListItemKeys<{
       name: string
       dataset: string
