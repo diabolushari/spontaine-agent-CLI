@@ -1,14 +1,12 @@
 import ArriersHT from '@/Components/Financial/ArriersSummary/ArriersHT'
 import ArriersLT from '@/Components/Financial/ArriersSummary/ArriersLT'
-import AllArears from '@/Components/Finance/AllArears'
-import ArrearsCategory from '@/Components/Finance/ArrearsCategory'
 import TotalCollected from '@/Components/Finance/TotalCollected'
 import TotalBilled from '@/Components/Financial/TotalBilled/TotalBilled'
 import DashboardLayout from '@/Layouts/DashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
-import Card from '@/ui/Card/Card'
 import React, { useState } from 'react'
 import ArrearsCountAndGraph from '@/Components/Finance/ArrearsCountAndGraph'
+
 const FinanceIndexPage = () => {
   const [sectionCode, setSectionCode] = useState('')
   const [levelName, setLevelName] = useState('')
@@ -26,7 +24,7 @@ const FinanceIndexPage = () => {
     >
       <DashboardPadding>
         <div className='flex flex-col gap-5 pt-8 sm:pt-24 md:pl-10'>
-          <div className='flex flex-col gap-2 lg:flex-row'>
+          <div className='grid grid-cols-1 gap-2 md:grid-cols-2'>
             <TotalBilled />
             <TotalCollected />
           </div>
