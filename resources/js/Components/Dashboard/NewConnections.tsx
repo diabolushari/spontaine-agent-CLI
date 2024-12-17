@@ -163,7 +163,7 @@ const NewConnections = () => {
   )
 
   return (
-    <Card className='flex w-full flex-col'>
+    <Card className='flex flex-col'>
       <div className='flex w-full'>
         <div className='small-1stop-header flex w-14 flex-col rounded-2xl bg-1stop-alt-gray'>
           <button
@@ -365,7 +365,6 @@ const NewConnections = () => {
           />
         )}
       </div>
-
       <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
         <div className='flex py-2'>
           <p className='md:mdmetric-1stop smmetric-1stop'>Servicing New Connections</p>
