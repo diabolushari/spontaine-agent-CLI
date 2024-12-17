@@ -24,7 +24,7 @@ const FinanceIndexPage = () => {
     >
       <DashboardPadding>
         <div className='flex flex-col gap-5 pt-8 sm:pt-24 md:pl-10'>
-          <div className='grid grid-cols-1 gap-2 md:grid-cols-2'>
+          <div className='grid grid-cols-1 gap-2 lg:grid-cols-2'>
             <TotalBilled />
             <TotalCollected />
           </div>
