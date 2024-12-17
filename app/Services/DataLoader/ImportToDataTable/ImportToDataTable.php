@@ -100,7 +100,7 @@ readonly class ImportToDataTable
         DB::beginTransaction();
         try {
             if ($deleteExistingData && $duplicationIdentifierField == null) {
-                DB::table($dataDetail->table_name)->truncate();
+                DB::table($dataDetail->table_name)->delete();
             }
             if ($deleteExistingData && $duplicationIdentifierField != null) {
                 $this->deleteDuplicateEntries(

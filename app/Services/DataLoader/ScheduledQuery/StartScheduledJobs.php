@@ -30,7 +30,6 @@ class StartScheduledJobs
 
     private function runHourlyQueries(): void
     {
-        Log::info('Running hourly queries');
         DataLoaderJob::where('cron_type', CronTypes::HOURLY)
             ->active()
             ->get()
@@ -42,7 +41,6 @@ class StartScheduledJobs
 
     private function runDailyQueries(string $time): void
     {
-        Log::info('Running daily queries');
         DataLoaderJob::where('cron_type', CronTypes::DAILY)
             ->active()
             ->where('schedule_time', $time)
