@@ -42,12 +42,13 @@ class StartScheduledJobs
 
     private function runDailyQueries(string $time): void
     {
-
+        Log::info('Running daily queries');
         DataLoaderJob::where('cron_type', CronTypes::DAILY)
             ->active()
             ->where('schedule_time', $time)
             ->get()
             ->each(function ($query) {
+                Log::info('Running job: '.$query->name);
                 ScheduledDataLoadEvent::dispatch($query);
             });
     }
