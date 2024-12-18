@@ -80,48 +80,54 @@ export default function DataExplorerTrend({ date, trendField, subset }: Readonly
     return { chartData: data.reverse(), keys: [currentYear, prevYear] }
   }, [dateObject, prevYearDate, selectedValue, currentYearValues, prevYearValues])
 
+  interface LegendProps {
+    payload: {
+      color: string
+      type: string
+      value: string
+      payload: { name: string; value: number; color: string }[]
+    }[]
+  }
+
+  const CustomLegend = ({ payload }: LegendProps) => {
+    return (
+      <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
+        {payload.map(
+          (
+            entry: {
+              value: string
+              color: string
+            },
+            index: number
+          ) => {
+            return (
+              <li
+                key={`item-${index}`}
+                style={{ marginRight: 10, color: 'black', fontSize: '8px', lineHeight: '10px' }}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: 10,
+                    height: 10,
+                    backgroundColor: entry.color,
+                    marginRight: 5,
+                    paddingTop: 1,
+                  }}
+                />
+
+                {entry.value}
+              </li>
+            )
+          }
+        )}
+      </ul>
+    )
+  }
   return (
     <div className='flex w-full flex-col gap-5 md:w-10/12'>
-      <h1>Trend Of {fieldName}</h1>
-      <div className='h-96 w-full'>
-        <ResponsiveContainer
-          width='100%'
-          height='100%'
-        >
-          <LineChart
-            width={500}
-            height={300}
-            data={chartData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <Tooltip
-              formatter={(value: number) => `${formatNumber(value)}`}
-              content={<CustomTooltip />}
-              cursor={{ fill: 'var(--colour-1stop-accent2)' }}
-            />
-            <CartesianGrid strokeDasharray='3 3' />
-            <XAxis dataKey='month' />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {keys.map((key, index) => (
-              <Line
-                type='monotone'
-                key={key}
-                dataKey={key}
-                stroke={solidColors[index % solidColors.length]}
-                activeDot={{ r: 8 }}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-      <div className='flex justify-center gap-4'>
+      <p className='subheader-sm-1stop'>Trend Of {fieldName}</p>
+      <div className='flex justify-end gap-4'>
         <button
           className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
             selectedValue === 2 ? 'bg-1stop-accent2' : 'hover:bg-1stop-alt-gray'
@@ -146,6 +152,47 @@ export default function DataExplorerTrend({ date, trendField, subset }: Readonly
         >
           1 Y
         </button>
+      </div>
+      <div className='h-96 w-full'>
+        <ResponsiveContainer
+          width='100%'
+          height='100%'
+        >
+          <LineChart
+            width={500}
+            height={300}
+            data={chartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <Tooltip
+              formatter={(value: number) => `${formatNumber(value)}`}
+              content={<CustomTooltip />}
+              cursor={{ fill: 'var(--colour-1stop-accent2)' }}
+            />
+            <CartesianGrid strokeDasharray='3 3' />
+            <XAxis
+              dataKey='month'
+              style={{ fontSize: 10 }}
+            />
+            <YAxis style={{ fontSize: 10 }} />
+            <Tooltip />
+            <Legend content={CustomLegend} />
+            {keys.map((key, index) => (
+              <Line
+                type='monotone'
+                key={key}
+                dataKey={key}
+                stroke={solidColors[index % solidColors.length]}
+                activeDot={{ r: 8 }}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   )
