@@ -42,26 +42,6 @@ const SlaPerformance = () => {
     `subset/128?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
-  // const monthYear = selectedMonth
-  //   ? `${selectedMonth.getFullYear()}${(selectedMonth.getMonth() + 1).toString().padStart(2, '0')}`
-  //   : null
-  // const [SlaTrendValues] = useFetchRecord<{
-  //   data: SlaTrendValues[]
-  //   latest_value: string
-  // }>(
-  //   `subset/78?${
-  //     selectedMonth == null
-  //       ? 'latest=month_year'
-  //       : `month_year_less_than_or_equal=${Number(monthYear)}`
-  //   }`
-  // )
-  // useEffect(() => {
-  //   setCategories(
-  //     Array.from(new Set(SlaTrendValues?.data?.map((item) => item.sla_svc_group) || [])).map(
-  //       (sla_svc_group) => ({ sla_svc_group })
-  //     )
-  //   )
-  // }, [setCategories, SlaTrendValues])
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100
@@ -321,8 +301,6 @@ const SlaPerformance = () => {
           <SlaTrend
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
-            categories={categories}
-            setCategories={setCategories}
           />
         )}
         {selectedLevel === 3 && (
@@ -331,7 +309,6 @@ const SlaPerformance = () => {
             column2='Requests within SLA count'
             subset_id='82'
             sortby='requests_within_sla__count_'
-            categories={categories}
           />
         )}
       </div>

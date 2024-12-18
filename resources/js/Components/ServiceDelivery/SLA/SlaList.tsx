@@ -6,24 +6,25 @@ import SelectList from '@/ui/form/SelectList'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Paginator } from '@/ui/ui_interfaces'
 import { Link } from '@inertiajs/react'
-
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { formatNumber } from '../ActiveConnection'
+import { SlaTrendValues } from '@/Components/ServiceDelivery/SLA/SlaTrend'
 
 interface Properties {
   subset_id: string
   column1: string
   column2: string
-
   default_level?: string
-
   sortBy?: string
   sortOrder?: string
   categories: {
     sla_svc_group: string
   }[]
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
 }
+
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
@@ -32,6 +33,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Subdivision', value: 'subdivision' },
   { name: 'Division', value: 'division' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -41,15 +43,15 @@ interface ConsumerList extends Model {
   requests_within_sla__count_?: number
   requests_within_sla____?: number
 }
+
 const SlaList = ({
   subset_id,
   column1,
   column2,
-
   default_level,
-  sortBy = 'requests_within_sla__count_',
   sortOrder = 'desc',
-  categories,
+  selectedMonth,
+  setSelectedMonth,
 }: Properties) => {
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const [page, setPage] = useState(1)
@@ -61,6 +63,7 @@ const SlaList = ({
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
     `subset-summary/${subset_id}?level=${officeLevel}&sort_by=requests_within_sla__count_&sort_order=${topOrBottom}&limit=${listType}&sla_svc_group=${title}&page=${page}`
   )
+  const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
 
   useEffect(() => {
     setHeaders([
@@ -72,15 +75,36 @@ const SlaList = ({
   const handleToogleNumber = () => {
     settoggleValue(!toggleValue)
   }
+
+  const monthYear = selectedMonth
+    ? `${selectedMonth.getFullYear()}${(selectedMonth.getMonth() + 1).toString().padStart(2, '0')}`
+    : null
+
+  const [categoryData] = useFetchRecord<{
+    data: SlaTrendValues[]
+    latest_value: string
+  }>(
+    `subset/78?${
+      selectedMonth == null
+        ? 'latest=month_year'
+        : `month_year_greater_than_or_equal=${
+            Number(monthYear) - 3
+          }&month_year_less_than_or_equal=${Number(monthYear)}`
+    }`
+  )
+
+  useEffect(() => {
+    setCategories(
+      Array.from(new Set(categoryData?.data?.map((item) => item.sla_svc_group) || [])).map(
+        (sla_svc_group) => ({ sla_svc_group })
+      )
+    )
+  }, [setCategories, categoryData])
+
   const isLoading = !graphValues || !graphValues.data
+
   return (
-    <div
-      className='flex h-[330px] w-full flex-col p-2'
-      //   style={{
-      //     minHeight: '330',
-      //     maxHeight: '330',
-      //   }}
-    >
+    <div className='flex h-[330px] w-full flex-col p-2'>
       <div className='flex flex-col items-end justify-center'>
         <button
           className='small-1stop mt-auto cursor-pointer'

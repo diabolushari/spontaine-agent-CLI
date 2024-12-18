@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -18,28 +18,20 @@ export interface SlaTrendValues {
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
-  categories: {
-    sla_svc_group: string
-  }[]
-  setCategories: React.Dispatch<
-    React.SetStateAction<
-      {
-        sla_svc_group: string
-      }[]
-    >
-  >
 }
 
-const SlaTrend = ({ selectedMonth, setSelectedMonth, categories, setCategories }: Properties) => {
+const SlaTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [toogleValue, setToogleValue] = useState(false)
   const [selectedValue, setSelectedValue] = useState('3 MONTHS')
   const [title, setTitle] = useState('Ownership change')
+  const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
 
   const handleToogleChange = () => setToogleValue((prev) => !prev)
 
   const monthYear = selectedMonth
     ? `${selectedMonth.getFullYear()}${(selectedMonth.getMonth() + 1).toString().padStart(2, '0')}`
     : null
+
   const [graphValues] = useFetchRecord<{
     data: SlaTrendValues[]
     latest_value: string
