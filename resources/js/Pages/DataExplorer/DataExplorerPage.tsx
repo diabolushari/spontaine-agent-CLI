@@ -206,6 +206,7 @@ export default function DataExplorerPage({
               />
             )}
         </div>
+        <div className='border border-1stop-alt-gray'></div>
         <div className='grid w-full grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4'>
           <div className='flex flex-col'>
             <SelectList
@@ -220,7 +221,7 @@ export default function DataExplorerPage({
             />
           </div>
           <div className='grid grid-cols-2 md:col-start-3 lg:col-start-4'>
-            <div className='place-items-center rounded-tl-lg bg-1stop-accent2'>
+            <div className='place-content-center place-items-center rounded-l-lg bg-1stop-accent2'>
               <MonthPicker
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
@@ -228,7 +229,7 @@ export default function DataExplorerPage({
             </div>
             <button
               onClick={() => setShowSearchModal(true)}
-              className='place-items-center rounded-br-lg bg-1stop-highlight2'
+              className='place-items-center rounded-r-lg bg-1stop-highlight2'
             >
               <i className='la la-filter'></i>
               <p className='small-1stop-header'>Filters</p>
