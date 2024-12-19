@@ -9,6 +9,7 @@ use App\Models\DataLoader\DataLoaderJobStatus;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
 use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 readonly class RunScheduledJob
 {
@@ -59,14 +60,17 @@ readonly class RunScheduledJob
             ]);
         }
 
-        $result = $this->importToDataTable->importToDataTable(
-            $dataLoaderJob->detail,
-            $data,
-            $dataLoaderJob->delete_existing_data == 1,
-            $dataLoaderJob->duplicate_identification_field
-        );
-
         try {
+
+            Log::info('Importing data to data table');
+
+            $result = $this->importToDataTable->importToDataTable(
+                $dataLoaderJob->detail,
+                $data,
+                $dataLoaderJob->delete_existing_data == 1,
+                $dataLoaderJob->duplicate_identification_field
+            );
+
             DataLoaderJobStatus::create([
                 'executed_at' => $startTime,
                 'loader_job_id' => $dataLoaderJob->id,
