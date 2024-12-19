@@ -346,12 +346,16 @@ readonly class SubsetQueryBuilder
 
             $hierarchyQuery = $this->officeList->get($hierarchyTable)
                 ->selectRaw(
-                    '`section_code_record`.`name` as hierarchy_section_code, '
+                    'section_code as hierarchy_section_code, '
                     .$joinSelect
                 );
 
-            $query->leftJoinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) {
-                $join->on('section_code_record.name', '=', 'hierarchy.hierarchy_section_code');
+            $query->joinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) use ($detail) {
+                $join->on(
+                    $detail->table_name.'.section_code',
+                    '=',
+                    'hierarchy.hierarchy_section_code'
+                );
             });
 
             $selectColumns[] = $selectStatement;
