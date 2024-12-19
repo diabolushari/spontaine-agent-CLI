@@ -103,7 +103,6 @@ readonly class ImportToDataTable
 
         Log::info('saving data to data table');
         //save data
-        DB::beginTransaction();
         try {
             if ($deleteExistingData && $duplicationIdentifierField == null) {
                 DB::table($dataDetail->table_name)->delete();
@@ -119,14 +118,12 @@ readonly class ImportToDataTable
                 DB::table($dataDetail->table_name)->insert($chunk);
             }
         } catch (Exception $e) {
-            DB::rollBack();
             $status['error_message'] = $e->getMessage();
             $status['completed_at'] = now();
 
             return $status;
         }
 
-        DB::commit();
         $status['is_successful'] = true;
         $status['total_records'] = count($dataTable);
         $status['completed_at'] = now();
