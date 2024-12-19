@@ -60,17 +60,25 @@ readonly class RunScheduledJob
             ]);
         }
 
+        Log::info('Importing data to data table');
+
         try {
-
-            Log::info('Importing data to data table');
-
             $result = $this->importToDataTable->importToDataTable(
                 $dataLoaderJob->detail,
                 $data,
                 $dataLoaderJob->delete_existing_data == 1,
                 $dataLoaderJob->duplicate_identification_field
             );
+        } catch (Exception $exception) {
+            $result = [
+                'completed_at' => now(),
+                'is_successful' => false,
+                'error_message' => $exception->getMessage(),
+                'total_records' => 0,
+            ];
+        }
 
+        try {
             DataLoaderJobStatus::create([
                 'executed_at' => $startTime,
                 'loader_job_id' => $dataLoaderJob->id,
