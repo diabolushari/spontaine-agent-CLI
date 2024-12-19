@@ -19,7 +19,7 @@ class ScheduledDataLoadListener implements ShouldQueue
      */
     public function handle(ScheduledDataLoadEvent $event): void
     {
-        Log::info('Scheduled data load event fired'.$event->dataLoaderJob->name);
+        Log::info('Listener: '.$event->dataLoaderJob->name);
         $event->dataLoaderJob->load('loaderQuery.loaderConnection', 'detail');
         $this->job->run($event->dataLoaderJob);
     }

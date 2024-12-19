@@ -6,6 +6,7 @@ use App\Models\DataDetail\DataDetail;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 readonly class ImportToDataTable
 {
@@ -56,6 +57,8 @@ readonly class ImportToDataTable
             return $status;
         }
 
+        Log::info('mapping data columns to field info');
+
         $dataColumns = array_keys($data[0]);
 
         $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id);
@@ -67,6 +70,7 @@ readonly class ImportToDataTable
         /** @var array<string, array<string, int>> $metaDataIds */
         $metaDataIds = [];
 
+        Log::info('syncing meta data');
         try {
             foreach ($fieldInfo as $field) {
                 if ($field->metaStructureId != null) {
@@ -83,6 +87,7 @@ readonly class ImportToDataTable
             return $status;
         }
 
+        Log::info('replacing string values for dimensions with meta_data_id');
         //replace string values for dimensions with meta_data_id
         foreach ($dataTable as &$record) {
             foreach ($fieldInfo as $field) {
@@ -96,6 +101,7 @@ readonly class ImportToDataTable
             }
         }
 
+        Log::info('saving data to data table');
         //save data
         DB::beginTransaction();
         try {

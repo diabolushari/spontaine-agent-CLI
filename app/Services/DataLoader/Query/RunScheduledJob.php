@@ -63,12 +63,14 @@ readonly class RunScheduledJob
         Log::info('Importing data to data table');
 
         try {
+            Log::info(count($data));
             $result = $this->importToDataTable->importToDataTable(
                 $dataLoaderJob->detail,
                 $data,
                 $dataLoaderJob->delete_existing_data == 1,
                 $dataLoaderJob->duplicate_identification_field
             );
+            Log::info($result);
         } catch (Exception $exception) {
             $result = [
                 'completed_at' => now(),
