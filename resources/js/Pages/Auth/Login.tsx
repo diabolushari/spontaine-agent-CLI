@@ -61,6 +61,10 @@ export default function Login({ status }: { status?: string; canResetPassword: b
           </div>
           <p className='subheader-1stop text-center tracking-widest'>WELCOME BACK!</p>
           <p className='body-1stop mb-8 mt-4 text-center'>Please Sign In</p>
+
+          <div className='mb-4 text-center text-red-600'>
+            {(errors?.email || errors?.password || errors?.message) && <p>Invalid Credentials</p>}
+          </div>
           <FormBuilder
             formItems={formItems}
             formData={formData}
