@@ -20,6 +20,7 @@ interface Props {
   job?: DataLoaderJob | null
   connectionId?: number | null
   dataDetail: DataDetail
+  dataDetails: DataDetail[]
 }
 
 export default function DataLoaderJobCreate({
@@ -27,7 +28,10 @@ export default function DataLoaderJobCreate({
   connections,
   connectionId,
   dataDetail,
+  dataDetails,
 }: Readonly<Props>) {
+  console.log(dataDetails)
+
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     name: job?.name ?? '',
     description: job?.description ?? '',
@@ -43,7 +47,26 @@ export default function DataLoaderJobCreate({
     query_id: job?.query_id ?? '',
     delete_existing_data: job?.delete_existing_data === 1,
     duplicate_identification_field: job?.duplicate_identification_field ?? '',
+    predecessor_job_id: job?.predecessor_job_id ?? '',
   })
+
+  const availableJobs = useMemo(() => {
+    const jobs: { id: number; name: string }[] = []
+
+    dataDetails.forEach((dataDetail) => {
+      dataDetail.jobs?.forEach((job) => {
+        if (job == null || job.id == null || job.name == null) {
+          return
+        }
+        jobs.push({
+          id: job.id,
+          name: dataDetail.name + ' : ' + job.name,
+        })
+      })
+    })
+
+    return jobs
+  }, [dataDetails])
 
   useEffect(() => {
     if (formData.cron_type === HOURLY_CRON) {
@@ -169,6 +192,16 @@ export default function DataLoaderJobCreate({
         allOptionText: 'DELETE ALL DATA',
         hidden: !formData.delete_existing_data,
       },
+      predecessor_job_id: {
+        type: 'select',
+        list: availableJobs,
+        dataKey: 'id',
+        displayKey: 'name',
+        label: 'Predecessor Job',
+        setValue: setFormValue('predecessor_job_id'),
+        showAllOption: true,
+        allOptionText: 'No Predecessor Job',
+      },
       connection_id: {
         type: 'select',
         label: 'Connection',
@@ -192,6 +225,7 @@ export default function DataLoaderJobCreate({
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [
+    availableJobs,
     setFormValue,
     formData.cron_type,
     connections,

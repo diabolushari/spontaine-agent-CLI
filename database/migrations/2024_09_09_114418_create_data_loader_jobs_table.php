@@ -30,6 +30,9 @@ return new class extends Migration
                 ->constrained('loader_queries');
             $table->foreignId('data_detail_id')
                 ->constrained('data_details');
+            $table->foreignId('predecessor_job_id')
+                ->nullable()
+                ->constrained('loader_jobs');
             $table->softDeletes();
             $table->foreignId('created_by')
                 ->nullable()

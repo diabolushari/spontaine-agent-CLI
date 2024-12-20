@@ -5,6 +5,7 @@ namespace App\Models\DataLoader;
 use App\Models\DataDetail\DataDetail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,6 +30,7 @@ class DataLoaderJob extends Model
         'duplicate_identification_field',
         'query_id',
         'data_detail_id',
+        'predecessor_job_id',
         'created_by',
         'updated_by',
     ];
@@ -90,5 +92,14 @@ class DataLoaderJob extends Model
     public function latest(): HasOne
     {
         return $this->hasOne(DataLoaderJobStatus::class, 'loader_job_id', 'id')->latestOfMany();
+    }
+
+    /**
+     * @return BelongsTo<DataLoaderJob, DataLoaderJob>
+     */
+    public function predecessor(): BelongsTo
+    {
+        return $this->belongsTo(DataLoaderJob::class, 'predecessor_job_id', 'id');
+
     }
 }

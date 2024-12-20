@@ -57,11 +57,18 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->orderBy('name')
             ->get();
 
+        $dataDetails = DataDetail::with(['jobs' => fn ($query) => $query->select('id', 'name', 'data_detail_id')])
+            ->whereHas('jobs')
+            ->select('name', 'id')
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('DataLoader/DataLoaderJobCreate', [
             'connections' => $connections,
             'type' => $request->type,
             'subtype' => $request->subtype,
             'dataDetail' => $dataDetail,
+            'dataDetails' => $dataDetails,
         ]);
     }
 
@@ -103,11 +110,18 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->with(['dateFields', 'dimensionFields'])
             ->firstOrFail();
 
+        $dataDetails = DataDetail::with(['jobs' => fn ($query) => $query->select('id', 'name', 'data_detail_id')])
+            ->whereHas('jobs')
+            ->select('name', 'id')
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('DataLoader/DataLoaderJobCreate', [
             'job' => $dataLoaderJob,
             'connections' => $connections,
             'dataDetail' => $dataDetail,
             'connectionId' => $query?->connection_id ?? null,
+            'dataDetails' => $dataDetails,
         ]);
     }
 

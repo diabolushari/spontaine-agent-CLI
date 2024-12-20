@@ -4,6 +4,7 @@ namespace App\Http\Requests\DataLoader;
 
 use App\Services\DataLoader\CronTypes;
 use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -22,6 +23,8 @@ class DataLoaderJobFormRequest extends Data
         public ?int $dayOfMonth,
         public ?string $duplicateIdentificationField,
         public int $queryId,
+        #[Exists('loader_jobs', 'id')]
+        public ?int $predecessorJobId,
         public int $dataDetailId,
         public bool $deleteExistingData
     ) {

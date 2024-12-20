@@ -50,6 +50,7 @@ export interface DataDetail extends Model {
   date_fields?: Partial<TableDateField>[]
   dimension_fields?: Partial<TableDimensionField>[]
   measure_fields?: Partial<TableMeasureField>[]
+  jobs?: Partial<DataLoaderJob>[]
   is_active: 0 | 1
 }
 
@@ -201,6 +202,7 @@ export interface DataLoaderJob extends Model {
   query_id: number
   delete_existing_data: 0 | 1
   duplicate_identification_field: string | null
+  predecessor_job_id: number | null
   detail?: Partial<DataDetail> | null
   loader_query?: Partial<DataLoaderQuery> | null
   statuses?: JobStatuses[]

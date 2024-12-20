@@ -7,9 +7,9 @@ use App\Libs\OperationResult;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\DataLoader\DataLoaderJobStatus;
 use App\Services\DataLoader\Connection\RunLoaderQuery;
+use App\Services\DataLoader\CronTypes;
 use App\Services\DataLoader\ImportToDataTable\ImportToDataTable;
 use Exception;
-use Illuminate\Support\Facades\Log;
 
 readonly class RunScheduledJob
 {
@@ -38,6 +38,24 @@ readonly class RunScheduledJob
             ]);
         }
 
+        if ($dataLoaderJob->predecessor != null && ! $this->hasPredecessorFinishedRunning($dataLoaderJob->predecessor)) {
+            //check if predecessor has finished
+            $errorMessage = 'Predecessor was not finished in time: '.$dataLoaderJob->predecessor->name;
+            DataLoaderJobStatus::create([
+                'executed_at' => $startTime,
+                'completed_at' => now(),
+                'loader_job_id' => $dataLoaderJob->id,
+                'is_successful' => false,
+                'error_message' => $errorMessage,
+                'total_records' => 0,
+            ]);
+
+            return OperationResult::from([
+                'error' => true,
+                'message' => $errorMessage,
+            ]);
+        }
+
         try {
             $data = $this->runQuery->runQuery(
                 $dataLoaderJob->loaderQuery->loaderConnection,
@@ -60,17 +78,13 @@ readonly class RunScheduledJob
             ]);
         }
 
-        Log::info('Importing data to data table');
-
         try {
-            Log::info(count($data));
             $result = $this->importToDataTable->importToDataTable(
                 $dataLoaderJob->detail,
                 $data,
                 $dataLoaderJob->delete_existing_data == 1,
                 $dataLoaderJob->duplicate_identification_field
             );
-            Log::info($result);
         } catch (Exception $exception) {
             $result = [
                 'completed_at' => now(),
@@ -98,5 +112,25 @@ readonly class RunScheduledJob
             'error' => false,
             'message' => null,
         ]);
+    }
+
+    private function hasPredecessorFinishedRunning(DataLoaderJob $predecessor): bool
+    {
+        $now = now();
+
+        //predecessor should run successfully at least once after below time
+        $maxAllowedTime = match ($predecessor->cron_type) {
+            CronTypes::HOURLY => $now->copy()->startOfHour()->toDateTimeString(),
+            CronTypes::DAILY => $now->copy()->startOfDay()->toDateTimeString(),
+            CronTypes::WEEKLY => $now->copy()->startOfWeek()->toDateTimeString(),
+            CronTypes::MONTHLY => $now->copy()->startOfMonth()->toDateTimeString(),
+            CronTypes::YEARLY => $now->copy()->startOfYear()->toDateTimeString(),
+            default => $now->toDateTimeString(),
+        };
+
+        return DataLoaderJobStatus::where('is_successful', true)
+            ->where('executed_at', '>=', $maxAllowedTime)
+            ->where('loader_job_id', $predecessor->id)
+            ->exists();
     }
 }
