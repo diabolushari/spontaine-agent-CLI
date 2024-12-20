@@ -165,11 +165,11 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
                       >
                         {payload.map((entry, index) => {
                           let formattedValue = entry.value
-                          if (entry.value === 'total_arrears') formattedValue = 'Total Arrears'
+                          if (entry.value === 'total_arrears') formattedValue = 'TOTAL ARREARS'
                           else if (entry.value === 'disputed_arrears')
-                            formattedValue = 'Disputed Arrears'
+                            formattedValue = 'DISPUTED ARREARS'
                           else if (entry.value === 'undisputed_arrears')
-                            formattedValue = 'Undisputed Arrears'
+                            formattedValue = 'UNDISPUTED ARREARS'
 
                           return (
                             <li
