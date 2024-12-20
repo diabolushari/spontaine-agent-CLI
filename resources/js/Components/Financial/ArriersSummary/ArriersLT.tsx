@@ -19,6 +19,7 @@ import MoreButton from '@/Components/MoreButton'
 import ToogleNumber from '@/Components/ui/ToogleNumber'
 import TooglePercentage from '@/Components/ui/TogglePercentage'
 import ArriersLTList from './ArriersLTList'
+import { filter } from 'framer-motion/client'
 
 interface ArriersHT {
   month: string
@@ -257,6 +258,8 @@ const ArriersLT = () => {
       value: filters(3),
     },
   ]
+  const totalCount = filters(0) + filters(1) + filters(2) + filters(3)
+
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
       const excludedCategories = [
@@ -476,7 +479,13 @@ const ArriersLT = () => {
                   >
                     <Tooltip
                       formatter={(value: number) => formatNumber(value)}
-                      content={<CustomTooltip />}
+                      content={
+                        <CustomTooltip
+                          valueType={toggleValue ? 'count' : 'percentage'}
+                          totalCount={totalCount}
+                          isPercent
+                        />
+                      }
                     />
 
                     <Pie
