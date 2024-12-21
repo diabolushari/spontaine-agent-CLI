@@ -9,7 +9,6 @@ use App\Services\Subset\SubsetGroupedByColumn;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Support\Facades\Log;
 
 class SubsetColumSearchController extends Controller implements HasMiddleware
 {
@@ -29,10 +28,6 @@ class SubsetColumSearchController extends Controller implements HasMiddleware
         Request $request,
         SubsetFilterBuilder $filterBuilder
     ): JsonResponse {
-
-        Log::info('reached controller: ');
-        Log::info($request->all());
-
         $subsetDetail->load('measures.info', 'dates.info', 'dimensions.info', 'measures.weightInfo');
 
         if (! $request->filled('column') || ! $request->filled('search')) {
