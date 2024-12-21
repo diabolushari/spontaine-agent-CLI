@@ -67,11 +67,14 @@ const ComboBox = <
       setList([])
       return
     }
+    console.log(`${url}${textFieldValue}`)
     try {
       const res = await axios.get(`${url}${textFieldValue}`)
+      console.log(res.data)
       setList(res.data)
       setHighlightedIndex(-1)
     } catch (error) {
+      console.log(error)
       handleHttpErrors(error)
     }
   }, [textFieldValue, url])
