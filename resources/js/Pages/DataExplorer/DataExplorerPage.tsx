@@ -239,7 +239,7 @@ export default function DataExplorerPage({
         </div>
 
         <div>
-          <span className='axial-label-1stop'>
+          <span className='data-xs-1stop'>
             {' '}
             <b>Note:</b> In order to view data at subdivision level and below, please filter at a
             higher organization level.
