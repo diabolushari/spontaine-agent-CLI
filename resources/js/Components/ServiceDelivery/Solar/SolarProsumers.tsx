@@ -112,16 +112,17 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
       name: 'AGRICULTURE',
       value: graphFilter('Agriculture'),
     },
-    // {
-    //   name: 'OTHER',
-    //   value:
-    //     total -
-    //     graphFilter('DOMESTIC') -
-    //     graphFilter('Industrial') -
-    //     graphFilter('Commercial') -
-    //     graphFilter('Agriculture'),
-    // },
+    {
+      name: 'OTHER',
+      value:
+        total -
+        graphFilter('DOMESTIC') -
+        graphFilter('Industrial') -
+        graphFilter('Commercial') -
+        graphFilter('Agriculture'),
+    },
   ]
+  console.log(data)
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {

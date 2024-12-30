@@ -272,6 +272,15 @@ const ArriersLT = () => {
       name: 'AGRICULTURE',
       value: filters('Agriculture'),
     },
+    {
+      name: 'OTHERS',
+      value:
+        arrearCount(range) -
+        filters('DOMESTIC') -
+        filters('Industrial') -
+        filters('Commercial') -
+        filters('Agriculture'),
+    },
   ]
   const findSubset = () => {
     switch (range) {
@@ -291,7 +300,6 @@ const ArriersLT = () => {
         return []
     }
   }
-  const totalCount = filters(0) + filters(1) + filters(2) + filters(3)
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
@@ -516,7 +524,7 @@ const ArriersLT = () => {
                       content={
                         <CustomTooltip
                           valueType={toggleValue ? 'count' : 'percentage'}
-                          totalCount={totalCount}
+                          totalCount={arrearCount(range)}
                           isPercent
                         />
                       }
