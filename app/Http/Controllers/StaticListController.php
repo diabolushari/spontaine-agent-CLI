@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
 class StaticListController extends Controller implements HasMiddleware
@@ -17,14 +18,19 @@ class StaticListController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
-        return response()->json([
-            'data' => [
+        $records = match ($request->type) {
+            'voltage' => [
                 ['value' => 'LT'],
                 ['value' => 'HT'],
                 ['value' => 'EHT'],
             ],
+            default => []
+        };
+
+        return response()->json([
+            'data' => $records,
         ]);
     }
 }

@@ -62,6 +62,8 @@ export default function FieldUniqueValueDropdown({
         dataKey='value'
         value={selectedValue}
         style='1stop-small'
+        showAllOption
+        allOptionText='ALL'
       />
     </div>
   )

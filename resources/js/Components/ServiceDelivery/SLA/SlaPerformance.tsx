@@ -3,19 +3,18 @@ import ToogleNumber from '@/Components/ui/ToogleNumber'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Card from '@/ui/Card/Card'
 import MonthPicker from '@/ui/form/MonthPicker'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import SlaTrend, { SlaTrendValues } from './SlaTrend'
+import SlaTrend from './SlaTrend'
 import { Link, router } from '@inertiajs/react'
 import MoreButton from '@/Components/MoreButton'
-import TopList from '../NewConnectionsList'
-import SlaList from './SlaList'
 import { dateToYearMonth, formatNumber } from '../ActiveConnection'
 import DataShowIcon from '@/Components/ui/DatashowIcon'
 import TrendIcon from '@/Components/ui/TrendIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
 import { solidColors } from '@/ui/ui_interfaces'
+import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
 
 export interface SlaPerformanceValues {
   month: string
@@ -35,6 +34,11 @@ const SlaPerformance = () => {
   const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
+
   const [graphValues] = useFetchRecord<{
     data: SlaPerformanceValues[]
     latest_value: string
@@ -303,12 +307,19 @@ const SlaPerformance = () => {
             setSelectedMonth={setSelectedMonth}
           />
         )}
-        {selectedLevel === 3 && (
-          <SlaList
-            column1='State'
-            column2='Requests within SLA count'
-            subset_id='82'
-            selectedMonth={selectedMonth}
+        {selectedLevel === 3 && selectedMonth != null && (
+          <DashboardRankedList
+            cardTitle={`${toggleValue ? 'Requests within SLA count' : 'Ranked by Requests Within SLA (%)'}`}
+            subsetId={82}
+            timePeriod={monthYear}
+            timePeriodFieldName='month'
+            dataField={toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}
+            dataFieldName={toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}
+            rankingPageUrl={`office-rankings/SLA Performance Analysis?route=${route('service-delivery.index')}`}
+            defaultFilterValue={'Ownership change'}
+            filterListFetchURL={`/subset/78?month=${monthYear}`}
+            filterListKey={'sla_svc_group'}
+            filterFieldName={'request_type'}
           />
         )}
       </div>
