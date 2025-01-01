@@ -1,102 +1,61 @@
-import React, { useState } from 'react'
-import MoreButton from '../../MoreButton'
+import React, { useMemo, useState } from 'react'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link } from '@inertiajs/react'
-import MonthPicker from '@/ui/form/MonthPicker'
-import Card from '@/ui/Card/Card'
 import IssueCard from './IssueCard'
-import ComplaintList from './ComplaintList'
-import DataShowIcon from '@/Components/ui/DatashowIcon'
-import Top10Icon from '@/Components/ui/Top10Icon'
 import PowerInterruptionTrend2 from '../PowerInterruptionTrend2'
-import { div } from 'framer-motion/client'
 import { dateToYearMonth } from '../ActiveConnection'
+import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
+import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
 
 const Complaints = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
-  const [selectedLevel, setSelectedLevel] = useState(1)
-  const [categories, setCategories] = useState<
-    {
-      complaint_type: string
-    }[]
-  >([])
+  const [selectedLevel, setSelectedLevel] = useState('overview')
+
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
 
   return (
-    <Card className='flex h-full w-full flex-col'>
-      <div className='flex w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-t-2xl bg-1stop-alt-gray'>
-          <button
-            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 hover:cursor-pointer ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 hover:cursor-pointer ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(2)
-            }}
-          >
-            <Top10Icon />
-          </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
-        </div>
-
-        {selectedLevel === 1 && (
-          <div className='flex w-full flex-col md:flex-row'>
-            <div className='flex pt-2 md:w-1/3 md:pt-0'>
-              <IssueCard
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                setCategories={setCategories}
-              />
-            </div>
-            <div className='flex w-full md:w-2/3'>
-              <PowerInterruptionTrend2
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-              />
-            </div>
+    <DashboardCardLayout
+      selectedLevel={selectedLevel}
+      setSelectedLevel={setSelectedLevel}
+      selectedMonth={selectedMonth}
+      setSelectedMonth={setSelectedMonth}
+      title='Customer Complaints'
+      showTrend={false}
+      moreUrl={`/data-explorer/Customer Complaints Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
+    >
+      {selectedLevel === 'overview' && (
+        <div className='flex w-full flex-col md:flex-row'>
+          <div className='flex pt-2 md:w-1/3 md:pt-0'>
+            <IssueCard
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+            />
           </div>
-        )}
-
-        {selectedLevel === 2 && (
-          <ComplaintList
-            column1='Division'
-            column2='Complaint count'
-            subset_id='72'
-            displayKey='complaint_count'
-            setCategories={setCategories}
-            categories={categories}
-          />
-        )}
-      </div>
-
-      <div className='flex h-full justify-between gap-1 rounded-b-2xl bg-1stop-alt-gray px-2 pl-14'>
-        <div className='py-3'>
-          <p className='md:mdmetric-1stop smmetric-1stop'>Customer Complaints</p>
+          <div className='flex w-full md:w-2/3'>
+            <PowerInterruptionTrend2
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+            />
+          </div>
         </div>
-        <div className='small-1stop-header flex w-1/4 flex-col items-center justify-center bg-1stop-accent2'>
-          <MonthPicker
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-          />
-        </div>
-        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
-          <Link
-            href={`/data-explorer/Customer Complaints Summary?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
-          >
-            <MoreButton />
-          </Link>
-        </div>
-      </div>
-    </Card>
+      )}
+      {selectedLevel === 'ranking' && (
+        <DashboardRankedList
+          dataFieldName='Complaint count'
+          subsetId={72}
+          dataField='complaint_count'
+          cardTitle='Ranked by Complaint Counts'
+          timePeriod={monthYear}
+          timePeriodFieldName='month'
+          rankingPageUrl={`/office-rankings/Customer Complaints Analysis?route=${route('service-delivery.index')}`}
+          filterListFetchURL={'/subset/72?month=' + monthYear}
+          filterListKey='complaint_type'
+          filterFieldName='complaint_type'
+          defaultFilterValue='NO POWER SUPPLY'
+        />
+      )}
+    </DashboardCardLayout>
   )
 }
 

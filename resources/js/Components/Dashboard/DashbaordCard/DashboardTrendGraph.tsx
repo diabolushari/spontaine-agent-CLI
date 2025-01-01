@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import Skeleton from 'react-loading-skeleton'
@@ -23,7 +23,8 @@ interface Props {
   cardTitle: string
   dataField: string
   dataFieldName: string
-  selectedMonth: Date
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
   filterFieldName?: string
   filterListKey?: string
   filterListFetchURL?: string
@@ -53,6 +54,7 @@ const renderCustomTooltip = ({ active, payload, label }: TooltipProps<number, st
 export default function DashboardTrendGraph({
   cardTitle,
   selectedMonth,
+  setSelectedMonth,
   subsetId,
   dataField,
   dataFieldName,
@@ -70,10 +72,15 @@ export default function DashboardTrendGraph({
 
     const params: Record<string, string | number> = {
       subsetDetail: subsetId,
-      month_less_than_or_equal: dateObject.format('YYYYMM'),
-      month_greater_than_or_equal: dateObject
+    }
+
+    if (selectedMonth == null && setSelectedMonth != null) {
+      params['latest'] = 'month'
+    } else {
+      params['month_less_than_or_equal'] = dateObject.format('YYYYMM')
+      params['month_greater_than_or_equal'] = dateObject
         .subtract(selectedMonthValue, 'month')
-        .format('YYYYMM'),
+        .format('YYYYMM')
     }
 
     if (filterFieldName != null) {
@@ -83,11 +90,25 @@ export default function DashboardTrendGraph({
     return route('subset.show', {
       ...params,
     })
-  }, [subsetId, selectedMonth, selectedMonthValue, filterValue, filterFieldName])
+  }, [subsetId, selectedMonth, selectedMonthValue, filterValue, filterFieldName, setSelectedMonth])
 
   const [graphValues, isLoading] = useFetchRecord<{
     data: Record<string, string | number | null | undefined>[]
+    latest_value: string | null | undefined
   }>(fetchUrl)
+
+  console.log(fetchUrl)
+
+  useEffect(() => {
+    if (setSelectedMonth == null || selectedMonth != null) {
+      return
+    }
+    if (graphValues?.latest_value != null) {
+      const year = Number(graphValues?.latest_value) / 100
+      const month = Number(graphValues?.latest_value) % 100
+      setSelectedMonth(new Date(Math.trunc(year), month - 1, 1))
+    }
+  }, [graphValues, selectedMonth, setSelectedMonth])
 
   const chartData = useMemo(() => {
     const selectedMonths: string[] = []

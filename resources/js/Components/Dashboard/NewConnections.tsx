@@ -1,22 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import MoreButton from '../MoreButton'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link, router } from '@inertiajs/react'
-import MonthPicker from '@/ui/form/MonthPicker'
-import Card from '@/ui/Card/Card'
-import ToogleNumber from '../ui/ToogleNumber'
-import TooglePercentage from '../ui/TogglePercentage'
+import { router } from '@inertiajs/react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
-import DataShowIcon from '../ui/DatashowIcon'
-import TrendIcon from '../ui/TrendIcon'
-import Top10Icon from '../ui/Top10Icon'
-import NewConnectionsList from '../ServiceDelivery/NewConnectionsList'
 import { solidColors } from '@/ui/ui_interfaces'
 import { CustomTooltip } from '../CustomTooltip'
 import DashboardTrendGraph from '@/Components/Dashboard/DashbaordCard/DashboardTrendGraph'
+import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
+import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
 
 export interface NewConnectionGraphValues {
   compl_beyond_sla__: number
@@ -43,10 +36,14 @@ interface LegendProps {
 }
 
 const NewConnections = () => {
-  const [toggleValue, settoggleValue] = useState<boolean>(false)
+  const [showPercentage, setshowPercentage] = useState<boolean>(false)
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
-  const [selectedLevel, setSelectedLevel] = useState(1)
+  const [selectedLevel, setSelectedLevel] = useState('overview')
+
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
 
   const CustomLegend = ({ payload }: LegendProps) => {
     return (
@@ -62,7 +59,7 @@ const NewConnections = () => {
             // Add logic to include count when toggleValue is true
             const correspondingData = data.find((d) => d.name === entry.value)
             const count =
-              toggleValue && correspondingData
+              showPercentage && correspondingData
                 ? ` (${correspondingData.value})`
                 : `(${correspondingData.value.toFixed(2)})%`
 
@@ -111,27 +108,27 @@ const NewConnections = () => {
 
   const slaPerf = isLoading
     ? 0
-    : toggleValue
+    : showPercentage
       ? graphValues.data[0]?.sla_perf_cnt || 0
       : graphValues.data[0]?.sla_perf__ || 0
   const completedBeyondSla = isLoading
     ? 0
-    : toggleValue
+    : showPercentage
       ? graphValues.data[0]?.compl_beyond_sla_cnt || 0
       : graphValues.data[0]?.compl_beyond_sla__ || 0
   const completedWithinSla = isLoading
     ? 0
-    : toggleValue
+    : showPercentage
       ? graphValues.data[0]?.compl_within_sla_cnt || 0
       : graphValues.data[0]?.compl_within_sla__ || 0
   const pendingBeyondSla = isLoading
     ? 0
-    : toggleValue
+    : showPercentage
       ? graphValues.data[0]?.pend_beyond_sla_cnt || 0
       : graphValues.data[0]?.pend_beyond_sla__ || 0
   const pendingWithinSla = isLoading
     ? 0
-    : toggleValue
+    : showPercentage
       ? graphValues.data[0]?.pend_within_sla_cnt || 0
       : graphValues.data[0]?.pend_within_sla__ || 0
 
@@ -145,7 +142,7 @@ const NewConnections = () => {
   ]
 
   const handleToogleNumber = () => {
-    settoggleValue(!toggleValue)
+    setshowPercentage(!showPercentage)
   }
 
   const handleGraphSelection = useCallback(
@@ -163,233 +160,172 @@ const NewConnections = () => {
   )
 
   return (
-    <Card className='flex flex-col'>
-      <div className='flex w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-2xl bg-1stop-alt-gray'>
-          <button
-            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(2)
-            }}
-          >
-            <TrendIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.circle_code ?? '')
-              setSelectedLevel(3)
-            }}
-          >
-            <Top10Icon />
-          </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray md:min-h-40'></div>
-        </div>
-        {selectedLevel === 1 && (
-          <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
-            <div className='flex w-full justify-end md:hidden'>
-              <button
-                className='small-1stop mb-auto cursor-pointer justify-end'
-                onClick={handleToogleNumber}
-              >
-                {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-              </button>
+    <DashboardCardLayout
+      title='New Connection Requests'
+      selectedMonth={selectedMonth}
+      setSelectedMonth={setSelectedMonth}
+      selectedLevel={selectedLevel}
+      setSelectedLevel={setSelectedLevel}
+      showPercentage={showPercentage}
+      setShowPercentage={setshowPercentage}
+      moreUrl={`/data-explorer/SLA Compliance Analysis - New Connection Requests?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
+    >
+      {selectedLevel === 'overview' && (
+        <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
+          <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
+            <div className='flex flex-col border p-2'>
+              <p className='xlmetric-1stop'>
+                {isLoading ? (
+                  <Skeleton width='50%' />
+                ) : showPercentage ? (
+                  formatNumber(slaPerf)
+                ) : (
+                  `${slaPerf.toFixed(2)}%`
+                )}
+              </p>
+
+              <div className='flex flex-row justify-between'>
+                <p className='small-1stop-header'>Overall SLA compliant requests </p>
+              </div>
             </div>
-            <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
-              <div className='flex flex-col border p-2'>
-                <p className='xlmetric-1stop'>
+
+            <div className='flex w-full flex-row space-x-1'>
+              {/* LT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
                   {isLoading ? (
-                    <Skeleton width='50%' />
-                  ) : toggleValue ? (
-                    formatNumber(slaPerf)
+                    <Skeleton width='25%' />
+                  ) : showPercentage ? (
+                    formatNumber(completedWithinSla)
                   ) : (
-                    `${slaPerf.toFixed(2)}%`
+                    `${completedWithinSla.toFixed(2)}%`
                   )}
                 </p>
-
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>Overall SLA compliant requests </p>
+                  <p className='small-1stop-header'>Compl. within SLA </p>
                 </div>
               </div>
 
-              <div className='flex w-full flex-row space-x-1'>
-                {/* LT */}
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {isLoading ? (
-                      <Skeleton width='25%' />
-                    ) : toggleValue ? (
-                      formatNumber(completedWithinSla)
-                    ) : (
-                      `${completedWithinSla.toFixed(2)}%`
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>Compl. within SLA </p>
-                  </div>
-                </div>
-
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {isLoading ? (
-                      <Skeleton width='25%' />
-                    ) : toggleValue ? (
-                      formatNumber(pendingWithinSla)
-                    ) : (
-                      `${pendingWithinSla.toFixed(2)}%`
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>Pending within SLA </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className='flex w-full flex-row space-x-1'>
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {isLoading ? (
-                      <Skeleton width='25%' />
-                    ) : toggleValue ? (
-                      formatNumber(completedBeyondSla)
-                    ) : (
-                      `${completedBeyondSla.toFixed(2)}%`
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>Compl. beyond SLA </p>
-                  </div>
-                </div>
-
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {isLoading ? (
-                      <Skeleton width='25%' />
-                    ) : toggleValue ? (
-                      formatNumber(pendingBeyondSla)
-                    ) : (
-                      `${pendingBeyondSla.toFixed(2)}%`
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>Pending beyond SLA </p>
-                  </div>
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {isLoading ? (
+                    <Skeleton width='25%' />
+                  ) : showPercentage ? (
+                    formatNumber(pendingWithinSla)
+                  ) : (
+                    `${pendingWithinSla.toFixed(2)}%`
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>Pending within SLA </p>
                 </div>
               </div>
             </div>
 
-            <div className='relative flex flex-col pt-2 md:w-1/2'>
-              <div className='absolute hidden w-full justify-end md:z-[9] md:flex'>
-                <button
-                  className='small-1stop mb-auto cursor-pointer justify-end'
-                  onClick={handleToogleNumber}
-                >
-                  {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-                </button>
+            <div className='flex w-full flex-row space-x-1'>
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {isLoading ? (
+                    <Skeleton width='25%' />
+                  ) : showPercentage ? (
+                    formatNumber(completedBeyondSla)
+                  ) : (
+                    `${completedBeyondSla.toFixed(2)}%`
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>Compl. beyond SLA </p>
+                </div>
               </div>
-              {isLoading ? (
-                <Skeleton
-                  circle={true}
-                  height={200}
-                  width={200}
-                />
-              ) : (
-                <ResponsiveContainer
-                  className='small-1stop'
-                  height={300}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {isLoading ? (
+                    <Skeleton width='25%' />
+                  ) : showPercentage ? (
+                    formatNumber(pendingBeyondSla)
+                  ) : (
+                    `${pendingBeyondSla.toFixed(2)}%`
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>Pending beyond SLA </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='relative flex flex-col pt-2 md:w-1/2'>
+            {isLoading ? (
+              <Skeleton
+                circle={true}
+                height={200}
+                width={200}
+              />
+            ) : (
+              <ResponsiveContainer
+                className='small-1stop'
+                height={300}
+              >
+                <PieChart
+                  width={100}
+                  height={100}
                 >
-                  <PieChart
-                    width={100}
-                    height={100}
+                  <Tooltip
+                    content={<CustomTooltip valueType={showPercentage ? 'count' : 'percentage'} />}
+                    formatter={(value: number) => (showPercentage ? value : `${value.toFixed(2)}%`)}
+                  />
+
+                  <Pie
+                    data={data}
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey='value'
+                    stroke='none'
+                    onClick={handleGraphSelection}
                   >
-                    <Tooltip
-                      content={<CustomTooltip valueType={toggleValue ? 'count' : 'percentage'} />}
-                      formatter={(value: number) => (toggleValue ? value : `${value.toFixed(2)}%`)}
-                    />
-
-                    <Pie
-                      data={data}
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey='value'
-                      stroke='none'
-                      onClick={handleGraphSelection}
-                    >
-                      {data.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={solidColors[index % solidColors.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Legend content={CustomLegend} />
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-          </div>
-        )}
-        {selectedLevel === 2 && selectedMonth != null && (
-          <DashboardTrendGraph
-            subsetId={90}
-            cardTitle='Trend of Requests Breaching SLA'
-            dataField='requests_breaching_sla__count_'
-            dataFieldName='RequestsBreachingSla'
-            selectedMonth={selectedMonth}
-          />
-        )}
-        {selectedLevel === 3 && (
-          <NewConnectionsList
-            column1='Section'
-            column2='Overall SLA Compliant Requests (count)'
-            subset_id='63'
-            default_level='section'
-            displayKey='sla'
-            sortBy='sla_perf_cnt'
-            route={`office-rankings/SLA Compliance Analysis - New Connection Requests?latest=month&route=${route('service-delivery.index')}`}
-          />
-        )}
-      </div>
-      <div className='flex h-full items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
-        <div className='flex py-2'>
-          <p className='md:mdmetric-1stop smmetric-1stop'>Servicing New Connections</p>
-        </div>
-        <div className='small-1stop-header flex h-full w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50'>
-          {/* {graphValues.length > 0 &&
-            new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric',
-            })} */}
-          <div style={{ opacity: 1 }}>
-            <MonthPicker
-              selectedMonth={selectedMonth}
-              setSelectedMonth={setSelectedMonth}
-            />
+                    {data.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={solidColors[index % solidColors.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend content={CustomLegend} />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
-        <div className='flex justify-end pl-2 hover:cursor-pointer hover:opacity-50'>
-          <Link
-            href={`/data-explorer/SLA Compliance Analysis - New Connection Requests?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
-          >
-            <MoreButton />
-          </Link>
-        </div>
-      </div>
-    </Card>
+      )}
+      {selectedLevel === 'trend' && selectedMonth != null && (
+        <DashboardTrendGraph
+          subsetId={90}
+          cardTitle='Trend of Requests Breaching SLA'
+          dataField='requests_breaching_sla__count_'
+          dataFieldName='RequestsBreachingSla'
+          selectedMonth={selectedMonth}
+        />
+      )}
+      {selectedLevel === 'ranking' && selectedMonth != null && (
+        <DashboardRankedList
+          subsetId={63}
+          cardTitle={
+            showPercentage
+              ? 'Ranked by Overall SLA Compliant Requests (%)'
+              : 'Ranked by Overall SLA Compliant Requests (count)'
+          }
+          dataField={!showPercentage ? 'sla_perf_cnt' : 'sla_perf__'}
+          dataFieldName={
+            showPercentage
+              ? 'Overall SLA Compliant Requests (%)'
+              : 'Overall SLA Compliant Requests (count)'
+          }
+          rankingPageUrl={`office-rankings/SLA Compliance Analysis - New Connection Requests?latest=month&route=${route('service-delivery.index')}`}
+          timePeriodFieldName='month'
+          timePeriod={monthYear}
+        />
+      )}
+    </DashboardCardLayout>
   )
 }
 

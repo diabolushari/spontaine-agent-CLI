@@ -323,7 +323,7 @@ const ActiveConnection = () => {
       )}
       {selectedLevel === 'trend' && selectedMonth != null && (
         <DashboardTrendGraph
-          subsetId={198}
+          subsetId={195}
           cardTitle='Trend of Active Connections'
           selectedMonth={selectedMonth}
           dataField='total_consumers__count_'

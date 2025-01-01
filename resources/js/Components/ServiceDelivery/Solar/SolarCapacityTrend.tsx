@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import SelectList from '@/ui/form/SelectList'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
@@ -107,7 +106,6 @@ const SolarCapacityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => 
       <div className='mt-2 flex w-full justify-end gap-2 p-2'>
         <span className='subheader-sm-1stop items-end'>Trend of Installed Capacity</span>
       </div>
-
       <div className='flex justify-end gap-4'>
         <button
           className={`small-1stop w-20 text-nowrap rounded-lg border border-1stop-gray p-2 ${
