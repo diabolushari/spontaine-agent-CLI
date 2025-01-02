@@ -538,7 +538,7 @@ const ArriersLT = () => {
           </div>
         </div>
       )}
-      {selectedLevel === 'ranking' && selectedMonth != null && (
+      {/* {selectedLevel === 'ranking' && selectedMonth != null && (
         <DashboardRankedList
           cardTitle='Ranked by Arrears Outstanding'
           subsetId={186}
@@ -548,8 +548,8 @@ const ArriersLT = () => {
           dataFieldName='Arrear Amount'
           rankingPageUrl={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
         />
-      )}
-      {/* {selectedLevel === 2 && (
+      )} */}
+      {selectedLevel === 'ranking' && (
         <ArriersLTList
           column1='State'
           column2='Arrear Amount'
@@ -557,7 +557,7 @@ const ArriersLT = () => {
           default_level='section'
           route={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
         />
-      )} */}
+      )}
     </DashboardCardLayout>
   )
 }

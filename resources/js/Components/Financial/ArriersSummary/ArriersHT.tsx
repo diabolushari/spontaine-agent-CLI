@@ -519,7 +519,7 @@ const ArriersHT = () => {
           </div>
         </div>
       )}
-      {selectedLevel === 'ranking' && selectedMonth != null && (
+      {/* {selectedLevel === 'ranking' && selectedMonth != null && (
         <DashboardRankedList
           cardTitle='Ranked by Arrears Outstanding'
           subsetId={180}
@@ -528,14 +528,14 @@ const ArriersHT = () => {
           dataField='total_arrears'
           dataFieldName='Arrear Amount'
           rankingPageUrl={`/office-rankings/HT Arrears Analysis?route=${route('service-delivery.index')}`}
-          // defaultFilterValue={''}
-          // filterListFetchURL={route('static-list', { type: 'ageWise' })}
-          // filterListKey={'value'}
-          // filterFieldName={''}
+          defaultFilterValue={''}
+          filterListFetchURL={route('static-list', { type: 'ageWise' })}
+          filterListKey={'ageWise'}
+          filterFieldName={''}
         />
-      )}
+      )} */}
 
-      {/* {selectedLevel === 2 && (
+      {selectedLevel === 'ranking' && (
         <ArriersHTList
           column1='State'
           column2='Arrear Amount'
@@ -543,7 +543,7 @@ const ArriersHT = () => {
           default_level='section'
           route={`/office-rankings/HT Arrears Analysis?route=${route('service-delivery.index')}`}
         />
-      )} */}
+      )}
     </DashboardCardLayout>
   )
 }
