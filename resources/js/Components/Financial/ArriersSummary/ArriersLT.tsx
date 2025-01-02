@@ -538,17 +538,7 @@ const ArriersLT = () => {
           </div>
         </div>
       )}
-      {/* {selectedLevel === 'ranking' && selectedMonth != null && (
-        <DashboardRankedList
-          cardTitle='Ranked by Arrears Outstanding'
-          subsetId={186}
-          timePeriod={monthYear}
-          timePeriodFieldName='month'
-          dataField='total_arrears'
-          dataFieldName='Arrear Amount'
-          rankingPageUrl={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
-        />
-      )} */}
+
       {selectedLevel === 'ranking' && (
         <ArriersLTList
           column1='State'
