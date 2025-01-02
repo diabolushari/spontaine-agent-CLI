@@ -1,11 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import MoreButton from '../../MoreButton'
-import useFetchList from '@/hooks/useFetchList'
+import React, { useCallback, useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { Link, router } from '@inertiajs/react'
-import MonthPicker from '@/ui/form/MonthPicker'
-import Card from '@/ui/Card/Card'
+import { router } from '@inertiajs/react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { dateToYearMonth, formatNumber } from '../ActiveConnection'
 
@@ -18,26 +14,13 @@ interface ComplaintValues {
 interface Properties {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  setCategories: React.Dispatch<
-    React.SetStateAction<
-      {
-        complaint_type: string
-      }[]
-    >
-  >
 }
 
-const IssueCard = ({ selectedMonth, setSelectedMonth, setCategories }: Properties) => {
+const IssueCard = ({ selectedMonth, setSelectedMonth }: Properties) => {
   const [graphValues] = useFetchRecord<{ data: ComplaintValues[]; latest_value: string }>(
-    `subset/72?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `/subset/72?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
-  useEffect(() => {
-    setCategories(
-      Array.from(new Set(graphValues?.data?.map((item) => item.complaint_type) || [])).map(
-        (complaint_type) => ({ complaint_type })
-      )
-    )
-  }, [setCategories, graphValues])
+
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
       const year = Number(graphValues?.latest_value) / 100

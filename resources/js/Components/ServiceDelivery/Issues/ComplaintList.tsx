@@ -1,5 +1,3 @@
-import TooglePercentage from '@/Components/ui/TogglePercentage'
-import ToogleNumber from '@/Components/ui/ToogleNumber'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Model } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
@@ -30,6 +28,7 @@ interface Properties {
     complaint_type: string
   }[]
 }
+
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
 const levelTypes: { name: string; value: string }[] = [
   { name: 'Section', value: 'section' },
@@ -38,6 +37,7 @@ const levelTypes: { name: string; value: string }[] = [
   { name: 'Circle', value: 'circle' },
   { name: 'Region', value: 'region' },
 ]
+
 interface ConsumerList extends Model {
   office_code: string
   office_name: string
@@ -46,15 +46,14 @@ interface ConsumerList extends Model {
   sla_perf_cnt?: number
   requests_within_sla__count_?: string
 }
+
 const ComplaintList = ({
   subset_id,
   column1,
   column2,
-
   default_level,
   sortBy,
   sortOrder = 'desc',
-
   categories,
 }: Properties) => {
   const [page, setPage] = useState(1)
@@ -250,7 +249,6 @@ const ComplaintList = ({
               )
             })}
           </tbody>
-
           <div className='flex w-full items-center gap-5'>
             <div className='flex min-w-full flex-col'>
               {graphValues?.data != null && (

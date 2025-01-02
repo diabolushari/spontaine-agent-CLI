@@ -1,20 +1,13 @@
-import TooglePercentage from '@/Components/ui/TogglePercentage'
-import ToogleNumber from '@/Components/ui/ToogleNumber'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import Card from '@/ui/Card/Card'
-import MonthPicker from '@/ui/form/MonthPicker'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import SlaTrend from './SlaTrend'
-import { Link, router } from '@inertiajs/react'
-import MoreButton from '@/Components/MoreButton'
+import { router } from '@inertiajs/react'
 import { dateToYearMonth, formatNumber } from '../ActiveConnection'
-import DataShowIcon from '@/Components/ui/DatashowIcon'
-import TrendIcon from '@/Components/ui/TrendIcon'
-import Top10Icon from '@/Components/ui/Top10Icon'
 import { solidColors } from '@/ui/ui_interfaces'
 import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
+import DashboardTrendGraph from '@/Components/Dashboard/DashbaordCard/DashboardTrendGraph'
+import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
 
 export interface SlaPerformanceValues {
   month: string
@@ -30,9 +23,9 @@ export interface SlaPerformanceValues {
 }
 
 const SlaPerformance = () => {
-  const [toggleValue, settoggleValue] = useState<boolean>(false)
+  const [showPercentage, setshowPercentage] = useState<boolean>(false)
   const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
-  const [selectedLevel, setSelectedLevel] = useState(1)
+  const [selectedLevel, setSelectedLevel] = useState('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
   const monthYear = useMemo(() => {
@@ -43,7 +36,7 @@ const SlaPerformance = () => {
     data: SlaPerformanceValues[]
     latest_value: string
   }>(
-    `subset/128?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
+    `/subset/128?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
   useEffect(() => {
@@ -99,7 +92,7 @@ const SlaPerformance = () => {
     ).values()
   )
 
-  const groupedData = toggleValue ? groupedDataNumber : groupedDataPercentage
+  const groupedData = showPercentage ? groupedDataNumber : groupedDataPercentage
 
   const CustomTick = (props) => {
     const { x, y, payload } = props
@@ -123,7 +116,7 @@ const SlaPerformance = () => {
   const isLoading = !graphValues || !graphValues.data || graphValues.data.length === 0
 
   const handleToogleNumber = () => {
-    settoggleValue(!toggleValue)
+    setshowPercentage(!showPercentage)
   }
   const renderCustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -147,7 +140,9 @@ const SlaPerformance = () => {
                 >
                   {`${dataKey}:`}{' '}
                   <span className='small-1stop font-bold'>
-                    {toggleValue ? formatNumber(entry.value) : `${Number(entry.value).toFixed(2)}%`}
+                    {showPercentage
+                      ? formatNumber(entry.value)
+                      : `${Number(entry.value).toFixed(2)}%`}
                   </span>
                 </p>
               )
@@ -175,179 +170,130 @@ const SlaPerformance = () => {
   )
 
   return (
-    <Card className='flex w-full flex-col'>
-      <div className='flex h-5/6 w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-t-2xl bg-1stop-alt-gray'>
-          <button
-            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(2)
-            }}
-          >
-            <TrendIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 3 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.circle_code ?? '')
-              setSelectedLevel(3)
-            }}
-          >
-            <Top10Icon />
-          </button>
-
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
-        </div>
-        {selectedLevel === 1 && (
-          <div className='flex w-full flex-row space-x-1 p-2 pt-4'>
-            <div className='w-full rounded-lg bg-white'>
-              <div>
-                {isLoading ? (
-                  <Skeleton
-                    height={200}
+    <DashboardCardLayout
+      title='SLA Performance by Request Type'
+      selectedMonth={selectedMonth}
+      setSelectedMonth={setSelectedMonth}
+      selectedLevel={selectedLevel}
+      setSelectedLevel={setSelectedLevel}
+      showPercentage={showPercentage}
+      setShowPercentage={setshowPercentage}
+      moreUrl={`/data-explorer/SLA Performance Comparison?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
+    >
+      {selectedLevel === 'overview' && (
+        <div className='flex w-full flex-row space-x-1 p-2 pt-4'>
+          <div className='w-full rounded-lg bg-white'>
+            <div>
+              {isLoading ? (
+                <Skeleton
+                  height={200}
+                  width='100%'
+                />
+              ) : (
+                <div className='flex w-full flex-col items-end'>
+                  <ResponsiveContainer
                     width='100%'
-                  />
-                ) : (
-                  <div className='flex w-full flex-col items-end'>
-                    <button
-                      className='small-1stop mb-auto cursor-pointer justify-end'
-                      onClick={handleToogleNumber}
+                    height={280}
+                  >
+                    <BarChart
+                      data={groupedData}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      barSize={40}
                     >
-                      {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-                    </button>
-                    <ResponsiveContainer
-                      width='100%'
-                      height={280}
-                    >
-                      <BarChart
-                        data={groupedData}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                        barSize={40}
-                      >
-                        <CartesianGrid strokeDasharray='3 3' />
-                        <XAxis
-                          dataKey='name'
-                          tick={<CustomTick />}
-                          height={80}
-                          interval={0}
-                        />
-                        <YAxis hide />
-                        {/* <Tooltip
+                      <CartesianGrid strokeDasharray='3 3' />
+                      <XAxis
+                        dataKey='name'
+                        tick={<CustomTick />}
+                        height={80}
+                        interval={0}
+                      />
+                      <YAxis hide />
+                      {/* <Tooltip
                           formatter={(value: number) =>
                             toggleValue ? formatNumber(value) : `${value.toFixed(2)}%`
                           }
                         /> */}
 
-                        <Tooltip content={renderCustomTooltip} />
-                        <Bar
-                          dataKey={
-                            toggleValue
-                              ? 'requests_completed_within_sla__count_'
-                              : 'requests_completed_within_sla____'
-                          }
-                          stackId='a'
-                          fill={solidColors[6]}
-                          onClick={handleGraphSelection}
-                        />
+                      <Tooltip content={renderCustomTooltip} />
+                      <Bar
+                        dataKey={
+                          showPercentage
+                            ? 'requests_completed_within_sla__count_'
+                            : 'requests_completed_within_sla____'
+                        }
+                        stackId='a'
+                        fill={solidColors[6]}
+                        onClick={handleGraphSelection}
+                      />
 
-                        <Bar
-                          dataKey={
-                            toggleValue
-                              ? 'requests_pending_within_sla__count_'
-                              : 'requests_pending_within_sla____'
-                          }
-                          stackId='a'
-                          fill={solidColors[0]}
-                          onClick={handleGraphSelection}
-                        />
-                        <Bar
-                          dataKey={
-                            toggleValue
-                              ? 'requests_completed_beyond_sla__count_'
-                              : 'requests_completed_beyond_sla____'
-                          }
-                          stackId='a'
-                          fill={solidColors[7]}
-                          onClick={handleGraphSelection}
-                        />
-                        <Bar
-                          dataKey={
-                            toggleValue
-                              ? 'requests_pending_beyond_sla__count_'
-                              : 'requests_pending_beyond_sla____'
-                          }
-                          stackId='a'
-                          fill={solidColors[5]}
-                          onClick={handleGraphSelection}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-              </div>
+                      <Bar
+                        dataKey={
+                          showPercentage
+                            ? 'requests_pending_within_sla__count_'
+                            : 'requests_pending_within_sla____'
+                        }
+                        stackId='a'
+                        fill={solidColors[0]}
+                        onClick={handleGraphSelection}
+                      />
+                      <Bar
+                        dataKey={
+                          showPercentage
+                            ? 'requests_completed_beyond_sla__count_'
+                            : 'requests_completed_beyond_sla____'
+                        }
+                        stackId='a'
+                        fill={solidColors[7]}
+                        onClick={handleGraphSelection}
+                      />
+                      <Bar
+                        dataKey={
+                          showPercentage
+                            ? 'requests_pending_beyond_sla__count_'
+                            : 'requests_pending_beyond_sla____'
+                        }
+                        stackId='a'
+                        fill={solidColors[5]}
+                        onClick={handleGraphSelection}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </div>
           </div>
-        )}
-        {selectedLevel === 2 && (
-          <SlaTrend
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-          />
-        )}
-        {selectedLevel === 3 && selectedMonth != null && (
-          <DashboardRankedList
-            cardTitle={`${toggleValue ? 'Requests within SLA count' : 'Ranked by Requests Within SLA (%)'}`}
-            subsetId={82}
-            timePeriod={monthYear}
-            timePeriodFieldName='month'
-            dataField={toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}
-            dataFieldName={toggleValue ? 'requests_within_sla__count_' : 'requests_within_sla____'}
-            rankingPageUrl={`office-rankings/SLA Performance Analysis?route=${route('service-delivery.index')}`}
-            defaultFilterValue={'Ownership change'}
-            filterListFetchURL={`/subset/78?month=${monthYear}`}
-            filterListKey={'sla_svc_group'}
-            filterFieldName={'request_type'}
-          />
-        )}
-      </div>
-
-      <div className='flex h-1/6 items-center justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-14'>
-        <div className='py-1'>
-          <p className='md:mdmetric-1stop smmetric-1stop'>SLA Performance by Request Type</p>
         </div>
-        <div className='small-1stop-header flex h-full w-1/4 flex-col items-center justify-center bg-1stop-accent2 px-4'>
-          {/* {graphValues.length > 0 &&
-            new Date(graphValues[0].data_date).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric',
-            })} */}
-          <MonthPicker
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-          />
-        </div>
-        <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
-          <Link
-            href={`/data-explorer/SLA Performance Comparison?month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
-          >
-            <MoreButton />
-          </Link>
-        </div>
-      </div>
-    </Card>
+      )}
+      {selectedLevel === 'trend' && selectedMonth != null && (
+        <DashboardTrendGraph
+          subsetId={78}
+          cardTitle='Trend of SLA Performance'
+          dataField='sla_perf_perc'
+          dataFieldName='SLA Performance (%)'
+          selectedMonth={selectedMonth}
+          filterListFetchURL={`/subset/78?month=${monthYear}`}
+          filterListKey={'sla_svc_group'}
+          filterFieldName={'request_type'}
+          defaultFilterValue={'Ownership change'}
+          chartType='area'
+        />
+      )}
+      {selectedLevel === 'ranking' && selectedMonth != null && (
+        <DashboardRankedList
+          cardTitle={`${showPercentage ? 'Requests within SLA count' : 'Ranked by Requests Within SLA (%)'}`}
+          subsetId={82}
+          timePeriod={monthYear}
+          timePeriodFieldName='month'
+          dataField={showPercentage ? 'requests_within_sla__count_' : 'requests_within_sla____'}
+          dataFieldName={showPercentage ? 'requests_within_sla__count_' : 'requests_within_sla____'}
+          rankingPageUrl={`office-rankings/SLA Performance Analysis?route=${route('service-delivery.index')}`}
+          defaultFilterValue={'Ownership change'}
+          filterListFetchURL={`/subset/78?month=${monthYear}`}
+          filterListKey={'sla_svc_group'}
+          filterFieldName={'request_type'}
+        />
+      )}
+    </DashboardCardLayout>
   )
 }
 
