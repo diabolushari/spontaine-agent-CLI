@@ -20,6 +20,7 @@ import ToogleNumber from '@/Components/ui/ToogleNumber'
 import TooglePercentage from '@/Components/ui/TogglePercentage'
 import ArriersHTList from './ArriersHTList'
 import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
+import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
 
 interface ArriersHT {
   month: string
@@ -298,6 +299,11 @@ const ArriersHT = () => {
     },
     [selectedMonth, graphData]
   )
+
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
+
   return (
     <DashboardCardLayout
       title='Arrears Age-wise, HT'
@@ -513,6 +519,27 @@ const ArriersHT = () => {
           </div>
         </div>
       )}
+      {selectedLevel === 'ranking' && selectedMonth != null && (
+        <DashboardRankedList
+          cardTitle='Ranked by Arrears Outstanding'
+          subsetId={180}
+          timePeriod={monthYear}
+          timePeriodFieldName='month'
+          dataField='total_arrears'
+          dataFieldName='Arrear Amount'
+          rankingPageUrl={`/office-rankings/HT Arrears Analysis?route=${route('service-delivery.index')}`}
+        />
+      )}
+
+      {/* {selectedLevel === 2 && (
+        <ArriersHTList
+          column1='State'
+          column2='Arrear Amount'
+          subset_id='180'
+          default_level='section'
+          route={`/office-rankings/HT Arrears Analysis?route=${route('service-delivery.index')}`}
+        />
+      )} */}
     </DashboardCardLayout>
   )
 }
