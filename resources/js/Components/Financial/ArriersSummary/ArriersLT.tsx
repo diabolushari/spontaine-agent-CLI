@@ -20,6 +20,8 @@ import ToogleNumber from '@/Components/ui/ToogleNumber'
 import TooglePercentage from '@/Components/ui/TogglePercentage'
 import ArriersLTList from './ArriersLTList'
 import { filter } from 'framer-motion/client'
+import DashboardCardLayout from '@/Components/Dashboard/DashbaordCard/DashboardCardLayout'
+import DashboardRankedList from '@/Components/Dashboard/DashbaordCard/DashboardRankedList'
 
 interface ArriersHT {
   month: string
@@ -41,7 +43,7 @@ interface ArriersHT {
 const ArriersLT = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
-  const [selectedLevel, setSelectedLevel] = useState(1)
+  const [selectedLevel, setSelectedLevel] = useState('overview')
   const [range, setRange] = useState('Total')
   const [toggleValue, settoggleValue] = useState<boolean>(false)
   const handleToogleNumber = () => {
@@ -323,36 +325,161 @@ const ArriersLT = () => {
     },
     [selectedMonth, graphData]
   )
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
+
   return (
-    <Card className='flex w-full flex-col'>
-      <div className='flex h-5/6 w-full'>
-        <div className='small-1stop-header flex w-14 flex-col rounded-t-2xl bg-1stop-alt-gray'>
-          <button
-            className={`flex w-full rounded-tl-2xl border border-white px-2 py-4 ${selectedLevel === 1 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(1)
-            }}
-          >
-            <DataShowIcon />
-          </button>
-          <button
-            className={`flex w-full border border-white px-2 py-4 ${selectedLevel === 2 ? 'bg-1stop-highlight2' : 'bg-1stop-alt-gray'}`}
-            onClick={() => {
-              // setLevelName('office_code')
-              // setLevelCode(level?.record.region_code ?? '')
-              setSelectedLevel(2)
-            }}
-          >
-            <Top10Icon />
-          </button>
-          <div className='h-full border-r border-white bg-1stop-alt-gray'></div>
-        </div>
-        {/* Data Section */}
-        {selectedLevel === 1 && (
-          <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
-            <div className='flex w-full justify-end md:hidden'>
+    <DashboardCardLayout
+      title='Arrears Age-wise, LT'
+      showTrend={false}
+      selectedLevel={selectedLevel}
+      setSelectedLevel={setSelectedLevel}
+      selectedMonth={selectedMonth}
+      setSelectedMonth={setSelectedMonth}
+      moreUrl={`/data-explorer/Arrear Summary?month=${dateToYearMonth(selectedMonth)}&voltage=LT&route=${route('finance.index')}`}
+    >
+      {selectedLevel === 'overview' && (
+        <div className='flex w-full flex-col space-x-1 p-2 md:flex-row'>
+          <div className='flex w-full justify-end md:hidden'>
+            <button
+              className='small-1stop mb-auto cursor-pointer justify-end p-2'
+              onClick={handleToogleNumber}
+            >
+              {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
+            </button>
+          </div>
+          <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
+            <div className='flex flex-col border p-2'>
+              <p className='xlmetric-1stop'>
+                {graphValues?.data.length ? formatNumber(arrearCount('Total') ?? 0) : <Skeleton />}
+              </p>
+              <div className='flex flex-row justify-between'>
+                <p className='small-1stop-header'>Total Arrears</p>
+                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                  <input
+                    type='radio'
+                    name='radio'
+                    checked={range === 'Total'}
+                    onClick={() => setRange('Total')}
+                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className='flex w-full flex-row space-x-1'>
+              {/* LT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    toggleValue ? (
+                      formatNumber(arrearCount('0-3') ?? 0)
+                    ) : (
+                      `${findPercentage('0-3')?.toFixed(2)}%`
+                    )
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>0-3mo </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radio'
+                      onClick={() => setRange('0-3')}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* HT */}
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    toggleValue ? (
+                      formatNumber(arrearCount('4-6') ?? 0)
+                    ) : (
+                      `${findPercentage('4-6')?.toFixed(2)}%`
+                    )
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>4mo-6mo </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radio'
+                      onClick={() => setRange('4-6')}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* EHT */}
+
+            <div className='flex w-full flex-row space-x-1'>
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    toggleValue ? (
+                      formatNumber(arrearCount('7-12') ?? 0)
+                    ) : (
+                      `${findPercentage('7-12')?.toFixed(2)}%`
+                    )
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'>7mo-12mo </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radio'
+                      onClick={() => setRange('7-12')}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className='flex w-1/2 flex-col border p-2'>
+                <p className='mdmetric-1stop'>
+                  {graphValues?.data.length ? (
+                    toggleValue ? (
+                      formatNumber(arrearCount('>12') ?? 0)
+                    ) : (
+                      `${findPercentage('>12')?.toFixed(2)}%`
+                    )
+                  ) : (
+                    <Skeleton />
+                  )}
+                </p>
+                <div className='flex flex-row justify-between'>
+                  <p className='small-1stop-header'> {'>'}12 mo </p>
+                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                    <input
+                      type='radio'
+                      name='radio'
+                      onClick={() => setRange('>12')}
+                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Graph */}
+          <div className='relative flex flex-col justify-center md:w-1/2'>
+            <div className='hidden w-full justify-end md:flex'>
               <button
                 className='small-1stop mb-auto cursor-pointer justify-end'
                 onClick={handleToogleNumber}
@@ -360,232 +487,78 @@ const ArriersLT = () => {
                 {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
               </button>
             </div>
-            <div className='flex flex-col gap-1 pt-4 md:w-1/2'>
-              <div className='flex flex-col border p-2'>
-                <p className='xlmetric-1stop'>
-                  {graphValues?.data.length ? (
-                    formatNumber(arrearCount('Total') ?? 0)
-                  ) : (
-                    <Skeleton />
-                  )}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>Total Arrears</p>
-                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                    <input
-                      type='radio'
-                      name='radio'
-                      checked={range === 'Total'}
-                      onClick={() => setRange('Total')}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className='flex w-full flex-row space-x-1'>
-                {/* LT */}
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(arrearCount('0-3') ?? 0)
-                      ) : (
-                        `${findPercentage('0-3')?.toFixed(2)}%`
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>0-3mo </p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radio'
-                        onClick={() => setRange('0-3')}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* HT */}
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(arrearCount('4-6') ?? 0)
-                      ) : (
-                        `${findPercentage('4-6')?.toFixed(2)}%`
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>4mo-6mo </p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radio'
-                        onClick={() => setRange('4-6')}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* EHT */}
-
-              <div className='flex w-full flex-row space-x-1'>
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(arrearCount('7-12') ?? 0)
-                      ) : (
-                        `${findPercentage('7-12')?.toFixed(2)}%`
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'>7mo-12mo </p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radio'
-                        onClick={() => setRange('7-12')}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className='flex w-1/2 flex-col border p-2'>
-                  <p className='mdmetric-1stop'>
-                    {graphValues?.data.length ? (
-                      toggleValue ? (
-                        formatNumber(arrearCount('>12') ?? 0)
-                      ) : (
-                        `${findPercentage('>12')?.toFixed(2)}%`
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </p>
-                  <div className='flex flex-row justify-between'>
-                    <p className='small-1stop-header'> {'>'}12 mo </p>
-                    <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                      <input
-                        type='radio'
-                        name='radio'
-                        onClick={() => setRange('>12')}
-                        className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Graph */}
-            <div className='relative flex flex-col justify-center md:w-1/2'>
-              <div className='hidden w-full justify-end md:flex'>
-                <button
-                  className='small-1stop mb-auto cursor-pointer justify-end'
-                  onClick={handleToogleNumber}
+            {isLoading ? (
+              <Skeleton
+                circle={true}
+                height={200}
+                width={200}
+              />
+            ) : (
+              <ResponsiveContainer
+                className='small-1stop'
+                height={300}
+              >
+                <PieChart
+                  width={100}
+                  height={100}
                 >
-                  {toggleValue ? <ToogleNumber /> : <TooglePercentage />}
-                </button>
-              </div>
-              {isLoading ? (
-                <Skeleton
-                  circle={true}
-                  height={200}
-                  width={200}
-                />
-              ) : (
-                <ResponsiveContainer
-                  className='small-1stop'
-                  height={300}
-                >
-                  <PieChart
-                    width={100}
-                    height={100}
+                  <Tooltip
+                    formatter={(value: number) => formatNumber(value)}
+                    content={
+                      <CustomTooltip
+                        valueType={toggleValue ? 'count' : 'percentage'}
+                        totalCount={arrearCount(range)}
+                        isPercent
+                      />
+                    }
+                  />
+
+                  <Pie
+                    data={data}
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey='value'
+                    stroke='none'
+                    onClick={handleGraphSelection}
                   >
-                    <Tooltip
-                      formatter={(value: number) => formatNumber(value)}
-                      content={
-                        <CustomTooltip
-                          valueType={toggleValue ? 'count' : 'percentage'}
-                          totalCount={arrearCount(range)}
-                          isPercent
-                        />
-                      }
-                    />
+                    {data.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={solidColors[index % solidColors.length]}
+                      />
+                    ))}
+                  </Pie>
 
-                    <Pie
-                      data={data}
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey='value'
-                      stroke='none'
-                      onClick={handleGraphSelection}
-                    >
-                      {data.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={solidColors[index % solidColors.length]}
-                        />
-                      ))}
-                    </Pie>
-
-                    <Legend content={CustomLegend} />
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
-              {/* <span className='subheader-sm-1stop absolute bottom-11'>CONNECTIONS BY CATEGORY</span> */}
-            </div>
-          </div>
-        )}
-
-        {selectedLevel === 2 && (
-          <ArriersLTList
-            column1='State'
-            column2='Arrear Amount'
-            subset_id='186'
-            default_level='section'
-            route={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
-          />
-        )}
-      </div>
-      {/* //Footer */}
-      <div className='flex h-1/6 justify-between rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
-        <div className='py-4'>
-          <p className='md:mdmetric-1stop smmetric-1stop'>Arrears Age-wise, LT</p>
-        </div>
-        <div className='small-1stop-header flex w-1/4 flex-col items-center justify-center bg-1stop-accent2 bg-opacity-50 md:px-4'>
-          <div style={{ opacity: 1 }}>
-            <MonthPicker
-              selectedMonth={selectedMonth}
-              setSelectedMonth={setSelectedMonth}
-            />
+                  <Legend content={CustomLegend} />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+            {/* <span className='subheader-sm-1stop absolute bottom-11'>CONNECTIONS BY CATEGORY</span> */}
           </div>
         </div>
-        <div className='flex items-center px-2 hover:cursor-pointer hover:opacity-50'>
-          <Link
-            href={`/data-explorer/Arrear Summary?month=${dateToYearMonth(selectedMonth)}&voltage=LT&route=${route('finance.index')}`}
-          >
-            <MoreButton />
-          </Link>
-        </div>
-      </div>
-    </Card>
+      )}
+      {selectedLevel === 'ranking' && selectedMonth != null && (
+        <DashboardRankedList
+          cardTitle='Ranked by Arrears Outstanding'
+          subsetId={186}
+          timePeriod={monthYear}
+          timePeriodFieldName='month'
+          dataField='total_arrears'
+          dataFieldName='Arrear Amount'
+          rankingPageUrl={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
+        />
+      )}
+      {/* {selectedLevel === 2 && (
+        <ArriersLTList
+          column1='State'
+          column2='Arrear Amount'
+          subset_id='186'
+          default_level='section'
+          route={`/office-rankings/LT Arrears Analysis?route=${route('service-delivery.index')}`}
+        />
+      )} */}
+    </DashboardCardLayout>
   )
 }
 export default ArriersLT
