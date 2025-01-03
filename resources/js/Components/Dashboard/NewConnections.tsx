@@ -201,9 +201,12 @@ const NewConnections = () => {
                     `${completedWithinSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Compl. within SLA </p>
-                  <button className='bg-#A5BE00 h-2 w-full'></button>
+                  <div
+                    style={{ backgroundColor: solidColors[0] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
 
@@ -217,8 +220,12 @@ const NewConnections = () => {
                     `${pendingWithinSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Pending within SLA </p>
+                  <div
+                    style={{ backgroundColor: solidColors[2] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
             </div>
@@ -234,8 +241,12 @@ const NewConnections = () => {
                     `${completedBeyondSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Compl. beyond SLA </p>
+                  <div
+                    style={{ backgroundColor: solidColors[1] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
               <div className='flex w-1/2 flex-col border p-2'>
@@ -248,8 +259,12 @@ const NewConnections = () => {
                     `${pendingBeyondSla.toFixed(2)}%`
                   )}
                 </p>
-                <div className='flex flex-row justify-between'>
+                <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Pending beyond SLA </p>
+                  <div
+                    style={{ backgroundColor: solidColors[3] }}
+                    className='h-2 w-full rounded text-white'
+                  ></div>
                 </div>
               </div>
             </div>
