@@ -203,6 +203,7 @@ const NewConnections = () => {
                 </p>
                 <div className='flex flex-row justify-between'>
                   <p className='small-1stop-header'>Compl. within SLA </p>
+                  <button className='bg-#A5BE00 h-2 w-full'></button>
                 </div>
               </div>
 
