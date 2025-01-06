@@ -77,7 +77,7 @@ const ArrearsCategory = ({ selectedMonth, setSelectedMonth }: Properties) => {
     `subset/181?${selectedMonth == null ? 'latest=month' : `month=${selectedMonth?.getFullYear()}${selectedMonth.getMonth() + 1 < 10 ? `0${selectedMonth.getMonth() + 1}` : selectedMonth.getMonth() + 1}`}`
   )
 
-  const voltageType = ['LT', 'HT']
+  const voltageType = ['LT', 'HT', 'EHT']
 
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {

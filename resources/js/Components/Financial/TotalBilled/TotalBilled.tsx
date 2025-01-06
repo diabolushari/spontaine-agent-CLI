@@ -183,12 +183,8 @@ const TotalBilled = () => {
     },
   ]
 
-  const domesticLtPercent = cunsumerCount('LT', 'DOMESTIC', true)
-    ? (cunsumerCount('LT', 'DOMESTIC', true) * 100) / cunsumerCount('Total', '', false)
-    : 0
-
-  const otherLtPercent = cunsumerCount('LT', 'DOMESTIC', false)
-    ? (cunsumerCount('LT', 'DOMESTIC', false) * 100) / cunsumerCount('Total', '', false)
+  const ltPercent = cunsumerCount('LT', '', false)
+    ? (cunsumerCount('LT', '', false) * 100) / cunsumerCount('Total', '', false)
     : 0
 
   const htPercent = cunsumerCount('HT', '', false)
@@ -275,16 +271,16 @@ const TotalBilled = () => {
                 <p className='mdmetric-1stop'>
                   {graphValues?.data.length ? (
                     toggleValue ? (
-                      formatNumber(cunsumerCount('LT', 'DOMESTIC', true) ?? 0)
+                      formatNumber(cunsumerCount('LT', '', false) ?? 0)
                     ) : (
-                      domesticLtPercent.toFixed(2) + '%'
+                      ltPercent.toFixed(2) + '%'
                     )
                   ) : (
                     <Skeleton />
                   )}
                 </p>
                 <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>Domestic-LT </p>
+                  <p className='small-1stop-header'>LT </p>
                   <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
                     <input
                       type='radio'
@@ -300,38 +296,7 @@ const TotalBilled = () => {
                 </div>
               </div>
               {/* HT */}
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='mdmetric-1stop'>
-                  {graphValues?.data.length ? (
-                    toggleValue ? (
-                      formatNumber(cunsumerCount('LT', 'DOMESTIC', false) ?? 0)
-                    ) : (
-                      otherLtPercent.toFixed(2) + '%'
-                    )
-                  ) : (
-                    <Skeleton />
-                  )}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>Others-LT </p>
-                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                    <input
-                      type='radio'
-                      name='radioBilling'
-                      value='LT'
-                      onChange={() => {
-                        setVoltageType('LT')
-                        setExclude(true)
-                      }}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className='flex w-full flex-row space-x-1'>
-              {/* LT */}
               <div className='flex w-1/2 flex-col border p-2'>
                 <p className='mdmetric-1stop'>
                   {graphValues?.data.length ? (
@@ -360,34 +325,33 @@ const TotalBilled = () => {
                   </div>
                 </div>
               </div>
-
-              {/* HT */}
-              <div className='flex w-1/2 flex-col border p-2'>
-                <p className='mdmetric-1stop'>
-                  {graphValues?.data.length ? (
-                    toggleValue ? (
-                      formatNumber(cunsumerCount('EHT', '', false) ?? 0)
-                    ) : (
-                      `${ehtPercent.toFixed(2)}%`
-                    )
+            </div>
+            {/* HT */}
+            <div className='flex w-full flex-col border p-2'>
+              <p className='mdmetric-1stop'>
+                {graphValues?.data.length ? (
+                  toggleValue ? (
+                    formatNumber(cunsumerCount('EHT', '', false) ?? 0)
                   ) : (
-                    <Skeleton />
-                  )}
-                </p>
-                <div className='flex flex-row justify-between'>
-                  <p className='small-1stop-header'>EHT</p>
-                  <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
-                    <input
-                      type='radio'
-                      name='radioBilling'
-                      value='EHT'
-                      onChange={() => {
-                        setVoltageType('EHT')
-                        setExclude(false)
-                      }}
-                      className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
-                    />
-                  </div>
+                    `${ehtPercent.toFixed(2)}%`
+                  )
+                ) : (
+                  <Skeleton />
+                )}
+              </p>
+              <div className='flex flex-row justify-between'>
+                <p className='small-1stop-header'>EHT</p>
+                <div className='flex h-4 w-4 rounded-full bg-1stop-highlight dark:bg-gray-100'>
+                  <input
+                    type='radio'
+                    name='radioBilling'
+                    value='EHT'
+                    onChange={() => {
+                      setVoltageType('EHT')
+                      setExclude(false)
+                    }}
+                    className='checkbox h-full w-full cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-none focus:outline-none'
+                  />
                 </div>
               </div>
             </div>
