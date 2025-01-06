@@ -102,7 +102,7 @@ const AllArears = ({ selectedMonth, setSelectedMonth }: Properties) => {
                 <p className='small-1stop-header text-center'>HT Arrears</p>
               </button>
               <button
-                onClick={() => handleGraphSelection('Arrears-Aggregate (EHT Only)', 'EHT')}
+                onClick={() => handleGraphSelection('Arrears - Aggregate (EHT Only)', 'EHT')}
                 className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
               >
                 <p className='smmetric-1stop lg:mdmetric-1stop pt-4'>
