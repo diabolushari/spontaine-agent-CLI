@@ -25,6 +25,7 @@ interface Props {
   oldFilters: Record<string, string>
   oldRoute?: string
   defaultSort?: string
+  secondarySort?: string
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -37,6 +38,7 @@ export default function OfficeRankingPage({
   oldRoute,
   oldFilters,
   defaultSort,
+  secondarySort,
 }: Readonly<Props>) {
   const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
   const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
@@ -68,6 +70,7 @@ export default function OfficeRankingPage({
 
   useEffect(() => {
     const field = measureFields.find((field) => field.subset_field_name === defaultSort)
+
     setSecondarySortOrder('desc')
     setSecondarySortField('')
     setShowSecondarySort(false)
@@ -76,7 +79,7 @@ export default function OfficeRankingPage({
       return
     }
     setSelectedSortField(measureFields[0].subset_column)
-  }, [measureFields, defaultSort])
+  }, [measureFields, defaultSort, secondarySort])
 
   const [selectedListType, setSelectedListType] = useState('10')
   const [selectedSortOrder, setSelectedSortOrder] = useState('desc')
@@ -97,6 +100,9 @@ export default function OfficeRankingPage({
     }
     setSelectedSortField(subsetColumn)
   }
+  // if (secondarySort != null) {
+  //   changeSortField(secondarySort)
+  // }
 
   return (
     <DetailDashboardLayout

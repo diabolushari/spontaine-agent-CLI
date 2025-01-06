@@ -1,4 +1,4 @@
-import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Model } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
@@ -17,6 +17,8 @@ interface Properties {
 
   sortOrder?: string
   route: string
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -57,7 +59,7 @@ const ArriersLTList = ({
   column1,
   column2,
   default_level,
-
+  selectedMonth,
   sortOrder = 'desc',
   route,
 }: Properties) => {
@@ -68,7 +70,7 @@ const ArriersLTList = ({
   const [listType, setListType] = useState('10')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${selectedRange}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
+    `subset-summary/${subset_id}?month=${dateToYearMonth(selectedMonth)}&level=${officeLevel}&sort_by=${selectedRange}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
   useEffect(() => {

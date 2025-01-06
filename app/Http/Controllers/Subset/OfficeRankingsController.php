@@ -48,6 +48,7 @@ class OfficeRankingsController extends Controller implements HasMiddleware
             'oldRoute' => $request->input('route'),
             'oldFilters' => $request->all(),
             'defaultSort'=>$request->input('sort_by'),
+            'secondarySort'=>$request->input('secondary_sort_by'),
         ]);
     }
 }

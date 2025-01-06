@@ -1,10 +1,11 @@
-import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Model } from '@/interfaces/data_interfaces'
 import SelectList from '@/ui/form/SelectList'
 import RestPagination from '@/ui/Pagination/RestPagination'
 import { Paginator } from '@/ui/ui_interfaces'
 import { Link } from '@inertiajs/react'
+import { select } from 'framer-motion/client'
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
@@ -12,11 +13,11 @@ interface Properties {
   subset_id: string
   column1: string
   column2: string
-
   default_level?: string
-
   sortOrder?: string
   route: string
+  selectedMonth: Date | null
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date>>
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -57,7 +58,7 @@ const ArriersHTList = ({
   column1,
   column2,
   default_level,
-
+  selectedMonth,
   sortOrder = 'desc',
   route,
 }: Properties) => {
@@ -68,7 +69,7 @@ const ArriersHTList = ({
   const [listType, setListType] = useState('10')
   const [officeLevel, setOfficeLevel] = useState(default_level ?? 'division')
   const [graphValues] = useFetchRecord<{ data: Paginator<ConsumerList> }>(
-    `subset-summary/${subset_id}?level=${officeLevel}&sort_by=${selectedRange}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
+    `subset-summary/${subset_id}?month=${dateToYearMonth(selectedMonth)}&level=${officeLevel}&sort_by=${selectedRange}&sort_order=${topOrBottom}&limit=${listType}&page=${page}`
   )
 
   useEffect(() => {

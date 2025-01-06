@@ -111,7 +111,7 @@ const PendancyCard = () => {
                   style={{ color: entry.color }}
                   className='small-1stop'
                 >
-                  {`${dataKey}:`}{' '}
+                  {`${dataKey}:`}
                   <span className='small-1stop font-bold'>
                     {showPercentage
                       ? `${Number(entry.value).toFixed(2)}%`
@@ -213,7 +213,7 @@ const PendancyCard = () => {
                     stackId='a'
                     fill={solidColors[6]}
                     onClick={() => {
-                      handleGraphSelection('Requests Completion - Less Than 1 Days')
+                      handleGraphSelection('Requests Completion Within 1 Day')
                     }}
                   />
                   <Bar
@@ -256,12 +256,12 @@ const PendancyCard = () => {
                 className='smmetric-1stop'
                 style={{ color: solidColors[6] }}
                 onClick={() => {
-                  handleGraphSelection('Requests Completion - Less Than 1 Days')
+                  handleGraphSelection('Requests Completion Within 1 Day')
                 }}
               >
                 {showPercentage ? `${lessThan1Days.toFixed(2)}%` : formatNumber(lessThan1Days)}
               </button>
-              <div className='small-1stop'>{'<1 days'}</div>
+              <div className='small-1stop'>{' ≤1 days'}</div>
             </div>
             <div className='text-center'>
               <button
@@ -273,7 +273,7 @@ const PendancyCard = () => {
               >
                 {showPercentage ? `${between24Days.toFixed(2)}%` : formatNumber(between24Days)}
               </button>
-              <div className='small-1stop'>5-15 days</div>
+              <div className='small-1stop'>2-4 days</div>
             </div>
             <div className='text-center'>
               <button
