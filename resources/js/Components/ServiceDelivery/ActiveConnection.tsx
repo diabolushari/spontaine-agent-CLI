@@ -125,6 +125,8 @@ const ActiveConnection = () => {
       return graphValues?.data.reduce((sum, value) => sum + value.total_consumers__count_, 0)
     }
   }
+
+  //filtering using consumer category
   const graphFilter = (category: string) => {
     return graphValues?.data
       .filter(
@@ -162,6 +164,43 @@ const ActiveConnection = () => {
         graphFilter('AGRICULTURE'),
     },
   ]
+  //Filtering using top 3 and others
+  const graphData = useMemo(() => {
+    if (graphValues?.data == null) {
+      return []
+    }
+    return [...graphValues.data]
+      .sort((a, b) => a.total_consumers__count_ - b.total_consumers__count_)
+      .filter((value) => voltageType == 'Total' || value.voltage == voltageType)
+      .reverse()
+  }, [graphValues, voltageType])
+
+  const filters = (value: InactiveGraphValues, index: number) => {
+    if (index < 3) {
+      if (voltageType == 'Total') {
+        return value.tariff_category === graphData[index].tariff_category
+      } else {
+        return (
+          value.tariff_category === graphData[index].tariff_category && value.voltage == voltageType
+        )
+      }
+    } else {
+      if (voltageType == 'Total') {
+        return (
+          value.tariff_category !== graphData[0]?.tariff_category &&
+          value.tariff_category !== graphData[1]?.tariff_category &&
+          value.tariff_category !== graphData[2]?.tariff_category
+        )
+      } else {
+        return (
+          value.tariff_category !== graphData[0]?.tariff_category &&
+          value.tariff_category !== graphData[1]?.tariff_category &&
+          value.tariff_category !== graphData[2]?.tariff_category &&
+          value.voltage == voltageType
+        )
+      }
+    }
+  }
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
