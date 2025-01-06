@@ -89,7 +89,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
   )
   const totalCapacity = graphValues?.data.reduce((total, item) => total + item.capacity_kw, 0)
 
-  const total = isMW ? totalCapacity : totalConsumerCount
+  const total = isMW ? totalCapacity / 1000 : totalConsumerCount
 
   const convertToMW = (value: string, isCount: boolean) => {
     return Number(MWCount(value, isCount) ?? 0) / 1000
@@ -121,6 +121,7 @@ const SolarProsumers = ({ selectedMonth, setSelectedMonth }: Properties) => {
         graphFilter('Agriculture'),
     },
   ]
+  console.log(data)
 
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
