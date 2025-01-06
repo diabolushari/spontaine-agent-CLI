@@ -137,7 +137,7 @@ const ActiveConnection = () => {
       .reduce((sum, value) => sum + value.total_consumers__count_, 0)
   }
 
-  const data = [
+  const dataFilter = [
     {
       name: 'DOMESTIC',
       value: graphFilter('DOMESTIC'),
@@ -201,10 +201,41 @@ const ActiveConnection = () => {
       }
     }
   }
+  const graphIndex = (index: number) => {
+    return graphData
+      .filter((value) => filters(value, index))
+      .reduce((sum, value) => sum + value.total_consumers__count_, 0)
+  }
 
+  const dataIndex = [
+    {
+      name: graphData[0]?.tariff_category,
+      value: graphIndex(0),
+    },
+    {
+      name: graphData[1]?.tariff_category,
+      value: graphIndex(1),
+    },
+    {
+      name: graphData[2]?.tariff_category,
+      value: graphIndex(2),
+    },
+    {
+      name: 'OTHER',
+      value: graphIndex(3),
+    },
+  ]
+  const data = voltageType === 'LT' ? dataFilter : dataIndex
   const handleGraphSelection = useCallback(
     (data: { name: string | null }) => {
-      const excludedCategories = ['DOMESTIC', 'INDUSTRIAL', 'COMMERCIAL', 'AGRICULTURE']
+      const excludedCategoriesFilter = ['DOMESTIC', 'INDUSTRIAL', 'COMMERCIAL', 'AGRICULTURE']
+      const excludedCategoriesIndex = [
+        graphData[0]?.tariff_category,
+        graphData[1]?.tariff_category,
+        graphData[2]?.tariff_category,
+      ]
+      const excludedCategories =
+        voltageType === 'LT' ? excludedCategoriesFilter : excludedCategoriesIndex
 
       router.get(
         route('data-explorer', {
