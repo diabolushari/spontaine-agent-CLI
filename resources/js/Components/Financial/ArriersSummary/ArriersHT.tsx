@@ -527,6 +527,8 @@ const ArriersHT = () => {
           subset_id='180'
           default_level='section'
           route={`/office-rankings/HT Arrears Analysis?month=${monthYear}&route=${route('service-delivery.index')}`}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
         />
       )}
     </DashboardCardLayout>

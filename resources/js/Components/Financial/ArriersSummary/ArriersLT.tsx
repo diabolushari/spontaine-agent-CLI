@@ -542,6 +542,8 @@ const ArriersLT = () => {
           subset_id='186'
           default_level='section'
           route={`/office-rankings/LT Arrears Analysis?month=${monthYear}&route=${route('service-delivery.index')}`}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
         />
       )}
     </DashboardCardLayout>
