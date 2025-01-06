@@ -65,14 +65,27 @@ export const formatNumber = (value?: number | null) => {
   if (value == null) {
     return
   }
-  if (value >= 10000000) {
-    return (value / 10000000).toFixed(2) + ' Cr'
-  } else if (value >= 100000) {
-    return (value / 100000).toFixed(2) + ' L'
-  } else if (value >= 1000) {
-    return (value / 1000).toFixed(2) + ' K'
+  if (isNaN(Number(value))) {
+    return value
   }
-  return Number(value).toFixed(2).toString()
+  value = Number(value)
+  let numericPart = value
+  let prefix = ''
+  if (value >= 10000000) {
+    numericPart = value / 10000000
+    prefix = ' Cr'
+  } else if (value >= 100000) {
+    numericPart = value / 100000
+    prefix = ' L'
+  } else if (value >= 1000) {
+    numericPart = value / 1000
+    prefix = ' K'
+  }
+  //if the number is integer, then don't show decimal
+  if (numericPart % 1 === 0) {
+    return `${numericPart.toFixed(0)}${prefix}`
+  }
+  return `${numericPart.toFixed(2)}${prefix}`
 }
 
 export function dateToYearMonth(date?: Date | null) {

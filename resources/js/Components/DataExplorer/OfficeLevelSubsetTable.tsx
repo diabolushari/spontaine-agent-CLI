@@ -4,6 +4,7 @@ import { TableColName } from '@/Components/DataExplorer/DataSetTable'
 import React, { useContext, useMemo } from 'react'
 import Table from '@/ui/Table/Table'
 import { formatNumber } from '../ServiceDelivery/ActiveConnection'
+import OfficePill from '@/Components/DataExplorer/OfficePill'
 
 interface Props {
   tableData?: DataTableItem[]
@@ -16,50 +17,24 @@ interface Props {
 }
 
 export default function OfficeLevelSubsetTable({
+  prevLevel,
   tableData,
   officeLevel,
-  prevLevel,
   selectedOffice,
   tableCols,
   setOfficeLevel,
   exportUrl,
 }: Readonly<Props>) {
-  const { setRegion, setCircle, setDivision, setSubdivision } = useContext(SelectedOfficeContext)
-
-  const { prevLevelName, currentLevelName } = useMemo(() => {
-    switch (officeLevel) {
-      case 'region':
-        return {
-          prevLevelName: 'state',
-          currentLevelName: 'region',
-        }
-      case 'circle':
-        return {
-          prevLevelName: 'region',
-          currentLevelName: 'circle',
-        }
-      case 'division':
-        return {
-          prevLevelName: 'circle',
-          currentLevelName: 'division',
-        }
-      case 'subdivision':
-        return {
-          prevLevelName: 'circle',
-          currentLevelName: 'subdivision',
-        }
-      case 'section':
-        return {
-          prevLevelName: 'subdivision',
-          currentLevelName: 'section',
-        }
-      default:
-        return {
-          prevLevelName: '',
-          currentLevelName: '',
-        }
-    }
-  }, [officeLevel])
+  const {
+    region,
+    circle,
+    division,
+    subdivision,
+    setRegion,
+    setCircle,
+    setDivision,
+    setSubdivision,
+  } = useContext(SelectedOfficeContext)
 
   const selectOffice = (row: DataTableItem) => {
     if (officeLevel === 'state' || row['office_code' as keyof typeof row] == null) {
@@ -99,23 +74,23 @@ export default function OfficeLevelSubsetTable({
     return tableCols.filter((col) => col.name !== 'Office Code').map((col) => col.name)
   }, [tableCols])
 
-  const removeOffice = () => {
-    if (officeLevel === 'region') {
+  const removeOffice = (level: string) => {
+    if (level === 'region') {
       setRegion?.(null)
       setCircle?.(null)
       setDivision?.(null)
       setSubdivision?.(null)
     }
-    if (officeLevel === 'circle') {
+    if (level === 'circle') {
       setCircle?.(null)
       setDivision?.(null)
       setSubdivision?.(null)
     }
-    if (officeLevel === 'division') {
+    if (level === 'division') {
       setDivision?.(null)
       setSubdivision?.(null)
     }
-    if (officeLevel === 'subdivision') {
+    if (level === 'subdivision') {
       setSubdivision?.(null)
     }
   }
@@ -126,37 +101,44 @@ export default function OfficeLevelSubsetTable({
 
   return (
     <>
-      <div className='flex flex-col gap-2'>
-        {prevLevel != null && (
-          <div className='my-5 flex flex-col gap-2'>
-            <span>
-              Showing {currentLevelName}s under {prevLevelName} -
-              <b>
-                {prevLevel.office_name} ({prevLevel.office_code})
-              </b>
-            </span>
-            <span className='text-xs'>You can change this under {prevLevelName}s Tab.</span>
-          </div>
+      <div className='flex flex-wrap gap-4'>
+        {region != null && (
+          <OfficePill
+            office={region}
+            levelName='Region'
+            level='region'
+            onClose={removeOffice}
+            selectedLevel={officeLevel}
+          />
+        )}
+        {circle != null && (
+          <OfficePill
+            office={circle}
+            levelName='Circle'
+            level='circle'
+            onClose={removeOffice}
+            selectedLevel={officeLevel}
+          />
+        )}
+        {division != null && (
+          <OfficePill
+            office={division}
+            levelName='Division'
+            level='division'
+            onClose={removeOffice}
+            selectedLevel={officeLevel}
+          />
+        )}
+        {subdivision != null && (
+          <OfficePill
+            office={subdivision}
+            levelName='Subdivision'
+            level='subdivision'
+            onClose={removeOffice}
+            selectedLevel={officeLevel}
+          />
         )}
       </div>
-      {selectedOffice != null && (
-        <div className='flex'>
-          <div className='flex items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'>
-            <span className='axial-label-1stop capitalize'>
-              {currentLevelName} <i>equals</i>{' '}
-              <b>
-                {selectedOffice?.office_name} ({selectedOffice?.office_code})
-              </b>
-            </span>
-            <button
-              className=''
-              onClick={removeOffice}
-            >
-              <i className='la la-close' />
-            </button>
-          </div>
-        </div>
-      )}
 
       <div className='w-full pb-4 text-end font-bold text-1stop-highlight'>
         <button onClick={openExportUrl}>

@@ -10,6 +10,7 @@ readonly class GetSubsetData
     public function __construct(
         private SubsetQueryBuilder $queryBuilder,
         private SubsetFilterBuilder $filterBuilder,
+        private SubsetQuerySorting $querySorting
     ) {}
 
     public function get(SubsetDetail $subsetDetail, bool $isSummary, bool $excludeNonMeasurements, string $summaryLevel = 'region'): ?Builder
@@ -32,6 +33,26 @@ readonly class GetSubsetData
             $subsetDetail,
             $filterParams
         );
+
+        if (isset($filterParams['sort_by'])) {
+            $this->querySorting->addSort(
+                $query,
+                $subsetDetail,
+                false,
+                $filterParams['sort_by'],
+                $filterParams['sort_order'] ?? 'ASC',
+            );
+        }
+
+        if ($filterParams['secondary_sort_by']) {
+            $this->querySorting->addSort(
+                $query,
+                $subsetDetail,
+                false,
+                $filterParams['secondary_sort_by'],
+                $filterParams['secondary_sort_order'] ?? 'ASC',
+            );
+        }
 
         return $query;
 

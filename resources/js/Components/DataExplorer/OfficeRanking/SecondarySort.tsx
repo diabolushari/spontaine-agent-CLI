@@ -34,9 +34,16 @@ export default function SecondarySort({
     ) as SubsetMeasureField[]
   }, [selectedSortField, subset])
 
+  const changeSecondarySortField = (value: string) => {
+    if (value === '') {
+      setShowSecondarySortField(false)
+    }
+    setSecondarySortField(value)
+  }
+
   return (
     <div className='flex flex-col gap-5'>
-      {secondarySortOptions.length > 0 && (
+      {secondarySortOptions.length > 0 && secondarySortField === '' && (
         <div className='flex'>
           <button
             className='link text-sm'
@@ -53,7 +60,7 @@ export default function SecondarySort({
               list={secondarySortOptions}
               dataKey='subset_column'
               displayKey='subset_field_name'
-              setValue={setSecondarySortField}
+              setValue={changeSecondarySortField}
               value={secondarySortField}
               showAllOption
               allOptionText='None'

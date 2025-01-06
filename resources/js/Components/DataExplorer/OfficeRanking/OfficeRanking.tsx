@@ -94,6 +94,21 @@ export default function OfficeRanking({
     })
   )
 
+  const exportUrl = useMemo(() => {
+    return route('subset-export', {
+      subsetDetail: subset.id,
+      month: dateToYearMonth(selectedMonth),
+      level: officeLevel,
+      office_code: prevLevelOffice?.office_code ?? '',
+      limit: selectedLimit,
+      excludeNonMeasurements: true,
+      sort_by: selectedSortField?.subset_column,
+      sort_order: selectedSortOrder,
+      secondary_sort_by: secondarySortField,
+      secondary_sort_order: secondarySortOrder,
+    })
+  }, [subset, officeLevel, selectedLimit, selectedMonth, secondarySortField, secondarySortOrder])
+
   const tableCols = useMemo(() => {
     const cols: TableColName[] = []
 
@@ -229,13 +244,7 @@ export default function OfficeRanking({
             selectedOffice={selectedOffice}
             prevLevel={prevLevelOffice}
             setOfficeLevel={setSelectedOfficeLevel}
-            exportUrl={route('subset-export', {
-              subsetDetail: subset.id,
-              month: dateToYearMonth(selectedMonth),
-              level: officeLevel,
-              limit: selectedLimit,
-              excludeNonMeasurements: true,
-            })}
+            exportUrl={exportUrl}
           />
           <div className='flex w-full flex-col'>
             {graphValues?.data != null && (

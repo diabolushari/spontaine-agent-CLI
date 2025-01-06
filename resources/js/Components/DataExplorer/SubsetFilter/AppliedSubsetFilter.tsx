@@ -37,7 +37,7 @@ export default function AppliedSubsetFilter({
       className='flex items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'
       key={appliedFilter.id}
     >
-      <span className='axial-label-1stop capitalize'>{appliedFilter.filter}</span>
+      <span className='axial-label-1stop break-words capitalize'>{appliedFilter.filter}</span>
       <button onClick={() => removeFilter(appliedFilter.filterKey)}>
         <i className='la la-close' />
       </button>

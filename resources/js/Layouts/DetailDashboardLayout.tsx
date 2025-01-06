@@ -76,14 +76,16 @@ export default function DetailDashboardLayout({
                     setSearchParams={setSearchParams}
                   />
                 ))}
-                <div className='flex justify-end gap-2'>
-                  <button
-                    className='link'
-                    onClick={removeAllFilters}
-                  >
-                    Reset Filters
-                  </button>
-                </div>
+                {appliedFilters != null && (
+                  <div className='flex justify-end gap-2'>
+                    <button
+                      className='link'
+                      onClick={removeAllFilters}
+                    >
+                      Reset Filters
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
