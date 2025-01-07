@@ -179,7 +179,9 @@ const TotalBilled = () => {
       )
       .reduce((sum, value) => sum + value.total_demand, 0)
   }
-  const totalCount = graphValues?.data.reduce((sum, value) => sum + value.total_demand, 0)
+  const totalCount = graphValues?.data
+    .filter((value) => voltageType === 'Total' || value.voltage === voltageType)
+    .reduce((sum, value) => sum + value.total_demand, 0)
 
   const dataFilter = [
     {
@@ -210,6 +212,7 @@ const TotalBilled = () => {
   ]
 
   const data = voltageType === 'LT' ? dataFilter : dataIndex
+  console.log(data)
 
   const ltPercent = cunsumerCount('LT', '', false)
     ? (cunsumerCount('LT', '', false) * 100) / cunsumerCount('Total', '', false)
