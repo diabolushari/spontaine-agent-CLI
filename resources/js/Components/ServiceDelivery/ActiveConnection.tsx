@@ -150,6 +150,10 @@ const ActiveConnection = () => {
       .reduce((sum, value) => sum + value.total_consumers__count_, 0)
   }
 
+  const totalCount = graphValues?.data
+    .filter((value) => voltageType === 'Total' || value.voltage === voltageType)
+    .reduce((sum, value) => sum + value.total_consumers__count_, 0)
+
   const dataFilter = [
     {
       name: 'DOMESTIC',
@@ -170,7 +174,7 @@ const ActiveConnection = () => {
     {
       name: 'OTHER',
       value:
-        cunsumerCount('Total') -
+        totalCount -
         graphFilter('DOMESTIC') -
         graphFilter('INDUSTRIAL') -
         graphFilter('COMMERCIAL') -
