@@ -49,10 +49,6 @@ export default function OfficeLevelExplorerTable({
   )
 
   useEffect(() => {
-    console.log(url)
-  }, [url])
-
-  useEffect(() => {
     setUrl(
       route('office-level-summary', {
         ...searchParams,
