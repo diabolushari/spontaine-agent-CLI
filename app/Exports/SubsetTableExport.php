@@ -37,7 +37,6 @@ readonly class SubsetTableExport implements FromCollection, ShouldAutoSize
             });
         }
 
-
         if (strtolower(request()->input('level', 'state')) !== 'state') {
             $fields->push(new TableColumnInfo(
                 'office_code',
@@ -80,6 +79,11 @@ readonly class SubsetTableExport implements FromCollection, ShouldAutoSize
             /** @var array<int, string|int|float|null> $record */
             $record = [];
             $fields->each(function ($field) use ($row, &$record) {
+                if ($field->column == 'office_code' && $row->office_code == null) {
+                    $record[] = 'External To Hierarchy';
+
+                    return;
+                }
                 $record[] = $row->{$field->column} ?? '';
             });
             $data->push($record);
