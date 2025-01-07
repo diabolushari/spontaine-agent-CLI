@@ -37,7 +37,7 @@ export default function AppliedSubsetFilter({
       className='flex w-full items-center justify-between gap-5 rounded-xl border-2 border-1stop-gray bg-1stop-white p-2'
       key={appliedFilter.id}
     >
-      <div className='flex-shrink-1 w-full'>
+      <div className='flex-shrink-1'>
         <span className='axial-label-1stop break-words capitalize'>{appliedFilter.filter}</span>
       </div>
       <button
