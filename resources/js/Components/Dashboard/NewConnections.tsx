@@ -338,7 +338,13 @@ const NewConnections = () => {
               ? 'Overall SLA Compliant Requests (count)'
               : 'Overall SLA Compliant Requests (%)'
           }
-          rankingPageUrl={`office-rankings/SLA Compliance Analysis - New Connection Requests?sort_by=Overall SLA Compliant Requests (%)&secondary_sort_by=Requests Received (count)&month=${dateToYearMonth(selectedMonth)}&route=${route('service-delivery.index')}`}
+          rankingPageUrl={route('office-rankings', {
+            subsetGroupName: 'SLA Compliance Analysis - New Connection Requests',
+            sort_by: 'Overall SLA Compliant Requests (%)',
+            secondary_sort_by: 'Requests Received (count)',
+            month: dateToYearMonth(selectedMonth),
+            route: route('service-delivery.index'),
+          })}
           timePeriodFieldName='month'
           timePeriod={monthYear}
         />
