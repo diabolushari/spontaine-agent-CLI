@@ -107,7 +107,17 @@ export default function OfficeRanking({
       secondary_sort_by: secondarySortField,
       secondary_sort_order: secondarySortOrder,
     })
-  }, [subset, officeLevel, selectedLimit, selectedMonth, secondarySortField, secondarySortOrder])
+  }, [
+    subset,
+    officeLevel,
+    selectedLimit,
+    selectedMonth,
+    secondarySortField,
+    secondarySortOrder,
+    prevLevelOffice?.office_code,
+    selectedSortField?.subset_column,
+    selectedSortOrder,
+  ])
 
   const tableCols = useMemo(() => {
     const cols: TableColName[] = []

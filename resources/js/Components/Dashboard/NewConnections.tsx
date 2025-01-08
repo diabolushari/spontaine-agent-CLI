@@ -344,6 +344,7 @@ const NewConnections = () => {
             secondary_sort_by: 'Requests Received (count)',
             month: dateToYearMonth(selectedMonth),
             route: route('service-delivery.index'),
+            subset: 'Overall SLA Compliant Requests (Count & Perc)',
           })}
           timePeriodFieldName='month'
           timePeriod={monthYear}
