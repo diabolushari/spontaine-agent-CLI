@@ -40,6 +40,8 @@ export default function OfficeRankingPage({
   defaultSort,
   secondarySort,
 }: Readonly<Props>) {
+  console.log(defaultSort)
+
   const [selectedRegion, setSelectedRegion] = useState<OfficeData | null>(null)
   const [selectedCircle, setSelectedCircle] = useState<OfficeData | null>(null)
   const [selectedDivision, setSelectedDivision] = useState<OfficeData | null>(null)

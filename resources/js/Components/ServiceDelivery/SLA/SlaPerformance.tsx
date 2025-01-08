@@ -27,6 +27,7 @@ const SlaPerformance = () => {
   const [categories, setCategories] = useState<{ sla_svc_group: string }[]>([])
   const [selectedLevel, setSelectedLevel] = useState('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
+  const [rankingPageUrl, setRankingPageUrl] = useState<string>('')
 
   const monthYear = useMemo(() => {
     return dateToYearMonth(selectedMonth)
@@ -169,6 +170,22 @@ const SlaPerformance = () => {
     [selectedMonth]
   )
 
+  const handleFilterChange = useCallback(
+    (value: string) => {
+      setRankingPageUrl(
+        route('office-rankings', {
+          subsetGroupName: 'SLA Performance Analysis',
+          month: monthYear,
+          sort_by: 'SLA Performance (%)',
+          secondary_sort_by: 'Requests Received (count)',
+          route: route('service-delivery.index'),
+          subset: value == '' ? '' : `SLA Performance Analysis - ${value}`,
+        })
+      )
+    },
+    [monthYear]
+  )
+
   return (
     <DashboardCardLayout
       title='SLA Performance by Request Type'
@@ -287,11 +304,12 @@ const SlaPerformance = () => {
           timePeriodFieldName='month'
           dataField={showPercentage ? 'requests_within_sla__count_' : 'requests_within_sla____'}
           dataFieldName={showPercentage ? 'Requests within SLA count' : 'Request within SLA (%)'}
-          rankingPageUrl={`office-rankings/SLA Performance Analysis?month=${monthYear}&sort_by=SLA Performance (%)&secondary_sort_by=Requests Received (count)&route=${route('service-delivery.index')}`}
+          rankingPageUrl={rankingPageUrl}
           defaultFilterValue={'Ownership change'}
           filterListFetchURL={`/subset/78?month=${monthYear}`}
           filterListKey={'sla_svc_group'}
           filterFieldName={'request_type'}
+          onFilterChange={handleFilterChange}
         />
       )}
     </DashboardCardLayout>

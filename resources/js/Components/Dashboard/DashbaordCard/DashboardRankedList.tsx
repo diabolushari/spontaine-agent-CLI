@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Paginator } from '@/ui/ui_interfaces'
 import SelectList from '@/ui/form/SelectList'
@@ -20,6 +20,7 @@ interface Props {
   filterListKey?: string
   filterListFetchURL?: string
   defaultFilterValue?: string
+  onFilterChange?: (value: string) => void
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -45,12 +46,20 @@ export default function DashboardRankedList({
   filterListFetchURL,
   filterListKey,
   filterFieldName,
+  onFilterChange,
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
   const [itemLimit, setItemLimit] = useState('10')
   const [officeLevel, setOfficeLevel] = useState('section')
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
+
+  useEffect(() => {
+    if (onFilterChange == null) {
+      return
+    }
+    onFilterChange(filterValue)
+  }, [onFilterChange, filterValue])
 
   const fetchUrl = useMemo(() => {
     const params = {

@@ -19,8 +19,6 @@ export default function FieldUniqueValueDropdown({
     data: Record<string, string | number | null | undefined>[]
   }>(listFetchURL)
 
-  console.log(rankingData)
-
   const [list, setList] = useState<{ value: string }[]>([])
 
   useEffect(() => {
