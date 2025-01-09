@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import DashboardCardLayout from '../Dashboard/DashbaordCard/DashboardCardLayout'
 import { dateToYearMonth, formatNumber } from '../ServiceDelivery/ActiveConnection'
 import { Cell, Legend, LegendProps, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
@@ -8,6 +8,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import { solidColors } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import DashboardTrendGraph from '../Dashboard/DashbaordCard/DashboardTrendGraph'
+import DashboardRankedList from '../Dashboard/DashbaordCard/DashboardRankedList'
 
 interface ServiceOutagesValues {
   month: string
@@ -25,6 +26,9 @@ const ServiceOutages = () => {
   }>(
     `subset/342?${selectedMonth == null ? 'latest=month' : `month=${dateToYearMonth(selectedMonth)}`}`
   )
+  const monthYear = useMemo(() => {
+    return dateToYearMonth(selectedMonth)
+  }, [selectedMonth])
 
   useEffect(() => {
     if (selectedMonth == null && graphValues != null) {
@@ -148,7 +152,7 @@ const ServiceOutages = () => {
                 <div className='flex flex-col justify-between'>
                   <p className='small-1stop-header'>Unscheduled outages </p>
                   <div
-                    style={{ backgroundColor: solidColors[2] }}
+                    style={{ backgroundColor: solidColors[1] }}
                     className='h-2 w-full rounded text-white'
                   ></div>
                 </div>
@@ -179,7 +183,7 @@ const ServiceOutages = () => {
                     paddingAngle={2}
                     dataKey='value'
                     stroke='none'
-                    onClick={handleGraphSelection}
+                    onClick={() => ''}
                   >
                     {data.map((entry, index) => (
                       <Cell
@@ -211,6 +215,17 @@ const ServiceOutages = () => {
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
           chartType='area'
+        />
+      )}
+      {selectedLevel === 'ranking' && selectedMonth != null && (
+        <DashboardRankedList
+          subsetId={342}
+          cardTitle='Ranked by Total Outage'
+          dataField='total_outages'
+          dataFieldName='Total Outage'
+          rankingPageUrl={`/office-rankings/A?month=${monthYear}&route=${route('service-delivery.index')}`}
+          timePeriod={monthYear}
+          timePeriodFieldName='month'
         />
       )}
     </DashboardCardLayout>
