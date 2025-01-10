@@ -55,7 +55,13 @@ const Reliability = () => {
           cardTitle='Ranked by Saidi'
           dataField='saidi'
           dataFieldName='SAIDI'
-          rankingPageUrl={`/office-rankings/A?month=${monthYear}&route=${route('service-delivery.index')}`}
+          rankingPageUrl={route('office-rankings', {
+            subsetGroupName: 'Reliability Analysis',
+
+            month: dateToYearMonth(selectedMonth),
+            route: route('operation.index'),
+            subset: 'SAIDI',
+          })}
           timePeriod={monthYear}
           timePeriodFieldName='month'
         />

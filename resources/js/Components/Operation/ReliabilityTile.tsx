@@ -36,14 +36,14 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
     0
   )
   const handleGraphSelection = useCallback(
-    (subset: string, complaint_type: string | null) => {
+    (subset: string) => {
       router.get(
         route('data-explorer', {
-          subsetGroup: 'Customer Complaints Summary',
+          subsetGroup: 'Interruption Analysis',
           subset: subset,
-          complaint_type: complaint_type,
+
           month: dateToYearMonth(selectedMonth),
-          route: route('service-delivery.index'),
+          route: route('operation.index'),
         })
       )
     },
@@ -56,7 +56,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
         <div className='grid w-full grid-cols-2 gap-2 p-2 md:max-w-md'>
           <button
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
-            onClick={() => ''}
+            onClick={() => handleGraphSelection('SAIDI - Analysis')}
           >
             <p className='smmetric-1stop lg:xlmetric-1stop'>
               {isLoading ? <Skeleton width={60} /> : formatNumber(saiDi)}
@@ -64,7 +64,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <p className='small-1stop-header text-center'>SAIDI</p>
           </button>
           <button
-            onClick={() => ''}
+            onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
             <p className='smmetric-1stop'>
@@ -77,7 +77,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <p className='small-1stop-header text-center'>TOTAL INTERRUPTION DURATION</p>
           </button>
           <button
-            onClick={() => ''}
+            onClick={() => handleGraphSelection('SAIFI - Analysis')}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
             <p className='smmetric-1stop lg:xlmetric-1stop'>
@@ -86,7 +86,7 @@ const ReliabilityTile = ({ selectedMonth, setSelectedMonth }: Properties) => {
             <p className='small-1stop-header text-center'>SAIFI</p>
           </button>
           <button
-            onClick={() => ''}
+            onClick={() => handleGraphSelection('Interruptions - Analysis')}
             className='flex cursor-pointer flex-col items-center justify-center rounded-lg bg-1stop-white p-1 hover:bg-1stop-highlight2 lg:p-5'
           >
             <p className='smmetric-1stop pt-4'>
