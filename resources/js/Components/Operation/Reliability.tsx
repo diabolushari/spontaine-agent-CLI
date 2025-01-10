@@ -6,6 +6,17 @@ import ReliabilityTrend from './ReliabilityTrend'
 import DashboardTrendGraph from '../Dashboard/DashbaordCard/DashboardTrendGraph'
 import DashboardRankedList from '../Dashboard/DashbaordCard/DashboardRankedList'
 
+const availableRankingFields = [
+  {
+    subset_field_name: 'SAIDI',
+    subset_column: 'saidi',
+  },
+  {
+    subset_column: 'saifi',
+    subset_field_name: 'SAIFI',
+  },
+]
+
 const Reliability = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [selectedLevel, setSelectedLevel] = useState('overview')
@@ -58,6 +69,7 @@ const Reliability = () => {
           rankingPageUrl={`/office-rankings/A?month=${monthYear}&route=${route('service-delivery.index')}`}
           timePeriod={monthYear}
           timePeriodFieldName='month'
+          availableFields={availableRankingFields}
         />
       )}
     </DashboardCardLayout>
