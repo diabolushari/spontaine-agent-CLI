@@ -109,30 +109,32 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className='flex'>
-        <div className='flex-col justify-start p-5'>
+      <div className='flex justify-between px-5'>
+        <div className='flex flex-col items-start px-10'>
           <div
             style={{ color: solidColors[0] }}
             className='smmetric-1stop'
           >
             {formatNumber(interruptionDurationUrban)} HRS
           </div>
-          <div className='small-1stop'>
+          <div className='small-1stop text-left'>
             Interruption <br /> duration - urban
           </div>
         </div>
-        <div className='flex-col justify-end p-5'>
+
+        <div className='flex flex-col items-end px-32'>
           <div
             style={{ color: solidColors[2] }}
             className='smmetric-1stop'
           >
             {formatNumber(interruptionDurationRural)} HRS
           </div>
-          <div className='small-1stop'>
+          <div className='small-1stop text-right'>
             Interruption <br /> duration - rural
           </div>
         </div>
       </div>
+
       <div>
         <ResponsiveContainer
           width='100%'
@@ -167,27 +169,29 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className='flex'>
-        <div className='flex-col justify-start p-5'>
+      <div className='flex justify-between px-5'>
+        <div className='flex flex-col items-start px-10'>
           <div
             style={{ color: solidColors[1] }}
             className='smmetric-1stop'
           >
             {formatNumber(interruptionUrban)}
           </div>
-          <div className='small-1stop'>
+          <div className='small-1stop text-left'>
             Interruption -<br /> urban
           </div>
         </div>
-        <div className='flex-col justify-end p-5'>
+
+        <div className='flex flex-col items-end px-32'>
           <div
             style={{ color: solidColors[3] }}
             className='smmetric-1stop'
           >
             {formatNumber(interruptionRural)}
           </div>
-          <div className='small-1stop'>
-            Interruption -<br /> rural
+          <div className='small-1stop text-right'>
+            Interruption -
+            <br /> rural
           </div>
         </div>
       </div>
