@@ -104,7 +104,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             height={50}
           >
             <BarChart
-              data={interruptionDurationData}
+              data={avgInterruptionDurationData}
               layout='vertical'
             >
               <XAxis
@@ -118,13 +118,13 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               />
               <Tooltip content={renderCustomTooltip} />
               <Bar
-                dataKey='interruptionDurationUrban'
+                dataKey='avgInterruptionDurationUrban'
                 stackId='a'
                 fill={solidColors[0]}
                 onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
               />
               <Bar
-                dataKey='interruptionDurationRural'
+                dataKey='avgInterruptionDurationRural'
                 stackId='a'
                 fill={solidColors[2]}
                 onClick={() => handleGraphSelection('Interruption Duration - Analysis')}
@@ -142,9 +142,9 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             style={{ color: solidColors[0] }}
             className='smmetric-1stop text-center'
           >
-            {formatNumber(interruptionDurationUrban)} Hrs
+            {formatNumber(avgInterruptionDurationUrban)} Hrs
           </div>
-          <div className='small-1stop text-center'>Intrpn Dur - URBAN</div>
+          <div className='small-1stop text-center'>Avg Intrpn Dur - URBAN</div>
         </button>
 
         <button
@@ -155,9 +155,9 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             style={{ color: solidColors[2] }}
             className='smmetric-1stop'
           >
-            {formatNumber(interruptionDurationRural)} Hrs
+            {formatNumber(avgInterruptionDurationRural)} Hrs
           </div>
-          <div className='small-1stop text-center'>Intrpn Dur - RURAL</div>
+          <div className='small-1stop text-center'>Avg Intrpn Dur - RURAL</div>
         </button>
       </div>
 
@@ -170,7 +170,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
             height={50}
           >
             <BarChart
-              data={interruptionData}
+              data={avgInterruptionData}
               layout='vertical'
             >
               <XAxis
@@ -184,13 +184,13 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
               />
               <Tooltip content={renderCustomTooltip} />
               <Bar
-                dataKey='interruptionUrban'
+                dataKey='avgInterruptionUrban'
                 stackId='a'
                 fill={solidColors[1]}
                 onClick={() => handleGraphSelection('Interruptions - Analysis')}
               />
               <Bar
-                dataKey='interruptionRural'
+                dataKey='avgInterruptionRural'
                 stackId='a'
                 fill={solidColors[3]}
                 onClick={() => handleGraphSelection('Interruptions - Analysis')}
@@ -210,7 +210,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           >
             {formatNumber(avgInterruptionUrban)}
           </div>
-          <div className='small-1stop text-center'>Intrpns - URBAN</div>
+          <div className='small-1stop text-center'>Avg Intrpns - URBAN</div>
         </button>
 
         <button
@@ -223,7 +223,7 @@ const ReliabilityTrend = ({ selectedMonth, setSelectedMonth }: Properties) => {
           >
             {formatNumber(avgInterruptionRural)}
           </div>
-          <div className='small-1stop text-center'>Intrpns - RURAL</div>
+          <div className='small-1stop text-center'>Avg Intrpns - RURAL</div>
         </button>
       </div>
     </div>
