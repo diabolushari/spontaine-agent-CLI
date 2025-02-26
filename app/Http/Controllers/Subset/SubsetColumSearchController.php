@@ -28,7 +28,7 @@ class SubsetColumSearchController extends Controller implements HasMiddleware
         Request $request,
         SubsetFilterBuilder $filterBuilder
     ): JsonResponse {
-        $subsetDetail->load('measures.info', 'dates.info', 'dimensions.info', 'measures.weightInfo');
+        $subsetDetail->load('measures.info', 'dates.info', 'dimensions.info', 'dimensions.hierarchy', 'measures.weightInfo');
 
         if (! $request->filled('column') || ! $request->filled('search')) {
             return response()

@@ -8,6 +8,7 @@ import {
 } from '@/interfaces/data_interfaces'
 import React, { useMemo } from 'react'
 import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
+import { showError } from '@/ui/alerts'
 
 interface Props {
   dataDetail: DataDetail
@@ -120,6 +121,10 @@ export default function AddSubsetMeasure({
   const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
     if (formData.field_id == '' || formData.subset_field_name == '') {
+      return
+    }
+    if (usingGroup && formData.aggregation === '') {
+      showError('Please select an aggregation method')
       return
     }
     onSubmit({

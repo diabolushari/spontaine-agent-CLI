@@ -55,6 +55,8 @@ export default function MetaHierarchyCreate({
     name: metaHierarchy?.name ?? '',
     description: metaHierarchy?.description ?? '',
     no_of_levels: levelInfos?.length ?? 0,
+    primary_field_name: metaHierarchy?.primary_field_name ?? '',
+    secondary_field_name: metaHierarchy?.secondary_field_name ?? '',
   })
 
   const [hierarchyLevelInfos, setHierarchyLevelInfos] = useState<HierarchyLevelInfo[]>(
@@ -118,6 +120,16 @@ export default function MetaHierarchyCreate({
         label: 'Number of Levels',
         setValue: setFormValue('no_of_levels'),
       },
+      primary_field_name: {
+        type: 'text',
+        label: 'Primary Field',
+        setValue: setFormValue('primary_field_name'),
+      },
+      secondary_field_name: {
+        type: 'text',
+        label: 'Secondary Field (If Any)',
+        setValue: setFormValue('secondary_field_name'),
+      },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
 
@@ -165,7 +177,8 @@ export default function MetaHierarchyCreate({
             level: item.level,
             name: item.name,
             primary_field_structure_id: item.primary_structure?.id,
-            secondary_field_structure_id: item.secondary_structure?.id,
+            secondary_field_structure_id:
+              formData.secondary_field_name == '' ? '' : item.secondary_structure?.id,
           }
         }),
       })
@@ -249,7 +262,7 @@ export default function MetaHierarchyCreate({
                                 }
                                 dataKey='id'
                                 displayKey='structure_name'
-                                placeholder={`Primary Field`}
+                                placeholder={`${formData.primary_field_name ?? 'Primary'}'s  MetaStructure`}
                                 value={item.primary_structure}
                                 url={route('meta-structure-search', {
                                   search: '',
@@ -264,25 +277,27 @@ export default function MetaHierarchyCreate({
                               />
                             </div>
                             <div className='flex flex-col py-1'>
-                              <ComboBox
-                                setValue={(name: MetaStructure | null) =>
-                                  setSecondaryFieldValue(item, name)
-                                }
-                                dataKey='id'
-                                displayKey='structure_name'
-                                placeholder={`Secondary Field`}
-                                value={item.secondary_structure}
-                                url={route('meta-structure-search', {
-                                  search: '',
-                                })}
-                                error={
-                                  errors[
-                                    ('hierarchy_level_infos.' +
-                                      index +
-                                      '.secondary_field_structure_id') as keyof typeof errors
-                                  ]
-                                }
-                              />
+                              {formData.secondary_field_name != '' && (
+                                <ComboBox
+                                  setValue={(name: MetaStructure | null) =>
+                                    setSecondaryFieldValue(item, name)
+                                  }
+                                  dataKey='id'
+                                  displayKey='structure_name'
+                                  placeholder={`${formData.secondary_field_name ?? 'Secondary'}'s  MetaStructure`}
+                                  value={item.secondary_structure}
+                                  url={route('meta-structure-search', {
+                                    search: '',
+                                  })}
+                                  error={
+                                    errors[
+                                      ('hierarchy_level_infos.' +
+                                        index +
+                                        '.secondary_field_structure_id') as keyof typeof errors
+                                    ]
+                                  }
+                                />
+                              )}
                             </div>
                           </div>
                         )

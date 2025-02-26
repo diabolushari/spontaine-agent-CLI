@@ -9,20 +9,9 @@ use App\Services\Subset\SubsetFindMaxValue;
 use App\Services\Subset\SubsetQueryBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SubsetOfficeLevelDataController extends Controller implements HasMiddleware
+class SubsetOfficeLevelDataController extends Controller
 {
-    /**
-     * @return string[]
-     */
-    public static function middleware(): array
-    {
-        return [
-            'auth',
-        ];
-    }
-
     public function __invoke(
         SubsetDetail $subsetDetail,
         SubsetQueryBuilder $queryBuilder,
@@ -30,7 +19,7 @@ class SubsetOfficeLevelDataController extends Controller implements HasMiddlewar
         SubsetFindMaxValue $findMaxValue,
         Request $request
     ): JsonResponse {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
+        $subsetDetail->load('dates.info', 'dimensions.info', 'dimensions.hierarchy', 'measures.info', 'measures.weightInfo');
 
         $filters = $request->all();
         $latestValue = null;

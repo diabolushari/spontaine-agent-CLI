@@ -122,7 +122,7 @@ export default function SubsetManageMeasures({
       {showDateForm && (
         <Modal
           setShowModal={setShowDateForm}
-          title='Add Date Field To Subset'
+          title='Add Field To Subset'
         >
           <AddSubsetMeasure
             measureFields={measureFields}

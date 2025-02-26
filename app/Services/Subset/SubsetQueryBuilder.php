@@ -3,32 +3,35 @@
 namespace App\Services\Subset;
 
 use App\Models\DataDetail\DataDetail;
+use App\Models\Meta\MetaHierarchy;
+use App\Models\Meta\MetaHierarchyLevelInfo;
 use App\Models\Subset\SubsetDetail;
 use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
 use App\Services\DataTable\JoinDataTable;
 use App\Services\DistributionHierarchy\GetHierarchyTableDetail;
-use App\Services\DistributionHierarchy\OfficeList;
+use App\Services\MetaData\Hierarchy\FlattenHierarchyAtLevel;
+use App\Services\MetaData\Hierarchy\HierarchySubQuery;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Query\JoinClause;
 
 readonly class SubsetQueryBuilder
 {
+    use FlattenHierarchyAtLevel;
     use GetHierarchyTableDetail;
+    use HierarchySubQuery;
     use SubsetApplyDefaultFilters;
 
     public function __construct(
         private JoinDataTable $joinDataTable,
-        private OfficeList $officeList
     ) {}
 
     public function query(
         SubsetDetail $subsetDetail,
         bool $isSummary = false,
         bool $excludeNonMeasurements = false,
-        string $summaryLevel = 'region'
+        ?string $summaryLevel = null
     ): Builder {
 
         /** @var string[] $groupingColumns */
@@ -60,7 +63,7 @@ readonly class SubsetQueryBuilder
         $query = $this->joinDataTable->join($detail);
 
         if (! $isSummary) {
-            $this->includeOfficeInfo(
+            $this->includeHierarchy(
                 $query,
                 $subsetDetail,
                 $detail,
@@ -240,7 +243,7 @@ readonly class SubsetQueryBuilder
      * @param  string[]  $groupingColumns
      * @param  string[]  $selectColumns
      */
-    private function includeOfficeInfo(
+    private function includeHierarchy(
         Builder $query,
         SubsetDetail $subsetDetail,
         DataDetail $detail,
@@ -248,33 +251,25 @@ readonly class SubsetQueryBuilder
         array &$selectColumns,
     ): void {
         //if office info is included in the subset then include the hierarchy table
-        $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query) {
-            if ($dimension->info == null || $dimension->info->column !== 'section_code' || $dimension->filter_only == 1) {
+        $subsetDetail->dimensions->each(function ($dimension) use ($query, &$groupingColumns, &$selectColumns, $detail, $subsetDetail) {
+            if ($dimension->hierarchy_id == null) {
                 return;
             }
-            $hierarchyTable = $this->getDetail();
-            if ($hierarchyTable == null || $hierarchyTable->table_name === $detail->table_name) {
+            $hierarchy = MetaHierarchy::where('id', $dimension->hierarchy_id)
+                ->first();
+
+            if ($hierarchy == null) {
                 return;
             }
-            $hierarchyQuery = $this->officeList->get($hierarchyTable, 'section')
-                ->selectRaw(
-                    'section_name_record.name as section_name, '
-                    .'section_code as hierarchy_section_code'
-                );
-
-            $query->leftJoinSub($hierarchyQuery, 'hierarchy', function ($join) use ($detail) {
-                $join->on(
-                    $detail->table_name.'.section_code',
-                    '=',
-                    'hierarchy.hierarchy_section_code'
-                );
-            });
-
-            $selectColumns[] = 'hierarchy.section_name as section_name';
-
-            if ($subsetDetail->group_data == 1) {
-                $groupingColumns[] = 'hierarchy.section_name';
-            }
+            $this->addHierarchyToQuery(
+                $hierarchy,
+                $query,
+                $dimension,
+                $detail,
+                (int) $subsetDetail->group_data,
+                $groupingColumns,
+                $selectColumns,
+            );
         });
     }
 
@@ -288,94 +283,100 @@ readonly class SubsetQueryBuilder
         DataDetail $detail,
         array &$groupingColumns,
         array &$selectColumns,
-        string $groupingLevel = 'region'
+        ?string $groupingLevel = null
     ): void {
-        //if office info is included in the subset then include the hierarchy table
-        $subsetDetail->dimensions->each(function ($dimension) use (&$groupingColumns, &$selectColumns, $subsetDetail, $detail, $query, $groupingLevel) {
-            if ($dimension->info == null || $dimension->info->column !== 'section_code') {
-                return;
+        /** @var SubsetDetailDimension $dimensionRecord */
+        $dimensionRecord = null;
+        //find dimension with hierarchy
+        foreach ($subsetDetail->dimensions as $dimension) {
+            if ($dimension->hierarchy_id != null) {
+                $dimensionRecord = $dimension;
             }
-            $hierarchyTable = $this->getDetail();
-            if ($hierarchyTable == null || $hierarchyTable->table_name === $detail->table_name) {
-                return;
+        }
+
+        if ($dimensionRecord == null) {
+            return;
+        }
+
+        $hierarchy = MetaHierarchy::where('id', $dimensionRecord->hierarchy_id)
+            ->first();
+
+        if ($hierarchy == null) {
+            return;
+        }
+
+        $allLevelsInHierarchy = MetaHierarchyLevelInfo::where('meta_hierarchy_id', $dimensionRecord->hierarchy_id)
+            ->orderBy('level')
+            ->get();
+
+        /** @var MetaHierarchyLevelInfo|null $selectedLevel */
+        $selectedLevel = null;
+        foreach ($allLevelsInHierarchy as $level) {
+            if ($groupingLevel == null) {
+                $selectedLevel = $level;
+                break;
             }
-
-            if ($groupingLevel === 'state') {
-                return;
+            if (strtolower($level->name) === strtolower($groupingLevel)) {
+                $selectedLevel = $level;
+                break;
             }
+        }
 
-            if ($groupingLevel === 'region') {
-                $joinSelect = 'region_code_record.name as region_code, region_name_record.name as region_name';
-                $selectStatement = 'hierarchy.region_code as office_code';
-                $nameSelectStatement = 'hierarchy.region_name as office_name';
-                $groupingStatement = 'hierarchy.region_code';
-                $nameGroupingStatement = 'hierarchy.region_name';
-            }
+        if ($selectedLevel == null) {
+            return;
+        }
+        $hierarchyBottomLevel = $allLevelsInHierarchy->max('level');
 
-            if ($groupingLevel == 'circle') {
-                $joinSelect = 'circle_code_record.name as circle_code, circle_name_record.name as circle_name';
-                $selectStatement = 'hierarchy.circle_code as office_code';
-                $groupingStatement = 'hierarchy.circle_code';
-                $nameSelectStatement = 'hierarchy.circle_name as office_name';
-                $nameGroupingStatement = 'hierarchy.circle_name';
-            }
+        $hierarchySubQuery = $this->flatten($hierarchy->id, $hierarchyBottomLevel);
 
-            if ($groupingLevel == 'division') {
-                $joinSelect = 'division_code_record.name as division_code, division_name_record.name as division_name';
-                $selectStatement = 'hierarchy.division_code as office_code';
-                $groupingStatement = 'hierarchy.division_code';
-                $nameSelectStatement = 'hierarchy.division_name as office_name';
-                $nameGroupingStatement = 'hierarchy.division_name';
-            }
-
-            if ($groupingLevel == 'subdivision') {
-                $joinSelect = 'subdivision_code_record.name as subdivision_code, subdivision_name_record.name as subdivision_name';
-                $selectStatement = 'hierarchy.subdivision_code as office_code';
-                $groupingStatement = 'hierarchy.subdivision_code';
-                $nameSelectStatement = 'hierarchy.subdivision_name as office_name';
-                $nameGroupingStatement = 'hierarchy.subdivision_name';
-            }
-
-            if ($groupingLevel == 'section') {
-                $joinSelect = 'section_code_record.name as section_code, section_name_record.name as section_name';
-                $selectStatement = 'hierarchy.section_code as office_code';
-                $groupingStatement = 'hierarchy.section_code';
-                $nameSelectStatement = 'hierarchy.section_name as office_name';
-                $nameGroupingStatement = 'hierarchy.section_name';
-            }
-
-            $hierarchyQuery = $this->officeList->get($hierarchyTable)
-                ->selectRaw(
-                    'section_code as hierarchy_section_code, '
-                    .$joinSelect
-                );
-
-            //if section is region then left join so data with no section is included
-            if ($groupingLevel === 'region') {
-                $query->leftJoinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) use ($detail) {
+        if ($selectedLevel->level === 1) {
+            $query->leftJoinSub(
+                $hierarchySubQuery,
+                'hierarchy',
+                function ($join) use ($detail, $dimensionRecord, $hierarchyBottomLevel) {
                     $join->on(
-                        $detail->table_name.'.section_code',
+                        "$detail->table_name.$dimensionRecord->subset_column",
                         '=',
-                        'hierarchy.hierarchy_section_code'
+                        "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );
                 });
-            } else {
-                $query->joinSub($hierarchyQuery, 'hierarchy', function (JoinClause $join) use ($detail) {
+        } else {
+            $query->joinSub(
+                $hierarchySubQuery,
+                'hierarchy',
+                function ($join) use ($detail, $dimensionRecord, $hierarchyBottomLevel) {
                     $join->on(
-                        $detail->table_name.'.section_code',
+                        "$detail->table_name.$dimensionRecord->subset_column",
                         '=',
-                        'hierarchy.hierarchy_section_code'
+                        "hierarchy.lvl_{$hierarchyBottomLevel}_primary_field"
                     );
                 });
-            }
+        }
 
-            $selectColumns[] = $selectStatement;
-            $selectColumns[] = $nameSelectStatement;
+        $query->leftJoin(
+            'meta_data as primary_field_record',
+            "hierarchy.lvl_{$selectedLevel->level}_primary_field",
+            '=',
+            'primary_field_record.id'
+        )
+            ->leftJoin(
+                'meta_data as secondary_field_record',
+                "hierarchy.lvl_{$selectedLevel->level}_secondary_field",
+                '=',
+                'secondary_field_record.id'
+            );
 
-            if ($subsetDetail->group_data === 1) {
-                $groupingColumns[] = $groupingStatement;
-                $groupingColumns[] = $nameGroupingStatement;
+        $selectColumns[] = "primary_field_record.name as $hierarchy->primary_column";
+        if ($subsetDetail->group_data == 1) {
+            $groupingColumns[] = 'primary_field_record.name';
+        }
+
+        if ($hierarchy->secondary_column != null) {
+            $selectColumns[] = "secondary_field_record.name as $hierarchy->secondary_column";
+            if ($subsetDetail->group_data == 1) {
+                $groupingColumns[] = 'secondary_field_record.name';
             }
-        });
+        }
+
     }
 }

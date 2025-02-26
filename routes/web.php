@@ -49,6 +49,7 @@ use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
+use App\Models\Subset\SubsetDetailDimension;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -304,6 +305,16 @@ Route::get('sections', function () {
     }
 
     return MetaHierarchyItem::insert($fields);
+});
+
+Route::get('fix-sections', function () {
+
+    SubsetDetailDimension::where('subset_column', 'section_code')->update([
+        'hierarchy_id' => 1,
+    ]);
+
+    return SubsetDetailDimension::where('subset_column', 'section_code')
+        ->get();
 });
 
 require __DIR__.'/auth.php';

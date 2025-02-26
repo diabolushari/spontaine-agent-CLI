@@ -40,6 +40,10 @@ export interface MetaDataGroupItem extends Model {
 export interface MetaHierarchy extends Model {
   name: string
   description?: string | null
+  primary_field_name: string
+  secondary_field_name: string | null
+  primary_column: string
+  secondary_column: string | null
   items?: Partial<MetaHierarchyItem>[]
   items_count?: number
   levels?: Partial<MetaHierarchyLevelInfo>[]

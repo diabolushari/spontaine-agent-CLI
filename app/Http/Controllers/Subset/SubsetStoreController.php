@@ -40,6 +40,7 @@ class SubsetStoreController extends Controller implements HasMiddleware
                 'data_detail_id' => $dataDetail->id,
                 'group_data' => $request->groupData,
                 'max_rows_to_fetch' => $request->maxRowsToFetch,
+                'use_for_training_ai' => $request->useForTrainingAi,
                 'type' => $request->type,
                 'created_by' => $user,
                 'updated_by' => $user,

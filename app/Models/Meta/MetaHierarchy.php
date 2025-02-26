@@ -13,6 +13,10 @@ class MetaHierarchy extends Model
     protected $fillable = [
         'name',
         'description',
+        'primary_field_name',
+        'secondary_column',
+        'primary_column',
+        'secondary_field_name',
     ];
 
     /**

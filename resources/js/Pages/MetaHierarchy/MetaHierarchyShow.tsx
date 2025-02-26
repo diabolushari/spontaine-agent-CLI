@@ -18,8 +18,6 @@ interface Props {
 export default function MetaHierarchyShow({ metaHierarchy, hierarchyList, page }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
-  console.log(metaHierarchy)
-
   const displayItems = useMemo(() => {
     let index = 1
     const records: ShowPageItem[] = [

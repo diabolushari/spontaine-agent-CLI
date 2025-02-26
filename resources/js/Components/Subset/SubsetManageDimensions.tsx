@@ -6,6 +6,7 @@ import CardGridView from '../ListingPage/CardGridView'
 import { ListItemKeys } from '../ListingPage/ListResourcePage'
 import AddSubsetDimensionForm from './CreateForm/AddSubsetDimensionForm'
 import upsertSubsetFields from '@/Components/Subset/upsert-subset-fields'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 interface Props {
   dataDetail: DataDetail
@@ -14,6 +15,7 @@ interface Props {
   setAddedDimensionFields: React.Dispatch<
     SetStateAction<Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>[]>
   >
+  hierarchies: Pick<MetaHierarchy, 'id' | 'name'>[]
 }
 
 export default function SubsetManageDimensions({
@@ -21,6 +23,7 @@ export default function SubsetManageDimensions({
   dimensionFields,
   addedDimensionFields,
   setAddedDimensionFields,
+  hierarchies,
 }: Readonly<Props>) {
   const [selectedField, setSelectedField] = useState<Omit<
     SubsetDimensionField,
@@ -147,6 +150,7 @@ export default function SubsetManageDimensions({
             onSubmit={handleNewField}
             selectedField={selectedField}
             removeSelectedField={removeField}
+            hierarchies={hierarchies}
           />
         </Modal>
       )}

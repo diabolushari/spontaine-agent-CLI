@@ -4,6 +4,7 @@ namespace App\Http\Requests\Meta;
 
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Regex;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -15,6 +16,10 @@ class MetaHierarchyFormRequest extends Data
         public string $name,
         #[Max(1000)]
         public ?string $description,
+        #[Regex('/^[a-zA-Z0-9\s]*$/')]
+        public string $primaryFieldName,
+        #[Regex('/^[a-zA-Z0-9\s]*$/')]
+        public ?string $secondaryFieldName,
         /**
          * @var array<array{
          *     level:int,

@@ -19,12 +19,13 @@ class SubsetDetail extends Model
         'group_data',
         'type',
         'max_rows_to_fetch',
+        'use_for_training_ai',
         'created_by',
         'updated_by',
     ];
 
     /**
-     * @return HasOne<DataDetail>
+     * @return HasOne<DataDetail, $this>
      */
     public function dataDetail(): HasOne
     {
@@ -32,7 +33,7 @@ class SubsetDetail extends Model
     }
 
     /**
-     * @return HasMany<SubsetDetailDate>
+     * @return HasMany<SubsetDetailDate, $this>
      */
     public function dates(): HasMany
     {
@@ -40,7 +41,7 @@ class SubsetDetail extends Model
     }
 
     /**
-     * @return HasMany<SubsetDetailDimension>
+     * @return HasMany<SubsetDetailDimension, $this>
      */
     public function dimensions(): HasMany
     {
@@ -48,7 +49,7 @@ class SubsetDetail extends Model
     }
 
     /**
-     * @return HasMany<SubsetDetailMeasure>
+     * @return HasMany<SubsetDetailMeasure, $this>
      */
     public function measures(): HasMany
     {

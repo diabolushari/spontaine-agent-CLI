@@ -23,7 +23,7 @@ class MetaHierarchyDeleteItemController extends Controller implements HasMiddlew
     public function __invoke(MetaHierarchyItem $metaHierarchyItem, HierarchyChildList $hierarchyChildList): RedirectResponse
     {
         try {
-            $childList = $hierarchyChildList->getChilds($metaHierarchyItem);
+            $childList = $hierarchyChildList->getChildren($metaHierarchyItem);
             $recordstoBeDeleted = [$metaHierarchyItem->id];
             MetaHierarchyItem::whereIn('id', array_merge($recordstoBeDeleted, $childList->pluck('id')->toArray()))
                 ->delete();

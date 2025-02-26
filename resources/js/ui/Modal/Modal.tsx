@@ -25,7 +25,7 @@ export default function Modal({
       transition={{ duration: 0.2 }}
       className={styles.modal}
     >
-      <div className='relative h-screen w-screen'>
+      <div className='relative min-h-screen w-screen overflow-auto'>
         <div
           className={styles.modalBackground}
           onClick={() => setShowModal(false)}

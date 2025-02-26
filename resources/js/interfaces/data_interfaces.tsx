@@ -1,4 +1,4 @@
-import { MetaData, MetaStructure } from '@/interfaces/meta_interfaces'
+import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
 
 export interface Model {
   id: number
@@ -115,10 +115,13 @@ export interface SubsetDimensionField extends Model {
   subset_column: string
   filter_only: 0 | 1
   column_expression: string | null
+  hierarchy_id: number | null
+  description: string | null
   sort_order: string | null
   filters: number[] | null
   filter_values?: Partial<MetaData>[] | null
   info?: Partial<TableDimensionField>
+  hierarchy?: Partial<MetaHierarchy>
 }
 
 export interface SubsetMeasureField extends Model {

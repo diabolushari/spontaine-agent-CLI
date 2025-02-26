@@ -23,6 +23,7 @@ class SubsetFormRequest extends Data
         public ?int $maxRowsToFetch,
         public bool $groupData,
         public string $type,
+        public bool $useForTrainingAi,
         public ?array $dates,
         public ?array $dimensions,
         public ?array $measures,

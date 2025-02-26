@@ -6,7 +6,7 @@ import {
   SubsetDimensionField,
   TableDimensionField,
 } from '@/interfaces/data_interfaces'
-import { MetaData } from '@/interfaces/meta_interfaces'
+import { MetaData, MetaHierarchy } from '@/interfaces/meta_interfaces'
 import { useCallback, useMemo, useState } from 'react'
 import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 
@@ -16,6 +16,7 @@ interface Props {
   onSubmit: (data: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'>) => void
   selectedField: Omit<SubsetDimensionField, 'id' | 'subset_detail_id'> | null
   removeSelectedField: (subsetColumn: string) => void
+  hierarchies: Pick<MetaHierarchy, 'id' | 'name'>[]
 }
 
 export default function AddSubsetDimensionForm({
@@ -23,6 +24,7 @@ export default function AddSubsetDimensionForm({
   onSubmit,
   selectedField,
   removeSelectedField,
+  hierarchies,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     field_id: selectedField?.field_id.toString() ?? '',
@@ -32,6 +34,8 @@ export default function AddSubsetDimensionForm({
       selectedField?.column_expression != null && selectedField.column_expression != '',
     column_expression: selectedField?.column_expression ?? '',
     filter_only: selectedField?.filter_only === 1,
+    hierarchy_id: selectedField?.hierarchy_id?.toString() ?? '',
+    description: selectedField?.description ?? '',
     filter: null as MetaData | null,
   })
 
@@ -67,6 +71,12 @@ export default function AddSubsetDimensionForm({
         setValue: setFormValue('subset_field_name'),
         label: 'Name On Subset',
       },
+      description: {
+        type: 'textarea' as const,
+        setValue: setFormValue('description'),
+        label: 'Description',
+        placeholder: 'Enter Description',
+      },
       sort_order: {
         type: 'select' as const,
         setValue: setFormValue('sort_order'),
@@ -94,6 +104,16 @@ export default function AddSubsetDimensionForm({
         setValue: toggleBoolean('filter_only'),
         label: 'Used Only For Filtering',
       },
+      hierarchy_id: {
+        type: 'select' as const,
+        list: hierarchies,
+        setValue: setFormValue('hierarchy_id'),
+        label: 'Hierarchy',
+        dataKey: 'id',
+        displayKey: 'name',
+        showAllOption: true,
+        allOptionText: 'No Hierarchy',
+      },
       filter: {
         type: 'autocomplete' as const,
         selectListUrl: route('meta-data-search', {
@@ -118,6 +138,7 @@ export default function AddSubsetDimensionForm({
     toggleBoolean,
     formData.use_expression,
     selectedDimensionField,
+    hierarchies,
   ])
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -132,6 +153,8 @@ export default function AddSubsetDimensionForm({
       sort_order: formData.sort_order == '' ? null : formData.sort_order,
       column_expression: formData.use_expression ? formData.column_expression : '',
       filter_only: formData.filter_only ? 1 : 0,
+      hierarchy_id: formData.hierarchy_id == '' ? null : Number(formData.hierarchy_id),
+      description: formData.description,
       filters: appliedFilters.map((filter) => filter.id),
       filter_values: appliedFilters,
     })

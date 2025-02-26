@@ -18,12 +18,14 @@ import {
 import Button from '@/ui/button/Button'
 import React, { useMemo, useState } from 'react'
 import CardHeader from '@/ui/Card/CardHeader'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 interface Props {
   dataDetail: DataDetail
   dateFields: TableDateField[]
   dimensionFields: TableDimensionField[]
   measureFields: TableMeasureField[]
+  hierarchies: Pick<MetaHierarchy, 'id' | 'name'>[]
 }
 
 const subsetTypes = [
@@ -37,11 +39,13 @@ export default function SubsetCreate({
   dateFields,
   dimensionFields,
   measureFields,
+  hierarchies,
 }: Readonly<Props>) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     group_data: false,
     name: '',
     description: '',
+    use_for_training_ai: false,
     max_rows_to_fetch: '',
     type: '',
   })
@@ -75,6 +79,11 @@ export default function SubsetCreate({
         type: 'textarea' as const,
         setValue: setFormValue('description'),
         placeholder: 'description',
+      },
+      use_for_training_ai: {
+        type: 'checkbox' as const,
+        setValue: toggleBoolean('use_for_training_ai'),
+        label: 'Use for Training AI',
       },
       max_rows_to_fetch: {
         type: 'text' as const,
@@ -144,6 +153,7 @@ export default function SubsetCreate({
           setAddedDimensionFields={setDimensions}
           dataDetail={dataDetail}
           dimensionFields={dimensionFields}
+          hierarchies={hierarchies}
         />
         <SubsetManageMeasures
           addedMeasureFields={measures}

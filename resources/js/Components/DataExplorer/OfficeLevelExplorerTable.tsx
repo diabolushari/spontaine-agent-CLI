@@ -28,6 +28,7 @@ export default function OfficeLevelExplorerTable({
   selectedMonth,
   setSelectedMonth,
 }: Readonly<Props>) {
+  console.log(subset)
   const { region, circle, division, subdivision } = useContext(SelectedOfficeContext)
 
   const { prevLevelOffice, selectedOffice } = useOfficeLevelSelection(
@@ -65,6 +66,8 @@ export default function OfficeLevelExplorerTable({
     latest: string | null | number
   }>(url)
 
+  console.log(dataTable)
+
   useEffect(() => {
     if (dataTable?.latest != null && selectedMonth == null) {
       setSelectedMonth(yearMonthToDate(dataTable.latest as string))
@@ -85,19 +88,23 @@ export default function OfficeLevelExplorerTable({
       })
     })
 
-    if (officeLevel != 'state') {
+    subset.dimensions?.forEach((dimension) => {
+      if (dimension.hierarchy == null) {
+        return
+      }
       cols.push({
-        name: 'Office Code',
-        source: 'office_code',
+        name: dimension.hierarchy.primary_field_name ?? '',
+        source: dimension.hierarchy.primary_column ?? '',
         type: 'string',
       })
-
-      cols.push({
-        name: 'Office Name',
-        source: 'office_name',
-        type: 'string',
-      })
-    }
+      if (dimension.hierarchy.secondary_field_name != null) {
+        cols.push({
+          name: dimension.hierarchy.secondary_field_name ?? '',
+          source: dimension.hierarchy.secondary_column ?? '',
+          type: 'string',
+        })
+      }
+    })
 
     subset.dimensions
       ?.filter((dimension) => dimension.filter_only === 0)
@@ -105,11 +112,13 @@ export default function OfficeLevelExplorerTable({
         if (dimension.info == null) {
           return
         }
-        cols.push({
-          name: dimension.subset_field_name ?? '',
-          source: dimension.subset_column ?? '',
-          type: 'string',
-        })
+        if (dimension.hierarchy == null) {
+          cols.push({
+            name: dimension.subset_field_name ?? '',
+            source: dimension.subset_column ?? '',
+            type: 'string',
+          })
+        }
       })
 
     subset.measures?.forEach((measure) => {
@@ -136,7 +145,7 @@ export default function OfficeLevelExplorerTable({
     })
 
     return cols
-  }, [subset, officeLevel])
+  }, [subset])
 
   return (
     <FullSpinnerWrapper processing={loading}>

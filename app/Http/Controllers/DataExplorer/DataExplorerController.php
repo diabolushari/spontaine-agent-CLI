@@ -31,6 +31,7 @@ class DataExplorerController extends Controller implements HasMiddleware
             ->with([
                 'subset' => fn ($query) => $query->with([
                     'dimensions.info',
+                    'dimensions.hierarchy',
                     'measures.info',
                     'measures.weightInfo',
                     'dates.info',

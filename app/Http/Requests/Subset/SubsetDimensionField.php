@@ -17,6 +17,8 @@ class SubsetDimensionField extends Data
         public int $filterOnly,
         public string $subsetFieldName,
         public string $subsetColumn,
+        public ?string $description,
+        public ?int $hierarchyId,
         public ?string $sortOrder,
         public ?string $columnExpression,
         public ?array $filters,

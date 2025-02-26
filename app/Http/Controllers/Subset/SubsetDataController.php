@@ -10,20 +10,9 @@ use App\Services\Subset\SubsetQueryBuilder;
 use App\Services\Subset\SubsetQuerySorting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SubsetDataController extends Controller implements HasMiddleware
+class SubsetDataController extends Controller
 {
-    /**
-     * @return string[]
-     */
-    public static function middleware(): array
-    {
-        return [
-            'auth',
-        ];
-    }
-
     public function __invoke(
         SubsetDetail $subsetDetail,
         SubsetQueryBuilder $queryBuilder,
@@ -32,7 +21,13 @@ class SubsetDataController extends Controller implements HasMiddleware
         SubsetQuerySorting $querySorting,
         Request $request,
     ): JsonResponse {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'measures.info', 'measures.weightInfo');
+        $subsetDetail->load(
+            'dates.info',
+            'dimensions.info',
+            'dimensions.hierarchy',
+            'measures.info',
+            'measures.weightInfo'
+        );
 
         $query = $queryBuilder->query($subsetDetail);
 

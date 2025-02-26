@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -100,7 +101,11 @@ class MetaHierarchyController extends Controller implements HasMiddleware
         DB::beginTransaction();
 
         try {
-            $metaHierarchy = MetaHierarchy::create($request->all());
+            $metaHierarchy = MetaHierarchy::create([
+                ...$request->all(),
+                'primary_column' => Str::snake($request->primaryFieldName),
+                'secondary_column' => $request->secondaryFieldName != null ? Str::snake($request->secondaryFieldName) : null,
+            ]);
             foreach ($hierarchyLevels as &$tempLevel) {
                 $tempLevel['meta_hierarchy_id'] = $metaHierarchy->id;
             }
@@ -132,6 +137,10 @@ class MetaHierarchyController extends Controller implements HasMiddleware
             $metaHierarchy->update([
                 'name' => $request->name,
                 'description' => $request->description,
+                'primary_field_name' => $request->primaryFieldName,
+                'secondary_field_name' => $request->secondaryFieldName,
+                'primary_column' => Str::snake($request->primaryFieldName),
+                'secondary_column' => $request->secondaryFieldName != null ? Str::snake($request->secondaryFieldName) : null,
             ]);
 
             foreach ($hierarchyLevels as &$tempLevel) {

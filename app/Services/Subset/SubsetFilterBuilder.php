@@ -2,8 +2,10 @@
 
 namespace App\Services\Subset;
 
+use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Subset\SubsetDetail;
 use App\Services\DistributionHierarchy\DistributionHierarchy;
+use App\Services\MetaData\Hierarchy\HierarchyChildList;
 use Illuminate\Database\Query\Builder;
 
 class SubsetFilterBuilder
@@ -11,7 +13,8 @@ class SubsetFilterBuilder
     use SubsetExpressionStatement;
 
     public function __construct(
-        public DistributionHierarchy $distributionHierarchy
+        public DistributionHierarchy $distributionHierarchy,
+        private readonly HierarchyChildList $hierarchyChildList
     ) {}
 
     /**
@@ -59,17 +62,30 @@ class SubsetFilterBuilder
         });
 
         $subsetDetail->dimensions->each(function ($dimension) use ($filters, $query) {
-            if ($dimension->info->column === 'section_code' && isset($filters['office_code'])) {
-                $sectionCode = $this->distributionHierarchy->findAllSection($filters['office_code']);
-                $query->whereIn($dimension->info->column.'_record.name', array_column(
-                    $sectionCode,
-                    'section_code'
-                ));
-
-                return;
-            }
 
             $column = $this->dimensionStatement($dimension);
+
+            if ($dimension->hierarchy != null && isset($filters[$dimension->hierarchy->primary_column])) {
+                $searchValue = $filters[$dimension->hierarchy->primary_column];
+                $hierarchyItem = MetaHierarchyItem::where('meta_hierarchy_id', $dimension->hierarchy_id)
+                    ->whereHas('primaryField', function ($query) use ($searchValue) {
+                        $query->where('name', $searchValue);
+                    })->first();
+
+                if ($hierarchyItem == null) {
+                    return;
+                }
+
+                $childrenMetaValues = $this->hierarchyChildList->getChildren($hierarchyItem)->map(function ($child) {
+                    return $child->primaryField->name;
+                })->toArray();
+
+                $query->whereIn($dimension->info->column.'_record.name', [
+                    $hierarchyItem->primaryField->name,
+                    ...$childrenMetaValues,
+                ]);
+
+            }
 
             //check if dimension/dimension_in/dimension_not_in/dimension_not/dimension_like/dimension_not_like are set
             if (isset($filters[$dimension->subset_column])) {

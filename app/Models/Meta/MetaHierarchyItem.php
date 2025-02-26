@@ -20,7 +20,7 @@ class MetaHierarchyItem extends Model
     ];
 
     /**
-     * @return BelongsTo<MetaHierarchy, $this>
+     * @return BelongsTo<MetaData, $this>
      */
     public function primaryField(): BelongsTo
     {
@@ -28,7 +28,7 @@ class MetaHierarchyItem extends Model
     }
 
     /**
-     * @return BelongsTo<MetaHierarchy, $this>
+     * @return BelongsTo<MetaData, $this>
      */
     public function secondaryField(): BelongsTo
     {

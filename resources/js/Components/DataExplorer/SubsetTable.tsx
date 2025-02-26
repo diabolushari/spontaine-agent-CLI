@@ -29,11 +29,28 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
         if (dimension.info == null) {
           return
         }
+        if (dimension.hierarchy == null) {
+          cols.push({
+            name: dimension.subset_field_name ?? '',
+            source: dimension.subset_column ?? '',
+            type: 'string',
+          })
+          return
+        }
+
         cols.push({
-          name: dimension.subset_field_name ?? '',
-          source: dimension.subset_column ?? '',
+          name: dimension.hierarchy.primary_field_name ?? '',
+          source: dimension.hierarchy.primary_column ?? '',
           type: 'string',
         })
+
+        if (dimension.hierarchy.secondary_field_name != null) {
+          cols.push({
+            name: dimension.hierarchy.secondary_field_name ?? '',
+            source: dimension.hierarchy.secondary_column ?? '',
+            type: 'string',
+          })
+        }
       })
 
     subset.measures?.forEach((measure) => {
@@ -58,17 +75,6 @@ export default function SubsetTable({ subset, dataTableItems }: Readonly<Props>)
         })
       }
     })
-    //if column  section_code exists and section_name does not exist then add section_name right
-    const sectionNameExists = cols.find((col) => col.source === 'section_name')
-    const sectionCodeIndex = cols.findIndex((col) => col.source === 'section_code')
-    if (sectionCodeIndex > -1 && !sectionNameExists) {
-      cols.splice(sectionCodeIndex + 1, 0, {
-        name: 'Section Name',
-        source: 'section_name',
-        type: 'string',
-      })
-    }
-
     return cols
   }, [subset])
 
