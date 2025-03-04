@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
@@ -50,6 +51,7 @@ use App\Http\Controllers\TabController;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
 use App\Models\Subset\SubsetDetailDimension;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -191,7 +193,7 @@ Route::get('static-list', StaticListController::class)
 Route::get('regions', function () {
 
     $hierarchy = MetaHierarchy::first();
-    $regions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+    $regions = DB::table('data_table_distribution_hierarchy')
         ->groupBy('region_code', 'region_name')
         ->select('region_code', 'region_name')
         ->get();
@@ -213,7 +215,7 @@ Route::get('regions', function () {
 Route::get('circles', function () {
 
     $hierarchy = MetaHierarchy::first();
-    $circles = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+    $circles = DB::table('data_table_distribution_hierarchy')
         ->groupBy('circle_code', 'circle_name', 'region_code')
         ->select('circle_code', 'circle_name', 'region_code')
         ->get();
@@ -237,7 +239,7 @@ Route::get('circles', function () {
 
 Route::get('divisions', function () {
     $hierarchy = MetaHierarchy::first();
-    $divions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+    $divions = DB::table('data_table_distribution_hierarchy')
         ->groupBy('division_code', 'division_name', 'circle_code')
         ->select('division_code', 'division_name', 'circle_code')
         ->get();
@@ -261,7 +263,7 @@ Route::get('divisions', function () {
 
 Route::get('subdivisions', function () {
     $hierarchy = MetaHierarchy::first();
-    $divions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+    $divions = DB::table('data_table_distribution_hierarchy')
         ->groupBy('subdivision_code', 'subdivision_name', 'division_code')
         ->select('subdivision_code', 'subdivision_name', 'division_code')
         ->get();
@@ -285,7 +287,7 @@ Route::get('subdivisions', function () {
 
 Route::get('sections', function () {
     $hierarchy = MetaHierarchy::first();
-    $divions = \Illuminate\Support\Facades\DB::table('data_table_distribution_hierarchy')
+    $divions = DB::table('data_table_distribution_hierarchy')
         ->groupBy('section_code', 'section_name', 'subdivision_code')
         ->select('section_code', 'section_name', 'subdivision_code')
         ->get();
@@ -316,5 +318,8 @@ Route::get('fix-sections', function () {
     return SubsetDetailDimension::where('subset_column', 'section_code')
         ->get();
 });
+
+Route::get('chat', ChatController::class)
+    ->name('chat');
 
 require __DIR__.'/auth.php';
