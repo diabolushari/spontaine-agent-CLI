@@ -7,5 +7,5 @@ interface Props {
 }
 
 export default function NormalText({ className = 'small-1stop', children }: Props) {
-  return <span className={cn('', className)}>{children}</span>
+  return <span className={cn('break-words', className)}>{children}</span>
 }

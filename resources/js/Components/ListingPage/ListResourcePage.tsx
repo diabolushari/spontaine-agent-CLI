@@ -174,7 +174,7 @@ export default function ListResourcePage<
           rows={rows}
           onAddClick={handleAddAction}
           cardStyles={cardStyles}
-          gridStyles={gridStyles}
+          boxGridStyles={gridStyles}
           onCardClick={handleCardClick}
           layoutStyles={layoutStyle}
           isAddButton={isAddButton}

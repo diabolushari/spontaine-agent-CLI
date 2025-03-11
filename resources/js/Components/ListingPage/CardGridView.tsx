@@ -17,7 +17,7 @@ interface Props<
   primaryKey: keyof T
   rows: T[]
   onAddClick?: (e: React.MouseEvent<HTMLButtonElement>) => unknown
-  gridStyles?: string
+  boxGridStyles?: string
   cardStyles?: string
   onCardClick?: (id: number | string) => void
   layoutStyles?: string
@@ -35,7 +35,7 @@ export default function CardGridView<
   rows,
   onAddClick,
   cardStyles,
-  gridStyles,
+  boxGridStyles,
   onCardClick,
   layoutStyles,
   addButtonText,
@@ -89,12 +89,6 @@ export default function CardGridView<
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
             {titleKey != null && (
-              // <SubHeading
-              //   onClick={() => handleTitleClick(row[primaryKey] as string | number)}
-              //   className={`${!isUsingTitleClick ? '' : 'cursor-pointer font-bold transition hover:scale-105'}`}
-              // >
-              //   {row[titleKey.key] as string}
-              // </SubHeading>
               <div className='body-1stop'>
                 <SubHeading
                   onClick={() => handleTitleClick(row[primaryKey] as string | number)}
@@ -114,28 +108,21 @@ export default function CardGridView<
                 </SubHeading>
               </div>
             )}
-            <div className={`${cn('grid grid-cols-1', gridStyles)}`}>
+            <div className={`${cn('grid grid-cols-1', boxGridStyles)}`}>
               {keys
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
                   <div
-                    className={cn(
-                      `flex gap-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
-                      rowKey.boxStyles
-                    )}
+                    className={cn(`flex gap-x-2`, rowKey.boxStyles)}
                     key={rowKey.key as string}
-                    // onClick={() => handleCardDivClick(row[primaryKey] as string)}
                   >
-                    {!(rowKey.hideLabel ?? false) && (
-                      <StrongText className='small-1stop'>{rowKey.label as string}</StrongText>
-                    )}
-                    <NormalText
-                      className={cn(
-                        '',
-                        rowKey.textStyles != null
-                          ? (row[rowKey.textStyles as keyof typeof row] as string)
-                          : ''
+                    <div className='flex-shrink-0'>
+                      {!(rowKey.hideLabel ?? false) && (
+                        <StrongText className='small-1stop'>{rowKey.label as string}</StrongText>
                       )}
+                    </div>
+                    <NormalText
+                      className={(row[rowKey.textStyles as keyof typeof row] as string) ?? ''}
                     >
                       {row[rowKey.key] as string}
                     </NormalText>

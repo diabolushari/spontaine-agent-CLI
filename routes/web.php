@@ -5,6 +5,7 @@ use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
 use App\Http\Controllers\DataDetail\ExportDataTableController;
 use App\Http\Controllers\DataExplorer\DataExplorerController;
+use App\Http\Controllers\DataLoader\DataLoaderAPIController;
 use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
@@ -325,5 +326,8 @@ Route::get('chat', ChatController::class)
 
 Route::get('subset-documentation', SubsetDocumentationController::class)
     ->name('subset-documentation');
+
+Route::resource('loader-apis', DataLoaderAPIController::class)
+    ->parameters(['loader-apis' => 'dataLoaderAPI']);
 
 require __DIR__.'/auth.php';

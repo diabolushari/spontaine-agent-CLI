@@ -6,9 +6,7 @@ import dashboardMenuItems from '@/Layouts/dashboard-menu-items'
 import MetaTags from '@/Components/MetaTags'
 import { showError, showSuccess } from '@/ui/alerts'
 import { ToastContainer } from 'react-toastify'
-// import oneStopLogo from '../../../public/one-stop-logo.svg'
 import ApplicationLogo from '@/Components/ApplicationLogo'
-import { url } from 'inspector'
 
 interface Properties {
   children?: ReactNode

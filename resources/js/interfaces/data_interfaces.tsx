@@ -300,3 +300,17 @@ export const officeLevels = [
   { level: 4, name: 'subdivision' },
   { level: 5, name: 'section' },
 ]
+
+export interface KeyValue {
+  key: string
+  value: string | null
+}
+
+export interface DataLoaderAPI extends Model {
+  name: string
+  description: string | null
+  url: string
+  method: 'GET' | 'POST'
+  headers: KeyValue[] | null
+  body: KeyValue[] | null
+}
