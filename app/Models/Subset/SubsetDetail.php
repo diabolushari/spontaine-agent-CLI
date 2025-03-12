@@ -20,6 +20,8 @@ class SubsetDetail extends Model
         'type',
         'max_rows_to_fetch',
         'use_for_training_ai',
+        'proactive_insight_instructions',
+        'visualization_instructions',
         'created_by',
         'updated_by',
     ];

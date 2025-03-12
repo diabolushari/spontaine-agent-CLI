@@ -13,6 +13,8 @@ class LoaderAPI extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'loader_a_p_i_s';
+
     protected $fillable = [
         'name',
         'description',

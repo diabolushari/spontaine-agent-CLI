@@ -47,6 +47,10 @@ export default function SubsetCreate({
     description: '',
     use_for_training_ai: false,
     max_rows_to_fetch: '',
+    add_proactive_insight_instructions: false,
+    proactive_insight_instructions: '',
+    add_visualization_instructions: false,
+    visualization_instructions: '',
     type: '',
   })
 
@@ -80,11 +84,6 @@ export default function SubsetCreate({
         setValue: setFormValue('description'),
         placeholder: 'description',
       },
-      use_for_training_ai: {
-        type: 'checkbox' as const,
-        setValue: toggleBoolean('use_for_training_ai'),
-        label: 'Use for Training AI',
-      },
       max_rows_to_fetch: {
         type: 'text' as const,
         setValue: setFormValue('max_rows_to_fetch'),
@@ -106,14 +105,53 @@ export default function SubsetCreate({
         description:
           'Grouping & Aggregation Operations can not be toggled if measures are already added',
       },
+      use_for_training_ai: {
+        type: 'checkbox' as const,
+        setValue: toggleBoolean('use_for_training_ai'),
+        label: 'Use for Training AI',
+      },
+      add_proactive_insight_instructions: {
+        type: 'checkbox' as const,
+        setValue: toggleBoolean('add_proactive_insight_instructions'),
+        label: 'Has Proactive Insight Instructions',
+      },
+      proactive_insight_instructions: {
+        type: 'textarea' as const,
+        setValue: setFormValue('proactive_insight_instructions'),
+        placeholder: 'Proactive Insight Instructions',
+        hidden: !formData.add_proactive_insight_instructions,
+      },
+      add_visualization_instructions: {
+        type: 'checkbox' as const,
+        setValue: toggleBoolean('add_visualization_instructions'),
+        label: 'Has Visualization Instructions',
+      },
+      visualization_instructions: {
+        type: 'textarea' as const,
+        setValue: setFormValue('visualization_instructions'),
+        placeholder: 'Visualization Instructions',
+        hidden: !formData.add_visualization_instructions,
+      },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, toggleBoolean, measures])
+  }, [
+    setFormValue,
+    toggleBoolean,
+    measures,
+    formData.add_proactive_insight_instructions,
+    formData.add_visualization_instructions,
+  ])
 
   const submitForm = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
 
     post({
       ...formData,
+      proactive_insight_instructions: formData.add_proactive_insight_instructions
+        ? formData.proactive_insight_instructions
+        : '',
+      visualization_instructions: formData.add_visualization_instructions
+        ? formData.visualization_instructions
+        : '',
       dates,
       dimensions,
       measures,

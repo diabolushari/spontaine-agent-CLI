@@ -330,6 +330,7 @@ Route::get('subset-documentation', SubsetDocumentationController::class)
 
 Route::resource('loader-apis', DataLoaderAPIController::class)
     ->parameters(['loader-apis' => 'dataLoaderAPI']);
+
 Route::get('loader-query-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
     ->name('loader-query-api-data');
 
