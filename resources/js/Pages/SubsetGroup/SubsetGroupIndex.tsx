@@ -1,9 +1,10 @@
 import ListResourcePage, { ListItemKeys } from '@/Components/ListingPage/ListResourcePage'
 import useCustomForm from '@/hooks/useCustomForm'
 import { SubsetGroup } from '@/interfaces/data_interfaces'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import { Paginator } from '@/ui/ui_interfaces'
+import { router } from '@inertiajs/react'
 
 interface Props {
   subsetGroups: Paginator<SubsetGroup>
@@ -47,15 +48,14 @@ export default function SubsetGroupIndex({ subsetGroups }: Readonly<Props>) {
       return {
         id: record.id,
         name: record.name,
-        actions: [
-          {
-            title: 'Show',
-            url: route('subset-groups.show', record.id),
-          },
-        ],
+        actions: [],
       }
     })
   }, [subsetGroups])
+
+  const onCardClick = useCallback((id: string | number) => {
+    router.get(route('subset-groups.show', id))
+  }, [])
 
   return (
     <ListResourcePage
@@ -67,6 +67,9 @@ export default function SubsetGroupIndex({ subsetGroups }: Readonly<Props>) {
       addUrl={route('subset-groups.create')}
       searchUrl={route('subset-groups.index')}
       paginator={subsetGroups}
+      handleCardClick={onCardClick}
+      type='data'
+      subtype='subject-area'
     />
   )
 }

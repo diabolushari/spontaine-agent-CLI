@@ -274,12 +274,6 @@ export default function AnalyticsDashboardLayout({
                 href='/meta-structure'
                 className='cursor-pointer hover:opacity-50'
               >
-                {/* <img
-                  src={oneStopLogo}
-                  alt='Logo'
-                  className='h-24 w-auto rounded-2xl'
-                /> */}
-
                 <ApplicationLogo className='h-24 w-auto rounded-2xl' />
               </Link>
             </div>
@@ -294,7 +288,6 @@ export default function AnalyticsDashboardLayout({
                 >
                   {userInitial}
                 </div>
-
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'

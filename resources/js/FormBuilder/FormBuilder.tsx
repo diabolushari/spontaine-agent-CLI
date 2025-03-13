@@ -182,7 +182,12 @@ export default function FormBuilder<
             </div>
           )}
           {formItems[keyValue].type === 'checkbox' && !formItems[keyValue].hidden && (
-            <div className={cn('flex flex-col', formItems[keyValue].colPositionAdjustment ?? '')}>
+            <div
+              className={cn(
+                'flex flex-col justify-center',
+                formItems[keyValue].colPositionAdjustment ?? ''
+              )}
+            >
               {formItems[keyValue].description != null && (
                 <NormalText>{formItems[keyValue].description}</NormalText>
               )}

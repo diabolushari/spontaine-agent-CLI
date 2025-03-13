@@ -163,7 +163,6 @@ export default function ListResourcePage<
             </div>
           </div>
         </div>
-
         <FilterOldValues
           oldValues={oldValues}
           searchUrl={searchUrl}

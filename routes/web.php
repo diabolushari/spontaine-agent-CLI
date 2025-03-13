@@ -35,6 +35,7 @@ use App\Http\Controllers\SubjectArea\SubjectAreaController;
 use App\Http\Controllers\Subset\FindLevelController;
 use App\Http\Controllers\Subset\OfficeRankingsController;
 use App\Http\Controllers\Subset\SubsetColumSearchController;
+use App\Http\Controllers\Subset\SubsetController;
 use App\Http\Controllers\Subset\SubsetCreateController;
 use App\Http\Controllers\Subset\SubsetDataController;
 use App\Http\Controllers\Subset\SubsetDeleteController;
@@ -168,6 +169,9 @@ Route::get('subset-list', SubsetListController::class)
 
 Route::get('subset-level', SubsetDropdownApiController::class)
     ->name('subset.level');
+
+Route::get('subsets', SubsetController::class)
+    ->name('subsets');
 
 Route::get('find-level', FindLevelController::class)
     ->name('find-level');

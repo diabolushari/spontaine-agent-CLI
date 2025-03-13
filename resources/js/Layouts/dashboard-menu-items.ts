@@ -67,6 +67,28 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         permission: 'data-tables',
         subtype: 'subject-area',
       },
+      {
+        title: 'Subsets',
+        link: route('subsets'),
+        image: {
+          svg: `<svg width={80} height={80} viewBox='0 0 80 80' fill='none'  xmlns='http://www.w3.org/2000/svg'>
+<rect x='9' y='12' width='62' height='56' rx='2' fill='var(--colour-1stop-dark)'/>
+<rect x='16.75' y='40.7002' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='16.75' y='28.1001' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='34.5752' y='40.7002' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='34.5752' y='28.1001' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='16.75' y='54' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='34.5752' y='53.2998' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='52.4004' y='40.7002' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='52.4004' y='28.1001' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='34.5752' y='54' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+<rect x='52.4004' y='54' width='11.625' height='9.8' rx='2' fill='var(--colour-1stop-highlight)'/>
+</svg>
+`,
+        },
+        permission: 'data-tables',
+        subtype: 'subsets',
+      },
     ],
   },
   {
