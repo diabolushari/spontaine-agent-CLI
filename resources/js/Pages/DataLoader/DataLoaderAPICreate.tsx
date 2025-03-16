@@ -7,6 +7,8 @@ import KeyValueList from '@/Components/DataLoader/KeyValueList/KeyValueList'
 import Button from '@/ui/button/Button'
 import { usePage } from '@inertiajs/react'
 import ErrorText from '@/typography/ErrorText'
+import useJsonStructure from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
+import SetDataStructure from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
 
 const requestTypes = [
   { method: 'GET', label: 'GET' },
@@ -29,6 +31,22 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
     dataLoaderAPI?.headers ?? [{ key: '', value: '' }]
   )
   const [params, setParams] = useState<KeyValue[]>(dataLoaderAPI?.body ?? [{ key: '', value: '' }])
+
+  const {
+    dataStructure,
+    removeFieldFromJson,
+    addNewFieldToJson,
+    updateJsonFieldName,
+    updateJsonFieldType,
+  } = useJsonStructure({
+    lastUUID: 1,
+    definition: {
+      id: 1,
+      fieldName: 'root',
+      fieldType: 'array',
+      children: [],
+    },
+  })
 
   const formItems = useMemo(<
     T,
@@ -110,6 +128,21 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
             setList={setParams}
             errorsKey='body'
           />
+        </div>
+        <div>
+          <h3>Response Structure</h3>
+          {errors['response_structure'] != null && (
+            <ErrorText>{errors['response_structure']}</ErrorText>
+          )}
+          <div className='flex flex-col gap-5'>
+            <SetDataStructure
+              definition={dataStructure.definition}
+              addNewFieldToJson={addNewFieldToJson}
+              removeFieldFromJson={removeFieldFromJson}
+              updateJsonFieldName={updateJsonFieldName}
+              updateJsonFieldType={updateJsonFieldType}
+            />
+          </div>
         </div>
         <div className='flex'>
           <Button label='SAVE' />

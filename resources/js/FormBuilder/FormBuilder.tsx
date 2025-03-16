@@ -11,7 +11,7 @@ import TextArea from '@/ui/form/TextArea'
 import TimePicker from '@/ui/form/TimePicker'
 import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import { cn } from '@/utils'
-import React, { useMemo } from 'react'
+import React, { memo, useMemo } from 'react'
 import RadioGroup from '@/ui/form/RadioGroup'
 
 export interface FormItem<
@@ -75,7 +75,7 @@ interface Props<
   secondaryAction?: () => unknown
 }
 
-export default function FormBuilder<
+function FormBuilder<
   T,
   U extends keyof T,
   K extends keyof L,
@@ -295,8 +295,6 @@ export default function FormBuilder<
                   setValue={formItems[keyValue].setValue as (value: string) => unknown}
                   value={formData[keyValue] as string | number}
                   label={formItems[keyValue].label}
-                  showAllOption={formItems[keyValue].showAllOption}
-                  allOptionText={formItems[keyValue].allOptionText}
                   error={errors != null ? errors[keyValue] : undefined}
                   disabled={formItems[keyValue].disabled}
                 />
@@ -370,3 +368,5 @@ export default function FormBuilder<
     </form>
   )
 }
+
+export default memo(FormBuilder)

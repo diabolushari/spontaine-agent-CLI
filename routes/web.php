@@ -199,6 +199,7 @@ Route::get('subset-export/{subsetDetail}', SubsetExportController::class)
 
 Route::get('office-rankings/{subsetGroupName}', OfficeRankingsController::class)
     ->name('office-rankings');
+
 Route::get('subset-fields', SubsetFieldsListController::class)
     ->name('subset-fields');
 
@@ -345,8 +346,5 @@ Route::resource('loader-apis', DataLoaderAPIController::class)
 
 Route::get('loader-query-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
     ->name('loader-query-api-data');
-
-Route::get('subset-documentation-generator', \App\Http\Controllers\SubsetDocument\SubsetDocumentationController::class)
-    ->name('subset-documentation-generator');
 
 require __DIR__.'/auth.php';
