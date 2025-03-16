@@ -38,15 +38,17 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
     addNewFieldToJson,
     updateJsonFieldName,
     updateJsonFieldType,
-  } = useJsonStructure({
-    lastUUID: 1,
-    definition: {
-      id: 1,
-      fieldName: 'root',
-      fieldType: 'array',
-      children: [],
-    },
-  })
+  } = useJsonStructure(
+    dataLoaderAPI?.response_structure ?? {
+      last_uuid: 1,
+      definition: {
+        id: 1,
+        field_name: 'root',
+        field_type: 'array',
+        children: [],
+      },
+    }
+  )
 
   const formItems = useMemo(<
     T,
@@ -86,9 +88,10 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
     return {
       ...formData,
       headers,
+      response_structure: dataStructure,
       body: params,
     }
-  }, [formData, headers, params])
+  }, [formData, headers, params, dataStructure])
 
   const { errors } = usePage().props as { errors: Record<string, string | undefined> }
 

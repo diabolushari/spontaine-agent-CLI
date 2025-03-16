@@ -5,7 +5,7 @@ import {
 } from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
 
 export interface JSONStructureDefinition {
-  lastUUID: number
+  last_uuid: number
   definition: JSONDefinition
 }
 
@@ -40,8 +40,8 @@ function insertNewChild(
         ...definition.children,
         {
           id: newItemId,
-          fieldName: '',
-          fieldType: 'primitive',
+          field_name: '',
+          field_type: 'primitive',
           children: [],
         },
       ],
@@ -80,19 +80,24 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
     setDataStructure((oldStructure) => {
       return {
         ...oldStructure,
-        definition: partialUpdate(oldStructure.definition, fieldId, { fieldName: fieldName }),
+        definition: partialUpdate(oldStructure.definition, fieldId, { field_name: fieldName }),
       }
     })
   }, [])
 
   const updateJsonFieldType = useCallback((fieldId: number, type: JSONFieldType) => {
+    const partialData: Partial<JSONDefinition> = {
+      field_type: type,
+    }
+
     if (type === 'primitive-array' || type === 'primitive') {
+      partialData['children'] = []
     }
 
     setDataStructure((oldValue) => {
       return {
         ...oldValue,
-        definition: partialUpdate(oldValue.definition, fieldId, { fieldType: type }),
+        definition: partialUpdate(oldValue.definition, fieldId, partialData),
       }
     })
   }, [])
@@ -101,8 +106,8 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
     setDataStructure((oldValue) => {
       return {
         ...oldValue,
-        lastUUID: oldValue.lastUUID + 1,
-        definition: insertNewChild(oldValue.definition, parentFieldId, oldValue.lastUUID + 1),
+        last_uuid: oldValue.last_uuid + 1,
+        definition: insertNewChild(oldValue.definition, parentFieldId, oldValue.last_uuid + 1),
       }
     })
   }, [])

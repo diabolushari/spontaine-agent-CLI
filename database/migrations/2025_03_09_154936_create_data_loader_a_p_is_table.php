@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('method');
             $table->json('headers');
             $table->json('body');
+            $table->json('response_structure');
 
             //fields
             $table->softDeletes();

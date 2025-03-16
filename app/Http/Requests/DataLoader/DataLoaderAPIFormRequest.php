@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\DataLoader;
 
+use App\Services\DataLoader\JsonStructure\JsonStructureDefinition;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\In;
 use Spatie\LaravelData\Attributes\Validation\Max;
@@ -11,6 +12,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 /**
  * @property KeyValue[] $headers
  * @property KeyValue[] $body
+ * @property JsonStructureDefinition $responseStructure
  */
 #[MapName(SnakeCaseMapper::class)]
 class DataLoaderAPIFormRequest extends Data
@@ -26,5 +28,6 @@ class DataLoaderAPIFormRequest extends Data
         public readonly string $url,
         public readonly array $headers,
         public readonly array $body,
+        public readonly JsonStructureDefinition $responseStructure,
     ) {}
 }

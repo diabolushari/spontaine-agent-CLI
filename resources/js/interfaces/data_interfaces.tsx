@@ -1,4 +1,5 @@
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
+import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 
 export interface Model {
   id: number
@@ -318,4 +319,5 @@ export interface DataLoaderAPI extends Model {
   method: 'GET' | 'POST'
   headers: KeyValue[] | null
   body: KeyValue[] | null
+  response_structure: JSONStructureDefinition
 }

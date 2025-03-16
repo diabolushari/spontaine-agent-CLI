@@ -22,6 +22,7 @@ class LoaderAPI extends Model
         'method',
         'headers',
         'body',
+        'response_structure',
         'created_by',
         'updated_by',
     ];
@@ -29,6 +30,7 @@ class LoaderAPI extends Model
     protected $casts = [
         'headers' => 'array',
         'body' => 'array',
+        'response_structure' => 'array',
     ];
 
     //relationships

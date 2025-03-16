@@ -14,8 +14,8 @@ export type JSONFieldType = 'array' | 'object' | 'primitive' | 'primitive-array'
 
 export interface JSONDefinition {
   id: number
-  fieldName: string
-  fieldType: JSONFieldType
+  field_name: string
+  field_type: JSONFieldType
   children: JSONDefinition[]
 }
 
@@ -40,22 +40,22 @@ function SetDataStructure({
           <div className='flex flex-col'>
             <Input
               setValue={(value) => updateJsonFieldName(definition.id, value)}
-              value={definition.fieldName}
-              disabled={definition.fieldName === 'root'}
+              value={definition.field_name}
+              disabled={definition.field_name === 'root'}
               placeholder='Field Name'
             />
           </div>
           <div className='flex flex-col'>
             <SelectList
               setValue={(value) => updateJsonFieldType(definition.id, value as JSONFieldType)}
-              value={definition.fieldType}
+              value={definition.field_type}
               list={fieldTypes}
               dataKey='value'
               displayKey='value'
             />
           </div>
         </div>
-        {definition.fieldName !== 'root' && (
+        {definition.field_name !== 'root' && (
           <button
             className='flex-shrink-0 p-2 hover:bg-1stop-accent2'
             type='button'
@@ -67,14 +67,14 @@ function SetDataStructure({
       </div>
       <div className='flex flex-col pl-5'>
         <div className=''>
-          {definition.fieldType === 'array' && (
+          {definition.field_type === 'array' && (
             <span>
-              {definition.children.length} fields in every object of {definition.fieldName} array
+              {definition.children.length} fields in every object of {definition.field_name} array
             </span>
           )}
-          {definition.fieldType === 'object' && (
+          {definition.field_type === 'object' && (
             <span>
-              {definition.children.length} fields in {definition.fieldName} object
+              {definition.children.length} fields in {definition.field_name} object
             </span>
           )}
         </div>
@@ -89,14 +89,14 @@ function SetDataStructure({
               updateJsonFieldType={updateJsonFieldType}
             />
           ))}
-          {definition.fieldType !== 'primitive' && definition.fieldType !== 'primitive-array' && (
+          {definition.field_type !== 'primitive' && definition.field_type !== 'primitive-array' && (
             <div className='flex'>
               <button
                 className='link'
                 type='button'
                 onClick={() => addNewFieldToJson(definition.id)}
               >
-                Add New Field
+                Add Field To {definition.field_name}
               </button>
             </div>
           )}
