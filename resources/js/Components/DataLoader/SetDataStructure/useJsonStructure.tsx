@@ -9,47 +9,58 @@ export interface JSONStructureDefinition {
   definition: JSONDefinition
 }
 
-function partialUpdate(
-  definition: JSONDefinition,
+function findAndPartialUpdate(
+  targetDefinition: JSONDefinition,
   idToUpdate: number,
   updateValue: Partial<JSONDefinition>
 ): JSONDefinition {
-  if (definition.id === idToUpdate) {
+  if (targetDefinition.id === idToUpdate) {
     return {
-      ...definition,
+      ...targetDefinition,
       ...updateValue,
     }
   }
   return {
-    ...definition,
-    children: definition.children.map((child) => {
-      return partialUpdate(child, idToUpdate, updateValue)
+    ...targetDefinition,
+    children: targetDefinition.children.map((child) => {
+      return findAndPartialUpdate(child, idToUpdate, updateValue)
+    }),
+  }
+}
+
+function findAndSetPrimary(targetDefinition: JSONDefinition, fieldId: number): JSONDefinition {
+  return {
+    ...targetDefinition,
+    primary_field: targetDefinition.id === fieldId,
+    children: targetDefinition.children.map((child) => {
+      return findAndSetPrimary(child, fieldId)
     }),
   }
 }
 
 function insertNewChild(
-  definition: JSONDefinition,
+  targetDefinition: JSONDefinition,
   idToUpdate: number,
   newItemId: number
 ): JSONDefinition {
-  if (definition.id === idToUpdate) {
+  if (targetDefinition.id === idToUpdate) {
     return {
-      ...definition,
+      ...targetDefinition,
       children: [
-        ...definition.children,
+        ...targetDefinition.children,
         {
           id: newItemId,
           field_name: '',
           field_type: 'primitive',
+          primary_field: false,
           children: [],
         },
       ],
     }
   }
   return {
-    ...definition,
-    children: definition.children.map((child) => {
+    ...targetDefinition,
+    children: targetDefinition.children.map((child) => {
       return insertNewChild(child, idToUpdate, newItemId)
     }),
   }
@@ -80,7 +91,9 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
     setDataStructure((oldStructure) => {
       return {
         ...oldStructure,
-        definition: partialUpdate(oldStructure.definition, fieldId, { field_name: fieldName }),
+        definition: findAndPartialUpdate(oldStructure.definition, fieldId, {
+          field_name: fieldName,
+        }),
       }
     })
   }, [])
@@ -97,7 +110,7 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
     setDataStructure((oldValue) => {
       return {
         ...oldValue,
-        definition: partialUpdate(oldValue.definition, fieldId, partialData),
+        definition: findAndPartialUpdate(oldValue.definition, fieldId, partialData),
       }
     })
   }, [])
@@ -121,11 +134,21 @@ export default function useJsonStructure(initialStructure: JSONStructureDefiniti
     })
   }, [])
 
+  const setAsPrimaryField = useCallback((fieldId: number) => {
+    setDataStructure((oldValue) => {
+      return {
+        ...oldValue,
+        definition: findAndSetPrimary(oldValue.definition, fieldId),
+      }
+    })
+  }, [])
+
   return {
     dataStructure,
     updateJsonFieldName,
     updateJsonFieldType,
     addNewFieldToJson,
     removeFieldFromJson,
+    setAsPrimaryField,
   }
 }

@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import Input from '@/ui/form/Input'
 import SelectList from '@/ui/form/SelectList'
+import Checkbox from '@/Components/Checkbox'
 
 interface Props {
   definition: JSONDefinition
@@ -8,6 +9,7 @@ interface Props {
   updateJsonFieldType: (fieldId: number, fieldType: JSONFieldType) => void
   addNewFieldToJson: (parentId: number) => void
   removeFieldFromJson: (fieldId: number) => void
+  setAsPrimaryField: (fieldId: number) => void
 }
 
 export type JSONFieldType = 'array' | 'object' | 'primitive' | 'primitive-array'
@@ -16,6 +18,7 @@ export interface JSONDefinition {
   id: number
   field_name: string
   field_type: JSONFieldType
+  primary_field: boolean
   children: JSONDefinition[]
 }
 
@@ -32,10 +35,17 @@ function SetDataStructure({
   removeFieldFromJson,
   updateJsonFieldName,
   updateJsonFieldType,
+  setAsPrimaryField,
 }: Readonly<Props>) {
   return (
     <div className='flex flex-col rounded-xl'>
       <div className='flex items-end gap-2 bg-gray-200 p-2'>
+        <div className='my-auto flex h-full flex-col self-center'>
+          <Checkbox
+            checked={definition.primary_field}
+            onChange={() => setAsPrimaryField(definition.id)}
+          />
+        </div>
         <div className='grid w-full grid-cols-2 gap-1'>
           <div className='flex flex-col'>
             <Input
@@ -78,7 +88,7 @@ function SetDataStructure({
             </span>
           )}
         </div>
-        <div className='flex flex-col p-2'>
+        <div className='flex flex-col'>
           {definition.children.map((child) => (
             <SetDataStructure
               definition={child}
@@ -87,6 +97,7 @@ function SetDataStructure({
               removeFieldFromJson={removeFieldFromJson}
               updateJsonFieldName={updateJsonFieldName}
               updateJsonFieldType={updateJsonFieldType}
+              setAsPrimaryField={setAsPrimaryField}
             />
           ))}
           {definition.field_type !== 'primitive' && definition.field_type !== 'primitive-array' && (

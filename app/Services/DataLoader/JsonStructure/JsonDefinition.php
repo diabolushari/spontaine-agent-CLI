@@ -18,6 +18,7 @@ class JsonDefinition extends Data
         public string $fieldName,
         #[In('array', 'object', 'primitive', 'primitive-array')]
         public string $fieldType,
+        public bool $primaryField,
         public array $children,
     ) {}
 }

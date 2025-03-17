@@ -38,6 +38,7 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
     addNewFieldToJson,
     updateJsonFieldName,
     updateJsonFieldType,
+    setAsPrimaryField,
   } = useJsonStructure(
     dataLoaderAPI?.response_structure ?? {
       last_uuid: 1,
@@ -45,6 +46,7 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
         id: 1,
         field_name: 'root',
         field_type: 'array',
+        primary_field: true,
         children: [],
       },
     }
@@ -144,6 +146,7 @@ export default function DataLoaderAPICreate({ dataLoaderAPI }: Readonly<Props>) 
               removeFieldFromJson={removeFieldFromJson}
               updateJsonFieldName={updateJsonFieldName}
               updateJsonFieldType={updateJsonFieldType}
+              setAsPrimaryField={setAsPrimaryField}
             />
           </div>
         </div>
