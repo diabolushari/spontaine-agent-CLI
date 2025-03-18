@@ -43,23 +43,28 @@ class GetPrimaryFieldData
             return $data;
         }
         $currentPathPosition = array_shift($pathToPrimary);
-        if ($currentPathPosition->fieldName === 'root') {
+        if ($currentPathPosition->fieldName === 'root' && $currentPathPosition->fieldType !== 'array') {
             return $this->traverseStructure($data, $pathToPrimary);
         }
 
-        if (! isset($data[$currentPathPosition->fieldName])) {
+        if ($currentPathPosition->fieldName !== 'root' && ! isset($data[$currentPathPosition->fieldName])) {
             throw new Exception($currentPathPosition->fieldName.' is not present in the data');
         }
+        $currentLevelData = $currentPathPosition->fieldName === 'root' ? $data : $data[$currentPathPosition->fieldName];
 
         if ($currentPathPosition->fieldType === 'array') {
-            if (! $this->isSequential($data[$currentPathPosition->fieldName])) {
+            if (! $this->isSequential($currentLevelData)) {
                 throw new Exception($currentPathPosition->fieldName.' : Array is not sequential');
             }
             //traverse each item in array and find result
             $result = [];
-            foreach ($data[$currentPathPosition->fieldName] as $item) {
+            foreach ($currentLevelData as $item) {
                 $response = $this->traverseStructure($item, $pathToPrimary);
-                $result[] = $response;
+                if ($this->isSequential($response)) {
+                    $result = array_merge($result, $response);
+                } else {
+                    $result[] = $response;
+                }
             }
 
             return $result;
@@ -70,12 +75,12 @@ class GetPrimaryFieldData
                 throw new Exception($currentPathPosition->fieldName.' is an array');
             }
 
-            return [$data[$currentPathPosition->fieldName]];
+            return [$currentPathPosition->fieldName => $data[$currentPathPosition->fieldName]];
         }
 
         if ($currentPathPosition->fieldType === 'primitive-array') {
 
-            return $data[$currentPathPosition->fieldName];
+            return [$currentPathPosition->fieldName => $data[$currentPathPosition->fieldName]];
         }
 
         if (isset($data[$currentPathPosition->fieldName])) {

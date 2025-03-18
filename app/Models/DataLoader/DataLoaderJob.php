@@ -33,6 +33,10 @@ class DataLoaderJob extends Model
         'predecessor_job_id',
         'created_by',
         'updated_by',
+        'source_type',
+        'api_id',
+        'created_by',
+        'updated_by',
     ];
 
     //relationships

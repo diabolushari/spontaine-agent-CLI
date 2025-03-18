@@ -10,6 +10,7 @@ use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderConnection;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\DataLoader\DataLoaderQuery;
+use App\Models\DataLoader\LoaderAPI;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
@@ -62,12 +63,17 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->orderBy('name')
             ->get();
 
+        $apis = LoaderAPI::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('DataLoader/DataLoaderJobCreate', [
             'connections' => $connections,
             'type' => $request->type,
             'subtype' => $request->subtype,
             'dataDetail' => $dataDetail,
             'dataDetails' => $dataDetails,
+            'apis' => $apis,
         ]);
     }
 
@@ -115,12 +121,17 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->orderBy('name')
             ->get();
 
+        $apis = LoaderAPI::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('DataLoader/DataLoaderJobCreate', [
             'job' => $dataLoaderJob,
             'connections' => $connections,
             'dataDetail' => $dataDetail,
             'connectionId' => $query?->connection_id ?? null,
             'dataDetails' => $dataDetails,
+            'apis' => $apis,
         ]);
     }
 

@@ -6,6 +6,7 @@ import {
   cronTypes,
   DAILY_CRON,
   DataDetail,
+  DataLoaderAPI,
   DataLoaderConnection,
   DataLoaderJob,
   HOURLY_CRON,
@@ -21,6 +22,7 @@ interface Props {
   connectionId?: number | null
   dataDetail: DataDetail
   dataDetails: DataDetail[]
+  apis: Pick<DataLoaderAPI, 'id' | 'name'>[]
 }
 
 export default function DataLoaderJobCreate({
@@ -30,8 +32,6 @@ export default function DataLoaderJobCreate({
   dataDetail,
   dataDetails,
 }: Readonly<Props>) {
-  console.log(dataDetails)
-
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     name: job?.name ?? '',
     description: job?.description ?? '',
