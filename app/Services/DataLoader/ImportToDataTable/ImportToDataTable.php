@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-readonly class ImportToDataTable
+class ImportToDataTable
 {
     use DeleteDuplicateEntriesForField;
 
@@ -24,13 +24,17 @@ readonly class ImportToDataTable
      * Import data to the data table
      *
      * @param  array[]  $data
+     * @param  array{
+     *     field_id: int,
+     *     field_name: string,
+     *     data_table_column: string|null
+     * }[]|null  $fieldMapping
      * @return array{
      *     is_successful: bool,
      *     total_records: int,
      *     error_message: string|null,
      *     executed_at: Carbon,
      *     completed_at: Carbon|null
-     * }
      *
      * @throws Exception
      */
@@ -38,7 +42,8 @@ readonly class ImportToDataTable
         DataDetail $dataDetail,
         array $data,
         bool $deleteExistingData = false,
-        ?string $duplicationIdentifierField = null
+        ?string $duplicationIdentifierField = null,
+        ?array $fieldMapping = null
     ): array {
 
         $status = [
@@ -57,11 +62,9 @@ readonly class ImportToDataTable
             return $status;
         }
 
-        Log::info('mapping data columns to field info');
-
         $dataColumns = array_keys($data[0]);
 
-        $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id);
+        $fieldInfo = $this->mapColumnsToField->map($dataColumns, $dataDetail->id, $fieldMapping);
 
         //map fieldInfo/data into data table
         $dataTable = $this->convertToDataTable->convert($fieldInfo, $data, $dataDetail->id);
@@ -70,7 +73,6 @@ readonly class ImportToDataTable
         /** @var array<string, array<string, int>> $metaDataIds */
         $metaDataIds = [];
 
-        Log::info('syncing meta data');
         try {
             foreach ($fieldInfo as $field) {
                 if ($field->metaStructureId != null) {
@@ -87,7 +89,6 @@ readonly class ImportToDataTable
             return $status;
         }
 
-        Log::info('replacing string values for dimensions with meta_data_id');
         //replace string values for dimensions with meta_data_id
         foreach ($dataTable as &$record) {
             foreach ($fieldInfo as $field) {
