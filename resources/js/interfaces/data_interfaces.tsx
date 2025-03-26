@@ -1,4 +1,5 @@
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
+import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 
 export interface Model {
   id: number
@@ -85,6 +86,11 @@ export interface SubsetDetail extends Model {
   dimensions?: Partial<SubsetDimensionField>[]
   measures?: Partial<SubsetMeasureField>[]
   data_detail?: Partial<DataDetail> | null
+  max_rows_to_fetch: number | null
+  use_for_training_ai: 0 | 1
+  proactive_insight_instructions: string | null
+  visualization_instructions: string | null
+  type: string | null
 }
 
 export interface SubsetDateField extends Model {
@@ -202,7 +208,10 @@ export interface DataLoaderJob extends Model {
   day_of_month: number | null
   month_of_year: number | null
   data_detail_id: number
-  query_id: number
+  source_type: string | null
+  query_id: number | null
+  api_id: number | null
+  api?: Partial<DataLoaderAPI> | null
   delete_existing_data: 0 | 1
   duplicate_identification_field: string | null
   predecessor_job_id: number | null
@@ -313,4 +322,5 @@ export interface DataLoaderAPI extends Model {
   method: 'GET' | 'POST'
   headers: KeyValue[] | null
   body: KeyValue[] | null
+  response_structure: JSONStructureDefinition
 }

@@ -15,6 +15,7 @@ export default function SubsetList({ detail, subsets }: Readonly<Props>) {
       return {
         id: subset.id,
         name: subset.name,
+        use_for_training_ai: subset.use_for_training_ai === 1 ? 'Yes' : 'No',
         actions: [],
       }
     })
@@ -25,9 +26,13 @@ export default function SubsetList({ detail, subsets }: Readonly<Props>) {
       {
         key: 'name',
         isShownInCard: true,
-        boxStyles: 'mr-auto',
       },
-    ] as ListItemKeys<{ name: string }>[]
+      {
+        key: 'use_for_training_ai',
+        isShownInCard: true,
+        label: 'Used for Training AI',
+      },
+    ] as ListItemKeys<{ name: string; use_for_training_ai: string }>[]
   }, [])
 
   const onAddClick = () => {

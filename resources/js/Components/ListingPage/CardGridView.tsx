@@ -81,18 +81,22 @@ export default function CardGridView<
         return (
           <Card
             className={cn(
-              `bg-1stop-white p-2 ${isUsingTitleClick ? '' : 'cursor-pointer'}`,
+              `bg-1stop-white p-2`,
               row['viewStyle' as keyof typeof row] as string | undefined,
+              onCardClick != null &&
+                !isUsingTitleClick &&
+                'cursor-pointer transition hover:scale-105',
               cardStyles
             )}
             key={row[primaryKey] as string}
             onClick={() => handleCardDivClick(row[primaryKey] as string)}
           >
+            {/*Title*/}
             {titleKey != null && (
               <div className='body-1stop'>
                 <SubHeading
                   onClick={() => handleTitleClick(row[primaryKey] as string | number)}
-                  className={`${!isUsingTitleClick ? '' : 'cursor-pointer transition hover:scale-105'}`}
+                  className={`${isUsingTitleClick ? 'cursor-pointer transition hover:scale-105' : ''}`}
                 >
                   {(row[titleKey.key as keyof typeof row] as string) !== null &&
                   row[titleKey.key as keyof typeof row]?.toString().includes(':') ? (
@@ -108,17 +112,18 @@ export default function CardGridView<
                 </SubHeading>
               </div>
             )}
+            {/*Body*/}
             <div className={`${cn('grid grid-cols-1', boxGridStyles)}`}>
               {keys
                 .filter((key) => key.isShownInCard && !key.isCardHeader)
                 .map((rowKey) => (
                   <div
-                    className={cn(`flex gap-x-2`, rowKey.boxStyles)}
+                    className={cn(`flex items-center gap-x-2`, rowKey.boxStyles)}
                     key={rowKey.key as string}
                   >
                     <div className='flex-shrink-0'>
                       {!(rowKey.hideLabel ?? false) && (
-                        <StrongText className='small-1stop'>{rowKey.label as string}</StrongText>
+                        <StrongText className='text-xs'>{rowKey.label as string}</StrongText>
                       )}
                     </div>
                     <NormalText
@@ -128,6 +133,7 @@ export default function CardGridView<
                     </NormalText>
                   </div>
                 ))}
+              {/* Actions */}
               <div className={`col-span-full flex gap-3`}>
                 {row.actions.map((action) => (
                   <Link

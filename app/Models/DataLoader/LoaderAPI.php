@@ -5,9 +5,15 @@ namespace App\Models\DataLoader;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property array{key: string, value: string|null}[]|null body
+ * @property array{key: string, value: string|null}[]|null headers
+ */
 class LoaderAPI extends Model
 {
     use SoftDeletes;
+
+    protected $table = 'loader_a_p_i_s';
 
     protected $fillable = [
         'name',
@@ -16,6 +22,7 @@ class LoaderAPI extends Model
         'method',
         'headers',
         'body',
+        'response_structure',
         'created_by',
         'updated_by',
     ];
@@ -23,6 +30,7 @@ class LoaderAPI extends Model
     protected $casts = [
         'headers' => 'array',
         'body' => 'array',
+        'response_structure' => 'array',
     ];
 
     //relationships

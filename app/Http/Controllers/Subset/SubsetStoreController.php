@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class SubsetStoreController extends Controller implements HasMiddleware
 {
@@ -27,11 +28,14 @@ class SubsetStoreController extends Controller implements HasMiddleware
         ];
     }
 
+    /**
+     * @throws Throwable
+     */
     public function __invoke(DataDetail $dataDetail, SubsetFormRequest $request): RedirectResponse
     {
         DB::beginTransaction();
 
-        $user = request()->user()->id;
+        $user = request()->user()?->id;
 
         try {
             $record = SubsetDetail::create([
@@ -41,6 +45,8 @@ class SubsetStoreController extends Controller implements HasMiddleware
                 'group_data' => $request->groupData,
                 'max_rows_to_fetch' => $request->maxRowsToFetch,
                 'use_for_training_ai' => $request->useForTrainingAi,
+                'proactive_insight_instructions' => $request->proactiveInsightInstructions,
+                'visualization_instructions' => $request->visualizationInstructions,
                 'type' => $request->type,
                 'created_by' => $user,
                 'updated_by' => $user,

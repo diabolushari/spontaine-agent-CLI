@@ -13,12 +13,22 @@ return new class extends Migration
     {
         Schema::table('subset_details', function (Blueprint $table) {
             $table->boolean('use_for_training_ai')->default(false);
+            $table->text('proactive_insight_instructions')->nullable();
+            $table->text('visualization_instructions')->nullable();
         });
 
         Schema::table('subset_detail_dimensions', function (Blueprint $table) {
             $table->foreignId('hierarchy_id')
                 ->nullable()
                 ->constrained('meta_hierarchies');
+            $table->text('description')->nullable();
+        });
+
+        Schema::table('subset_detail_measures', function (Blueprint $table) {
+            $table->text('description')->nullable();
+        });
+
+        Schema::table('subset_detail_dates', function (Blueprint $table) {
             $table->text('description')->nullable();
         });
     }
@@ -31,12 +41,22 @@ return new class extends Migration
 
         Schema::table('subset_details', function (Blueprint $table) {
             $table->dropColumn('use_for_training_ai');
+            $table->dropColumn('proactive_insight_instructions');
+            $table->dropColumn('visualization_instructions');
         });
 
         Schema::table('subset_detail_dimensions', function (Blueprint $table) {
             $table->dropForeign('subset_detail_dimensions_hierarchy_id_foreign');
             $table->dropIndex('subset_detail_dimensions_hierarchy_id_foreign');
             $table->dropColumn('hierarchy_id');
+            $table->dropColumn('description');
+        });
+
+        Schema::table('subset_detail_dates', function (Blueprint $table) {
+            $table->dropColumn('description');
+        });
+
+        Schema::table('subset_detail_measures', function (Blueprint $table) {
             $table->dropColumn('description');
         });
     }

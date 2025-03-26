@@ -18,12 +18,17 @@ class SubsetFormRequest extends Data
     public function __construct(
         #[Max(255)]
         public string $name,
-        #[Max(1000)]
+        #[Max(5000)]
         public ?string $description,
         public ?int $maxRowsToFetch,
         public bool $groupData,
+        #[Max(255)]
         public string $type,
         public bool $useForTrainingAi,
+        #[Max(5000)]
+        public ?string $proactiveInsightInstructions,
+        #[Max(5000)]
+        public ?string $visualizationInstructions,
         public ?array $dates,
         public ?array $dimensions,
         public ?array $measures,

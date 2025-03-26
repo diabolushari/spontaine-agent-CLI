@@ -33,12 +33,16 @@ class DataLoaderJob extends Model
         'predecessor_job_id',
         'created_by',
         'updated_by',
+        'source_type',
+        'api_id',
+        'created_by',
+        'updated_by',
     ];
 
     //relationships
 
     /**
-     * @return HasOne<DataLoaderQuery>
+     * @return HasOne<DataLoaderQuery, $this>
      */
     public function loaderQuery(): HasOne
     {
@@ -46,7 +50,7 @@ class DataLoaderJob extends Model
     }
 
     /**
-     * @return HasOne<DataDetail>
+     * @return HasOne<DataDetail, $this>
      */
     public function detail(): HasOne
     {
@@ -54,7 +58,7 @@ class DataLoaderJob extends Model
     }
 
     /**
-     * @return HasOne<DataLoaderJobStatus>
+     * @return HasOne<DataLoaderJobStatus, $this>
      */
     public function lastStatus(): HasOne
     {
@@ -95,11 +99,18 @@ class DataLoaderJob extends Model
     }
 
     /**
-     * @return BelongsTo<DataLoaderJob, DataLoaderJob>
+     * @return BelongsTo<DataLoaderJob, $this>
      */
     public function predecessor(): BelongsTo
     {
         return $this->belongsTo(DataLoaderJob::class, 'predecessor_job_id', 'id');
+    }
 
+    /**
+     * @return HasOne<LoaderAPI, $this>
+     */
+    public function api(): HasOne
+    {
+        return $this->hasOne(LoaderAPI::class, 'id', 'api_id');
     }
 }

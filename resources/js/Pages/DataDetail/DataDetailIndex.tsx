@@ -42,7 +42,7 @@ export default function DataDetailIndex({ details, types }: Readonly<Props>) {
         setValue: setFormValue('type'),
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue])
+  }, [setFormValue, types])
 
   const data = useMemo(() => {
     return details.data.map((detail) => {
@@ -75,9 +75,11 @@ export default function DataDetailIndex({ details, types }: Readonly<Props>) {
       is_active: string
     }>[]
   }, [])
+
   const handleCardClick = useCallback((id: number | string) => {
     router.get(route('data-detail.show', { id: id }))
   }, [])
+
   return (
     <ListResourcePage
       formData={formData}

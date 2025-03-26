@@ -6,6 +6,7 @@ import {
   cronTypes,
   DAILY_CRON,
   DataDetail,
+  DataLoaderAPI,
   DataLoaderConnection,
   DataLoaderJob,
   HOURLY_CRON,
@@ -21,7 +22,19 @@ interface Props {
   connectionId?: number | null
   dataDetail: DataDetail
   dataDetails: DataDetail[]
+  apis: Pick<DataLoaderAPI, 'id' | 'name'>[]
 }
+
+const sourceTypes = [
+  {
+    label: 'SQL',
+    value: 'sql',
+  },
+  {
+    label: 'API',
+    value: 'api',
+  },
+]
 
 export default function DataLoaderJobCreate({
   job,
@@ -29,9 +42,8 @@ export default function DataLoaderJobCreate({
   connectionId,
   dataDetail,
   dataDetails,
+  apis,
 }: Readonly<Props>) {
-  console.log(dataDetails)
-
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     name: job?.name ?? '',
     description: job?.description ?? '',
@@ -45,6 +57,8 @@ export default function DataLoaderJobCreate({
     data_detail_id: job?.data_detail_id.toString() ?? dataDetail.id.toString(),
     connection_id: connectionId ?? '',
     query_id: job?.query_id ?? '',
+    api_id: job?.api_id ?? '',
+    source_type: job?.source_type ?? 'sql',
     delete_existing_data: job?.delete_existing_data === 1,
     duplicate_identification_field: job?.duplicate_identification_field ?? '',
     predecessor_job_id: job?.predecessor_job_id ?? '',
@@ -202,6 +216,29 @@ export default function DataLoaderJobCreate({
         showAllOption: true,
         allOptionText: 'No Predecessor Job',
       },
+      source_type: {
+        type: 'select',
+        label: 'Data Source Type',
+        setValue: (newSourceType: string) => {
+          setFormValue('source_type')(newSourceType)
+          setFormValue('api_id')('')
+          setFormValue('connection_id')('')
+          setFormValue('query_id')('')
+        },
+        list: sourceTypes,
+        displayKey: 'label',
+        dataKey: 'value',
+      },
+      api_id: {
+        type: 'select',
+        label: 'API',
+        setValue: setFormValue('api_id'),
+        list: apis,
+        displayKey: 'name',
+        dataKey: 'id',
+        allOptionText: 'Select an API',
+        hidden: formData.source_type !== 'api',
+      },
       connection_id: {
         type: 'select',
         label: 'Connection',
@@ -213,6 +250,7 @@ export default function DataLoaderJobCreate({
         displayKey: 'name',
         dataKey: 'id',
         allOptionText: 'Select a connection',
+        hidden: formData.source_type === 'api',
       },
       query_id: {
         type: 'dynamicSelect',
@@ -222,6 +260,7 @@ export default function DataLoaderJobCreate({
         displayKey: 'name',
         dataKey: 'id',
         allOptionText: 'Select a query',
+        hidden: formData.source_type !== 'sql',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [
@@ -233,6 +272,7 @@ export default function DataLoaderJobCreate({
     toggleBoolean,
     dataTableFields,
     formData.delete_existing_data,
+    formData.source_type,
   ])
 
   const backUrl = useMemo(() => {
