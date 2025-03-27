@@ -9,6 +9,23 @@ export interface JsonFieldMapping {
   children: JsonFieldMapping[]
 }
 
+const updateDataColumn = (
+  field: JsonFieldMapping,
+  idToBeUpdated: number,
+  column: string
+): JsonFieldMapping => {
+  if (field.field_id === idToBeUpdated) {
+    return {
+      ...field,
+      data_table_column: column,
+    }
+  }
+  return {
+    ...field,
+    children: field.children.map((child) => updateDataColumn(child, idToBeUpdated, column)),
+  }
+}
+
 const generateFieldMapping = (definition: JSONDefinition): JsonFieldMapping => {
   return {
     field_id: definition.id,
@@ -23,17 +40,7 @@ export const useJsonFieldMapping = () => {
   const [fieldMapping, setFieldMapping] = useState<JsonFieldMapping[]>([])
 
   const changeDataTableColumn = useCallback((fieldId: number, column: string) => {
-    setFieldMapping((prev) => {
-      return prev.map((field) => {
-        if (field.field_id === fieldId) {
-          return {
-            ...field,
-            data_table_column: column,
-          }
-        }
-        return field
-      })
-    })
+    setFieldMapping((prev) => prev.map((field) => updateDataColumn(field, fieldId, column)))
   }, [])
 
   const changeJsonDefinition = useCallback((definition: JSONDefinition | null) => {

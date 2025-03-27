@@ -374,6 +374,10 @@ export default function DataLoaderJobCreate({
     }
   }, [formData, fieldMapping])
 
+  useEffect(() => {
+    console.log(fieldMapping)
+  }, [fieldMapping])
+
   return (
     <FormPage
       url={job == null ? route('loader-jobs.store') : route('loader-jobs.update', job.id)}

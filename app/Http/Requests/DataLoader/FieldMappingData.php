@@ -8,7 +8,7 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 /**
- * @property FieldMappingData[] $fieldMapping
+ * @property FieldMappingData[] $children
  */
 #[MapName(SnakeCaseMapper::class)]
 class FieldMappingData extends Data
@@ -19,6 +19,7 @@ class FieldMappingData extends Data
         public string $fieldName,
         #[Max(255)]
         public ?string $dataTableColumn,
-        public ?array $children,
+        public ?string $fieldType,
+        public array $children,
     ) {}
 }

@@ -15,7 +15,8 @@ class ImportToDataTable
     public function __construct(
         private MapColumnsToField $mapColumnsToField,
         private ConvertToDataTable $convertToDataTable,
-        private SyncColumnMetaData $syncColumnMetaData
+        private SyncColumnMetaData $syncColumnMetaData,
+        private InsertItemToDataTable $insertItemToDataTable
     ) {
         //
     }
@@ -113,8 +114,6 @@ class ImportToDataTable
             return $status;
         }
 
-        Log::info('saving data to data table');
-
         DB::beginTransaction();
         //save data
         try {
@@ -141,7 +140,7 @@ class ImportToDataTable
 
         Log::info('import successful');
         $status['is_successful'] = true;
-        $status['total_records'] = count($dataTable);
+        $status['total_records'] = count($data);
         $status['completed_at'] = now();
 
         return $status;
