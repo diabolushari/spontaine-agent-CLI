@@ -27,4 +27,9 @@ class DataTableRelation extends Model
     {
         return $this->belongsTo(DataDetail::class, 'related_table_id', 'id');
     }
+
+    public function dataTable(): BelongsTo
+    {
+        return $this->belongsTo(DataDetail::class, 'data_detail_id', 'id');
+    }
 }
