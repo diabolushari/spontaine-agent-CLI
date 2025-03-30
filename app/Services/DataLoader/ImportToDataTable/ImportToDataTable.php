@@ -7,6 +7,7 @@ use App\Models\DataTable\DataTableRelation;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ImportToDataTable
 {
@@ -16,7 +17,6 @@ class ImportToDataTable
         private MapColumnsToField $mapColumnsToField,
         private ConvertToDataTable $convertToDataTable,
         private SyncColumnMetaData $syncColumnMetaData,
-        private InsertItemToDataTable $insertItemToDataTable,
         private MapColumnToRelation $mapColumnToRelation
     ) {
         //
@@ -48,6 +48,8 @@ class ImportToDataTable
         ?string $duplicationIdentifierField = null,
         ?array $fieldMapping = null
     ): array {
+
+        Log::info($dataDetail->name);
 
         $status = [
             'is_successful' => false,
@@ -121,6 +123,8 @@ class ImportToDataTable
                 DB::table($dataDetail->table_name)->truncate();
             }
         } catch (Exception $e) {
+
+            Log::info($e->getMessage());
             $status['error_message'] = $e->getMessage();
             $status['completed_at'] = now();
 
@@ -143,6 +147,7 @@ class ImportToDataTable
                 $this->performSingleRecordInsertion($dataDetail, $dataTable, $relationColumnInfo);
             }
         } catch (Exception $e) {
+            Log::info($e->getMessage());
             $status['error_message'] = $e->getMessage();
             $status['completed_at'] = now();
 
@@ -161,6 +166,7 @@ class ImportToDataTable
      */
     private function performMassInsertion(DataDetail $dataDetail, array $dataTable): void
     {
+        Log::info($dataTable);
         foreach (array_chunk($dataTable, 1000) as $chunk) {
             DB::table($dataDetail->table_name)->insert($chunk);
         }
@@ -174,11 +180,12 @@ class ImportToDataTable
      */
     private function performSingleRecordInsertion(DataDetail $dataDetail, array $dataTable, array $relationColumnInfo): void
     {
+        Log::info('performing single record insert');
         /** @var array<string, array> */
-        $relations = [];
+        $groupedChildData = [];
 
         foreach ($relationColumnInfo as $relationInfo) {
-            $relations[$relationInfo->fieldMapping->fieldName] = [];
+            $groupedChildData[$relationInfo->fieldMapping->fieldName] = [];
         }
 
         foreach ($dataTable as $record) {
@@ -200,8 +207,8 @@ class ImportToDataTable
                         $item[$relationInfo->relation->column] = $recordId;
                     }
 
-                    $relations[$relationInfo->fieldMapping->fieldName] = [
-                        ...$relations[$relationInfo->fieldMapping->fieldName],
+                    $groupedChildData[$relationInfo->fieldMapping->fieldName] = [
+                        ...$groupedChildData[$relationInfo->fieldMapping->fieldName],
                         ...$data,
                     ];
                 }
@@ -211,10 +218,13 @@ class ImportToDataTable
         foreach ($relationColumnInfo as $relationInfo) {
             $dataDetail = DataDetail::find($relationInfo->relation->data_detail_id);
             if ($dataDetail != null) {
+                $fieldMapping = $relationInfo->fieldMapping->toArray();
                 $this->importToDataTable(
                     $dataDetail,
-                    $relations[$relationInfo->fieldMapping->fieldName],
-                    false
+                    $groupedChildData[$relationInfo->fieldMapping->fieldName],
+                    false,
+                    null,
+                    $fieldMapping['children']
                 );
             }
         }

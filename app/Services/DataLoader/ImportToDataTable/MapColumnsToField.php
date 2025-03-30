@@ -5,6 +5,7 @@ namespace App\Services\DataLoader\ImportToDataTable;
 use App\Models\DataTable\DataTableDate;
 use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
+use App\Models\DataTable\DataTableRelation;
 use App\Models\DataTable\DataTableText;
 
 class MapColumnsToField
@@ -22,17 +23,17 @@ class MapColumnsToField
     {
 
         /**
-         * @var TableColumnInfo[] $fieldInfo
+         * @var TableColumnInfo[] $fieldList
          */
-        $fieldInfo = [];
+        $fieldList = [];
 
         DataTableDate::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableDate $tableField) use (&$fieldInfo, $excelFieldNames, $fieldMapping) {
+            ->each(function (DataTableDate $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
                 if ($fieldMapping != null) {
                     foreach ($fieldMapping as $field) {
                         if ($field['data_table_column'] === $tableField->column) {
                             $this->isFieldMapped(
-                                $fieldInfo,
+                                $fieldList,
                                 $field,
                                 false,
                                 null
@@ -44,7 +45,7 @@ class MapColumnsToField
                 }
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
-                        $fieldInfo,
+                        $fieldList,
                         $tableField->field_name,
                         $excelFieldName,
                         $tableField->column,
@@ -56,12 +57,12 @@ class MapColumnsToField
             });
 
         DataTableDimension::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableDimension $tableField) use (&$fieldInfo, $excelFieldNames, $fieldMapping) {
+            ->each(function (DataTableDimension $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
                 if ($fieldMapping != null) {
                     foreach ($fieldMapping as $field) {
                         if ($field['data_table_column'] === $tableField->column) {
                             $this->isFieldMapped(
-                                $fieldInfo,
+                                $fieldList,
                                 $field,
                                 true,
                                 $tableField->meta_structure_id
@@ -73,7 +74,7 @@ class MapColumnsToField
                 }
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
-                        $fieldInfo,
+                        $fieldList,
                         $tableField->field_name,
                         $excelFieldName,
                         $tableField->column,
@@ -85,13 +86,13 @@ class MapColumnsToField
             });
 
         DataTableMeasure::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableMeasure $tableField) use (&$fieldInfo, $excelFieldNames, $fieldMapping) {
+            ->each(function (DataTableMeasure $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
 
                 if ($fieldMapping != null) {
                     foreach ($fieldMapping as $field) {
                         if ($field['data_table_column'] === $tableField->column) {
                             $this->isFieldMapped(
-                                $fieldInfo,
+                                $fieldList,
                                 $field,
                                 false,
                                 null
@@ -104,7 +105,7 @@ class MapColumnsToField
 
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
-                        $fieldInfo,
+                        $fieldList,
                         $tableField->field_name,
                         $excelFieldName,
                         $tableField->column,
@@ -114,7 +115,7 @@ class MapColumnsToField
                     );
                     if ($tableField->unit_column != null && $tableField->unit_field_name != null) {
                         $this->insertToList(
-                            $fieldInfo,
+                            $fieldList,
                             $tableField->unit_field_name,
                             $excelFieldName,
                             $tableField->unit_column,
@@ -127,13 +128,13 @@ class MapColumnsToField
             });
 
         DataTableText::where('data_detail_id', $dataDetailId)
-            ->each(function (DataTableText $tableField) use (&$fieldInfo, $excelFieldNames, $fieldMapping) {
+            ->each(function (DataTableText $tableField) use (&$fieldList, $excelFieldNames, $fieldMapping) {
 
                 if ($fieldMapping != null) {
                     foreach ($fieldMapping as $field) {
                         if ($field['data_table_column'] === $tableField->column) {
                             $this->isFieldMapped(
-                                $fieldInfo,
+                                $fieldList,
                                 $field,
                                 false,
                                 null
@@ -146,7 +147,7 @@ class MapColumnsToField
 
                 foreach ($excelFieldNames as $excelFieldName) {
                     $this->insertToList(
-                        $fieldInfo,
+                        $fieldList,
                         $tableField->field_name,
                         $excelFieldName,
                         $tableField->column,
@@ -157,7 +158,17 @@ class MapColumnsToField
                 }
             });
 
-        return $fieldInfo;
+        DataTableRelation::where('data_detail_id', $dataDetailId)
+            ->each(function (DataTableRelation $tableField) use (&$fieldList) {
+                $fieldList[] = new TableColumnInfo(
+                    $tableField->column,
+                    $tableField->column,
+                    false,
+                    null
+                );
+            });
+
+        return $fieldList;
 
     }
 

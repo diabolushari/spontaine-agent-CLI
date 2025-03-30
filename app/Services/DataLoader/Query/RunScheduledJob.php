@@ -23,15 +23,23 @@ readonly class RunScheduledJob
     /**
      * @throws Exception
      */
-    public function run(
-        DataLoaderJob $dataLoaderJob
-    ): OperationResult {
-
+    public function run(DataLoaderJob $dataLoaderJob): OperationResult
+    {
         $startTime = now();
 
-        if (
-            $dataLoaderJob->detail == null
-        ) {
+        // Validate the job first
+        $validationResult = $this->validateJob($dataLoaderJob, $startTime);
+        if ($validationResult->error) {
+            return $validationResult;
+        }
+
+        // Fetch and insert data if validation passed
+        return $this->fetchAndInsertJob($dataLoaderJob, $startTime);
+    }
+
+    private function validateJob(DataLoaderJob $dataLoaderJob, string $startTime): OperationResult
+    {
+        if ($dataLoaderJob->detail == null) {
             return OperationResult::from([
                 'error' => true,
                 'message' => 'Data loader job has either no query, no data table or no connection',
@@ -39,7 +47,6 @@ readonly class RunScheduledJob
         }
 
         if ($dataLoaderJob->predecessor != null && ! $this->hasPredecessorFinishedRunning($dataLoaderJob->predecessor)) {
-            //check if predecessor has finished
             $errorMessage = 'Predecessor was not finished in time: '.$dataLoaderJob->predecessor->name;
             DataLoaderJobStatus::create([
                 'executed_at' => $startTime,
@@ -56,13 +63,16 @@ readonly class RunScheduledJob
             ]);
         }
 
+        return OperationResult::from([
+            'error' => false,
+            'message' => null,
+        ]);
+    }
+
+    private function fetchAndInsertJob(DataLoaderJob $dataLoaderJob, string $startTime): OperationResult
+    {
         try {
-            if ($dataLoaderJob->loaderQuery != null) {
-                $dataSource = DataLoaderSource::fromLoaderSourceModel($dataLoaderJob->loaderQuery);
-            }
-            if ($dataLoaderJob->api != null) {
-                $dataSource = DataLoaderSource::fromLoaderSourceModel($dataLoaderJob->api);
-            }
+            $dataSource = DataLoaderSource::fromLoaderJob($dataLoaderJob);
             $data = $this->dataLoaderFactory->createFetcher($dataSource->type)->fetchData($dataSource);
         } catch (Exception|GuzzleException $exception) {
             DataLoaderJobStatus::create([
@@ -110,7 +120,6 @@ readonly class RunScheduledJob
             ]);
         }
 
-        //update job status
         return OperationResult::from([
             'error' => false,
             'message' => null,

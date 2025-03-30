@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * 
- *
  * @property int $id
  * @property int $data_detail_id
  * @property string $column
@@ -21,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read MetaStructure|null $structure
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|DataTableDimension newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DataTableDimension newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DataTableDimension onlyTrashed()
@@ -37,6 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|DataTableDimension whereUpdatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DataTableDimension withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|DataTableDimension withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class DataTableDimension extends Model
