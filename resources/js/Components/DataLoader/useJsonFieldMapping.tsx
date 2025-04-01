@@ -18,6 +18,7 @@ const updateDataColumn = (
     return {
       ...field,
       data_table_column: column,
+      children: field.children.map((child) => updateDataColumn(child, child.field_id, '')),
     }
   }
   return {

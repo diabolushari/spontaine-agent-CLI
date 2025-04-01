@@ -106,21 +106,24 @@ const JsonToDataTableMapping = ({
                 />
               </div>
             )}
-            {field.field_type != 'object' && field.field_type != 'array' && (
-              <div className='flex flex-col'>
-                <SelectList
-                  value={field.data_table_column}
-                  setValue={(value) => changeDataTableColumn(field.field_id, value)}
-                  list={columnOptions}
-                  dataKey='column'
-                  displayKey='field_name'
-                  style='normal'
-                  showAllOption
-                  allOptionText='No mapping'
-                />
-              </div>
-            )}
+            {field.field_type != 'object' &&
+              field.field_type != 'array' &&
+              field.field_type != 'primitive array' && (
+                <div className='flex flex-col'>
+                  <SelectList
+                    value={field.data_table_column}
+                    setValue={(value) => changeDataTableColumn(field.field_id, value)}
+                    list={columnOptions}
+                    dataKey='column'
+                    displayKey='field_name'
+                    style='normal'
+                    showAllOption
+                    allOptionText='No mapping'
+                  />
+                </div>
+              )}
           </div>
+          {/* Fields that are inside an array or object */}
           {(field.field_type === 'array' || field.field_type === 'object') &&
             field.data_table_column != '' && (
               <div className='flex flex-col p-5'>
