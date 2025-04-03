@@ -28,6 +28,7 @@ use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
+use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
 use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
@@ -373,5 +374,8 @@ Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob, RunScheduledJ
 
 Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::class)
     ->name('subset.ranked.data');
+
+Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
+    ->name('meta-hierarchies.hierarchy-items');
 
 require __DIR__.'/auth.php';
