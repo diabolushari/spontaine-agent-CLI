@@ -48,6 +48,7 @@ use App\Http\Controllers\Subset\SubsetFieldsListController;
 use App\Http\Controllers\Subset\SubsetListController;
 use App\Http\Controllers\Subset\SubsetOfficeLevelDataController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
+use App\Http\Controllers\Subset\SubsetRankedDataController;
 use App\Http\Controllers\Subset\SubsetStoreController;
 use App\Http\Controllers\Subset\SubsetSummaryController;
 use App\Http\Controllers\Subset\SubsetTableController;
@@ -369,5 +370,8 @@ Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob, RunScheduledJ
 
     return $runScheduledJob->run($loaderJob)->toArray();
 });
+
+Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::class)
+    ->name('subset.ranked.data');
 
 require __DIR__.'/auth.php';

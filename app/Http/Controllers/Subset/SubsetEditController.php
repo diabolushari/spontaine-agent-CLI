@@ -9,7 +9,6 @@ use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Subset\SubsetDetail;
-use App\Services\Subset\SubsetQueryBuilder;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
 class SubsetEditController extends Controller implements HasMiddleware
@@ -24,9 +23,8 @@ class SubsetEditController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(
-        SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder
-    ) {
+    public function __invoke(SubsetDetail $subsetDetail)
+    {
 
         $dataDetail = DataDetail::findOrFail($subsetDetail->data_detail_id);
 

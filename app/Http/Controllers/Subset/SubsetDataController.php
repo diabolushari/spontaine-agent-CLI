@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
-use App\Services\Subset\SubsetFilterBuilder;
+use App\Services\Subset\GetSubsetData;
 use App\Services\Subset\SubsetFindMaxValue;
-use App\Services\Subset\SubsetQueryBuilder;
-use App\Services\Subset\SubsetQuerySorting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -15,21 +13,10 @@ class SubsetDataController extends Controller
 {
     public function __invoke(
         SubsetDetail $subsetDetail,
-        SubsetQueryBuilder $queryBuilder,
-        SubsetFilterBuilder $filterBuilder,
+        GetSubsetData $getSubsetData,
         SubsetFindMaxValue $findMaxValue,
-        SubsetQuerySorting $querySorting,
         Request $request,
     ): JsonResponse {
-        $subsetDetail->load(
-            'dates.info',
-            'dimensions.info',
-            'dimensions.hierarchy',
-            'measures.info',
-            'measures.weightInfo'
-        );
-
-        $query = $queryBuilder->query($subsetDetail);
 
         $filters = $request->all();
         $latestValue = null;
@@ -41,36 +28,16 @@ class SubsetDataController extends Controller
             }
         }
 
-        $filterBuilder->filter(
-            $query,
-            $subsetDetail,
-            $filters
-        );
-
-        if ($request->filled('sort_by')) {
-            $querySorting->addSort(
-                $query,
-                $subsetDetail,
-                false,
-                $request->input('sort_by'),
-                $request->input('sort_order', 'ASC'),
-            );
-        }
-
-        if ($request->filled('secondary_sort_by')) {
-            $querySorting->addSort(
-                $query,
-                $subsetDetail,
-                false,
-                $request->input('secondary_sort_by'),
-                $request->input('secondary_sort_order', 'ASC'),
-            );
-        }
+        $query = $getSubsetData
+            ->setFilters($filters)
+            ->withSummary(false)
+            ->excludeNonMeasurements(false)
+            ->withSubsetDetail($subsetDetail->id)
+            ->getQuery();
 
         return response()->json([
-            'data' => $query->get(),
+            'data' => $query?->get(),
             'latest_value' => $latestValue,
         ]);
-
     }
 }

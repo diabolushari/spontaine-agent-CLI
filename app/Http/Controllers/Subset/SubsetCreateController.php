@@ -9,7 +9,6 @@ use App\Models\DataTable\DataTableDimension;
 use App\Models\DataTable\DataTableMeasure;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Subset\SubsetDetail;
-use App\Services\Subset\SubsetQueryBuilder;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Response;
 
@@ -25,8 +24,10 @@ class SubsetCreateController extends Controller implements HasMiddleware
         ];
     }
 
-    public function __invoke(SubsetDetail $subsetDetail, SubsetQueryBuilder $queryBuilder, DataDetail $dataDetail): Response
-    {
+    public function __invoke(
+        SubsetDetail $subsetDetail,
+        DataDetail $dataDetail
+    ): Response {
         return inertia('Subset/SubsetCreate', [
             'dataDetail' => $dataDetail,
             'dateFields' => DataTableDate::where('data_detail_id', $dataDetail->id)->get(),

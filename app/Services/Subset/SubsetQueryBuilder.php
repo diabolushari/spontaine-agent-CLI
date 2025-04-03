@@ -29,9 +29,10 @@ readonly class SubsetQueryBuilder
 
     public function query(
         SubsetDetail $subsetDetail,
-        bool $isSummary = false,
-        bool $excludeNonMeasurements = false,
-        ?string $summaryLevel = null
+        bool $isSummary,
+        bool $excludeNonMeasurements,
+        ?string $summaryLevel,
+        ?array $fields
     ): Builder {
 
         /** @var string[] $groupingColumns */
@@ -44,13 +45,20 @@ readonly class SubsetQueryBuilder
         $orderColumns = [];
 
         if (! $excludeNonMeasurements) {
-            $this->addDateFields($subsetDetail->dates, $groupingColumns, $selectColumns, $orderColumns);
+            $this->addDateFields(
+                $subsetDetail->dates,
+                $groupingColumns,
+                $selectColumns,
+                $orderColumns,
+                $fields
+            );
             $this->addDimensionFields(
                 $subsetDetail->dimensions,
                 $groupingColumns,
                 $selectColumns,
                 $orderColumns,
-                $isSummary
+                $isSummary,
+                $fields
             );
         }
 
@@ -68,12 +76,13 @@ readonly class SubsetQueryBuilder
                 $subsetDetail,
                 $detail,
                 $groupingColumns,
-                $selectColumns
+                $selectColumns,
+                $fields
             );
         }
 
         if ($isSummary) {
-            $this->groupByOffice(
+            $this->groupByDimension(
                 $query,
                 $subsetDetail,
                 $detail,
@@ -112,21 +121,29 @@ readonly class SubsetQueryBuilder
     }
 
     /**
-     * @param  Collection<int, SubsetDetailDate>  $datesß
+     * @param  Collection<int, SubsetDetailDate>  $dates
      * @param  string[]  $groupingColumns
      * @param  string[]  $selectColumns
      * @param  SubsetFieldOrderInfo[]  $orderColumns
+     * @param  string[]|null  $fields
      */
     private function addDateFields(
         Collection $dates,
         array &$groupingColumns,
         array &$selectColumns,
-        array &$orderColumns
+        array &$orderColumns,
+        ?array $fields
     ): void {
-        $dates->each(function (SubsetDetailDate $date) use (&$groupingColumns, &$selectColumns, &$orderColumns) {
+        $dates->each(function (SubsetDetailDate $date) use (&$groupingColumns, &$selectColumns, &$orderColumns, $fields) {
             if ($date->info == null) {
                 return;
             }
+
+            // Skip if fields is provided and this field is not in the list
+            if ($fields !== null && ! in_array($date->subset_column, $fields)) {
+                return;
+            }
+
             if ($date->date_field_expression != null) {
                 $column = $date->date_field_expression;
             } else {
@@ -149,21 +166,29 @@ readonly class SubsetQueryBuilder
      * @param  string[]  $groupingColumns
      * @param  string[]  $selectColumns
      * @param  SubsetFieldOrderInfo[]  $orderColumns
+     * @param  string[]|null  $fields
      */
     private function addDimensionFields(
         Collection $dimensions,
         array &$groupingColumns,
         array &$selectColumns,
         array &$orderColumns,
-        bool $isSummary
+        bool $isSummary,
+        ?array $fields
     ): void {
-        $dimensions->each(function (SubsetDetailDimension $dimension) use (&$groupingColumns, &$selectColumns, &$orderColumns, $isSummary) {
+        $dimensions->each(function (SubsetDetailDimension $dimension) use (&$groupingColumns, &$selectColumns, &$orderColumns, $isSummary, $fields) {
             if ($dimension->info == null) {
                 return;
             }
             if ($dimension->filter_only == 1) {
                 return;
             }
+
+            // Skip if fields is provided and this field is not in the list
+            if ($fields !== null && ! in_array($dimension->subset_column, $fields)) {
+                return;
+            }
+
             //if is summary then section info is included in as office_code, office_name
             if ($isSummary && $dimension->info->column === 'section_code') {
                 return;
@@ -249,12 +274,19 @@ readonly class SubsetQueryBuilder
         DataDetail $detail,
         array &$groupingColumns,
         array &$selectColumns,
+        ?array $fields
     ): void {
         //if office info is included in the subset then include the hierarchy table
-        $subsetDetail->dimensions->each(function ($dimension) use ($query, &$groupingColumns, &$selectColumns, $detail, $subsetDetail) {
-            if ($dimension->hierarchy_id == null) {
+        $subsetDetail->dimensions->each(function ($dimension) use ($query, &$groupingColumns, &$selectColumns, $detail, $subsetDetail, $fields) {
+            if ($dimension->hierarchy_id == null || $dimension->filter_only == 1) {
                 return;
             }
+
+            // Skip if fields is provided and this field is not in the list
+            if ($fields !== null && ! in_array($dimension->subset_column, $fields)) {
+                return;
+            }
+
             $hierarchy = MetaHierarchy::where('id', $dimension->hierarchy_id)
                 ->first();
 
@@ -277,7 +309,7 @@ readonly class SubsetQueryBuilder
      * @param  string[]  $groupingColumns
      * @param  string[]  $selectColumns
      */
-    private function groupByOffice(
+    private function groupByDimension(
         Builder $query,
         SubsetDetail $subsetDetail,
         DataDetail $detail,

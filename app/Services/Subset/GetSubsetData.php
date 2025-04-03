@@ -5,56 +5,115 @@ namespace App\Services\Subset;
 use App\Models\Subset\SubsetDetail;
 use Illuminate\Contracts\Database\Query\Builder;
 
-readonly class GetSubsetData
+class GetSubsetData
 {
+    private array $filters = [];
+
+    private bool $isSummary = false;
+
+    private bool $excludeNonMeasurements = false;
+
+    private ?string $summaryLevel = null;
+
+    private ?SubsetDetail $subsetDetail = null;
+
     public function __construct(
         private SubsetQueryBuilder $queryBuilder,
         private SubsetFilterBuilder $filterBuilder,
-        private SubsetQuerySorting $querySorting
+        private SubsetQuerySorting $querySorting,
     ) {}
 
-    public function get(SubsetDetail $subsetDetail, bool $isSummary, bool $excludeNonMeasurements, string $summaryLevel = 'region'): ?Builder
+    public function setFilters(array $filters): self
     {
-        $filterParams = request()->all();
+        $this->filters = $filters;
 
-        if ($subsetDetail->group_data == 0 && $isSummary) {
+        return $this;
+    }
+
+    public function withSummary(bool $isSummary): self
+    {
+        $this->isSummary = $isSummary;
+
+        return $this;
+    }
+
+    public function excludeNonMeasurements(bool $exclude): self
+    {
+        $this->excludeNonMeasurements = $exclude;
+
+        return $this;
+    }
+
+    public function withSummaryLevel(string $summaryLevel): self
+    {
+        $this->summaryLevel = $summaryLevel;
+
+        return $this;
+    }
+
+    public function withSubsetDetail(int $subsetDetailId): self
+    {
+        $this->subsetDetail = SubsetDetail::where('id', $subsetDetailId)
+            ->with('dates.info', 'measures.info', 'measures.weightInfo', 'dimensions.info')
+            ->first();
+
+        return $this;
+    }
+
+    /**
+     * Get the fields filter from the filters
+     *
+     * @return string[]|null
+     */
+    public function getFields(): ?array
+    {
+        if (! isset($this->filters['fields']) || empty($this->filters['fields'])) {
+            return null;
+        }
+
+        return explode(',', $this->filters['fields']);
+    }
+
+    public function getQuery(): ?Builder
+    {
+        if ($this->subsetDetail == null || ($this->subsetDetail->group_data == 0 && $this->isSummary)) {
             return null;
         }
 
         $query = $this->queryBuilder->query(
-            $subsetDetail,
-            $isSummary,
-            $excludeNonMeasurements,
-            $summaryLevel
+            $this->subsetDetail,
+            $this->isSummary,
+            $this->excludeNonMeasurements,
+            $this->summaryLevel,
+            $this->getFields()
         );
 
         $this->filterBuilder->filter(
             $query,
-            $subsetDetail,
-            $filterParams
+            $this->subsetDetail,
+            $this->filters
         );
 
-        if (isset($filterParams['sort_by'])) {
+        if (isset($this->filters['sort_by'])) {
             $this->querySorting->addSort(
                 $query,
-                $subsetDetail,
+                $this->subsetDetail,
                 false,
-                $filterParams['sort_by'],
-                $filterParams['sort_order'] ?? 'ASC',
+                $this->filters['sort_by'],
+                $this->filters['sort_order'] ?? 'ASC',
             );
         }
 
-        if (isset($filterParams['secondary_sort_by'])) {
+        if (isset($this->filters['secondary_sort_by'])) {
             $this->querySorting->addSort(
                 $query,
-                $subsetDetail,
+                $this->subsetDetail,
                 false,
-                $filterParams['secondary_sort_by'],
-                $filterParams['secondary_sort_order'] ?? 'ASC',
+                $this->filters['secondary_sort_by'],
+                $this->filters['secondary_sort_order'] ?? 'ASC',
             );
         }
 
         return $query;
-
     }
 }

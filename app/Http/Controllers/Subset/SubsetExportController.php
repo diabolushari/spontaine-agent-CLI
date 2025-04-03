@@ -26,15 +26,15 @@ class SubsetExportController extends Controller implements HasMiddleware
 
     public function __invoke(SubsetDetail $subsetDetail, Request $request, GetSubsetData $getSubsetData): BinaryFileResponse
     {
-        $subsetDetail->load('dates.info', 'measures.info', 'measures.weightInfo', 'dimensions.info');
 
         $data = $getSubsetData
-            ->get(
-                $subsetDetail,
-                true,
-                $request->excludeNonMeasurements == '1',
-                $request->input('level', 'region')
-            )?->get()->toArray();
+            ->setFilters($request->all())
+            ->withSummary(true)
+            ->excludeNonMeasurements($request->excludeNonMeasurements == '1')
+            ->withSummaryLevel($request->input('level', 'region'))
+            ->withSubsetDetail($subsetDetail->id)
+            ->getQuery()?->get()
+            ->toArray();
 
         return Excel::download(new SubsetTableExport(
             $subsetDetail,

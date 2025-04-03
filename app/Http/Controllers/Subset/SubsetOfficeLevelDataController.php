@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subset\SubsetDetail;
-use App\Services\Subset\SubsetFilterBuilder;
+use App\Services\Subset\GetSubsetData;
 use App\Services\Subset\SubsetFindMaxValue;
-use App\Services\Subset\SubsetQueryBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,12 +13,10 @@ class SubsetOfficeLevelDataController extends Controller
 {
     public function __invoke(
         SubsetDetail $subsetDetail,
-        SubsetQueryBuilder $queryBuilder,
-        SubsetFilterBuilder $filterBuilder,
+        GetSubsetData $getSubsetData,
         SubsetFindMaxValue $findMaxValue,
         Request $request
     ): JsonResponse {
-        $subsetDetail->load('dates.info', 'dimensions.info', 'dimensions.hierarchy', 'measures.info', 'measures.weightInfo');
 
         $filters = $request->all();
         $latestValue = null;
@@ -35,20 +32,15 @@ class SubsetOfficeLevelDataController extends Controller
             return response()->json();
         }
 
-        $query = $queryBuilder->query(
-            $subsetDetail,
-            true,
-            false,
-            $request->level ?? 'state'
-        );
+        $query = $getSubsetData
+            ->setFilters($filters)
+            ->withSummary(true)
+            ->excludeNonMeasurements(false)
+            ->withSummaryLevel($request->level ?? 'state')
+            ->withSubsetDetail($subsetDetail->id)
+            ->getQuery();
 
-        $filterBuilder->filter(
-            $query,
-            $subsetDetail,
-            $filters
-        );
-
-        $levelResult = $query->get();
+        $levelResult = $query?->get();
 
         return response()->json([
             'data' => $levelResult,

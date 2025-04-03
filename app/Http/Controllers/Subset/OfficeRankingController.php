@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Subset;
 
 use App\Http\Controllers\Controller;
-use App\Libs\ArrayPagination;
 use App\Models\Subset\SubsetDetail;
 use App\Services\Subset\GetSubsetData;
 use App\Services\Subset\SubsetFindMaxValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class SubsetSummaryController extends Controller
+class OfficeRankingController extends Controller
 {
     public function __invoke(
         SubsetDetail $subsetDetail,
@@ -18,7 +17,6 @@ class SubsetSummaryController extends Controller
         SubsetFindMaxValue $findMaxValue,
         Request $request
     ): JsonResponse {
-
         $filterParams = $request->all();
         $latestValue = null;
         if (! $request->filled('month')) {
@@ -44,7 +42,7 @@ class SubsetSummaryController extends Controller
         $levelResult = $query?->get()->toArray();
 
         return response()->json([
-            'data' => (new ArrayPagination($levelResult, $request->per_page ?? 5))->paginate(),
+            'data' => $levelResult,
             'latest_value' => $latestValue,
         ]);
     }
