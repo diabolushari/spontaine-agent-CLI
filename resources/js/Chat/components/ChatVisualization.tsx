@@ -88,7 +88,7 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
                 color={'#3b82f6'}
               />
             )}
-          </Fra>
+          </Fragment>
         ))}
       </div>
     </div>
