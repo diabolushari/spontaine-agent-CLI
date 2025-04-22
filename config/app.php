@@ -16,6 +16,7 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
     'chat_token' => env('CHAT_TOKEN', ''),
     'chat_url' => env('CHAT_URL', null),
+    'agent_url' => env('AGENT_URL', null),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

@@ -5,7 +5,6 @@ import SimplePieChart from '@/Components/Charts/SimplePieChart'
 import { Fragment, useMemo } from 'react'
 import { ChatMessage } from './MainArea'
 
-// ChartData interface for visualizations
 export interface ChartData {
   key?: 'line' | 'bar' | 'pie' | 'area'
   label_field?: string

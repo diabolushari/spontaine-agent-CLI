@@ -1,5 +1,7 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
+import { usePage } from '@inertiajs/react'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { parseAndConvertAgentResponse } from '@/Chat/libs/handle-agent-response'
 
 function startNewChat(
   newId: number,
@@ -89,7 +91,12 @@ const addSuggestionsToLastChat = (
   }
 }
 
-export default function useChat(chatUrl: string, chatToken: string) {
+export default function useChat(mode: 'chat' | 'agent') {
+  const { chatToken, chatURL, agentURL } = usePage<{
+    chatToken: string
+    chatURL: string
+    agentURL: string
+  }>().props
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 0,
@@ -112,11 +119,22 @@ export default function useChat(chatUrl: string, chatToken: string) {
   const isExpectingFollowup = useRef(false)
 
   useEffect(() => {
-    const ws = new WebSocket(`${chatUrl}?token=${chatToken}`)
+    const url = mode === 'agent' ? agentURL : chatURL
+    const ws = new WebSocket(`${url}?token=${chatToken}`)
     ws.onopen = () => console.log('✅ WebSocket Connected')
 
     ws.onmessage = (event) => {
+      console.log(event.data)
       try {
+        if (mode === 'agent') {
+          // Parse and push agent responses as text messages
+          setMessages((prev) => [
+            ...prev,
+            ...parseAndConvertAgentResponse(event.data, uuid.current++),
+          ])
+          setIsLoading(false)
+          return
+        }
         if (event.data === '<start>') {
           isBeingStreamed.current = true
           startNewChat(uuid.current++, 'text', setMessages)
@@ -173,7 +191,7 @@ export default function useChat(chatUrl: string, chatToken: string) {
     socketRef.current = ws
 
     return () => ws.close()
-  }, [chatToken, chatUrl])
+  }, [chatToken, chatURL, agentURL, mode])
 
   const handleSendMessage = (messageContent: string) => {
     const trimmedContent = messageContent.trim()
