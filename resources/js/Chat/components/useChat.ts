@@ -1,7 +1,7 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
+import { parseAndConvertAgentResponse } from '@/Chat/libs/handle-agent-response'
 import { usePage } from '@inertiajs/react'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
-import { parseAndConvertAgentResponse } from '@/Chat/libs/handle-agent-response'
 
 function startNewChat(
   newId: number,
@@ -124,15 +124,12 @@ export default function useChat(mode: 'chat' | 'agent') {
     ws.onopen = () => console.log('✅ WebSocket Connected')
 
     ws.onmessage = (event) => {
-      console.log(event.data)
       try {
         if (mode === 'agent') {
+          console.log(event.data)
           // Parse and push agent responses as text messages
-          setMessages((prev) => [
-            ...prev,
-            ...parseAndConvertAgentResponse(event.data, uuid.current++),
-          ])
-          setIsLoading(false)
+          const newMessages = parseAndConvertAgentResponse(event.data, uuid, setIsLoading)
+          setMessages((prev) => [...prev, ...newMessages])
           return
         }
         if (event.data === '<start>') {
@@ -165,7 +162,12 @@ export default function useChat(mode: 'chat' | 'agent') {
           updateLastChat(event.data, setMessages)
         } else if (chartIsBeingStreamed.current) {
           chartIsBeingStreamed.current = false
-          updateLastChat(event.data, setMessages)
+          const jsonBlockMatch = event.data.match(/```json([\s\S]*?)```/i)
+          if (jsonBlockMatch == null) {
+            updateLastChat(event.data, setMessages)
+            return
+          }
+          updateLastChat(jsonBlockMatch[1], setMessages)
         }
       } catch (error) {
         console.error('❌ JSON Parse Error:', error)

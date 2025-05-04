@@ -1,4 +1,6 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
+import { Dispatch, MutableRefObject, SetStateAction } from 'react'
+import extractJsonMarkdown from './extract-json-markdown'
 
 export interface AgentAction {
   tool: string
@@ -14,46 +16,109 @@ export interface AgentOutputResponse {
   output: string
 }
 
-// Union type for any possible agent response
-export type AgentResponse = AgentActionsResponse | AgentOutputResponse
+export interface ErrorResponse {
+  error: string
+}
 
-/**
- * Converts an agent response (actions or output) to a ChatMessage with type 'bot' and content as text.
- * If the response is actions, concatenates all logs as message content.
- * If the response is output, uses the output string as content.
- */
-export function agentResponseToChatMessages(
-  response: AgentResponse,
-  nextId: number
+// Union type for any possible agent response
+export type AgentResponse = AgentActionsResponse | AgentOutputResponse | ErrorResponse
+
+function handleOutputResponse(
+  response: AgentOutputResponse,
+  currentIdRef: MutableRefObject<number>
 ): ChatMessage[] {
-  if ('actions' in response) {
-    // Concatenate all logs from actions as one message
-    const logs = response.actions.map((a) => a.log).join('\n')
-    return [
-      {
-        id: nextId,
+  const messages: ChatMessage[] = []
+
+  if ('output' in response) {
+    try {
+      const extractedJSON = extractJsonMarkdown(response.output)
+      if (extractedJSON == null) {
+        messages.push({
+          id: currentIdRef.current++,
+          type: 'bot',
+          content: '❌ Agent response could not be parsed.',
+          contentType: 'text',
+          suggestions: [],
+        })
+        return messages
+      }
+      const parsedOutput = JSON.parse(extractedJSON[1])
+      // Add text output message if available
+      if (parsedOutput.output != null) {
+        messages.push({
+          id: currentIdRef.current++,
+          type: 'bot',
+          content: parsedOutput.output,
+          contentType: 'text',
+          suggestions: [],
+        })
+      }
+      // Add visualization message if available
+      if (parsedOutput.visualization != null) {
+        messages.push({
+          id: currentIdRef.current++,
+          type: 'bot',
+          content: JSON.stringify(parsedOutput.visualization),
+          contentType: 'chart',
+          suggestions: [],
+        })
+      }
+    } catch (e) {
+      // If parsing fails, use the original output string
+      messages.push({
+        id: currentIdRef.current++,
         type: 'bot',
-        content: logs,
+        content: response.output ?? '',
         contentType: 'text',
         suggestions: [],
-      },
-    ]
+      })
+    }
+  }
+
+  return messages
+}
+
+/**
+ * Converts an agent response (actions or output) to a ChatMessage with appropriate types.
+ * If the response is actions, creates individual action messages with tool and description.
+ * If the response is output, returns output message and visualization message if available.
+ * If the response is error, returns an error message.
+ */
+function agentResponseToChatMessages(
+  response: AgentResponse,
+  currentIdRef: MutableRefObject<number>
+): ChatMessage[] {
+  const messages: ChatMessage[] = []
+
+  if ('actions' in response) {
+    // Create individual action messages with tool and description
+    response.actions.forEach((action) => {
+      messages.push({
+        id: currentIdRef.current++,
+        type: 'action',
+        content: action.tool,
+        description: action.tool_input,
+        contentType: 'text',
+        suggestions: [],
+      })
+    })
   }
 
   if ('output' in response) {
-    return [
-      {
-        id: nextId,
-        type: 'bot',
-        content: response.output,
-        contentType: 'text',
-        suggestions: [],
-      },
-    ]
+    messages.push(...handleOutputResponse(response, currentIdRef))
   }
 
-  // Fallback: should not happen if types are correct
-  return []
+  if ('error' in response) {
+    messages.push({
+      id: currentIdRef.current++,
+      type: 'error',
+      content: response.error,
+      contentType: 'text',
+      suggestions: [],
+    })
+  }
+
+  return messages
 }
 
 /**
@@ -62,17 +127,26 @@ export function agentResponseToChatMessages(
  */
 export function parseAndConvertAgentResponse(
   responseString: string,
-  nextId: number
+  currentIdRef: MutableRefObject<number>,
+  setLoading?: Dispatch<SetStateAction<boolean>>
 ): ChatMessage[] {
   try {
     const json = JSON.parse(responseString) as AgentResponse
-    return agentResponseToChatMessages(json, nextId)
+    // If there's output property, this is the final response, so set loading to false
+    if (('output' in json || 'error' in json) && setLoading != null) {
+      setLoading(false)
+    }
+    return agentResponseToChatMessages(json, currentIdRef)
   } catch (e) {
     console.log(e)
+    // Also set loading to false on error
+    if (setLoading != null) {
+      setLoading(false)
+    }
     return [
       {
-        id: nextId,
-        type: 'bot',
+        id: currentIdRef.current++,
+        type: 'error',
         content: '❌ Agent response could not be parsed.',
         contentType: 'text',
         suggestions: [],

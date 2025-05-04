@@ -6,8 +6,9 @@ import ChatMessageContent from './ChatMessageContent'
 
 export interface ChatMessage {
   id: number
-  type: 'user' | 'bot'
+  type: 'user' | 'bot' | 'action' | 'error'
   content: string
+  description?: string
   contentType: 'text' | 'table' | 'chart'
   suggestions?: string[]
 }
@@ -56,10 +57,10 @@ export default function MainArea() {
           >
             <div
               className={`max-w-[60vw] overflow-auto rounded-2xl p-3 ${
-                message.type === 'user'
-                  ? 'rounded-br-none bg-blue-600 text-white'
-                  : 'rounded-bl-none bg-white text-gray-800 shadow-sm'
-              }`}
+                message.type === 'user' && 'rounded-br-none bg-blue-600 text-white'
+              } ${message.type === 'bot' && 'rounded-bl-none bg-white text-gray-800 shadow-sm'} ${
+                message.type === 'action' && 'rounded-bl-none bg-gray-200 text-gray-800 shadow-sm'
+              } ${message.type === 'error' && 'rounded-bl-none bg-red-100 text-red-800 shadow-sm'}`}
             >
               <ChatMessageContent message={message} />
               {message.suggestions && message.suggestions.length > 0 && (
@@ -133,6 +134,7 @@ export default function MainArea() {
                 className='min-h-[48px] w-full resize-none rounded-xl border border-gray-200 py-2 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
                 rows={1}
                 value={input}
+                disabled={isLoading}
                 onChange={handleInputChange}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}

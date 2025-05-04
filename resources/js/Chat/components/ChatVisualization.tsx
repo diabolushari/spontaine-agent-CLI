@@ -2,7 +2,7 @@ import SimpleAreaChart from '@/Components/Charts/SimpleAreaChart'
 import SimpleBarChart from '@/Components/Charts/SimpleBarChart'
 import SimpleLineChart from '@/Components/Charts/SimpleLineChart'
 import SimplePieChart from '@/Components/Charts/SimplePieChart'
-import { Fragment, useMemo } from 'react'
+import { useMemo } from 'react'
 import { ChatMessage } from './MainArea'
 
 export interface ChartData {
@@ -19,22 +19,18 @@ interface Props {
   message: ChatMessage
 }
 
-function extractChartDataFromMarkdown(markdown: string): ChartData[] | null {
+function extractChartDataFromMarkdown(markdown: string): ChartData[] {
   // Extract JSON code block from markdown
-  const jsonBlockMatch = markdown.match(/```json([\s\S]*?)```/i)
-  if (!jsonBlockMatch) {
-    return null
-  }
   try {
-    const parsed = JSON.parse(jsonBlockMatch[1])
+    const parsed = JSON.parse(markdown)
     if (Array.isArray(parsed)) {
       return parsed as ChartData[]
     }
   } catch (e) {
     // Invalid JSON
-    return null
+    return []
   }
-  return null
+  return []
 }
 
 export default function ChatVisualization({ message }: Readonly<Props>) {
@@ -42,54 +38,64 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
     if (message.content == null || message.content === '') {
       return null
     }
-    const chartDataArray = extractChartDataFromMarkdown(message.content)
-    if (!chartDataArray) return null
-    return chartDataArray
+    return extractChartDataFromMarkdown(message.content)
   }, [message])
 
   return (
     <div className='flex w-full flex-col gap-6'>
-      <div className='h-96 w-full'>
-        {charts?.map((chartData, idx) => (
-          <Fragment key={idx}>
-            {chartData.key === 'bar' && (
-              <SimpleBarChart
-                key={idx}
-                chartData={chartData.data ?? []}
-                dataKey={chartData.label_field ?? ''}
-                dataFieldName={chartData.value_field ?? ''}
-                color={'#3b82f6'}
-              />
-            )}
-            {chartData.key === 'area' && (
-              <SimpleAreaChart
-                key={idx}
-                chartData={chartData.data ?? []}
-                dataKey={chartData.label_field ?? ''}
-                dataFieldName={chartData.value_field ?? ''}
-              />
-            )}
-            {chartData.key === 'pie' && (
-              <SimplePieChart
-                key={idx}
-                chartData={chartData.data ?? []}
-                dataKey={chartData.label_field ?? ''}
-                dataFieldName={chartData.value_field ?? ''}
-                color={'#3b82f6'}
-              />
-            )}
-            {chartData.key === 'line' && (
-              <SimpleLineChart
-                key={idx}
-                chartData={chartData.data ?? []}
-                dataKey={chartData.label_field ?? ''}
-                dataFieldName={chartData.value_field ?? ''}
-                color={'#3b82f6'}
-              />
-            )}
-          </Fragment>
-        ))}
-      </div>
+      {charts?.length === 0 && (
+        <div className='h-96 w-full'>
+          <p>Failed to parse chart data</p>
+        </div>
+      )}
+      {charts?.map((chartData, idx) => (
+        <div
+          key={idx}
+          className='h-96 w-full'
+        >
+          {chartData.key === 'bar' && (
+            <SimpleBarChart
+              chartData={chartData.data ?? []}
+              dataKey={chartData.label_field ?? ''}
+              dataFieldName={chartData.value_field ?? ''}
+              color={'#3b82f6'}
+              title={chartData.visualization_title ?? ''}
+              xLabel={chartData.label_field_title ?? ''}
+              yLabel={chartData.value_field_title ?? ''}
+            />
+          )}
+          {chartData.key === 'area' && (
+            <SimpleAreaChart
+              chartData={chartData.data ?? []}
+              dataKey={chartData.label_field ?? ''}
+              dataFieldName={chartData.value_field ?? ''}
+              title={chartData.visualization_title ?? ''}
+              xLabel={chartData.label_field_title ?? ''}
+              yLabel={chartData.value_field_title ?? ''}
+            />
+          )}
+          {chartData.key === 'pie' && (
+            <SimplePieChart
+              chartData={chartData.data ?? []}
+              dataKey={chartData.label_field ?? ''}
+              dataFieldName={chartData.value_field ?? ''}
+              color={'#3b82f6'}
+              title={chartData.visualization_title ?? ''}
+            />
+          )}
+          {chartData.key === 'line' && (
+            <SimpleLineChart
+              chartData={chartData.data ?? []}
+              dataKey={chartData.label_field ?? ''}
+              dataFieldName={chartData.value_field ?? ''}
+              color={'#3b82f6'}
+              title={chartData.visualization_title ?? ''}
+              xLabel={chartData.label_field_title ?? ''}
+              yLabel={chartData.value_field_title ?? ''}
+            />
+          )}
+        </div>
+      ))}
     </div>
   )
 }

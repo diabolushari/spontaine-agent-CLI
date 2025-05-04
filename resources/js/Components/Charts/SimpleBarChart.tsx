@@ -1,11 +1,23 @@
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-import { Bar, BarChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 interface Props {
   chartData: Record<string, string | number | null>[]
   dataFieldName: string
   dataKey: string
   color: string
+  title?: string
+  xLabel?: string
+  yLabel?: string
 }
 
 const renderCustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
@@ -31,29 +43,56 @@ export default function SimpleBarChart({
   dataKey,
   dataFieldName,
   color,
+  title,
+  xLabel,
+  yLabel,
 }: Readonly<Props>) {
   return (
-    <ResponsiveContainer
-      width='100%'
-      height='100%'
-    >
-      <BarChart data={chartData}>
-        <XAxis
-          dataKey={dataKey}
-          style={{ fontSize: '8' }}
-        />
-        <YAxis
-          tickFormatter={(value) => formatNumber(value as number) ?? ''}
-          style={{ fontSize: '8' }}
-        />
-        <Tooltip content={renderCustomTooltip} />
-        <Bar
-          dataKey={dataFieldName}
-          fill={color}
-          stroke={color}
-          barSize={18}
-        />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className='flex h-full w-full flex-col'>
+      {title && <div className='mb-2 text-center font-semibold'>{title}</div>}
+      <ResponsiveContainer
+        width='100%'
+        height={300}
+      >
+        <BarChart
+          data={chartData}
+          margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+        >
+          <CartesianGrid
+            strokeDasharray='3 3'
+            opacity={0.2}
+          />
+          <XAxis
+            dataKey={dataKey}
+            tick={{ fontSize: 12 }}
+            label={{
+              value: xLabel || '',
+              position: 'insideBottomRight',
+              offset: -10,
+              fill: '#666',
+            }}
+          />
+          <YAxis
+            tickFormatter={(value) => formatNumber(value as number) ?? ''}
+            tick={{ fontSize: 12 }}
+            label={{
+              value: yLabel || '',
+              angle: -90,
+              position: 'insideLeft',
+              style: { textAnchor: 'middle' },
+              fill: '#666',
+            }}
+          />
+
+          <Tooltip content={renderCustomTooltip} />
+          <Bar
+            dataKey={dataFieldName}
+            fill={color}
+            stroke={color}
+            barSize={18}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
