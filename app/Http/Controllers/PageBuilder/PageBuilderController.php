@@ -16,10 +16,10 @@ class PageBuilderController extends Controller
     public function index()
 
     {
-        $pages = PageBuilder::get()->all();
+        $pages = PageBuilder::paginate(10);
 
         return Inertia::render('PageBuilder/PageIndex', [
-            'pages' => $pages
+            'pageList' => $pages,
         ]);
     }
 
@@ -42,6 +42,16 @@ class PageBuilderController extends Controller
             ->with(['message' => 'Page Builder Created Successfully']);
     }
 
+    public function show(Request $request, int $id)
+    {
+
+        $page = PageBuilder::findOrFail($id);
+
+        return Inertia::render('PageBuilder/PageShow', [
+            'page' => $page,
+        ]);
+    }
+
     public function edit(Request $request, int $id)
     {
         $page = PageBuilder::find($id);
@@ -61,5 +71,10 @@ class PageBuilderController extends Controller
         return redirect()
             ->route('page-builder.index')
             ->with(['message' => 'Page Builder Updated Successfully']);
+    }
+
+    public function destroy(int $id)
+    {
+        dd('hello');
     }
 }
