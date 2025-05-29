@@ -228,12 +228,20 @@ export default function OfficeRanking({
     <FullSpinnerWrapper processing={loading}>
       <div className='ml-1 space-y-2 rounded-lg bg-1stop-white p-4 md:ml-0'>
         <div className='rounded-lg bg-white'>
-          <button
-            className='flex justify-end text-blue-500'
-            onClick={() => setViewOnMap(!viewOnMap)}
-          >
-            {viewOnMap ? 'View on chart' : 'View on map'}
-          </button>
+          <div className='flex justify-end text-2xl text-blue-700'>
+            <i className='las la-chart-bar'></i>
+            <button
+              className='flex justify-end'
+              onClick={() => setViewOnMap(!viewOnMap)}
+            >
+              {viewOnMap ? (
+                <i className='las la-toggle-on'></i>
+              ) : (
+                <i className='las la-toggle-off'></i>
+              )}
+            </button>
+            <i className='las la-map'></i>
+          </div>
           {viewOnMap ? (
             <OfficeRankingMap mapData={chartData} />
           ) : (

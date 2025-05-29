@@ -1,28 +1,22 @@
 import React, { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-
-import { DataTableItem, OfficeCoordinates } from '@/interfaces/data_interfaces'
-import useFetchRecord from '@/hooks/useFetchRecord'
+import { OfficeCoordinates } from '@/interfaces/data_interfaces'
 import useFetchList from '@/hooks/useFetchList'
 
+interface MapDataItem {
+  [key: string]: string | number | null | undefined
+  office_name: string
+  office_code: string | null | undefined
+}
 interface Props {
-  mapData: DataTableItem[]
+  mapData: MapDataItem[]
 }
 const OfficeRankingMap = ({ mapData }: Props) => {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
   const [coordinates] = useFetchList<OfficeCoordinates>(route('office-coordinates'))
-
-  const BubbleIcon = L.divIcon({
-    className: 'bubble-icon',
-    html: `<div class="bubble-marker"></div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-  })
-
-  L.Marker.prototype.options.icon = BubbleIcon
 
   useEffect(() => {
     if (mapRef.current) return
@@ -49,16 +43,58 @@ const OfficeRankingMap = ({ mapData }: Props) => {
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(mapRef.current)
 
+      // Extract values for scaling
+      const values = mapData.map((dataItem) => {
+        const key = Object.keys(dataItem).find(
+          (k) => typeof dataItem[k] === 'number' && k !== 'office_code'
+        )
+        return key && typeof dataItem[key] === 'number' ? (dataItem[key] as number) : 0
+      })
+      const minValue = Math.min(...values)
+      const maxValue = Math.max(...values)
+
+      const scaleRadius = (value: number) => {
+        const minRadius = 1000
+        const maxRadius = 10000
+        if (maxValue === minValue) return (minRadius + maxRadius) / 2
+        return ((value - minValue) / (maxValue - minValue)) * (maxRadius - minRadius) + minRadius
+      }
+
       mapData.forEach((dataItem) => {
         const matchedOffice = coordinates.find(
           (office) => office.office_code === dataItem.office_code
         )
 
         if (matchedOffice) {
-          const marker = L.marker([matchedOffice.latitude, matchedOffice.longitude]).addTo(
-            mapRef.current!
+          const radiusKey = Object.keys(dataItem).find(
+            (key) => typeof dataItem[key] === 'number' && key !== 'office_code'
           )
-          marker.bindPopup(`<b>${dataItem.office_name}</b>`)
+
+          const value =
+            radiusKey && typeof dataItem[radiusKey] === 'number'
+              ? (dataItem[radiusKey] as number)
+              : 0
+          const scaledRadius = scaleRadius(value)
+
+          const circle = L.circle([matchedOffice.latitude, matchedOffice.longitude], {
+            radius: scaledRadius,
+            color: '#4285f4',
+            fillColor: '#4285f4',
+            fillOpacity: 0.6,
+          }).addTo(mapRef.current!)
+
+          const popupContent = `<b>${dataItem.office_name}</b><br>${radiusKey}: ${value.toFixed(2)}`
+
+          circle.on('mouseover', function (e) {
+            const popup = L.popup({ closeButton: false })
+              .setLatLng(e.latlng)
+              .setContent(popupContent)
+              .openOn(mapRef.current!)
+          })
+
+          circle.on('mouseout', function () {
+            mapRef.current?.closePopup()
+          })
         }
       })
     }
@@ -74,16 +110,6 @@ const OfficeRankingMap = ({ mapData }: Props) => {
 
   return (
     <div>
-      <style>{`
-        .bubble-marker {
-          width: 20px;
-          height: 20px;
-          background-color: #4285f4;
-          border: 3px solid white;
-          border-radius: 50%;
-          box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-        }
-      `}</style>
       <div
         ref={mapContainerRef}
         id='map'
