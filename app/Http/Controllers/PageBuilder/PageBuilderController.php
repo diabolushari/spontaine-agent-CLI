@@ -4,16 +4,17 @@ namespace App\Http\Controllers\PageBuilder;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PageBuilder\PageBuilderFormRequest;
-use App\Http\Requests\PageBuilder\PageBuilderRequest;
 use App\Models\PageBuilder\PageBuilder;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PageBuilderController extends Controller
 
 {
-    public function index()
+    public function index(): Response
 
     {
         $pages = PageBuilder::paginate(10);
@@ -23,13 +24,13 @@ class PageBuilderController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): Response
     {
 
         return Inertia::render('PageBuilder/PageCreate');
     }
 
-    public function store(PageBuilderFormRequest $request)
+    public function store(PageBuilderFormRequest $request): RedirectResponse
     {
 
         try {
@@ -42,7 +43,7 @@ class PageBuilderController extends Controller
             ->with(['message' => 'Page Builder Created Successfully']);
     }
 
-    public function show(Request $request, int $id)
+    public function show(Request $request, int $id): Response
     {
 
         $page = PageBuilder::findOrFail($id);
@@ -52,7 +53,7 @@ class PageBuilderController extends Controller
         ]);
     }
 
-    public function edit(Request $request, int $id)
+    public function edit(Request $request, int $id): Response
     {
         $page = PageBuilder::find($id);
         return Inertia::render('PageBuilder/PageCreate', [
@@ -60,7 +61,7 @@ class PageBuilderController extends Controller
         ]);
     }
 
-    public function update(PageBuilderFormRequest $request, int $id)
+    public function update(PageBuilderFormRequest $request, int $id): RedirectResponse
     {
         try {
             $record = PageBuilder::find($id);
@@ -73,8 +74,17 @@ class PageBuilderController extends Controller
             ->with(['message' => 'Page Builder Updated Successfully']);
     }
 
-    public function destroy(int $id)
+    public function destroy(int $id): RedirectResponse
     {
-        dd('hello');
+        try {
+            $page = PageBuilder::findOrFail($id);
+            $page->delete();
+        } catch (Exception $e) {
+            return redirect()->back()->with(['error' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->route('page-builder.index')
+            ->with(['message' => 'Page Builder Deleted Successfully']);
     }
 }
