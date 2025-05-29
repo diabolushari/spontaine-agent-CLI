@@ -15,6 +15,7 @@ import { useEffect } from 'react'
 interface Props {
   page?: PagesList
 }
+
 type pageBuilderForm = {
   title: string
   description: string
@@ -36,6 +37,7 @@ export default function PageCreate({ page }: Readonly<Props>) {
     published_at: page?.published_at ?? '',
     url: page?.url ?? '',
   })
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     post({
@@ -43,17 +45,20 @@ export default function PageCreate({ page }: Readonly<Props>) {
       _method: page ? 'PUT' : 'POST',
     })
   }
-  const Url = useNameUrl(formData.title)
+
+  const url = useNameUrl(formData.title)
 
   useEffect(() => {
-    setFormValue('url')(Url)
-  }, [formData.title, setFormValue, Url])
+    setFormValue('url')(url)
+  }, [formData.title, setFormValue, url])
+
   const { errors, post, loading } = useInertiaPost<pageBuilderForm & { _method: string }>(
     page ? route('page-builder.update', page.id) : route('page-builder.store'),
     {
       showErrorToast: true,
     }
   )
+
   return (
     <AnalyticsDashboardLayout
       type='data'

@@ -26,6 +26,7 @@ export default function PageIndex({ page_list }: Props) {
       }
     })
   }, [page_list])
+
   const keys = useMemo(() => {
     return [
       {
@@ -51,28 +52,29 @@ export default function PageIndex({ page_list }: Props) {
       },
     ] as ListItemKeys<Partial<PagesList>>[]
   }, [])
+
   const onCardClick = useCallback((id: string | number) => {
     router.get(route('page-builder.show', id))
   }, [])
+
   const formData = {}
   const formItems = {}
+
   return (
-    <>
-      <ListResourcePage
-        rows={data}
-        keys={keys}
-        primaryKey={'id'}
-        title='Page Data'
-        paginator={page_list}
-        formItems={formItems}
-        formData={formData}
-        addUrl={route('page-builder.create')}
-        type='definitions'
-        subtype='data'
-        cardStyles='p-4'
-        subheading='Pages available in the system'
-        handleCardClick={onCardClick}
-      />
-    </>
+    <ListResourcePage
+      rows={data}
+      keys={keys}
+      primaryKey={'id'}
+      title='Page Data'
+      paginator={page_list}
+      formItems={formItems}
+      formData={formData}
+      addUrl={route('page-builder.create')}
+      type='definitions'
+      subtype='data'
+      cardStyles='p-4'
+      subheading='Pages available in the system'
+      handleCardClick={onCardClick}
+    />
   )
 }
