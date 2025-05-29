@@ -18,9 +18,10 @@ interface Props {
 type pageBuilderForm = {
   title: string
   description: string
-  date: string
+  published_at: string
   url: string
 }
+
 const breadCrumb: BreadcrumbItemLink[] = [
   {
     item: 'Data table create',
@@ -32,7 +33,7 @@ export default function PageCreate({ page }: Readonly<Props>) {
   const { formData, setFormValue } = useCustomForm<pageBuilderForm>({
     title: page?.title ?? '',
     description: page?.description ?? '',
-    date: page?.date ?? '',
+    published_at: page?.published_at ?? '',
     url: page?.url ?? '',
   })
   const handleSubmit = (e: React.FormEvent) => {
@@ -89,9 +90,9 @@ export default function PageCreate({ page }: Readonly<Props>) {
             <div className='flex flex-col'>
               <DatePicker
                 label='Date'
-                value={formData.date}
-                setValue={setFormValue('date')}
-                error={errors?.date}
+                value={formData.published_at}
+                setValue={setFormValue('published_at')}
+                error={errors?.published_at}
               />
             </div>
             <div className='flex flex-col'>
@@ -105,7 +106,7 @@ export default function PageCreate({ page }: Readonly<Props>) {
           </div>
           <Button
             type='submit'
-            label='submit'
+            label={page ? 'Update' : 'Create'}
             processing={loading}
           />
         </form>

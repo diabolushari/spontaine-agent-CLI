@@ -16,10 +16,10 @@ class PageBuilder extends Model
         'title',
         'url',
         'description',
-        'date',
+        'published_at',
     ];
 
     protected $dates = [
-        'date',
+        'published_at',
     ];
 }

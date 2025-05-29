@@ -12,7 +12,7 @@ class PageBuilderFormRequest extends Data
     public function __construct(
         public string $title,
         public string $description,
-        public string $date,
+        public string $published_at,
         public string $url
     ) {}
 }

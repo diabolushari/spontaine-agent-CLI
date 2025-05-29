@@ -5,12 +5,12 @@ import { router } from '@inertiajs/react'
 import { useCallback, useMemo } from 'react'
 
 interface Props {
-  pageList: Paginator<PagesList>
+  page_list: Paginator<PagesList>
 }
 
-export default function PageIndex({ pageList }: Props) {
+export default function PageIndex({ page_list }: Props) {
   const data = useMemo(() => {
-    return pageList.data.map((row) => {
+    return page_list.data.map((row) => {
       return {
         id: row.id,
         title: row.title,
@@ -25,7 +25,7 @@ export default function PageIndex({ pageList }: Props) {
         ],
       }
     })
-  }, [pageList])
+  }, [page_list])
   const keys = useMemo(() => {
     return [
       {
@@ -63,7 +63,7 @@ export default function PageIndex({ pageList }: Props) {
         keys={keys}
         primaryKey={'id'}
         title='Page Data'
-        paginator={pageList}
+        paginator={page_list}
         formItems={formItems}
         formData={formData}
         addUrl={route('page-builder.create')}

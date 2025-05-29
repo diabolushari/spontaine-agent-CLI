@@ -29,6 +29,12 @@ export default function PageShow({ page }: Readonly<Props>) {
         content: page.url,
         type: 'text',
       },
+      {
+        id: 4,
+        label: 'date',
+        content: page.published_at,
+        type: 'text',
+      },
     ] as ShowPageItem[]
   }, [page])
 
@@ -48,7 +54,7 @@ export default function PageShow({ page }: Readonly<Props>) {
           title={`Delete Record`}
           url={route('page-builder.destroy', page.id)}
         >
-          <p>Are you sure you want to delete record?</p>
+          <p>Are you sure you want to delete this page?</p>
         </DeleteModal>
       )}
     </ShowResourcePage>

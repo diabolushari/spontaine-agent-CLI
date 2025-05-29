@@ -341,5 +341,5 @@ export interface PagesList extends Model {
   title: string
   description: string
   url: string
-  date: string
+  published_at: string
 }

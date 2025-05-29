@@ -20,7 +20,7 @@ class PageBuilderController extends Controller
         $pages = PageBuilder::paginate(10);
 
         return Inertia::render('PageBuilder/PageIndex', [
-            'pageList' => $pages,
+            'page_list' => $pages,
         ]);
     }
 
