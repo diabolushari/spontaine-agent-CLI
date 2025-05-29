@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css'
 
 import { DataTableItem, OfficeCoordinates } from '@/interfaces/data_interfaces'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import useFetchList from '@/hooks/useFetchList'
 
 interface Props {
   mapData: DataTableItem[]
@@ -12,28 +13,26 @@ const OfficeRankingMap = ({ mapData }: Props) => {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
-  const fullMapData = useFetchRecord<{ data: OfficeCoordinates[] }>(
-    route('find-office-coordinates')
-  )
+  const [coordinates] = useFetchList<OfficeCoordinates>(route('office-coordinates'))
 
-  console.log(fullMapData)
   const BubbleIcon = L.divIcon({
     className: 'bubble-icon',
     html: `<div class="bubble-marker"></div>`,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
   })
+
   L.Marker.prototype.options.icon = BubbleIcon
 
   useEffect(() => {
     if (mapRef.current) return
 
-    if (mapContainerRef.current && fullMapData[0]?.data) {
+    if (mapContainerRef.current && coordinates) {
       const bounds = L.latLngBounds([8.17, 74.85], [12.78, 77.7])
 
       mapRef.current = L.map(mapContainerRef.current, {
         center: [9.66505, 76.55606],
-        zoom: 8,
+        zoom: 7,
         maxBounds: bounds,
         maxBoundsViscosity: 1.0,
         keyboard: true,
@@ -51,7 +50,7 @@ const OfficeRankingMap = ({ mapData }: Props) => {
       }).addTo(mapRef.current)
 
       mapData.forEach((dataItem) => {
-        const matchedOffice = fullMapData[0]?.data.find(
+        const matchedOffice = coordinates.find(
           (office) => office.office_code === dataItem.office_code
         )
 
@@ -71,7 +70,7 @@ const OfficeRankingMap = ({ mapData }: Props) => {
         mapRef.current = null
       }
     }
-  }, [fullMapData, mapData])
+  }, [coordinates, mapData])
 
   return (
     <div>

@@ -7,16 +7,14 @@ use App\Models\Map\OfficeCoordinates;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class MapController extends Controller
+class OfficeCoordinateListController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
 
         $coordinates = OfficeCoordinates::all();
 
-        return response()->json([
-            'data' => $coordinates,
-        ]);
+        return response()->json($coordinates);
 
     }
 }
