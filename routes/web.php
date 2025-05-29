@@ -65,6 +65,8 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\DashboardtableController;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -73,6 +75,15 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+//form sample
+Route::get('/dashboard-details/create', function () {
+    return Inertia::render('DashboardDetail/DashboardDetailCreate');
+})->name('dashboard-details.create');
+
+Route::post('/dashboard-details', [DashboardtableController::class, 'store'])
+    ->name('dashboard-details.store');
+
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);
