@@ -6,10 +6,10 @@ type CustomScrollAreaProps = {
   onChartClick: (id: number, name: string) => void
 }
 const pageBuilderCharts = [
-  { id: 1, name: 'Active connection', componenet: <SampleChart /> },
-  { id: 2, name: 'New connection', componenet: <SampleChart /> },
-  { id: 3, name: 'Old', componenet: <SampleChart /> },
-  { id: 4, name: 'New ', componenet: <SampleChart /> },
+  { id: 1, name: 'Active connection', component: <SampleChart /> },
+  { id: 2, name: 'New connection', component: <SampleChart /> },
+  { id: 3, name: 'Old', component: <SampleChart /> },
+  { id: 4, name: 'New ', component: <SampleChart /> },
 ]
 export function CustomScrollArea({ onChartClick }: CustomScrollAreaProps) {
   return (
@@ -33,7 +33,7 @@ export function CustomScrollArea({ onChartClick }: CustomScrollAreaProps) {
                 className='group transform cursor-pointer rounded-md border border-solid p-2 text-sm shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
               >
                 {chart.name}
-                <div style={{ pointerEvents: 'none' }}>{chart.componenet}</div>
+                <div style={{ pointerEvents: 'none' }}>{chart.component}</div>
               </div>
             </>
           ))}

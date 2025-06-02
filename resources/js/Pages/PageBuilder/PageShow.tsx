@@ -15,6 +15,7 @@ interface Props {
 export type blockForm = {
   name: string
   position: number
+  page_id: number
   dimensions: {
     padding_top: string
     padding_bottom: string
@@ -41,6 +42,7 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
       laptop_width: '',
       desktop_width: '',
     },
+    page_id: page.id,
   })
   const { post } = useInertiaPost<blockForm>('/blocks')
   const handleClick = (id: number, name: string) => {

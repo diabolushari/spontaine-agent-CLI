@@ -14,20 +14,20 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-class BlocksFormRequest extends Data
+class BlocksUpdateFormRequest extends Data
 {
     public function __construct(
-        #[Required, StringType, Max(255)]
-        public string $name,
+        #[StringType, Max(255)]
+        public ?string $name,
 
-        #[Required, IntegerType]
-        public int $position,
+        #[IntegerType]
+        public ?int $position,
 
-        #[Required, ArrayType]
-        public array $dimensions,
+        #[ArrayType]
+        public ?array $dimensions,
 
-        #[Required, IntegerType, Exists('pages', 'id')]
-        public int $page_id,
+        #[IntegerType, Exists('pages', 'id')]
+        public ?int $page_id,
 
         #[StringType, In(['up', 'down'])]
         public ?string $action = null

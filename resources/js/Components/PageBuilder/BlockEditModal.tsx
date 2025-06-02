@@ -116,9 +116,6 @@ const BlockEditModal: React.FC<BlockEditModalProps> = ({ isOpen, onClose, block 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     post({
-      name: block.name,
-      position: block.position,
-      page_id: block.page_id,
       dimensions: formData,
       _method: 'PUT',
     })

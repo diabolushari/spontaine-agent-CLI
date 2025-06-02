@@ -14,12 +14,7 @@ use Inertia\Response;
 class PageBuilderController extends Controller
 
 {
-    public static function middleware()
-    {
-        return [
-            'auth',
-        ];
-    }
+
 
     public function index(): Response
 
@@ -74,7 +69,9 @@ class PageBuilderController extends Controller
     {
         try {
             $record = PageBuilder::find($id);
-            $record->update([...$request->all()]);
+            if ($record != null) {
+                $record->update([...$request->all()]);
+            }
         } catch (Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }

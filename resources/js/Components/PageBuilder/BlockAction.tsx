@@ -6,6 +6,7 @@ import CardHeader from '@/ui/Card/CardHeader'
 import Button from '@/ui/button/Button'
 import { router } from '@inertiajs/react'
 import BlockEditModal from './BlockEditModal'
+import useInertiaPost from '@/hooks/useInertiaPost'
 
 interface BlockActionProps {
   block: Block
@@ -23,10 +24,17 @@ const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
 export const BlockAction = ({ block }: BlockActionProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const Component = blockComponents[block.name]
+  const { post } = useInertiaPost(route('blocks.update', block.id))
   const handleDelete = () => {
-    if (confirm('Are you sure?')) {
+    if (confirm('Are you sure to delete this block?')) {
       router.delete(route('blocks.destroy', block.id))
     }
+  }
+  const handleMove = (direction: 'up' | 'down') => {
+    post({
+      action: direction,
+      _method: 'PUT',
+    })
   }
   const handleEditClick = () => {
     setEditModalOpen(true)
@@ -47,10 +55,12 @@ export const BlockAction = ({ block }: BlockActionProps) => {
             <Button
               type='button'
               label='Up'
+              onClick={() => handleMove('up')}
             />
             <Button
               type='button'
               label='Down'
+              onClick={() => handleMove('down')}
             />
           </div>
         </div>

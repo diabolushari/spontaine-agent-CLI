@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Blocks;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\BlocksFormRequest;
-use App\Http\Requests\PageBuilder\PageBuilderFormRequest;
+use App\Http\Requests\Blocks\BlocksUpdateFormRequest;
 use App\Models\Blocks\Blocks;
-use App\Models\PageBuilder\PageBuilder;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,12 +15,7 @@ use Inertia\Response;
 class BlocksController extends Controller
 
 {
-    public static function middleware()
-    {
-        return [
-            'auth',
-        ];
-    }
+
 
     public function index(): Response {}
 
@@ -29,6 +23,7 @@ class BlocksController extends Controller
 
     public function store(BlocksFormRequest $request): RedirectResponse
     {
+
         try {
             $maxPosition = Blocks::where('page_id', $request->page_id)->max('position');
             $newPosition = $maxPosition ? $maxPosition + 1 : 1;
@@ -44,21 +39,49 @@ class BlocksController extends Controller
         return redirect()->route('page-builder.show', $block->page_id)->with(['message' => 'Block added successfully']);
     }
 
-    public function show(Request $request, int $id): Response
-    {
-        dd('hellow');
-    }
+    public function show(Request $request, int $id): Response {}
 
     public function edit(Request $request, int $id): Response {}
 
-    public function update(BlocksFormRequest $request, int $id): RedirectResponse
+    public function update(BlocksUpdateFormRequest $request, int $id): RedirectResponse
     {
 
         $block = Blocks::findOrFail($id);
+        $adjacentBlock = null;
+        if ($request->action) {
 
-        $block->update([
-            'dimensions' => $request->dimensions
-        ]);
+            if ($request->action === 'up') {
+                $adjacentBlock = Blocks::where('position', '<', $block->position)
+                    ->where('page_id', $block->page_id) // Optional: restrict by page
+                    ->orderBy('position', 'desc')
+                    ->first();
+            } elseif ($request->action === 'down') {
+                $adjacentBlock = Blocks::where('position', '>', $block->position)
+                    ->where('page_id', $block->page_id)
+                    ->orderBy('position', 'asc')
+                    ->first();
+            }
+
+            if ($adjacentBlock) {
+                $tempPosition = $block->position;
+                $block->position = $adjacentBlock->position;
+                $adjacentBlock->position = $tempPosition;
+
+                $block->save();
+                $adjacentBlock->save();
+
+                return redirect()->back()->with('message', "Block moved {$request->action} successfully!");
+            } else {
+                return redirect()->back()->with('error', "Cannot move {$request->action}. No adjacent block found.");
+            }
+        }
+        if ($request->dimensions) {
+            $block->update([
+                'dimensions' => $request->dimensions
+            ]);
+        }
+
+
 
         return redirect()->back()->with('message', 'Block updated successfully!');
     }
