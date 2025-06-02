@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\PageBuilder\PageBuilderController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
+use App\Http\Controllers\SampleChart\ChartController;
 use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\StaticListController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
@@ -66,9 +68,6 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dashboard\DashboardtableController;
-use App\Http\Controllers\SampleChart\ChartController;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -78,7 +77,9 @@ Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Page building
 Route::resource('page-builder', PageBuilderController::class);
+Route::resource('blocks', BlocksController::class);
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
@@ -387,4 +388,4 @@ Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::clas
 Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
     ->name('meta-hierarchies.hierarchy-items');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

@@ -61,20 +61,22 @@ export default function PageIndex({ page_list }: Props) {
   const formItems = {}
 
   return (
-    <ListResourcePage
-      rows={data}
-      keys={keys}
-      primaryKey={'id'}
-      title='Page Data'
-      paginator={page_list}
-      formItems={formItems}
-      formData={formData}
-      addUrl={route('page-builder.create')}
-      type='definitions'
-      subtype='data'
-      cardStyles='p-4'
-      subheading='Pages available in the system'
-      handleCardClick={onCardClick}
-    />
+    <>
+      <ListResourcePage
+        rows={data}
+        keys={keys}
+        primaryKey={'id'}
+        title='Page Data'
+        paginator={page_list}
+        formItems={formItems}
+        formData={formData}
+        addUrl={route('page-builder.create')}
+        type='definitions'
+        subtype='data'
+        cardStyles='p-4'
+        subheading='Pages available in the system'
+        handleCardClick={onCardClick}
+      />
+    </>
   )
 }
