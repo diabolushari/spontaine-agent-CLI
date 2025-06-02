@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -75,8 +76,9 @@ Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Page builder
+// Page building
 Route::resource('page-builder', PageBuilderController::class);
+Route::resource('blocks', BlocksController::class);
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);

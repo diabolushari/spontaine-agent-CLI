@@ -343,3 +343,20 @@ export interface PagesList extends Model {
   url: string
   published_at: string
 }
+
+export interface Block extends Model {
+  id: number
+  page_id: number
+  name: string
+  position: number
+  dimensions: {
+    padding_top: string
+    padding_bottom: string
+    margin_top: string
+    margin_bottom: string
+    mobile_width: string
+    tablet_width: string
+    laptop_width: string
+    desktop_width: string
+  }
+}

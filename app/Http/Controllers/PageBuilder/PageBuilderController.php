@@ -14,6 +14,13 @@ use Inertia\Response;
 class PageBuilderController extends Controller
 
 {
+    public static function middleware()
+    {
+        return [
+            'auth',
+        ];
+    }
+
     public function index(): Response
 
     {
@@ -47,9 +54,11 @@ class PageBuilderController extends Controller
     {
 
         $page = PageBuilder::findOrFail($id);
+        $blocks = $page->blocks()->orderBy('position')->get();
 
         return Inertia::render('PageBuilder/PageShow', [
             'page' => $page,
+            'blocks' => $blocks
         ]);
     }
 

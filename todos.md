@@ -22,10 +22,10 @@
 - use shadcn tooltip
 - use shadcn legends
 - multiple measurements(line, bards) in single chart.
-<https://recharts.org/en-US/examples/SimpleLineChart>
+  <https://recharts.org/en-US/examples/SimpleLineChart>
 - biaxial chart
-<https://recharts.org/en-US/examples/BiaxialLineChart>>
--charts with multiple dimensions.
+  <https://recharts.org/en-US/examples/BiaxialLineChart>>
+  -charts with multiple dimensions.
 
 ```
  {
