@@ -7,6 +7,7 @@ import { SelectedOfficeContext } from '@/Pages/DataExplorer/DataExplorerPage'
 import OfficeLevelSubsetTable from '@/Components/DataExplorer/OfficeLevelSubsetTable'
 import useOfficeLevelSelection from '@/Components/DataExplorer/useOfficeLevelSelection'
 import { dateToYearMonth, yearMonthToDate } from '@/Components/ServiceDelivery/ActiveConnection'
+import OfficeClusterMap from './OfficeRanking/Map/OfficeClusterMap'
 
 interface Props {
   subset: SubsetDetail
@@ -29,6 +30,7 @@ export default function OfficeLevelExplorerTable({
   setSelectedMonth,
 }: Readonly<Props>) {
   console.log(subset)
+  const [showMap, setShowMap] = useState<boolean>(false)
   const { region, circle, division, subdivision } = useContext(SelectedOfficeContext)
 
   const { prevLevelOffice, selectedOffice } = useOfficeLevelSelection(
@@ -145,8 +147,31 @@ export default function OfficeLevelExplorerTable({
     return cols
   }, [subset])
 
+  const mapData = useMemo(() => {
+    if (dataTable?.data == null) {
+      return null
+    }
+    return dataTable.data.map((row) => {
+      return {
+        office_code: row.office_code,
+        office_name: row.office_name,
+        [tableCols[3].name]: row[tableCols[3].source as keyof DataTableItem] ?? 0,
+      }
+    })
+  }, [dataTable?.data, tableCols])
+
   return (
     <FullSpinnerWrapper processing={loading}>
+      <div className='flex items-end justify-end text-1stop-highlight'>
+        <button
+          onClick={() => setShowMap(!showMap)}
+          className='axial-label-1stop uppercase'
+        >
+          {showMap ? 'Hide Map' : 'Show Map'}
+        </button>
+      </div>
+
+      {showMap && <OfficeClusterMap mapData={mapData ?? []} />}
       <OfficeLevelSubsetTable
         officeLevel={officeLevel}
         tableCols={tableCols}
