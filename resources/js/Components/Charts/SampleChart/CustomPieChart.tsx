@@ -64,14 +64,14 @@ export function CustomPieChart() {
                       y={viewBox.cy}
                       className='fill-foreground text-3xl font-bold'
                     >
-                      {totalVisitors.toLocaleString()}
+                      {total.toLocaleString()}
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 24}
                       className='fill-muted-foreground'
                     >
-                      UV Total
+                      SLA Total
                     </tspan>
                   </text>
                 )

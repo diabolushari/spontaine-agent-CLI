@@ -34,7 +34,14 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function CustomBarChart() {
+export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
+  const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
+    acc[plotKey.key] = {
+      label: plotKey.key,
+      color: chartColors[index % chartColors.length],
+    }
+    return acc
+  }, {} as ChartConfig)
   return (
     <ChartContainer config={chartConfig}>
       <ResponsiveContainer

@@ -32,7 +32,14 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function CustomLineChart() {
+export function CustomLineChart({ data, dataKey, keysToPlot }: Props) {
+  const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
+    acc[plotKey.key] = {
+      label: plotKey.key,
+      color: chartColors[index % chartColors.length],
+    }
+    return acc
+  }, {} as ChartConfig)
   return (
     <ChartContainer config={chartConfig}>
       <LineChart
