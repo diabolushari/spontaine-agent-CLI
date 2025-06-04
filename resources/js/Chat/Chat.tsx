@@ -33,10 +33,10 @@ export default function Chat({ chatHistory, currentSession }: ChatProps) {
   const handleChatHistory = (sessionId: number) => {
     console.log(sessionId)
     axios.get(`/chat-history/${sessionId}`).then((res) => {
-      console.log('from res: ', res.data.messages)
+      // console.log('from res: ', res.data.messages)
       setCurrentSession(res.data)
       setMessageFromHistory(res.data.messages)
-      console.log('current session: ', _currentSession)
+      // console.log('current session: ', _currentSession)
     })
   }
 

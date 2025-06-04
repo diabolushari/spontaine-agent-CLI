@@ -91,6 +91,7 @@ const addSuggestionsToLastChat = (
     console.error('❌ Error parsing suggestions JSON:', error, suggestionsJson)
   }
 }
+
 interface currentSession {
   id: number
   title: string
@@ -220,17 +221,6 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
         contentType: 'text',
       },
     ])
-    axios
-      .patch(`/chat-history/${currentSession.id}`, {
-        messages: messages,
-        title: currentSession.title,
-      })
-      .then((res) => {
-        console.log(res.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
     setIsLoading(true)
 
     socketRef.current?.send(
@@ -242,17 +232,32 @@ export default function useChat(mode: 'chat' | 'agent', currentSession: currentS
     setInput('')
   }
 
+  useEffect(() => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      const filteredMessages = messages.filter(
+        (message) => message.role === 'user' || message.role === 'assistant'
+      )
+      console.log('update server history : ', messages)
+      socketRef.current.send(
+        JSON.stringify({
+          type: 'history',
+          history: filteredMessages,
+        })
+      )
+    } else {
+      console.log('socket not ready')
+    }
+  }, [currentSession])
+
   const setMessageFromHistory = (History: ChatMessage[]) => {
     setMessages(History)
-    console.log('history messages: ')
-    console.log(messages)
   }
 
   useEffect(() => {
+    console.log('messsage from history: ', messages)
     axios
       .patch(`/chat-history/${currentSession.id}`, {
         messages: messages,
-        title: currentSession.title,
       })
       .then((res) => {
         console.log('Chat history saved/updated from useChat:', res.data)
