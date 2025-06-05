@@ -18,6 +18,7 @@ interface Props {
   setSearchParams: Dispatch<SetStateAction<Record<string, string>>>
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
+  mapField: string | null
 }
 
 export default function OfficeLevelExplorerTable({
@@ -28,6 +29,7 @@ export default function OfficeLevelExplorerTable({
   searchParams,
   selectedMonth,
   setSelectedMonth,
+  mapField,
 }: Readonly<Props>) {
   console.log(subset)
   const [showMap, setShowMap] = useState<boolean>(false)
@@ -152,26 +154,33 @@ export default function OfficeLevelExplorerTable({
       return null
     }
     return dataTable.data.map((row) => {
+      const mapCol = tableCols.find((col) => col.source === mapField)
       return {
         office_code: row.office_code,
         office_name: row.office_name,
-        [tableCols[3].name]: row[tableCols[3].source as keyof DataTableItem] ?? 0,
+        [mapCol?.name ?? '']: row[mapCol?.source as keyof DataTableItem] ?? 0,
       }
     })
-  }, [dataTable?.data, tableCols])
+  }, [dataTable?.data, tableCols, mapField])
 
+  console.log(mapField)
+  console.log(tableCols)
   return (
     <FullSpinnerWrapper processing={loading}>
-      <div className='flex items-end justify-end text-1stop-highlight'>
-        <button
-          onClick={() => setShowMap(!showMap)}
-          className='axial-label-1stop uppercase'
-        >
-          {showMap ? 'Hide Map' : 'Show Map'}
-        </button>
-      </div>
+      {selectedMonth != null && mapField != null && (
+        <div className='flex items-end justify-end text-1stop-highlight'>
+          <button
+            onClick={() => setShowMap(!showMap)}
+            className='axial-label-1stop uppercase'
+          >
+            {showMap ? 'Hide Map' : 'Show Map'}
+          </button>
+        </div>
+      )}
 
-      {showMap && <OfficeClusterMap mapData={mapData ?? []} />}
+      {showMap && selectedMonth != null && mapField != null && (
+        <OfficeClusterMap mapData={mapData ?? []} />
+      )}
       <OfficeLevelSubsetTable
         officeLevel={officeLevel}
         tableCols={tableCols}

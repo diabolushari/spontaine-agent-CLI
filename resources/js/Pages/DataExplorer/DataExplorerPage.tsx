@@ -276,6 +276,7 @@ export default function DataExplorerPage({
                 setSearchParams={setSearchParams}
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
+                mapField={selectedSubsetItem?.trend_field}
               />
             )}
           </Card>
