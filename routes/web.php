@@ -68,6 +68,9 @@ use App\Models\Subset\SubsetDetailDimension;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChartData\DataDetailListController;
+use App\Http\Controllers\ChartData\SubsetDetailListController;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -83,6 +86,15 @@ Route::resource('blocks', BlocksController::class);
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
+
+//subset detail
+Route::get('/data-detail-list', [DataDetailListController::class, 'getDataDetails']);
+Route::get('/subset-list/{dataDetailId}', [SubsetDetailListController::class, 'getSubsetsByDataDetail']);
+
+//testing
+Route::get('/test', function () {
+    return Inertia::render('TestPage');
+});
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);
@@ -388,4 +400,4 @@ Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::clas
 Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
     ->name('meta-hierarchies.hierarchy-items');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
