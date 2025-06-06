@@ -376,3 +376,13 @@ export interface Block extends Model {
     }
   }
 }
+
+export interface OfficeCoordinates {
+  level: string
+  circle: string
+  office_id: number
+  office_code: string
+  office_name: string
+  latitude: number
+  longitude: number
+}

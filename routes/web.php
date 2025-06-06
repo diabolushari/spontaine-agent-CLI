@@ -19,6 +19,7 @@ use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
 use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\Map\OfficeCoordinateListController;
 use App\Http\Controllers\Meta\MetaDataController;
 use App\Http\Controllers\Meta\MetaDataGroupController;
 use App\Http\Controllers\Meta\MetaDataSearchController;
@@ -391,4 +392,9 @@ Route::get('subset-ranked-data/{subsetDetail}', SubsetRankedDataController::clas
 Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::class)
     ->name('meta-hierarchies.hierarchy-items');
 
-require __DIR__ . '/auth.php';
+//map
+Route::get('office-coordinates', OfficeCoordinateListController::class)
+    ->name('office-coordinates')
+    ->middleware('auth');
+
+require __DIR__.'/auth.php';
