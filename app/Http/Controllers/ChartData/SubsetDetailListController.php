@@ -25,6 +25,16 @@ class SubsetDetailListController extends Controller
 
         return response()->json($data);
     }
+
+    public function getSubsetsByDataDetail($dataDetailId)
+    {
+        return DB::table('subset_details')
+            ->select('id', 'name', 'description')
+            ->where('data_detail_id', $dataDetailId)
+            ->get();
+
+        return response()->json($data);
+    }
     public function getSubsetsByDataDetail($dataDetailId)
     {
         $subset = SubsetDetail::with(['dates', 'dimensions', 'measures'])->find($dataDetailId);
