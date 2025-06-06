@@ -22,7 +22,7 @@ interface Props {
   chartType?: 'bar' | 'area'
 }
 
-export default function SampleDashboardTrendGraph({
+export default function TrendGraph({
   cardTitle,
   selectedMonth,
   setSelectedMonth,
@@ -97,8 +97,8 @@ export default function SampleDashboardTrendGraph({
       })
       .reverse()
   }, [dataFieldName, dataField, graphValues?.data, selectedMonthValue, selectedMonth])
-  console.log('fetchUrl:', fetchUrl)
-  console.log('graphValues:', graphValues)
+  // console.log('fetchUrl:', fetchUrl)
+  // console.log('graphValues:', graphValues)
 
   return (
     <div className='flex w-full flex-col pr-4'>
@@ -121,7 +121,7 @@ export default function SampleDashboardTrendGraph({
         )}
       </div>
 
-      <div className='w-full'>
+      <div className='w-4/4'>
         {isLoading ? (
           <Skeleton
             height={150}
