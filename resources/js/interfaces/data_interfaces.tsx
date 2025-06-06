@@ -336,7 +336,7 @@ export interface DataTableText extends Model {
   is_long_text: boolean
 }
 
-export interface PagesList extends Model {
+export interface Page extends Model {
   id: number
   title: string
   description: string
