@@ -18,7 +18,7 @@ interface Props {
   setSearchParams: Dispatch<SetStateAction<Record<string, string>>>
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  mapField: string | null
+  mapField?: string | null
 }
 
 export default function OfficeLevelExplorerTable({
