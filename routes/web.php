@@ -62,7 +62,6 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
-use App\Http\Controllers\TitleGen\TitleGen;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Meta\MetaHierarchyItem;
@@ -387,9 +386,6 @@ Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::clas
 Route::get('office-coordinates', OfficeCoordinateListController::class)
     ->name('office-coordinates')
     ->middleware('auth');
-
-Route::post('/title-gen', TitleGen::class)
-    ->name('title-gen');
 
 Route::get('/insight-gen', InsightsGen::class)
     ->name('insight-gen');
