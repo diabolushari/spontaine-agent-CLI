@@ -3,7 +3,7 @@ import { Block, Config } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Input from '@/ui/form/Input'
-import React from 'react'
+import React, { useState } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import StrongText from '@/typography/StrongText'
 import NormalText from '@/typography/NormalText'
@@ -28,6 +28,9 @@ export default function ConfigFormStepGeneral({
     data_table_id: initialData?.data_table_id ?? null,
     subset_group_id: initialData?.subset_group_id ?? null,
   })
+  const [subseGroudId, setSubsetGroupId] = useState<string | number | null>(
+    initialData?.subset_group_id ?? null
+  )
   const { post, loading, errors } = useInertiaPost<Partial<Config> & { _method: string }>(
     route('config.general.update', block.id),
     {
@@ -39,7 +42,10 @@ export default function ConfigFormStepGeneral({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
+    if (initialData.subset_group_id !== formData.subset_group_id) {
+      initialData.trend.subset_id = ''
+      initialData.ranking.subset_id = ''
+    }
     post({
       ...formData,
       _method: 'PUT',
@@ -79,7 +85,7 @@ export default function ConfigFormStepGeneral({
               url='/api/subset-group'
               dataKey='id'
               displayKey='name'
-              value={formData.subset_group_id}
+              value={formData.subset_group_id ?? ''}
               setValue={setFormValue('subset_group_id')}
               error={errors?.subset_group_id}
             />

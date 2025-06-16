@@ -115,7 +115,8 @@ Route::get('/api/data-detail', DataDetailListController::class);
 Route::get('/api/subset/{subsetId}', SubsetFieldsController::class);
 Route::get('/api/subset-group', SubsetGroupListController::class);
 Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
-Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class);
+Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class)
+    ->name('data-detail.date');
 
 //testing
 Route::get('/test', function () {

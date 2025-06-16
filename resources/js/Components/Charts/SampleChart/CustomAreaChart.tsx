@@ -45,9 +45,16 @@ export function CustomAreaChart({
     return acc
   }, {} as ChartConfig)
 
+  if (tooltipIndicator?.label) {
+    chartConfig[tooltipIndicator.label] = {
+      label: `${tooltipIndicator.label}${tooltipIndicator.unit ? ` (${tooltipIndicator.unit})` : ''}`,
+      color: 'hsl(var(--chart-1))', // fallback color
+    }
+  }
+  console.log(tooltipIndicator)
   return (
     <ChartContainer config={chartConfig}>
-      <div className='h-[300px]'>
+      <div className='h-[350px]'>
         <ResponsiveContainer
           width='100%'
           height={200}
@@ -65,8 +72,8 @@ export function CustomAreaChart({
               label={{
                 value: xAxisLabel,
                 position: 'insideBottom',
-                offset: -15,
-                style: { fill: 'var(--tw-prose-body)' }, // Tailwind-like variable
+                offset: -10,
+                style: { fill: 'var(--tw-prose-body)' },
               }}
             />
             <YAxis
@@ -77,7 +84,7 @@ export function CustomAreaChart({
                 value: yAxisLabel,
                 angle: -90,
                 position: 'insideLeft',
-                offset: 50,
+                offset: 55,
                 style: { fill: 'var(--tw-prose-body)' },
               }}
             />
@@ -86,11 +93,7 @@ export function CustomAreaChart({
                 cursor={false}
                 content={
                   <ChartTooltipContent
-                    label={
-                      tooltipIndicator?.label && tooltipIndicator?.unit
-                        ? `${tooltipIndicator.label} (${tooltipIndicator.unit})`
-                        : tooltipIndicator?.label || ''
-                    }
+                    labelKey={tooltipIndicator.label}
                     indicator='dot'
                   />
                 }

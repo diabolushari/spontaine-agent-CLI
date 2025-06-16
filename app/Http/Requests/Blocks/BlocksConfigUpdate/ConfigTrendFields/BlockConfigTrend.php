@@ -14,7 +14,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class BlockConfigTrend extends Data
 {
     public function __construct(
-        #[Nullable, Exists('subset_group_items', 'id')]
+        #[Nullable, Exists('subset_group_items', 'subset_detail_id')]
         public ?int $subsetId,
 
         #[Nullable, Max(255)]
@@ -28,7 +28,7 @@ class BlockConfigTrend extends Data
     public static function rules(): array
     {
         return [
-            'subsetId' => ['nullable', 'integer', 'exists:subset_group_items,id'],
+            'subsetId' => ['nullable', 'integer', 'exists:subset_group_items,subset_detail_id'],
             'title' => ['nullable', 'string', 'max:255'],
 
             'dataField.xAxis.label' => ['required_with:subsetId', 'string'],
