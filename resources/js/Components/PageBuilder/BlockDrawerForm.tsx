@@ -69,24 +69,6 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                   }}
                   onNext={(validatedData: Partial<Config>) => {
                     setStepData((prev) => ({ ...prev, ...validatedData }))
-                    setStep(4)
-                  }}
-                />
-              </div>
-            )}
-          </div>
-          {/* Step 4 */}
-          <div className='w-full shrink-0'>
-            {step === 4 && (
-              <div className='w-full'>
-                <ConfigFormStepOverview
-                  initialData={stepData}
-                  block={block}
-                  onBack={() => {
-                    setStep(3)
-                  }}
-                  onNext={(validatedData: Partial<Config>) => {
-                    setStepData((prev) => ({ ...prev, ...validatedData }))
                     setCloseDrawer(false)
                   }}
                 />

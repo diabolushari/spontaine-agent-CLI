@@ -13,18 +13,11 @@ class DataDetailDateController extends Controller
     public function __invoke(int $dataDetailId, Request $request, JoinDataTable $joinDataTable): JsonResponse
     {
 
-<<<<<<< HEAD
-        $query = $queryDataTable->query($dataDetail);
-
-
-        $result = $query->paginate(10);
-=======
         $field = $request->get('field', 'month_year');
 
         $detail = DataDetail::with('dateFields', 'dimensionFields.structure', 'measureFields')
             ->where('id', $dataDetailId)
             ->first();
->>>>>>> test-block
 
         $query = $joinDataTable->join($detail);
 
