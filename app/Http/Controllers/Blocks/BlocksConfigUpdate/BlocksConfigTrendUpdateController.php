@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 class BlocksConfigTrendUpdateController extends Controller
 {
 
-    public function __invoke(Request $request, $id): RedirectResponse
+    public function __invoke(BlocksConfigTrendUpdateRequest $request, $id): RedirectResponse
     {
-
+        $validated = $request->toArray();
         return redirect()->back();
     }
 }

@@ -135,7 +135,10 @@ export default function TrendGraph({
             width='100%'
           />
         ) : chartType === 'area' ? (
-          <div style={{ border: '1px solid red' }}>
+          <div
+            className='h-[300px]'
+            style={{ border: '1px solid red' }}
+          >
             <CustomAreaChart
               data={chartData}
               dataKey='month'

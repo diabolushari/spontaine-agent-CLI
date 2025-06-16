@@ -47,67 +47,69 @@ export function CustomAreaChart({
 
   return (
     <ChartContainer config={chartConfig}>
-      <ResponsiveContainer
-        width='100%'
-        height={200}
-      >
-        <AreaChart
-          data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+      <div className='h-[300px]'>
+        <ResponsiveContainer
+          width='100%'
+          height={200}
         >
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey={dataKey}
-            tickLine={true}
-            axisLine={true}
-            tickMargin={8}
-            label={{
-              value: xAxisLabel,
-              position: 'insideBottom',
-              offset: -15,
-              style: { fill: 'var(--tw-prose-body)' }, // Tailwind-like variable
-            }}
-          />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            label={{
-              value: yAxisLabel,
-              angle: -90,
-              position: 'insideLeft',
-              offset: 50,
-              style: { fill: 'var(--tw-prose-body)' },
-            }}
-          />
-          {tooltipIndicator?.show_label && (
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  label={
-                    tooltipIndicator?.label && tooltipIndicator?.unit
-                      ? `${tooltipIndicator.label} (${tooltipIndicator.unit})`
-                      : tooltipIndicator?.label || ''
-                  }
-                  indicator='dot'
-                />
-              }
+          <AreaChart
+            data={data}
+            margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey={dataKey}
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+              label={{
+                value: xAxisLabel,
+                position: 'insideBottom',
+                offset: -15,
+                style: { fill: 'var(--tw-prose-body)' }, // Tailwind-like variable
+              }}
             />
-          )}
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              label={{
+                value: yAxisLabel,
+                angle: -90,
+                position: 'insideLeft',
+                offset: 50,
+                style: { fill: 'var(--tw-prose-body)' },
+              }}
+            />
+            {tooltipIndicator?.show_label && (
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    label={
+                      tooltipIndicator?.label && tooltipIndicator?.unit
+                        ? `${tooltipIndicator.label} (${tooltipIndicator.unit})`
+                        : tooltipIndicator?.label || ''
+                    }
+                    indicator='dot'
+                  />
+                }
+              />
+            )}
 
-          {keysToPlot.map((plotKey, index) => (
-            <Area
-              key={plotKey.key}
-              dataKey={plotKey.key}
-              type='natural'
-              fill={chartColors[index % chartColors.length]}
-              fillOpacity={0.4}
-              stroke={chartColors[index % chartColors.length]}
-            />
-          ))}
-        </AreaChart>
-      </ResponsiveContainer>
+            {keysToPlot.map((plotKey, index) => (
+              <Area
+                key={plotKey.key}
+                dataKey={plotKey.key}
+                type='natural'
+                fill={chartColors[index % chartColors.length]}
+                fillOpacity={0.4}
+                stroke={chartColors[index % chartColors.length]}
+              />
+            ))}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </ChartContainer>
   )
 }

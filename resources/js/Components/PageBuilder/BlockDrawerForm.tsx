@@ -6,14 +6,17 @@ import React, { useCallback, useMemo, useState } from 'react'
 import ConfigFormStepGeneral from './PageBlockConfigFormComponent/ConfigFromStepGeneral'
 import ConfigFormStepTrend from './PageBlockConfigFormComponent/ConfigFormStepTrend'
 import ConfigFormStepRanking from './PageBlockConfigFormComponent/ConfigFormStepRanking'
+import { div } from 'framer-motion/client'
+import ConfigFormStepOverview from './PageBlockConfigFormComponent/ConfigFormStepOverview'
 
 interface BlockFormProps {
   initialData: Config
   onCloseStep?: () => void
   block: Block
+  setCloseDrawer: (value: boolean) => void
 }
 
-export default function BlockDrawerForm({ initialData, block }: BlockFormProps) {
+export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: BlockFormProps) {
   const [step, setStep] = useState(1)
   const [stepData, setStepData] = useState(initialData)
 
@@ -71,12 +74,14 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
                   }}
                   onNext={(validatedData: Partial<Config>) => {
                     setStepData((prev) => ({ ...prev, ...validatedData }))
-                    setStep(4)
+                    setCloseDrawer(false)
                   }}
                 />
               </div>
             )}
           </div>
+          {/* Step 4 */}
+          <div className='w-full shrink-0'>{step === 4 && <div className='w-full'></div>}</div>
         </div>
       </div>
     </>

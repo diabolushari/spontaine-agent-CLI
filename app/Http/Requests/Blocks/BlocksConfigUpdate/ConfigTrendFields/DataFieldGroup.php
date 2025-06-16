@@ -11,8 +11,8 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class DataFieldGroup extends Data
 {
     public function __construct(
-        public ?AxisFieldData $xAxis,
-        public ?AxisFieldData $yAxis,
+        public ?array $xAxis,
+        public ?array $yAxis,
     ) {}
 
     public static function rules(): array

@@ -6,6 +6,7 @@ use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateContro
 use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
+use App\Http\Controllers\ChartData\DataDetailDateController;
 use App\Http\Controllers\ChartData\DataDetailListController;
 use App\Http\Controllers\ChartData\SubsetFieldsController;
 use App\Http\Controllers\ChartData\SubsetGroupItemsController;
@@ -114,6 +115,7 @@ Route::get('/api/data-detail', DataDetailListController::class);
 Route::get('/api/subset/{subsetId}', SubsetFieldsController::class);
 Route::get('/api/subset-group', SubsetGroupListController::class);
 Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
+Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class);
 
 //testing
 Route::get('/test', function () {

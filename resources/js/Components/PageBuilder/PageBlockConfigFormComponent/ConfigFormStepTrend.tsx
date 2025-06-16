@@ -37,7 +37,7 @@ export default function ConfigFormStepTrend({
   onBack,
 }: ConfigFormStepTrendProps) {
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
-    subsetId: initialData.trend?.subset_id ?? null,
+    subsetId: initialData.trend?.subset_id ?? '',
     title: initialData.trend?.title ?? '',
     xAxisLabel: initialData.trend?.data_field?.x_axis?.label ?? 'Month',
     xAxisValue: initialData.trend?.data_field?.x_axis?.value ?? 'month',
@@ -108,13 +108,15 @@ export default function ConfigFormStepTrend({
                 url={`/api/subset-group/${initialData.subset_group_id}`}
                 dataKey='id'
                 displayKey='name'
-                value={formData.subsetId ?? 0}
+                value={formData.subsetId ?? ''}
                 setValue={setFormValue('subsetId')}
                 error={errors?.subsetId}
+                showAllOption={true}
+                allOptionText='-- None --'
               />
             )}
           </div>
-          {formData.subsetId !== null && (
+          {formData.subsetId !== '' && (
             <div className='flex flex-col'>
               <Input
                 label='Title'
@@ -126,7 +128,7 @@ export default function ConfigFormStepTrend({
           )}
         </div>
 
-        {formData.subsetId !== null && (
+        {formData.subsetId !== '' && (
           <div className='grid grid-cols-3 gap-4'>
             <div className='flex flex-col'>
               <Input
@@ -157,7 +159,7 @@ export default function ConfigFormStepTrend({
             {/* Y Axis */}
             <div className='flex flex-col'>
               <DynamicSelectList
-                label='Select Y Axis Field'
+                label='Select field to plot'
                 url={`/api/subset/${formData.subsetId}?filter_only=0`}
                 dataKey='subset_column'
                 displayKey='subset_field_name'
@@ -169,7 +171,7 @@ export default function ConfigFormStepTrend({
 
             <div className='flex flex-col'>
               <Input
-                label='Y Axis Label'
+                label='Plot Label'
                 value={formData.yAxisLabel}
                 setValue={setFormValue('yAxisLabel')}
                 error={errors?.yAxisLabel}
@@ -178,7 +180,7 @@ export default function ConfigFormStepTrend({
 
             <div className='flex flex-col'>
               <CheckBox
-                label='Enable Y Axis Label'
+                label='Enable plot Label'
                 value={formData.yAxisShowLabel}
                 toggleValue={toggleBoolean('yAxisShowLabel')}
               />

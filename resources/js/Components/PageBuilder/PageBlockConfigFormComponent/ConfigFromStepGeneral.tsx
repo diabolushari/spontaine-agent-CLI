@@ -31,7 +31,6 @@ export default function ConfigFormStepGeneral({
   const { post, loading, errors } = useInertiaPost<Partial<Config> & { _method: string }>(
     route('config.general.update', block.id),
     {
-      showErrorToast: true,
       onComplete: () => {
         if (onNext) onNext({ ...initialData, ...formData })
       },
