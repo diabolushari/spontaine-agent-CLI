@@ -38,9 +38,9 @@ export default function ConfigFormStepRanking({
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     title: initialData.ranking?.title ?? '',
     subsetId: initialData.ranking?.subset_id ?? '',
-    label: initialData.ranking?.data_field?.label ?? '',
-    value: initialData.ranking?.data_field?.value ?? '',
-    showLabel: initialData.ranking?.data_field?.show_label ?? false,
+    label: initialData.ranking?.subset_id ? initialData.ranking?.data_field?.label : '',
+    value: initialData.ranking?.subset_id ? initialData.ranking?.data_field?.value : '',
+    showLabel: initialData.ranking?.subset_id ? initialData.ranking?.data_field?.show_label : false,
   })
 
   const { post, loading, errors } = useInertiaPost(route('config.ranking.update', block.id), {
@@ -70,7 +70,7 @@ export default function ConfigFormStepRanking({
               <DynamicSelectList
                 label='Select Subset for Ranking'
                 url={`/api/subset-group/${initialData.subset_group_id}`}
-                dataKey='id'
+                dataKey='subset_detail_id'
                 displayKey='name'
                 value={formData.subsetId ?? ''}
                 setValue={setFormValue('subsetId')}
@@ -98,8 +98,8 @@ export default function ConfigFormStepRanking({
           <div className='flex flex-col'>
             <DynamicSelectList
               label='Select Ranking Field'
-              url={`/api/subset/${formData.subsetId}?filter_only=1`}
-              dataKey='subset_field_name'
+              url={`/api/subset/${formData.subsetId}?filter_only=0`}
+              dataKey='subset_column'
               displayKey='subset_field_name'
               value={formData.value}
               setValue={setFormValue('value')}

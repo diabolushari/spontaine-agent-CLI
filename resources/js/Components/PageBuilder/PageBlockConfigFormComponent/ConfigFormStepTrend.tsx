@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import useCustomForm from '@/hooks/useCustomForm'
 import { Block, Config } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
@@ -53,6 +53,7 @@ export default function ConfigFormStepTrend({
       ? initialData.trend?.tooltip_field?.show_label
       : false,
   })
+  console.log(initialData)
   const strucetureTrend = (formData: FormData) => {
     return {
       trend: {
@@ -110,7 +111,7 @@ export default function ConfigFormStepTrend({
               <DynamicSelectList
                 label='Subset for Trend'
                 url={`/api/subset-group/${initialData.subset_group_id}`}
-                dataKey='id'
+                dataKey='subset_detail_id'
                 displayKey='name'
                 value={formData.subsetId ?? ''}
                 setValue={setFormValue('subsetId')}
