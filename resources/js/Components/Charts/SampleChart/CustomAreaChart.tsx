@@ -20,9 +20,23 @@ interface Props {
   keysToPlot: {
     key: string
   }[]
+  xAxisLabel?: string
+  yAxisLabel?: string
+  tooltipIndicator?: {
+    label: string
+    unit: string
+    show_label: boolean
+  }
 }
 
-export function CustomAreaChart({ data, dataKey, keysToPlot }: Props) {
+export function CustomAreaChart({
+  data,
+  dataKey,
+  keysToPlot,
+  xAxisLabel,
+  yAxisLabel,
+  tooltipIndicator,
+}: Props) {
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
       label: plotKey.key,
@@ -47,16 +61,41 @@ export function CustomAreaChart({ data, dataKey, keysToPlot }: Props) {
             tickLine={true}
             axisLine={true}
             tickMargin={8}
+            label={{
+              value: xAxisLabel,
+              position: 'insideBottom',
+              offset: -15,
+              style: { fill: 'var(--tw-prose-body)' }, // Tailwind-like variable
+            }}
           />
           <YAxis
             tickLine={false}
             axisLine={false}
             tickMargin={8}
+            label={{
+              value: yAxisLabel,
+              angle: -90,
+              position: 'insideLeft',
+              offset: 50,
+              style: { fill: 'var(--tw-prose-body)' },
+            }}
           />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator='dot' />}
-          />
+          {tooltipIndicator?.show_label && (
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  label={
+                    tooltipIndicator?.label && tooltipIndicator?.unit
+                      ? `${tooltipIndicator.label} (${tooltipIndicator.unit})`
+                      : tooltipIndicator?.label || ''
+                  }
+                  indicator='dot'
+                />
+              }
+            />
+          )}
+
           {keysToPlot.map((plotKey, index) => (
             <Area
               key={plotKey.key}

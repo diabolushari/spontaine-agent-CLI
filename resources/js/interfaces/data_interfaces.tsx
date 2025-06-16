@@ -378,14 +378,14 @@ export interface Ranking {
   data_field: {
     label: string
     value: string
-    is_label: boolean
+    show_label: boolean
   }
 }
 
 export interface Axis {
   label: string
   value: string
-  is_label: boolean
+  show_label: boolean
 }
 export interface Trend {
   subset_id: number
@@ -394,10 +394,16 @@ export interface Trend {
     x_axis: Axis
     y_axis: Axis
   }
+  tooltip_field: {
+    label: string
+    unit: string
+    show_label: boolean
+  }
 }
 export interface Config {
   title: string
   data_table_id: string
+  description: string
   default_date?: string
   subset_group_id: string
   trend: Trend

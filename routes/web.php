@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateController;
 use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
@@ -92,13 +95,21 @@ Route::resource('page-builder', PageBuilderController::class);
 Route::resource('blocks', BlocksController::class);
 Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::class)
     ->name('dimension.update');
+
+// page block urls
 Route::put('builder/config/update/{id}', BlocksUpdateConfigController::class)
     ->name('config.update');
+Route::put('block/config/general/update/{id}', BlocksConfigGeneralUpdateController::class)
+    ->name('config.general.update');
+Route::put('block/config/trend/update/{id}', BlocksConfigTrendUpdateController::class)
+    ->name('config.trend.update');
+Route::put('block/config/ranking/update/{id}', BlocksConfigRankingUpdateController::class)
+    ->name('config.ranking.update');
 
 //chart
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
 
-//subset detail
+//api for subset, data table
 Route::get('/api/data-detail', DataDetailListController::class);
 Route::get('/api/subset/{subsetId}', SubsetFieldsController::class);
 Route::get('/api/subset-group', SubsetGroupListController::class);
@@ -426,4 +437,4 @@ Route::get('test', function (JoinDataTable $joinDataTable) {
         ->first();
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -29,7 +29,7 @@ export function EmptyCardBlock({
 
     return classes.join(' ')
   }, [block])
-
+  console.log(block)
   return (
     <div className={classNames}>
       <Card className='min-h-24 rounded-md'>
@@ -40,15 +40,27 @@ export function EmptyCardBlock({
           block={block}
         />
         <div className='mt-4'>
-          {selectedView === 'trend' && block?.data?.trend && (
+          {selectedView === 'trend' && block?.data?.trend?.subset_id && (
             <TrendGraph
-              cardTitle={block.data.trend.title}
+              cardTitle={block.data.title}
+              dataKey={block.data.trend.data_field.x_axis.value}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
-              subsetId={block.data?.trend.subset_id}
+              subsetId={block.data.trend.subset_id}
               dataField={block.data.trend.data_field.y_axis.value}
               dataFieldName={block.data.trend.data_field.y_axis.label}
+              xAxisLabel={
+                block.data.trend.data_field.x_axis.show_label
+                  ? block.data.trend.data_field.x_axis.label
+                  : ''
+              }
+              yAxisLabel={
+                block.data.trend.data_field.y_axis.show_label
+                  ? block.data.trend.data_field.y_axis.label
+                  : ''
+              }
               chartType='area'
+              tooltipIndicator={block.data.trend.tooltip_field}
             />
           )}
           {selectedView === 'rank' && selectedMonth != null && block?.data?.ranking && (

@@ -1,16 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Skeleton from 'react-loading-skeleton'
-import { solidColors } from '@/ui/ui_interfaces'
 import dayjs from 'dayjs'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
 import SampleMonthSelector from '../SampleMonthSelector'
+import { TooltipType } from 'recharts/types/util/types'
+import { Config, Trend } from '@/interfaces/data_interfaces'
 
 interface Props {
   subsetId: number
   cardTitle: string
+  dataKey: string
   dataField: string
   dataFieldName: string
   selectedMonth: Date | null
@@ -20,6 +22,13 @@ interface Props {
   filterListFetchURL?: string
   defaultFilterValue?: string
   chartType?: 'bar' | 'area'
+  xAxisLabel?: string
+  yAxisLabel?: string
+  tooltipIndicator?: {
+    label: string
+    unit: string
+    show_label: boolean
+  }
 }
 
 export default function TrendGraph({
@@ -34,6 +43,9 @@ export default function TrendGraph({
   defaultFilterValue,
   filterListKey,
   chartType = 'bar',
+  xAxisLabel,
+  yAxisLabel,
+  tooltipIndicator,
 }: Props) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
@@ -128,6 +140,9 @@ export default function TrendGraph({
               data={chartData}
               dataKey='month'
               keysToPlot={[{ key: dataFieldName }]}
+              xAxisLabel={xAxisLabel}
+              yAxisLabel={yAxisLabel}
+              tooltipIndicator={tooltipIndicator}
             />
           </div>
         ) : (
