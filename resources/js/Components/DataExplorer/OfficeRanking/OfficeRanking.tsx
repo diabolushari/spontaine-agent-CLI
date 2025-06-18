@@ -19,6 +19,7 @@ import { CustomTooltip } from '../../CustomTooltip'
 import SecondarySort from '@/Components/DataExplorer/OfficeRanking/SecondarySort'
 import OfficeClusterMap, { MapDataItem } from './Map/OfficeClusterMap'
 import PropTypes from 'prop-types'
+import OfficePillsBar from '@/Components/DataExplorer/OfficePillsBar'
 
 interface Props {
   subset: SubsetDetail
@@ -44,6 +45,10 @@ interface CustomTickProps {
   payload: {
     value: string
   }
+}
+
+interface RechartsClickPayload {
+  payload: MapDataItem
 }
 
 const CustomTick = ({ x, y, payload }: CustomTickProps) => {
@@ -202,8 +207,16 @@ export default function OfficeRanking({
     }
   }, [setSelectedMonth, graphValues, selectedMonth])
 
-  const handleOfficeSelect = (office: MapDataItem) => {
-    if (officeLevel === 'state' || officeLevel === 'section' || !office.office_code) {
+  const handleOfficeSelect = (data: RechartsClickPayload | MapDataItem) => {
+    const office = 'payload' in data ? data.payload : data
+    if (
+      !office ||
+      typeof office === 'string' ||
+      typeof office === 'number' ||
+      officeLevel === 'state' ||
+      officeLevel === 'section' ||
+      !office.office_code
+    ) {
       return
     }
     setSelectedOfficeLevel(getNextOfficeLevel(officeLevel))
@@ -234,6 +247,15 @@ export default function OfficeRanking({
   return (
     <FullSpinnerWrapper processing={loading}>
       <div className='ml-1 space-y-2 rounded-lg bg-1stop-white p-4 md:ml-0'>
+        <div className='flex flex-col items-center justify-between md:flex-row'>
+          <div className='w-full text-sm font-bold sm:pb-2 md:w-1/2 lg:w-1/4'>
+            {selectedSortField?.subset_field_name}
+          </div>
+          <div className='w-full md:w-1/2 lg:w-3/4'>
+            <OfficePillsBar officeLevel={officeLevel} />
+          </div>
+        </div>
+
         {activeViewTab === 'map' && (
           <div className='rounded-lg bg-white'>
             <OfficeClusterMap
@@ -303,7 +325,7 @@ export default function OfficeRanking({
                   dataKey={selectedSortField?.subset_field_name ?? 'Value'}
                   fill={solidColors[0]}
                   barSize={30}
-                  onClick={handleOfficeSelect}
+                  onClick={(data) => handleOfficeSelect(data)}
                 />
               </BarChart>
             </ResponsiveContainer>
