@@ -229,23 +229,25 @@ export default function DataExplorerPage({
               />
 
               {selectedSubset != null && (
-                <DataExplorerTabs
-                  selectedSubset={selectedSubset}
-                  selectedSubsetItem={selectedSubsetItem}
-                  selectedMonth={selectedMonth}
-                  setSelectedMonth={setSelectedMonth}
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                  searchParams={searchParams}
-                  setSearchParams={setSearchParams}
-                  oldFilters={oldFilters}
-                  subsetItems={subsetItems}
-                  selectedSubsetId={selectedSubsetId}
-                  setSelectedSubsetId={setSelectedSubsetId}
-                  setShowSearchModal={setShowSearchModal}
-                  activeViewTab={activeViewTab}
-                  setActiveViewTab={setActiveViewTab}
-                />
+                <div className='min-h-screen'>
+                  <DataExplorerTabs
+                    selectedSubset={selectedSubset}
+                    selectedSubsetItem={selectedSubsetItem}
+                    selectedMonth={selectedMonth}
+                    setSelectedMonth={setSelectedMonth}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    searchParams={searchParams}
+                    setSearchParams={setSearchParams}
+                    oldFilters={oldFilters}
+                    subsetItems={subsetItems}
+                    selectedSubsetId={selectedSubsetId}
+                    setSelectedSubsetId={setSelectedSubsetId}
+                    setShowSearchModal={setShowSearchModal}
+                    activeViewTab={activeViewTab}
+                    setActiveViewTab={setActiveViewTab}
+                  />
+                </div>
               )}
             </Card>
           </SelectedOfficeContext.Provider>

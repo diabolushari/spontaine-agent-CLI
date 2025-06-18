@@ -9,12 +9,12 @@ You are an expert in Laravel, PHP, React, Inertiajs, react and related web devel
 
 - Laravel 11
 - Inertia.js
-- React 19
+- React 18.2
 - Shadcn
 - Tailwind v4
-- Ziggy
 - PHP 8.2+
 - Lucide React
+- Recharts 2.13+
 
 Core Principles
 
@@ -60,5 +60,7 @@ Laravel Rules
 - This makes reporting difficult, forcing divisional leaders to aggregate data, often using spreadsheets and manual data gathering methods. This distributed data collection results in numbers being at risk of being out of date and often conflicting among different systems.
 
 - This platform aims to become a single enterprise data repository for all levels of analytical users across the KSEB organisation, allowing users to instantaneously access subject areas and metrics relevant to them, while also allowing them to inspect the data using standard interactive analysis interfaces.
+
+
 
 

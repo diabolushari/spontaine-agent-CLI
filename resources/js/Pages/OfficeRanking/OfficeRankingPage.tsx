@@ -239,7 +239,8 @@ export default function OfficeRankingPage({
           <OfficeLevelTabs
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-            showState={false}
+            isMapView={false}
+            excludeTabs={['state']}
           />
           <SelectedOfficeContext.Provider
             value={{
@@ -254,23 +255,25 @@ export default function OfficeRankingPage({
             }}
           >
             {selectedSubset != null && (
-              <OfficeRanking
-                subset={selectedSubset}
-                officeLevel={activeTab}
-                selectedSortField={sortField}
-                selectedLimit={selectedListType}
-                selectedSortOrder={selectedSortOrder}
-                setSelectedOfficeLevel={setActiveTab}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                secondarySortField={secondarySortField}
-                setSecondarySortField={setSecondarySortField}
-                secondarySortOrder={secondarySortOrder}
-                setSecondarySortOrder={setSecondarySortOrder}
-                showSecondarySortField={showSecondarySort}
-                setShowSecondarySortField={setShowSecondarySort}
-                activeViewTab={activeViewTab}
-              />
+              <div className='min-h-screen'>
+                <OfficeRanking
+                  subset={selectedSubset}
+                  officeLevel={activeTab}
+                  selectedSortField={sortField}
+                  selectedLimit={selectedListType}
+                  selectedSortOrder={selectedSortOrder}
+                  setSelectedOfficeLevel={setActiveTab}
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                  secondarySortField={secondarySortField}
+                  setSecondarySortField={setSecondarySortField}
+                  secondarySortOrder={secondarySortOrder}
+                  setSecondarySortOrder={setSecondarySortOrder}
+                  showSecondarySortField={showSecondarySort}
+                  setShowSecondarySortField={setShowSecondarySort}
+                  activeViewTab={activeViewTab}
+                />
+              </div>
             )}
           </SelectedOfficeContext.Provider>
         </Card>

@@ -19,6 +19,7 @@ import { CustomTooltip } from '../../CustomTooltip'
 import SecondarySort from '@/Components/DataExplorer/OfficeRanking/SecondarySort'
 import OfficeClusterMap, { MapDataItem } from './Map/OfficeClusterMap'
 import PropTypes from 'prop-types'
+import OfficePillsBar from '@/Components/DataExplorer/OfficePillsBar'
 
 interface Props {
   subset: SubsetDetail
@@ -246,6 +247,15 @@ export default function OfficeRanking({
   return (
     <FullSpinnerWrapper processing={loading}>
       <div className='ml-1 space-y-2 rounded-lg bg-1stop-white p-4 md:ml-0'>
+        <div className='flex flex-col items-center justify-between md:flex-row'>
+          <div className='w-full text-sm font-bold sm:pb-2 md:w-1/2 lg:w-1/4'>
+            {selectedSortField?.subset_field_name}
+          </div>
+          <div className='w-full md:w-1/2 lg:w-3/4'>
+            <OfficePillsBar officeLevel={officeLevel} />
+          </div>
+        </div>
+
         {activeViewTab === 'map' && (
           <div className='rounded-lg bg-white'>
             <OfficeClusterMap

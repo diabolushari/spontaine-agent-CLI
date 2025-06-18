@@ -4,6 +4,7 @@ import SelectList from '@/ui/form/SelectList'
 import React from 'react'
 import DataExplorerTrend from './DataExplorerTrend/DataExplorerTrend'
 import OfficeLevelExplorerTable from './OfficeLevelExplorerTable'
+import OfficePillsBar from './OfficePillsBar'
 
 interface Props {
   selectedSubset: SubsetDetail | null | undefined
@@ -103,6 +104,7 @@ export default function DataExplorerTabs({
             <span>Trend</span>
           </button>
         </div>
+
         {activeViewTab !== 'trend' && (
           <div className='flex min-w-0 max-w-full flex-1 flex-col gap-1 rounded-lg md:min-w-[220px] md:max-w-xs'>
             <SelectList
@@ -156,7 +158,7 @@ export default function DataExplorerTabs({
         )}
         {/* </div> */}
       </div>
-
+      <OfficePillsBar officeLevel={activeTab} />
       {activeViewTab === 'map' && hasTrendField && (
         <OfficeLevelExplorerTable
           subset={selectedSubset}

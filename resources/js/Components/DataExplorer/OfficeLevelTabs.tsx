@@ -6,6 +6,7 @@ interface Props {
   activeTab: string
   setActiveTab: (tab: string) => void
   isMapView?: boolean
+  excludeTabs?: string[]
 }
 
 const tabItems = [
@@ -22,10 +23,15 @@ export function getNextOfficeLevel(currentLevel: string) {
   return tabItems[index + 1]?.value || 'state'
 }
 
-export default function OfficeLevelTabs({ activeTab, setActiveTab, isMapView = false }: Props) {
+export default function OfficeLevelTabs({
+  activeTab,
+  setActiveTab,
+  isMapView = false,
+  excludeTabs = [],
+}: Props) {
   const tabs = useMemo(() => {
-    return tabItems
-  }, [])
+    return tabItems.filter((tab) => !excludeTabs.includes(tab.value))
+  }, [excludeTabs])
 
   return (
     <div
