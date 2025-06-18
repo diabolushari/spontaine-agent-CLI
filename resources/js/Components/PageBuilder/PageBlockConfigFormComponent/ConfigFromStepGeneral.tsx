@@ -28,12 +28,12 @@ export default function ConfigFormStepGeneral({
     data_table_id: initialData?.data_table_id ?? null,
     subset_group_id: initialData?.subset_group_id ?? null,
   })
-  const [subseGroudId, setSubsetGroupId] = useState<string | number | null>(
-    initialData?.subset_group_id ?? null
-  )
+
   const { post, loading, errors } = useInertiaPost<Partial<Config> & { _method: string }>(
     route('config.general.update', block.id),
     {
+      showErrorToast: false,
+
       onComplete: () => {
         if (onNext) onNext({ ...initialData, ...formData })
       },
@@ -42,9 +42,13 @@ export default function ConfigFormStepGeneral({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (initialData.subset_group_id !== formData.subset_group_id) {
-      initialData.trend.subset_id = ''
-      initialData.ranking.subset_id = ''
+    if (initialData && initialData.subset_group_id !== formData.subset_group_id) {
+      if (initialData.trend) {
+        initialData.trend.subset_id = ''
+      }
+      if (initialData.ranking) {
+        initialData.ranking.subset_id = ''
+      }
     }
     post({
       ...formData,
@@ -59,7 +63,7 @@ export default function ConfigFormStepGeneral({
         <NormalText>Here you can select your title and base date for the card</NormalText>
       </div>
       <form onSubmit={handleSubmit}>
-        <div className='grid gap-4 md:grid-cols-3'>
+        <div className='flex flex-col gap-2 p-2 md:grid md:grid-cols-3 md:gap-4'>
           <div className='flex flex-col'>
             <Input
               label='Enter your title'

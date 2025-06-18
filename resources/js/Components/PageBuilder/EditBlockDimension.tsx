@@ -5,6 +5,7 @@ import { Block } from '@/interfaces/data_interfaces'
 import useCustomForm from '@/hooks/useCustomForm'
 import SelectList from '@/ui/form/SelectList'
 import useInertiaPost from '@/hooks/useInertiaPost'
+import { router } from '@inertiajs/react'
 
 interface BlockEditModalProps {
   isOpen: boolean
@@ -99,8 +100,11 @@ const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, bl
     desktop_width: '',
   })
   const { post } = useInertiaPost(route('dimension.update', block.id), {
-    preserveState: true,
-    onComplete: onClose,
+    preserveState: false,
+    onComplete: () => {
+      route('page.show', block.page_id)
+      onClose()
+    },
     showErrorToast: true,
   })
 
@@ -118,7 +122,6 @@ const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, bl
   }, [block, setAll])
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
     post({
       dimensions: formData,
       _method: 'PUT',

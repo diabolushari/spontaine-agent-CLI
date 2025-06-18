@@ -3,23 +3,17 @@
 namespace App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigTrendFields;
 
 use Spatie\LaravelData\Attributes\MapName;
-
+use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigTrendFields\AxisDataField;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Spatie\LaravelData\Attributes\Validation\RequiredWith;
 
 #[MapName(SnakeCaseMapper::class)]
 class DataFieldGroup extends Data
 {
     public function __construct(
-        public ?array $xAxis,
-        public ?array $yAxis,
-    ) {}
 
-    public static function rules(): array
-    {
-        return [
-            'x_axis' => ['nullable'],
-            'y_axis' => ['nullable'],
-        ];
-    }
+        public ?AxisDataField $xAxis,
+        public ?AxisDataField $yAxis,
+    ) {}
 }

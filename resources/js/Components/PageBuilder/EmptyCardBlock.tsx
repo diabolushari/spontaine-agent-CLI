@@ -33,7 +33,9 @@ export function EmptyCardBlock({
   const [selectedView, setSelectedView] = useState('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
-  const [date] = useFetchRecord(route('data-detail.date', block?.data?.data_table_id))
+  const [date] = useFetchRecord(
+    block?.data?.data_table_id ? route('data-detail.date', block.data.data_table_id) : ''
+  )
 
   useEffect(() => {
     if (date?.max_value) {
@@ -56,19 +58,22 @@ export function EmptyCardBlock({
 
   return (
     <div className={classNames}>
-      <Card className='min-h-24 rounded-md'>
-        <CardHeader title={block?.name ?? ''} />
+      <Card className='min-h-18 rounded-md'>
+        <CardHeader
+          title={block?.data?.title ?? ''}
+          subheading={block?.data?.description ?? ''}
+        />
         <BlockRadioGroup
           selectedView={selectedView}
           setSelectedView={setSelectedView}
           block={block}
         />
 
-        <div className='mt-4'>
+        <div className='flex flex-col justify-center md:min-h-[400px]'>
           {/* === Trend Graph === */}
           {selectedView === 'trend' && block?.data?.trend?.subset_id && selectedMonth && (
             <TrendGraph
-              cardTitle={block.data.title}
+              cardTitle={block.data.trend.title}
               dataKey={block.data.trend.data_field.x_axis.value}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
@@ -87,6 +92,7 @@ export function EmptyCardBlock({
               }
               chartType='area'
               tooltipIndicator={block.data.trend.tooltip_field}
+              dimensions={block.dimensions}
             />
           )}
 
@@ -105,23 +111,24 @@ export function EmptyCardBlock({
             />
           )}
         </div>
-
-        <div className='mt-auto flex min-h-[4.2rem] flex-shrink-0 items-center gap-4 justify-self-start rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
-          {selectedMonth != null && (
-            <div className='small-1stop-header w-1/ flex h-full bg-1stop-accent2 bg-opacity-50'>
-              <div className='flex h-full flex-col items-center justify-center gap-2'>
-                <MonthPicker
-                  selectedMonth={selectedMonth}
-                  setSelectedMonth={setSelectedMonth}
-                />
+        {block?.data?.data_table_id && (
+          <div className='mt-auto flex flex-shrink-0 items-center gap-4 justify-self-start rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
+            {selectedMonth != null && (
+              <div className='small-1stop-header flex h-full bg-1stop-accent2 bg-opacity-50'>
+                <div className='flex h-full flex-col items-center justify-center gap-2'>
+                  <MonthPicker
+                    selectedMonth={selectedMonth}
+                    setSelectedMonth={setSelectedMonth}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
-            <MoreButton />
+            <div className='flex items-center pl-2 hover:cursor-pointer hover:opacity-50'>
+              <MoreButton />
+            </div>
           </div>
-        </div>
+        )}
       </Card>
     </div>
   )

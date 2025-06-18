@@ -6,8 +6,7 @@ import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/Field
 import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
 import SampleMonthSelector from '../SampleMonthSelector'
-import { TooltipType } from 'recharts/types/util/types'
-import { Config, Trend } from '@/interfaces/data_interfaces'
+import { BlockDimension } from '@/interfaces/data_interfaces'
 
 interface Props {
   subsetId: number
@@ -29,6 +28,7 @@ interface Props {
     unit: string
     show_label: boolean
   }
+  dimensions?: BlockDimension
 }
 
 export default function TrendGraph({
@@ -46,6 +46,7 @@ export default function TrendGraph({
   xAxisLabel,
   yAxisLabel,
   tooltipIndicator,
+  dimensions,
 }: Props) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
@@ -128,14 +129,14 @@ export default function TrendGraph({
         )}
       </div>
 
-      <div className='w-4/4'>
+      <div className='w-full'>
         {isLoading ? (
           <Skeleton
-            height={300}
+            height={200}
             width='100%'
           />
         ) : chartType === 'area' ? (
-          <div style={{ height: '220px', border: '1px solid red' }}>
+          <div style={{ border: '1px solid red' }}>
             <CustomAreaChart
               data={chartData}
               dataKey='month'
@@ -143,6 +144,7 @@ export default function TrendGraph({
               xAxisLabel={xAxisLabel}
               yAxisLabel={yAxisLabel}
               tooltipIndicator={tooltipIndicator}
+              dimensions={dimensions}
             />
           </div>
         ) : (

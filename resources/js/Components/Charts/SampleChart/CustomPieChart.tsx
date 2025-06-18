@@ -10,15 +10,20 @@ import {
   ChartTooltipContent,
 } from '@/Components/ui/chart'
 
-const chartData = [
-  { name: 'Page A', uv: 4000, fill: 'hsl(var(--chart-1))' },
-  { name: 'Page B', uv: 3000, fill: 'hsl(var(--chart-2))' },
-  { name: 'Page C', uv: 2000, fill: 'hsl(var(--chart-3))' },
-  { name: 'Page D', uv: 2780, fill: 'hsl(var(--chart-4))' },
-  { name: 'Page E', uv: 1890, fill: 'hsl(var(--chart-5))' },
-  { name: 'Page F', uv: 2390, fill: 'hsl(var(--chart-6))' },
-  { name: 'Page G', uv: 3490, fill: 'hsl(var(--chart-7))' },
-]
+const piData = {
+  values: [
+    { name: 'Page A', uv: 4000, fill: 'hsl(var(--chart-1))' },
+    { name: 'Page B', uv: 3000, fill: 'hsl(var(--chart-2))' },
+    { name: 'Page C', uv: 2000, fill: 'hsl(var(--chart-3))' },
+    { name: 'Page D', uv: 2780, fill: 'hsl(var(--chart-4))' },
+    { name: 'Page E', uv: 1890, fill: 'hsl(var(--chart-5))' },
+    { name: 'Page F', uv: 2390, fill: 'hsl(var(--chart-6))' },
+    { name: 'Page G', uv: 3490, fill: 'hsl(var(--chart-7))' },
+  ],
+  label: 'SLA',
+  dataKey: 'uv',
+  nameKey: 'name',
+}
 
 const chartConfig = {
   uv: {
@@ -29,7 +34,7 @@ const chartConfig = {
 
 export function CustomPieChart() {
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.uv, 0)
+    return piData.values.reduce((acc, curr) => acc + curr.uv, 0)
   }, [])
 
   return (
@@ -43,11 +48,13 @@ export function CustomPieChart() {
           content={<ChartTooltipContent hideLabel />}
         />
         <Pie
-          data={chartData}
-          dataKey='uv'
-          nameKey='name'
+          data={piData.values}
+          dataKey={piData.dataKey}
+          nameKey={piData.nameKey}
           innerRadius={60}
           strokeWidth={5}
+          label={true}
+          labelLine={false}
         >
           <Label
             content={({ viewBox }) => {
@@ -69,7 +76,7 @@ export function CustomPieChart() {
                       y={(viewBox.cy || 0) + 24}
                       className='fill-muted-foreground'
                     >
-                      SLA Total
+                      {piData.label}
                     </tspan>
                   </text>
                 )

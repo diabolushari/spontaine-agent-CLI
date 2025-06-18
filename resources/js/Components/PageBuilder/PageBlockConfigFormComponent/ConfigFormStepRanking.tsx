@@ -44,17 +44,16 @@ export default function ConfigFormStepRanking({
   })
 
   const { post, loading, errors } = useInertiaPost(route('config.ranking.update', block.id), {
-    showErrorToast: true,
     preserveState: true,
     preserveScroll: true,
     onComplete: () => {
-      if (onNext) onNext({ ...initialData, ...strucetureRanking(formData) })
+      if (onNext) onNext({ ...initialData, ranking: strucetureRanking(formData).ranking })
     },
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    post({ ...initialData, ...strucetureRanking(formData), _method: 'PUT' })
+    post({ ...initialData, ranking: strucetureRanking(formData).ranking, _method: 'PUT' })
   }
 
   return (
@@ -66,7 +65,7 @@ export default function ConfigFormStepRanking({
         {/* Subset Selection */}
         {initialData.subset_group_id && (
           <>
-            <div className='col-span-3 flex flex-col'>
+            <div className='flex flex-col'>
               <DynamicSelectList
                 label='Select Subset for Ranking'
                 url={`/api/subset-group/${initialData.subset_group_id}`}
@@ -85,7 +84,7 @@ export default function ConfigFormStepRanking({
                   label='Subset Title'
                   value={formData.title ?? ''}
                   setValue={setFormValue('title')}
-                  error={errors?.title}
+                  error={errors?.['ranking.title']}
                 />
               )}
             </div>
@@ -94,7 +93,7 @@ export default function ConfigFormStepRanking({
       </div>
 
       {formData.subsetId !== '' && (
-        <div className='grid grid-cols-3 md:gap-4'>
+        <div className='flex flex-col gap-4 md:grid md:grid-cols-3'>
           <div className='flex flex-col'>
             <DynamicSelectList
               label='Select Ranking Field'
@@ -103,7 +102,7 @@ export default function ConfigFormStepRanking({
               displayKey='subset_field_name'
               value={formData.value}
               setValue={setFormValue('value')}
-              error={errors?.value}
+              error={errors?.['ranking.data_field.value']}
             />
           </div>
 
@@ -112,7 +111,7 @@ export default function ConfigFormStepRanking({
               label='Ranking Label'
               value={formData.label}
               setValue={setFormValue('label')}
-              error={errors?.label}
+              error={errors?.['ranking.data_field.label']}
             />
           </div>
 
@@ -121,6 +120,7 @@ export default function ConfigFormStepRanking({
               label='Enable Label for Ranking Field'
               value={formData.showLabel}
               toggleValue={toggleBoolean('showLabel')}
+              error={errors?.['ranking.data_field.show_label']}
             />
           </div>
         </div>
@@ -134,7 +134,7 @@ export default function ConfigFormStepRanking({
         />
         <Button
           type='submit'
-          label={loading ? 'Saving...' : 'Next'}
+          label={loading ? 'Saving...' : 'Submit'}
           disabled={loading}
         />
       </div>

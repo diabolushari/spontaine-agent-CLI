@@ -274,7 +274,7 @@ export default function RankedList({
       {isLoading && (
         <Skeleton
           className='w-full p-4'
-          height={79}
+          height={200}
         />
       )}
       {!isLoading && (

@@ -12,11 +12,4 @@ class BlocksConfigTrendUpdateRequest extends Data
         #[Required]
         public BlockConfigTrend $trend,
     ) {}
-
-    public static function rules(): array
-    {
-        return [
-            'trend' => ['required'],
-        ];
-    }
 }

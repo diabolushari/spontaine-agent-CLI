@@ -19,7 +19,7 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
     <>
       <div className='relative w-full overflow-x-hidden'>
         <div
-          className='flex min-h-[400px] transition-transform duration-500 ease-in-out'
+          className='flex transition-transform duration-500 ease-in-out md:min-h-[400px]'
           style={{ transform: `translateX(-${(step - 1) * 100}%)` }}
         >
           {/* Step 1 */}

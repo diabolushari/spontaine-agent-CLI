@@ -53,29 +53,32 @@ export default function ConfigFormStepTrend({
       ? initialData.trend?.tooltip_field?.show_label
       : false,
   })
-  console.log(initialData)
   const strucetureTrend = (formData: FormData) => {
     return {
       trend: {
         subset_id: formData.subsetId,
-        title: formData.title,
-        data_field: {
-          x_axis: {
-            label: formData.xAxisLabel,
-            value: formData.xAxisValue,
-            show_label: formData.xAxisShowLabel,
-          },
-          y_axis: {
-            label: formData.yAxisLabel,
-            value: formData.yAxisValue,
-            show_label: formData.yAxisShowLabel,
-          },
-        },
-        tooltip_field: {
-          label: formData.tooltipLabel,
-          unit: formData.tooltipUnit,
-          show_label: formData.tooltipShowLabel,
-        },
+        title: formData.title ?? '',
+        data_field: formData.subsetId
+          ? {
+              x_axis: {
+                label: formData.xAxisLabel,
+                value: formData.xAxisValue,
+                show_label: formData.xAxisShowLabel,
+              },
+              y_axis: {
+                label: formData.yAxisLabel,
+                value: formData.yAxisValue,
+                show_label: formData.yAxisShowLabel,
+              },
+            }
+          : null,
+        tooltip_field: formData.subsetId
+          ? {
+              label: formData.tooltipLabel,
+              unit: formData.tooltipUnit,
+              show_label: formData.tooltipShowLabel,
+            }
+          : null,
       },
     }
   }
@@ -83,9 +86,8 @@ export default function ConfigFormStepTrend({
     formData.subsetId ? `/api/subset/${formData.subsetId}` : ''
   )
   const { post, loading, errors } = useInertiaPost(route('config.trend.update', block.id), {
-    showErrorToast: true,
     onComplete: () => {
-      if (onNext) onNext({ ...initialData, ...strucetureTrend(formData) })
+      if (onNext) onNext({ ...initialData, trend: strucetureTrend(formData).trend })
     },
   })
 
@@ -115,7 +117,7 @@ export default function ConfigFormStepTrend({
                 displayKey='name'
                 value={formData.subsetId ?? ''}
                 setValue={setFormValue('subsetId')}
-                error={errors?.subsetId}
+                error={errors?.['trend.subset_id']}
                 showAllOption={true}
                 allOptionText='-- None --'
               />
@@ -127,14 +129,14 @@ export default function ConfigFormStepTrend({
                 label='Title'
                 value={formData.title || ''}
                 setValue={setFormValue('title')}
-                error={errors?.title}
+                error={errors?.['trend.title']}
               />
             </div>
           )}
         </div>
 
         {formData.subsetId !== '' && (
-          <div className='grid grid-cols-3 gap-4'>
+          <div className='flex flex-col gap-4 md:grid md:grid-cols-3'>
             <div className='flex flex-col'>
               <Input
                 label='X Axis Value'
@@ -149,7 +151,7 @@ export default function ConfigFormStepTrend({
                 label='X Axis Label'
                 value={formData.xAxisLabel}
                 setValue={setFormValue('xAxisLabel')}
-                error={errors?.xAxisLabel}
+                error={errors?.['trend.data_field.x_axis.label']}
               />
             </div>
 
@@ -170,7 +172,7 @@ export default function ConfigFormStepTrend({
                 displayKey='subset_field_name'
                 value={formData.yAxisValue}
                 setValue={setFormValue('yAxisValue')}
-                error={errors?.yAxisValue}
+                error={errors?.['trend.data_field.y_axis.value']}
               />
             </div>
 
@@ -179,7 +181,7 @@ export default function ConfigFormStepTrend({
                 label='Plot Label'
                 value={formData.yAxisLabel}
                 setValue={setFormValue('yAxisLabel')}
-                error={errors?.yAxisLabel}
+                error={errors?.['trend.data_field.y_axis.label']}
               />
             </div>
 
@@ -197,7 +199,7 @@ export default function ConfigFormStepTrend({
                 label='Tooltip Label'
                 value={formData.tooltipLabel}
                 setValue={setFormValue('tooltipLabel')}
-                error={errors?.tooltipLabel}
+                error={errors?.['trend.tooltip_field.label']}
               />
             </div>
 
@@ -206,7 +208,7 @@ export default function ConfigFormStepTrend({
                 label='Tooltip Unit'
                 value={formData.tooltipUnit}
                 setValue={setFormValue('tooltipUnit')}
-                error={errors?.tooltipUnit}
+                error={errors?.['trend.tooltip_field.unit']}
               />
             </div>
 
@@ -228,7 +230,7 @@ export default function ConfigFormStepTrend({
           />
           <Button
             type='submit'
-            label={loading ? 'Saving...' : 'Next'}
+            label={loading ? 'Saving...' : formData.subsetId === '' ? 'Skip' : 'Next'}
             disabled={loading}
           />
         </div>

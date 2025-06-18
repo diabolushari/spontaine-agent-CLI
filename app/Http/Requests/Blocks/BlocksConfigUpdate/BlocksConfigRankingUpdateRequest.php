@@ -34,16 +34,5 @@ class BlocksConfigRankingUpdateRequest extends Data
         public BlockConfigTrend $trend,
     ) {}
 
-    public static function rules(): array
-    {
-        return [
-            'title' => ['required', 'string', 'max:255'],
-            'dataTableId' => ['required', 'string'],
-            'subsetGroupId' => ['required', 'string'],
-            'defaultDate' => ['nullable', 'string'],
-
-            ...BlockConfigRanking::rules('ranking'),
-            ...BlockConfigTrend::rules('trend'),
-        ];
-    }
+   
 }

@@ -14,23 +14,15 @@ use Illuminate\Http\Request;
 class BlocksConfigRankingUpdateController extends Controller
 {
 
-    public function __invoke(Request $request, $id): RedirectResponse
-    {
+    public function __invoke(BlocksConfigRankingUpdateRequest $request, $id): RedirectResponse
+    {   
+
         $block = Block::findOrFail($id);
-
-        $blockData = $block->data ?? [];
-        $blockData['title'] = $request->title;
-        $blockData['description'] = $request->description;
-        $blockData['data_table_id'] = $request->data_table_id; 
-        $blockData['subset_group_id'] = $request->subset_group_id; 
-        $blockData['ranking'] = $request->ranking;
-        $blockData['trend'] = $request->trend;
-        $blockData['default_date'] = '202501';
-
-        $block->data = $blockData;
-
+        $blockData = $request->toArray();
+        $block->data = $blockData; 
         $block->save();
+        
 
-        return redirect()->back()->with('message', 'Block updated successfully!');
+        return redirect()->back()->with('message', 'Block configuration updated.');
     }
 }

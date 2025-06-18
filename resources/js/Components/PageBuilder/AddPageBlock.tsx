@@ -73,7 +73,7 @@ export function AddPageBlock({ page }: Readonly<Props>) {
           <SheetTitle>Add Block</SheetTitle>
           <SheetDescription>Select a block to add to this page.</SheetDescription>
         </SheetHeader>
-        <div className='py-4'>
+        <div className='flex justify-center py-4'>
           <div className='grid grid-cols-1 gap-4'>
             {pageBuilderCharts.map((chart) => (
               <div
@@ -82,14 +82,15 @@ export function AddPageBlock({ page }: Readonly<Props>) {
                 tabIndex={0}
                 onClick={() => handleClick(chart.name)}
                 onKeyDown={handleKeyDown}
-                className='group transform cursor-pointer rounded-md border border-solid p-2 text-sm shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                className='group flex h-64 w-64 transform cursor-pointer flex-col justify-between rounded-md border border-solid p-4 text-sm shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
               >
-                {chart.name}
-                <div className='mt-2'>{chart.component}</div>
+                <div className='text-center font-medium'>{chart.name}</div>
+                <div className='mt-2 overflow-hidden'>{chart.component}</div>
               </div>
             ))}
           </div>
         </div>
+
         <SheetFooter className='mt-4'></SheetFooter>
       </SheetContent>
     </Sheet>

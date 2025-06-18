@@ -12,7 +12,7 @@ class BlocksConfigTrendUpdateController extends Controller
 
     public function __invoke(BlocksConfigTrendUpdateRequest $request, $id): RedirectResponse
     {
-        $validated = $request->toArray();
+        
         return redirect()->back();
     }
 }

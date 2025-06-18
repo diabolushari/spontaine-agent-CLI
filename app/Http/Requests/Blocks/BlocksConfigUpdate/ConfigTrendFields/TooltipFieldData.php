@@ -14,18 +14,16 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class TooltipFieldData extends Data
 {
     public function __construct(
+        #[Required]
+        #[Max(50)]
         public string $label,
+
+        #[Required]
+        #[Max(50)]
         public string $unit,
+
+        #[Required]
         public bool $showLabel,
     ) {}
-
-    public static function rules(): array
-    {
-        return [
-            'label' => ['nullable', 'string'],
-            'unit' => ['nullable', 'string'],
-            'showLabel' => ['nullable', 'boolean'],
-        ];
-    }
 }
 

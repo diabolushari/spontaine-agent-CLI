@@ -84,7 +84,7 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
           open={isDrawerOpen}
           setOpen={setIsDrawerOpen}
         >
-          <div className='md:p-4'>
+          <div className='w-full md:p-4'>
             <BlockDrawerForm
               initialData={block.data}
               block={block}

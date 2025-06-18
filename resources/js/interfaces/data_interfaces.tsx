@@ -408,10 +408,6 @@ export interface Config {
   subset_group_id: string
   trend: Trend
   ranking: Ranking
-  overview: {
-    title: string
-    display_type: string
-  }
 }
 
 export interface Block extends Model {

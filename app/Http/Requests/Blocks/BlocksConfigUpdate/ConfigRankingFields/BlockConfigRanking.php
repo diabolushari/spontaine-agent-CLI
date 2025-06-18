@@ -5,6 +5,9 @@ namespace App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigRankingFields;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\RequiredWith;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigRankingFields\RankingDataField;
@@ -13,29 +16,17 @@ use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigRankingFields\RankingDataF
 class BlockConfigRanking extends Data
 {
     public function __construct(
-        #[Nullable, IntegerType]
+        #[Exists('subset_group_items', 'subset_detail_id')]
+        #[Nullable]
         public ?int $subsetId,
 
-        #[Nullable]
+        #[Max(255)]
+        #[RequiredWith('subset_id')]
         public ?string $title,
 
-        #[Nullable]
+        #[RequiredWith('subset_id')]
         public ?RankingDataField $dataField,
     ) {}
 
-    public static function rules(string $prefix = ''): array
-    {
-        $base = $prefix ? $prefix . '.' : '';
-
-        return [
-            $base . 'subset_id' => ['nullable', 'integer'],
-            $base . 'title' => ['nullable', 'string'],
-
-            // Only validate data_field when subset_id is present and > 0
-            $base . 'data_field' => ['nullable', 'array', 'required_with:' . $base . 'subset_id'],
-            $base . 'data_field.label' => ['required_with:' . $base . 'subset_id', 'string'],
-            $base . 'data_field.value' => ['required_with:' . $base . 'subset_id', 'string'],
-            $base . 'data_field.show_label' => ['required_with:' . $base . 'subset_id', 'boolean'],
-        ];
-    }
+    
 }
