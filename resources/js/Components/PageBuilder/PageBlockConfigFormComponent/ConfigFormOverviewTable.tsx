@@ -5,6 +5,14 @@ import Button from '@/ui/button/Button'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import CheckBox from '@/ui/form/CheckBox'
+import useFetchRecord from '@/hooks/useFetchRecord'
+
+interface SubsetField {
+  id: number
+  subset_column: string
+  subset_field_name: string
+}
+
 interface ConfigFormStepOverviewTableProps {
   initialData: any
   block: any
@@ -22,12 +30,59 @@ export default function ConfigFormStepOverviewTable({
     title: initialData?.overview?.title ?? '',
     subsetId: initialData?.subset_id ?? '',
     dimensionField: initialData?.dimension_field ?? '',
-    measureField: initialData?.measure_field ?? '',
+    measureField: Array.isArray(initialData?.measure_field) ? initialData.measure_field : [],
     gridNumber: initialData?.grid_number ?? '',
     showTotal: initialData?.show_total ?? false,
   })
 
-  const strucetureOverviewTable = (formData: any) => {
+  const {
+    formData: measureFieldFormData,
+    setFormValue: setMeasureFieldValue,
+    toggleBoolean: toggleMeasureFieldBoolean,
+  } = useCustomForm({
+    label: '',
+    value: '',
+    unit: '',
+    show_label: false,
+  })
+
+  const [subsetFields] = useFetchRecord<SubsetField[]>(
+    formData.subsetId ? `/api/subset/${formData.subsetId}` : null
+  )
+
+  const isMeasureSelected = (column: string) =>
+    formData.measureField.some((f: any) => f.value === column)
+
+  const updateMeasureField = (
+    column: string,
+    changes: Partial<{ label: string; unit: string; show_label: boolean }>
+  ) => {
+    const updated = formData.measureField.map((field: any) =>
+      field.value === column ? { ...field, ...changes } : field
+    )
+    setFormValue('measureField')(updated)
+  }
+
+  const toggleMeasureFieldSelection = (field: SubsetField) => {
+    const exists = isMeasureSelected(field.subset_column)
+    if (exists) {
+      setFormValue('measureField')(
+        formData.measureField.filter((f: any) => f.value !== field.subset_column)
+      )
+    } else {
+      setFormValue('measureField')([
+        ...formData.measureField,
+        {
+          label: measureFieldFormData.label,
+          value: field.subset_column,
+          unit: measureFieldFormData.unit,
+          show_label: measureFieldFormData.show_label,
+        },
+      ])
+    }
+  }
+
+  const structureOverviewTable = (formData: any) => {
     return {
       overview_table: {
         title: formData.title,
@@ -49,26 +104,29 @@ export default function ConfigFormStepOverviewTable({
         if (onNext)
           onNext({
             ...initialData,
-            overview_table: strucetureOverviewTable(formData).overview_table,
+            overview_table: structureOverviewTable(formData).overview_table,
           })
       },
     }
   )
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log(formData)
     post({
       ...initialData,
       overview_table: {
-        ...strucetureOverviewTable(formData).overview_table,
+        ...structureOverviewTable(formData).overview_table,
       },
       _method: 'PUT',
     })
   }
+
   return (
     <div>
       <StrongText>General</StrongText>
       <form onSubmit={handleSubmit}>
-        <div className='flex flex-col gap-4 md:grid md:grid-cols-2'>
+        <div className='flex flex-col gap-4 md:grid md:grid-cols-3'>
           <div className='col-span-2 flex flex-col'>
             <Input
               label='Enter your title'
@@ -77,7 +135,8 @@ export default function ConfigFormStepOverviewTable({
               error={errors?.title}
             />
           </div>
-          <div className='col-span-2 flex flex-col'>
+
+          <div className='col-span-3 flex flex-col'>
             <DynamicSelectList
               label='Select Subset for Highlight Table'
               url={`/api/subset-group/${initialData.subset_group_id}`}
@@ -90,6 +149,7 @@ export default function ConfigFormStepOverviewTable({
               allOptionText='-- None --'
             />
           </div>
+
           {formData.subsetId && (
             <>
               <div className='flex flex-col gap-4'>
@@ -106,25 +166,8 @@ export default function ConfigFormStepOverviewTable({
                 />
               </div>
               <div className='flex flex-col gap-4'>
-                <DynamicSelectList
-                  label='Select a dimension field'
-                  url={`/api/subset/${formData.subsetId}`}
-                  dataKey='subset_column'
-                  displayKey='subset_field_name'
-                  value={formData.measureField ?? ''}
-                  setValue={setFormValue('measureField')}
-                  error={errors?.dimensionField}
-                  showAllOption={true}
-                  allOptionText='-- None --'
-                />
-              </div>
-            </>
-          )}
-          {formData.dimensionField && formData.measureField && (
-            <>
-              <div className='flex flex-col gap-4'>
                 <Input
-                  label='Ener number of grid you want'
+                  label='Enter number of grid you want'
                   type='number'
                   value={formData.gridNumber ?? ''}
                   setValue={setFormValue('gridNumber')}
@@ -139,6 +182,81 @@ export default function ConfigFormStepOverviewTable({
                 />
               </div>
             </>
+          )}
+
+          {formData.subsetId && subsetFields && (
+            <div className='col-span-3 flex flex-col gap-4'>
+              <StrongText>Select Measure Fields</StrongText>
+              <div className='flex flex-col gap-4'>
+                {subsetFields.map((field) => {
+                  const isSelected = isMeasureSelected(field.subset_column)
+                  const currentData = formData.measureField.find(
+                    (f: any) => f.value === field.subset_column
+                  ) || {
+                    label: '',
+                    value: field.subset_column,
+                    unit: '',
+                    show_label: false,
+                  }
+
+                  return (
+                    <div
+                      key={field.id}
+                      className='flex flex-col gap-4 rounded border p-2'
+                    >
+                      <CheckBox
+                        label={field.subset_field_name}
+                        value={isSelected}
+                        toggleValue={() => toggleMeasureFieldSelection(field)}
+                      />
+
+                      {isSelected && (
+                        <div className='grid grid-cols-4 gap-4 md:grid-cols-4'>
+                          <div className='flex flex-col gap-4'>
+                            <Input
+                              label='Enter your Label'
+                              value={currentData.label}
+                              setValue={(val) =>
+                                updateMeasureField(field.subset_column, { label: val })
+                              }
+                            />
+                          </div>
+
+                          <div className='flex flex-col gap-4'>
+                            <Input
+                              label='Value'
+                              value={field.subset_column}
+                              setValue={() => {}}
+                              disabled
+                            />
+                          </div>
+                          <div className='flex flex-col gap-4'>
+                            <Input
+                              label='Unit'
+                              value={currentData.unit}
+                              setValue={(val) =>
+                                updateMeasureField(field.subset_column, { unit: val })
+                              }
+                            />
+                          </div>
+                          <div className='flex flex-col gap-4'>
+                            <CheckBox
+                              label='Show Label'
+                              value={currentData.show_label}
+                              toggleValue={() =>
+                                updateMeasureField(field.subset_column, {
+                                  show_label: !currentData.show_label,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           )}
         </div>
 

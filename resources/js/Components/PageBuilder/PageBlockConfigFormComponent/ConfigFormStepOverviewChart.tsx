@@ -5,11 +5,8 @@ import SelectList from '@/ui/form/SelectList'
 import Input from '@/ui/form/Input'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Button from '@/ui/button/Button'
-import TextArea from '@/ui/form/TextArea'
-import StrongText from '@/typography/StrongText'
 import CheckBox from '@/ui/form/CheckBox'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { label } from 'framer-motion/client'
 
 const chartOptions = [
   { label: 'Bar', value: 'bar' },

@@ -12,7 +12,6 @@ class BlocksConfigOverviewTableUpdateController extends Controller
 
     public function __invoke(Request $request, $id): RedirectResponse
     {
-
         return redirect()->back();
     }
 }
