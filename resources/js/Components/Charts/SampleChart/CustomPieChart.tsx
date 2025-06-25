@@ -1,7 +1,8 @@
 'use client'
 
 import { useMemo } from 'react'
-import { Pie, PieChart, Label, Cell } from 'recharts'
+import { Cell, Label, Pie, PieChart } from 'recharts'
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 
 import {
   ChartConfig,
@@ -21,14 +22,15 @@ interface Props {
     label: string
     unit?: string
   }[]
+  colors: string
 }
 
-const chartColors = ['#2563eb', '#60a5fa', '#f5c842', '#10b981', '#ef4444', '#9333ea', '#14b8a6']
-
-export function CustomPieChart({ data, dataKey, nameKey, keysToPlot }: Props) {
+export function CustomPieChart({ data, dataKey, nameKey, keysToPlot, colors }: Props) {
   if (!data || data.length === 0 || keysToPlot.length === 0) {
     return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
   }
+
+  const chartColors: string[] = chartPallet[colors]
 
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {

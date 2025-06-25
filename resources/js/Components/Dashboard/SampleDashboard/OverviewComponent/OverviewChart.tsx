@@ -2,14 +2,18 @@ import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import FontSizeSelector, {
+  Size,
+} from '@/Components/Dashboard/SampleDashboard/OverviewComponent/FontSizeSelector'
 
 interface Props {
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
   chart_content: any
 }
+
 const mockData = [
   { consumer_category: 'Domestic', total_demand: 1200000 },
   { consumer_category: 'Commercial', total_demand: 800000 },
@@ -25,6 +29,7 @@ const keysToPlot = [
   },
 ]
 export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_content }: Props) {
+  const [fontClasses, setFontClasses] = useState('text-base')
   const keysToPlot = chart_content?.y_axis?.map((axis) => ({
     key: axis.value,
     label: axis.label,
@@ -65,12 +70,21 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
 
     return Array.from(grouped.values())
   }, [data?.data, chart_content.x_axis, keysToPlot, chart_content.chart_type])
-
+  const handleSizeChange = (newSize: Size) => {
+    // Map the component's size to a string of Tailwind utility classes
+    const sizeMap: Record<Size, string> = {
+      SMALL: 'text-sm', // Small font size
+      MEDIUM: 'text-base', // Normal font size
+      LARGE: 'text-lg', // Large font size
+    }
+    setFontClasses(sizeMap[newSize])
+  }
   return (
-    <div className='flex w-full flex-col pr-4'>
+    <div className={`flex w-full flex-col pr-4 ${fontClasses}`}>
+      <FontSizeSelector onSizeChange={handleSizeChange} />
       <div>
         <div className='mt-4 flex w-full justify-start p-2'>
-          <span className='subheader-sm-1stop'>{chart_content.title}</span>
+          <div>{chart_content.title}</div>
         </div>
       </div>
       {loading && <Skeleton height={200} />}
@@ -79,6 +93,8 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           data={aggregatedData}
           dataKey={chart_content.x_axis}
           keysToPlot={keysToPlot}
+          colors={'boldWarm'}
+          fontSize={fontClasses}
         />
       )}
       {chart_content.chart_type === 'line' && (
@@ -86,6 +102,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           data={aggregatedData}
           dataKey={chart_content.x_axis}
           keysToPlot={keysToPlot}
+          colors={'boldWarm'}
         />
       )}
       {chart_content.chart_type === 'pie' && keysToPlot?.length === 1 && (
@@ -95,6 +112,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
             dataKey={keysToPlot[0].key}
             nameKey={chart_content.x_axis}
             keysToPlot={keysToPlot}
+            colors={'boldWarm'}
           />
         </>
       )}

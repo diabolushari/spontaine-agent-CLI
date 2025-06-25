@@ -9,6 +9,7 @@ import {
   ChartTooltipContent,
 } from '@/Components/ui/chart'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 
 interface Props {
   data: Record<string, number | string>[]
@@ -17,14 +18,16 @@ interface Props {
     key: string
     label: string
   }[]
+  colors: string
+  fontSize: string
 }
 
-const chartColors = ['#2563eb', '#60a5fa', '#f5c842', '#10b981', '#ef4444']
-
-export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
+export function CustomBarChart({ data, dataKey, keysToPlot, colors, fontSize }: Props) {
   if (!data || data.length === 0) {
     return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
   }
+
+  const chartColors: string[] = chartPallet[colors]
 
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
@@ -35,7 +38,10 @@ export function CustomBarChart({ data, dataKey, keysToPlot }: Props) {
   }, {} as ChartConfig)
 
   return (
-    <ChartContainer config={chartConfig}>
+    <ChartContainer
+      config={chartConfig}
+      className={`${fontSize}`}
+    >
       <ResponsiveContainer
         width='100%'
         height={300}

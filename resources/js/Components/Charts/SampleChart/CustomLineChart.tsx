@@ -9,6 +9,7 @@ import {
   ChartTooltipContent,
 } from '@/Components/ui/chart'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 
 interface Props {
   data: Record<string, number | string>[]
@@ -18,20 +19,15 @@ interface Props {
     label: string
     unit: string
   }[]
+  colors: string
 }
 
-const chartColors = [
-  '#2563eb', // blue-600
-  '#60a5fa', // blue-400
-  '#f59e0b', // amber-500
-  '#10b981', // green-500
-  '#ef4444', // red-500
-]
-
-export function CustomLineChart({ data, dataKey, keysToPlot }: Props) {
+export function CustomLineChart({ data, dataKey, keysToPlot, colors }: Props) {
   if (!data || data.length === 0) {
     return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
   }
+
+  const chartColors: string[] = chartPallet[colors]
 
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
