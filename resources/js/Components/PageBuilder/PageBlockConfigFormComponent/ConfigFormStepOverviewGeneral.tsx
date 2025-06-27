@@ -63,7 +63,7 @@ export default function ConfigFormStepOverviewGeneral({
   }
   return (
     <div>
-      <StrongText>General</StrongText>
+      <StrongText>Overview General</StrongText>
       <form onSubmit={handleSubmit}>
         <div className='flex flex-col gap-4 md:grid md:grid-cols-2'>
           <div className='flex flex-col'>

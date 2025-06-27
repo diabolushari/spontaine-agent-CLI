@@ -34,6 +34,8 @@ class BlockConfigOverviewTable extends Data
 
         public ?bool $showTotal,
 
+        public ?string $order,
+
         #[RequiredWith('subset_id')]
         #[DataCollectionOf(BlockConfigMeasureField::class)]
         public ?DataCollection $measureField,
@@ -53,6 +55,7 @@ class BlockConfigOverviewTable extends Data
             'measure_field.label.string' => 'Measure field label must be a string.',
             'measure_field.value.required' => 'Please enter a value for the measure field.',
             'measure_field.value.string' => 'Measure field value must be a string.',
+            'order.required_with' => 'Please select an order.',
         ];
     }
 }
