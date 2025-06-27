@@ -18,6 +18,7 @@ interface Config {
   measure_field: MeasureField[]
   show_total: boolean
   measure_field_dimension: string
+  order?: 'ascending' | 'descending'
 }
 
 interface OverviewGridProps {
@@ -45,6 +46,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
     title,
     show_total,
     measure_field_dimension,
+    order, // Destructure order from config
   } = config
   const monthYear = useMemo(() => {
     return dateToYearMonth(selectedMonth)
@@ -58,6 +60,52 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
       measure_field_dimension ? `&${dimension_field}=${measure_field_dimension}` : ''
     }`
   )
+
+  const sortedMeasureFields = useMemo(() => {
+    const data = graphValues?.data?.[0]
+    const fieldsToSort = [...measure_field]
+
+    if (!order || !data) {
+      return fieldsToSort
+    }
+
+    fieldsToSort.sort((a, b) => {
+      const valA = data[a.value]
+      const valB = data[b.value]
+      const numA = typeof valA === 'number' ? valA : -Infinity
+      const numB = typeof valB === 'number' ? valB : -Infinity
+
+      return order === 'descending' ? numB - numA : numA - numB
+    })
+    return fieldsToSort
+  }, [measure_field, graphValues, order])
+
+  const dataMap = useMemo(() => {
+    if (!graphValues?.data || !measure_field?.[0]?.value) {
+      return new Map<string, number>()
+    }
+    const measureKey = measure_field[0].value
+    const map = new Map<string, number>()
+    graphValues.data.forEach((item: any) => {
+      if (item[dimension_field] !== undefined) {
+        map.set(item[dimension_field], item[measureKey])
+      }
+    })
+    return map
+  }, [graphValues, dimension_field, measure_field])
+
+  const sortedDimensionValues = useMemo(() => {
+    const valuesToSort = [...dimensionValues]
+    if (!order) return valuesToSort
+
+    valuesToSort.sort((a, b) => {
+      const valA = dataMap.get(a) ?? -Infinity
+      const valB = dataMap.get(b) ?? -Infinity
+
+      return order === 'descending' ? valB - valA : valA - valB
+    })
+    return valuesToSort
+  }, [dimensionValues, dataMap, order])
 
   const isMultiMeasure = measure_field?.length > 0
   const gridNumber = parseInt(grid_number || '', 10)
@@ -83,9 +131,9 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
             </div>
           )}
 
-          {/* Dynamic logic: measure-field or dimension-based cards */}
+          {/* Dynamic logic: uses sorted arrays for rendering */}
           {measure_field_dimension
-            ? measure_field.slice(0, visibleCount).map((field) => (
+            ? sortedMeasureFields.slice(0, visibleCount).map((field) => (
                 <div
                   key={field.value}
                   role='button'
@@ -105,7 +153,7 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
                   <p>{formatNumber(graphValues?.data?.[0]?.[field.value] ?? 'N/A')}</p>
                 </div>
               ))
-            : dimensionValues.slice(0, visibleCount).map((value, index) => (
+            : sortedDimensionValues.slice(0, visibleCount).map((value) => (
                 <div
                   key={value}
                   role='button'
@@ -123,10 +171,8 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
                 >
                   <p className='text-lg font-bold'>{value}</p>
                   <p>
-                    {graphValues?.data?.[index]?.[dimension_field] === value ? (
-                      <span className='text-green-500'>
-                        {formatNumber(graphValues?.data?.[index]?.[measure_field[0].value])}
-                      </span>
+                    {dataMap.has(value) ? (
+                      <span className='text-green-500'>{formatNumber(dataMap.get(value))}</span>
                     ) : (
                       <span className='text-red-500'>✗</span>
                     )}
