@@ -156,7 +156,7 @@ export default function ConfigFormStepOverviewTable({
               </div>
               <div className='flex flex-col'>
                 <DynamicSelectList
-                  label='Select a dimension field'
+                  label='Dimension field'
                   url={`/api/subset/dimension/${formData.subsetId}`}
                   dataKey='subset_column'
                   displayKey='subset_field_name'
