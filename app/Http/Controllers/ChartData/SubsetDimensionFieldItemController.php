@@ -19,7 +19,11 @@ class SubsetDimensionFieldItemController extends Controller
             ->getQuery();
 
 
-        $categories = $query->pluck($subsetColumn)->unique()->values();
+        try {
+            $categories = $query->pluck($subsetColumn)->unique()->values();
+        } catch (\Exception $e) {
+            return response()->json([]);
+        }
 
 
         $formatted = $categories->map(function ($item) {
