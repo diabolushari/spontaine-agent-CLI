@@ -1,33 +1,45 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   SubsetDimensionField,
   SubsetGroupItem,
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 
-interface DimensionFilter {
+// This interface describes a single filter value fetched from the API.
+interface DimensionValue {
   name: string
 }
 
+// This interface defines the structure for a single filter row in the UI.
+export interface Filter {
+  id: number
+  dimension: string
+  operator: string
+  value: string
+}
+
+type FetchError = Error & { info?: string }
+
 export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
-  // State for form fields and data
+  // ... (no changes in this section)
   const [title, setTitle] = useState('')
   const [subsets, setSubsets] = useState<SubsetGroupItem[]>([])
   const [metrics, setMetrics] = useState<SubsetMeasureField[]>([])
   const [dimensions, setDimensions] = useState<SubsetDimensionField[]>([])
-  const [dimensionFilters, setDimensionFilters] = useState<DimensionFilter[]>([])
-
-  // State for user selections
   const [selectedSubsetDetailId, setSelectedSubsetDetailId] = useState<number | ''>('')
   const [selectedMetric, setSelectedMetric] = useState('')
-  const [selectedDimension, setSelectedDimension] = useState('')
-  const [selectedDimensionFilter, setSelectedDimensionFilter] = useState('')
-
-  // State for loading and error UI
-  const [isLoading, setIsLoading] = useState({ subsets: false, details: false, filters: false })
+  const [groupByDimension, setGroupByDimension] = useState('')
+  const [filters, setFilters] = useState<Filter[]>([])
+  const [nextFilterId, setNextFilterId] = useState(1)
+  const [availableValues, setAvailableValues] = useState<Record<string, DimensionValue[]>>({})
+  const [isLoading, setIsLoading] = useState({
+    subsets: false,
+    details: false,
+    values: {} as Record<string, boolean>,
+  })
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch Subsets when modal opens
+  // ... (no changes in fetchSubsets or fetchDetails)
   useEffect(() => {
     if (isModalOpen && subsetGroupId) {
       const fetchSubsets = async () => {
@@ -37,25 +49,27 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
           const res = await fetch(`/api/subset-group/${subsetGroupId}`)
           if (!res.ok) throw new Error('Failed to fetch subsets')
           setSubsets((await res.json()) as SubsetGroupItem[])
-        } catch (e) {
-          setError('Could not load subsets.')
+        } catch (e: unknown) {
+          const err = e as FetchError
+          setError(`Could not load subsets: ${err.message}`)
         } finally {
           setIsLoading((prev) => ({ ...prev, subsets: false }))
         }
       }
-      fetchSubsets()
+      void fetchSubsets()
     }
   }, [isModalOpen, subsetGroupId])
 
-  // Fetch Metrics AND Dimensions when a subset is selected
   useEffect(() => {
     if (!selectedSubsetDetailId) return
     const fetchDetails = async () => {
       setMetrics([])
       setDimensions([])
       setSelectedMetric('')
-      setSelectedDimension('')
-      setIsLoading((prev) => ({ ...prev, details: true }))
+      setGroupByDimension('')
+      setFilters([])
+      setAvailableValues({})
+      setIsLoading((prev) => ({ ...prev, details: true, values: {} }))
       try {
         const metricsRes = await fetch(`/api/subset/${selectedSubsetDetailId}`)
         if (!metricsRes.ok) throw new Error('Failed to fetch metrics')
@@ -64,36 +78,71 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
         const dimRes = await fetch(`/api/subset/dimension/${selectedSubsetDetailId}`)
         if (!dimRes.ok) throw new Error('Failed to fetch dimensions')
         setDimensions((await dimRes.json()) as SubsetDimensionField[])
-      } catch (e) {
-        setError('Could not load details for this subset.')
+      } catch (e: unknown) {
+        const err = e as FetchError
+        setError(`Could not load details for this subset: ${err.message}`)
       } finally {
         setIsLoading((prev) => ({ ...prev, details: false }))
       }
     }
-    fetchDetails()
+    void fetchDetails()
   }, [selectedSubsetDetailId])
 
-  // Fetch Dimension Filters when a dimension is selected
-  useEffect(() => {
-    if (!selectedDimension || !selectedSubsetDetailId) return
-    const fetchFilters = async () => {
-      setDimensionFilters([])
-      setSelectedDimensionFilter('')
-      setIsLoading((prev) => ({ ...prev, filters: true }))
+  // Fetch values for a specific dimension
+  const fetchValuesForDimension = useCallback(
+    async (dimensionColumn: string) => {
+      if (!dimensionColumn || !selectedSubsetDetailId || availableValues[dimensionColumn]) return
+      setIsLoading((prev) => ({ ...prev, values: { ...prev.values, [dimensionColumn]: true } }))
       try {
         const res = await fetch(
-          `/api/subset/dimension/fields/${selectedDimension}/${selectedSubsetDetailId}`
+          `/api/subset/dimension/fields/${dimensionColumn}/${selectedSubsetDetailId}`
         )
-        if (!res.ok) throw new Error('Failed to fetch dimension filters')
-        setDimensionFilters((await res.json()) as DimensionFilter[])
-      } catch (e) {
-        setError('Could not load filters for this dimension.')
+        if (!res.ok) throw new Error(`Failed to fetch values for ${dimensionColumn}`)
+
+        // *** THE FIX IS HERE ***
+        // 1. Await the JSON response and store it in a variable first.
+        const values = (await res.json()) as DimensionValue[]
+
+        // 2. Then, use that variable to update the state.
+        setAvailableValues((prev) => ({ ...prev, [dimensionColumn]: values }))
+      } catch (e: unknown) {
+        const err = e as FetchError
+        setError(`Could not load filter values: ${err.message}`)
       } finally {
-        setIsLoading((prev) => ({ ...prev, filters: false }))
+        setIsLoading((prev) => ({ ...prev, values: { ...prev.values, [dimensionColumn]: false } }))
       }
-    }
-    fetchFilters()
-  }, [selectedDimension, selectedSubsetDetailId])
+    },
+    [selectedSubsetDetailId, availableValues]
+  )
+
+  // ... (no changes in the rest of the file)
+  const addFilter = () => {
+    setFilters((prev) => [
+      ...prev,
+      { id: nextFilterId, dimension: '', operator: 'equals', value: '' },
+    ])
+    setNextFilterId((prev) => prev + 1)
+  }
+
+  const removeFilter = (id: number) => {
+    setFilters((prev) => prev.filter((f) => f.id !== id))
+  }
+
+  const updateFilter = (id: number, field: keyof Omit<Filter, 'id'>, value: string) => {
+    setFilters((prev) =>
+      prev.map((f) => {
+        if (f.id === id) {
+          const updatedFilter = { ...f, [field]: value }
+          if (field === 'dimension') {
+            updatedFilter.value = ''
+            void fetchValuesForDimension(value)
+          }
+          return updatedFilter
+        }
+        return f
+      })
+    )
+  }
 
   function resetAllState() {
     setTitle('')
@@ -101,36 +150,33 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
     setSubsets([])
     setMetrics([])
     setDimensions([])
-    setDimensionFilters([])
     setSelectedMetric('')
-    setSelectedDimension('')
-    setSelectedDimensionFilter('')
+    setGroupByDimension('')
+    setFilters([])
+    setAvailableValues({})
+    setNextFilterId(1)
     setError(null)
   }
 
-  // Return everything the form component will need
   return {
-    // Form State & Data
     title,
+    setTitle,
     subsets,
     metrics,
-    dimensions,
-    dimensionFilters,
-    // Selections
-    selectedSubsetDetailId,
     selectedMetric,
-    selectedDimension,
-    selectedDimensionFilter,
-    // Setters
-    setTitle,
-    setSelectedSubsetDetailId,
     setSelectedMetric,
-    setSelectedDimension,
-    setSelectedDimensionFilter,
-    // UI State
+    dimensions,
+    selectedSubsetDetailId,
+    setSelectedSubsetDetailId,
+    groupByDimension,
+    setGroupByDimension,
+    filters,
+    addFilter,
+    removeFilter,
+    updateFilter,
+    availableValues,
     isLoading,
     error,
-    // Methods
     resetAllState,
   }
 }
