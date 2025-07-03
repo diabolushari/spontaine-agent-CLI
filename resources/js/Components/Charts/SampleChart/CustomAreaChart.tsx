@@ -31,6 +31,7 @@ interface Props {
     unit: string
     show_label: boolean
   }
+  color?: string
 }
 
 export function CustomAreaChart({
@@ -41,11 +42,12 @@ export function CustomAreaChart({
   yAxisLabel,
   tooltipIndicator,
   dimensions,
+  color,
 }: Props) {
   const chartConfig = keysToPlot.reduce((acc, plotKey, index) => {
     acc[plotKey.key] = {
       label: plotKey.key,
-      color: chartColors[index % chartColors.length],
+      color: color || chartColors[index % chartColors.length],
     }
     return acc
   }, {} as ChartConfig)
@@ -101,6 +103,7 @@ export function CustomAreaChart({
               offset: 55,
               style: { fill: 'var(--tw-prose-body)' },
             }}
+            stroke={color || '#8884d8'}
           />
           {tooltipIndicator?.show_label && (
             <ChartTooltip
@@ -118,9 +121,9 @@ export function CustomAreaChart({
               key={plotKey.key}
               dataKey={plotKey.key}
               type='natural'
-              fill={chartColors[index % chartColors.length]}
+              fill={color || chartColors[index % chartColors.length]}
               fillOpacity={0.4}
-              stroke={chartColors[index % chartColors.length]}
+              stroke={color || chartColors[index % chartColors.length]}
             />
           ))}
         </AreaChart>

@@ -19,14 +19,7 @@ interface BlockFormProps {
   setCloseDrawer: (value: boolean) => void
 }
 
-const steps = [
-  { title: 'General' },
-  { title: 'Trend' },
-  { title: 'Ranking' },
-  { title: 'Overview' },
-  { title: 'Chart' },
-  { title: 'Table' },
-]
+const steps = [{ title: 'General' }, { title: 'Trend' }, { title: 'Ranking' }]
 
 export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: BlockFormProps) {
   const [step, setStep] = useState(1)
@@ -77,28 +70,6 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
               } else if (currentStep === 3 && stepData?.ranking_selected === true) {
                 isAllowed = true
               }
-            }
-
-            // Step 5 - Chart view, only allowed if card_type is not 'table' and overview is complete
-            else if (
-              currentStep === 5 &&
-              cardType !== 'table' &&
-              overview?.title &&
-              overview?.description &&
-              cardType
-            ) {
-              isAllowed = true
-            }
-
-            // Step 6 - Table view, only allowed if card_type is not 'chart' and overview is complete
-            else if (
-              currentStep === 6 &&
-              cardType !== 'chart' &&
-              overview?.title &&
-              overview?.description &&
-              cardType
-            ) {
-              isAllowed = true
             }
 
             return (

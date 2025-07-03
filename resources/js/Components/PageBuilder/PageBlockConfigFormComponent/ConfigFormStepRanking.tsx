@@ -8,11 +8,12 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import CheckBox from '@/ui/form/CheckBox'
 
 interface ConfigFormStepRankingFieldsProps {
-  initialData: Partial<Config>
+  initialData: any
   block: Block
-  onNext: (data: Partial<Config>) => void
+  onNext: (data: any) => void
   onBack: () => void
 }
+
 const strucetureRanking = (formData: any) => {
   return {
     ranking: {

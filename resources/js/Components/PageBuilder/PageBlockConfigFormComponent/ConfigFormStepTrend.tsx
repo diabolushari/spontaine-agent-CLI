@@ -9,6 +9,9 @@ import useInertiaPost from '@/hooks/useInertiaPost'
 import Heading from '@/typography/Heading'
 import SubHeading from '@/typography/SubHeading'
 import useFetchRecord from '@/hooks/useFetchRecord'
+import NormalText from '@/typography/NormalText'
+import SelectList from '@/ui/form/SelectList'
+import { graphColorPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 
 interface ConfigFormStepTrendProps {
   initialData: any
@@ -28,7 +31,13 @@ interface FormData {
   tooltipLabel: string
   tooltipUnit: string
   tooltipShowLabel: boolean
+  color: string
 }
+
+const colorOptions = Object.entries(graphColorPallet).map(([key, value]) => ({
+  label: key,
+  value: value,
+}))
 
 export default function ConfigFormStepTrend({
   initialData,
@@ -52,7 +61,9 @@ export default function ConfigFormStepTrend({
     tooltipShowLabel: initialData.trend?.subset_id
       ? initialData.trend?.tooltip_field?.show_label
       : false,
+    color: initialData.trend?.subset_id ? initialData.trend?.data_field?.color : '',
   })
+
   const strucetureTrend = (formData: FormData) => {
     return {
       trend: {
@@ -79,6 +90,7 @@ export default function ConfigFormStepTrend({
               show_label: formData.tooltipShowLabel,
             }
           : null,
+        color: formData.color,
       },
     }
   }
@@ -216,6 +228,31 @@ export default function ConfigFormStepTrend({
                 value={formData.tooltipShowLabel}
                 toggleValue={toggleBoolean('tooltipShowLabel')}
               />
+            </div>
+            <div className='flex flex-col'>
+              <SelectList
+                label='Select Ranking Color'
+                list={colorOptions}
+                dataKey='value'
+                displayKey='label'
+                value={formData.color}
+                setValue={setFormValue('color')}
+                error={errors?.['trend.color']}
+              />
+            </div>
+            <div>
+              <NormalText> Colors in the list</NormalText>
+              <div className='flex gap-4'>
+                {formData.color && (
+                  <>
+                    <div
+                      key={formData.color}
+                      className='h-8 w-8'
+                      style={{ backgroundColor: formData.color }}
+                    />
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -399,6 +399,7 @@ export interface Trend {
     unit: string
     show_label: boolean
   }
+  color: string
 }
 export interface Overview {
   title: string

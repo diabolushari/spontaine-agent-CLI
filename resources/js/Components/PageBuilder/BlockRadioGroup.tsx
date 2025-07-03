@@ -14,7 +14,8 @@ export function BlockRadioGroup({ block, selectedView, setSelectedView }: BlockR
       label: 'Overview',
       show:
         block?.data?.overview?.overview_chart?.subset_id ||
-        block?.data?.overview?.overview_table?.subset_id,
+        block?.data?.overview?.overview_table?.subset_id ||
+        block?.data?.overview_selected,
     },
     { value: 'trend', label: 'Trend', show: !!block?.data?.trend?.subset_id },
     { value: 'rank', label: 'Ranking', show: !!block?.data?.ranking?.subset_id },

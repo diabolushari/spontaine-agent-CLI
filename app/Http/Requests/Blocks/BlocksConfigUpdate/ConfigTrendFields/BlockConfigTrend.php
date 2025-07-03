@@ -23,6 +23,8 @@ class BlockConfigTrend extends Data
         #[RequiredWith('subset_id')]
         public ?string $title,
 
+        public string $color,
+
         #[RequiredWith('subset_id')]
         public ?DataFieldGroup $dataField,
 

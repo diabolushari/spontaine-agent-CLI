@@ -29,6 +29,7 @@ interface Props {
     show_label: boolean
   }
   dimensions?: BlockDimension
+  color?: string
 }
 
 export default function TrendGraph({
@@ -47,6 +48,7 @@ export default function TrendGraph({
   yAxisLabel,
   tooltipIndicator,
   dimensions,
+  color,
 }: Props) {
   const [selectedMonthValue, setSelectedMonthValue] = useState(2)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
@@ -136,7 +138,7 @@ export default function TrendGraph({
             width='100%'
           />
         ) : chartType === 'area' ? (
-          <div style={{ border: '1px solid red' }}>
+          <div style={{ border: '1px solid var(--tw-prose-body)' }}>
             <CustomAreaChart
               data={chartData}
               dataKey='month'
@@ -145,6 +147,7 @@ export default function TrendGraph({
               yAxisLabel={yAxisLabel}
               tooltipIndicator={tooltipIndicator}
               dimensions={dimensions}
+              color={color}
             />
           </div>
         ) : (

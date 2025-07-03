@@ -8,3 +8,14 @@ export const chartPallet = {
   earthGreen: ['#132E1A', '#2A4425', '#4E672B', '#7E9F41', '#EDF78E'],
   duskContrast: ['#355C63', '#FFF7C4', '#F4C46C', '#A83F3B', '#560D15'],
 }
+
+export const graphColorPallet = {
+  boldWarm: '#5A0F35',
+  softNeutral: '#E9AEB3',
+  freshGreen: '#C7ECD7',
+  fireSunset: '#030014',
+  blueGrey: '#E1E6E9',
+  citrusMint: '#FFA424',
+  earthGreen: '#132E1A',
+  duskContrast: '#355C63',
+}

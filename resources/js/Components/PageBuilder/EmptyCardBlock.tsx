@@ -72,7 +72,7 @@ export function EmptyCardBlock({
         />
 
         <div className='flex flex-col justify-center md:min-h-[400px]'>
-          {selectedView === 'overview' && block?.data && selectedMonth && (
+          {selectedView === 'overview' && block?.data?.overview_selected && selectedMonth && (
             <Overview
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
@@ -82,45 +82,54 @@ export function EmptyCardBlock({
           )}
 
           {/* === Trend Graph === */}
-          {selectedView === 'trend' && block?.data?.trend?.subset_id && selectedMonth && (
-            <TrendGraph
-              cardTitle={block.data.trend.title}
-              dataKey={block.data.trend.data_field.x_axis.value}
-              selectedMonth={selectedMonth}
-              setSelectedMonth={setSelectedMonth}
-              subsetId={block.data.trend.subset_id}
-              dataField={block.data.trend.data_field.y_axis.value}
-              dataFieldName={block.data.trend.data_field.y_axis.label}
-              xAxisLabel={
-                block.data.trend.data_field.x_axis.show_label
-                  ? block.data.trend.data_field.x_axis.label
-                  : ''
-              }
-              yAxisLabel={
-                block.data.trend.data_field.y_axis.show_label
-                  ? block.data.trend.data_field.y_axis.label
-                  : ''
-              }
-              chartType='area'
-              tooltipIndicator={block.data.trend.tooltip_field}
-              dimensions={block.dimensions}
-            />
-          )}
+          {selectedView === 'trend' &&
+            block?.data?.trend_selected &&
+            block?.data?.trend?.subset_id &&
+            selectedMonth && (
+              <TrendGraph
+                cardTitle={block.data.trend.title}
+                dataKey={block.data.trend.data_field.x_axis.value}
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+                subsetId={block.data.trend.subset_id}
+                dataField={block.data.trend.data_field.y_axis.value}
+                dataFieldName={block.data.trend.data_field.y_axis.label}
+                xAxisLabel={
+                  block.data.trend.data_field.x_axis.show_label
+                    ? block.data.trend.data_field.x_axis.label
+                    : ''
+                }
+                yAxisLabel={
+                  block.data.trend.data_field.y_axis.show_label
+                    ? block.data.trend.data_field.y_axis.label
+                    : ''
+                }
+                chartType='area'
+                tooltipIndicator={block.data.trend.tooltip_field}
+                dimensions={block.dimensions}
+                color={block.data.trend.color}
+              />
+            )}
 
           {/* === Ranked List === */}
-          {selectedView === 'rank' && selectedMonth && block?.data?.ranking?.subset_id && (
-            <RankedList
-              subsetId={block.data.ranking.subset_id}
-              cardTitle={block.data.ranking.title}
-              dataField={block.data.ranking.data_field.value}
-              dataFieldName={
-                block.data.ranking.data_field.show_label ? block.data.ranking.data_field.label : ''
-              }
-              rankingPageUrl={`/sample-ranking-page?month=${monthYear}&route=${route('service-delivery.index')}`}
-              timePeriod={monthYear}
-              timePeriodFieldName='month'
-            />
-          )}
+          {selectedView === 'rank' &&
+            block?.data?.ranking_selected &&
+            selectedMonth &&
+            block?.data?.ranking?.subset_id && (
+              <RankedList
+                subsetId={block.data.ranking.subset_id}
+                cardTitle={block.data.ranking.title}
+                dataField={block.data.ranking.data_field.value}
+                dataFieldName={
+                  block.data.ranking.data_field.show_label
+                    ? block.data.ranking.data_field.label
+                    : ''
+                }
+                rankingPageUrl={`/sample-ranking-page?month=${monthYear}&route=${route('service-delivery.index')}`}
+                timePeriod={monthYear}
+                timePeriodFieldName='month'
+              />
+            )}
         </div>
         {block?.data?.data_table_id && (
           <div className='mt-auto flex flex-shrink-0 items-center gap-4 justify-self-start rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
