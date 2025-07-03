@@ -20,6 +20,13 @@ export default function Overview({
   const { title, card_type, overview_chart, overview_table } = content || {}
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selected, setSelected] = useState<string>('')
+
+  // Local state for demo grid items
+  const [demoGridItems, setDemoGridItems] = useState<any[]>(() => {
+    // If overview_table exists, initialize with it; else, empty array
+    return overview_table ? [overview_table] : []
+  })
 
   function handleOpenModal() {
     setIsModalOpen(true)
@@ -36,14 +43,31 @@ export default function Overview({
   }
 
   function handleAddNewItem(newItemConfig: any) {
-    console.log('A new item was configured and saved!', newItemConfig)
-    // TODO: Add logic here to update the state that feeds the `OverviewGrid`.
-    // For example, you might call a mutation to save the new item and refetch data.
+    setDemoGridItems((prev) => [...prev, newItemConfig])
+    setIsModalOpen(false)
   }
+
+  // --- Placeholder for posting data to server ---
+  // async function postGridItemsToServer(items: any[]) {
+  //   try {
+  //     await fetch('/api/overview-grid', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(items),
+  //     })
+  //   } catch (error) {
+  //     console.error('Failed to post grid items', error)
+  //   }
+  // }
 
   // Determine which components to show based on card_type
   const showTable = card_type === 'chart_and_table' || card_type === 'table'
   const showChart = card_type === 'chart_and_table' || card_type === 'chart'
+
+  function handleDeleteGridItem(id: number) {
+    console.log('delete', id)
+    setDemoGridItems(items => items.filter(item => item.id !== id))
+  }
 
   return (
     <>
@@ -57,23 +81,29 @@ export default function Overview({
         >
           {/* --- Table / Grid Section --- */}
           {showTable && (
-            <div className='flex-1 rounded-md border border-gray-200'>
-              {overview_table ? (
-                <OverviewGrid
-                  config={overview_table}
-                  onAdd={handleOpenModal} // Trigger for existing grid
-                  selectedMonth={selectedMonth}
-                />
-              ) : (
-                // Placeholder when grid is null, reusing the same modal trigger
-                <div className='flex h-full min-h-[200px] w-full items-center justify-center rounded-md border-dashed border-gray-300 bg-gray-50'>
-                  <button
-                    onClick={handleOpenModal} // Trigger for new grid
-                    className='rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                  >
-                    Add Grid Item
-                  </button>
+            <div className='grid grid-cols-2 gap-4'>
+              {demoGridItems.slice(0, 6).map((item, idx) => (
+                <div
+                  key={idx}
+                  className={item.col_span_2 ? 'col-span-2' : ''}
+                >
+                  <OverviewGrid
+                    config={item}
+                    selected={selected}
+                    onSelect={setSelected}
+                    selectedMonth={selectedMonth}
+                    onDelete={handleDeleteGridItem}
+                  />
                 </div>
+              ))}
+              {demoGridItems.length < 6 && (
+                <button
+                  onClick={handleOpenModal}
+                  className='flex min-h-[60px] h-full w-full items-center justify-center rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg border-dashed border-2 border-gray-300 text-indigo-600 hover:border-indigo-500 hover:text-indigo-800'
+                  style={{ fontSize: '1.25rem', fontWeight: 600 }}
+                >
+                  + Add Cell
+                </button>
               )}
             </div>
           )}

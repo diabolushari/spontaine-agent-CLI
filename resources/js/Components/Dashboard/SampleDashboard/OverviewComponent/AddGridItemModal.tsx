@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Filter, useOverviewForm } from './hooks/useOverviewForm'
 import Input from '@/ui/form/Input'
 import {
@@ -24,17 +24,22 @@ interface SelectFieldProps {
   children: React.ReactNode
 }
 
-interface NewItemConfig {
-  title: string
-  subsetId: number | ''
-  filters: Omit<Filter, 'id'>[]
-  measureField: { value: string; label: string; unit: string; show_label: boolean }[]
+// Use OverviewTable typing for new grid item config
+import type { OverviewTable } from '@/interfaces/data_interfaces'
+
+interface NewItemConfig extends OverviewTable {
+  col_span_2: boolean
+  filters?: Omit<Filter, 'id'>[]
 }
+
+// Explicit type alias for grid config used in this modal
+// This matches the NewItemConfig structure already present
+export type OverviewGridConfig = NewItemConfig;
 
 interface AddGridItemModalProps {
   readonly isOpen: boolean
   readonly onClose: () => void
-  readonly onSave: (config: NewItemConfig) => void
+  readonly onSave: (config: OverviewGridConfig) => void
   readonly subsetGroupId: number
 }
 
@@ -105,6 +110,103 @@ const SelectField: React.FC<SelectFieldProps> = ({
   )
 }
 
+interface FilterFieldProps {
+  filter: Filter
+  updateFilter: (id: number, key: keyof Filter, value: string) => void
+  availableValues: { [key: string]: { name: string }[] }
+  isLoading: { [key: string]: boolean }
+  selectedSubsetDetailId: number | ''
+}
+
+const FilterField: React.FC<FilterFieldProps> = ({
+  filter,
+  updateFilter,
+  availableValues,
+  isLoading,
+  selectedSubsetDetailId,
+}) => {
+  const dimensionsUsedInOtherFilters = useMemo(
+    () =>
+      Object.values(availableValues).reduce((acc, values) => {
+        acc.push(...values.map((value) => value.name))
+        return acc
+      }, []),
+    [availableValues]
+  )
+
+  return (
+    <div className='flex items-end space-x-2'>
+      <select
+        value={filter.dimension}
+        onChange={(e) => updateFilter(filter.id, 'dimension', e.target.value)}
+        disabled={!selectedSubsetDetailId || isLoading[filter.dimension]}
+        className='mt-1 block w-full flex-1 rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
+      >
+        <option
+          value=''
+          disabled
+        >
+          Dimension
+        </option>
+        {Object.keys(availableValues).map((dimension) => (
+          <option
+            key={dimension}
+            value={dimension}
+          >
+            {dimension}
+          </option>
+        ))}
+      </select>
+      <select
+        value={filter.operator}
+        onChange={(e) => updateFilter(filter.id, 'operator', e.target.value)}
+        disabled={!filter.dimension}
+        className='mt-1 block w-auto rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
+      >
+        <option value='equals'>equals</option>
+      </select>
+      <select
+        value={filter.value}
+        onChange={(e) => updateFilter(filter.id, 'value', e.target.value)}
+        disabled={!filter.dimension || isLoading[filter.dimension]}
+        className='mt-1 block w-full flex-1 rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
+      >
+        <option
+          value=''
+          disabled
+        >
+          {isLoading[filter.dimension] ? 'Loading...' : 'Value'}
+        </option>
+        {availableValues[filter.dimension].map((val) => (
+          <option
+            key={val.name}
+            value={val.name}
+          >
+            {val.name}
+          </option>
+        ))}
+      </select>
+      <button
+        type='button'
+        onClick={() => updateFilter(filter.id, 'delete', '')}
+        className='rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+      >
+        <svg
+          className='h-5 w-5'
+          fill='currentColor'
+          viewBox='0 0 20 20'
+        >
+          <path
+            fillRule='evenodd'
+            d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+            clipRule='evenodd'
+          />
+        </svg>
+      </button>
+    </div>
+  )
+}
+
 // --- Main Component ---
 export default function AddGridItemModal({
   isOpen,
@@ -132,17 +234,24 @@ export default function AddGridItemModal({
     resetAllState,
   } = useOverviewForm(subsetGroupId, isOpen)
 
+  const [colSpan2, setColSpan2] = React.useState(false)
+
   const handleClose = () => {
     resetAllState()
     onClose()
   }
 
   const handleSaveChanges = () => {
-    const newItemConfig: NewItemConfig = {
+    if (!selectedMetric) return
+    const newItemConfig: OverviewTable = {
+      id: Date.now(),
       title,
-      subsetId: selectedSubsetDetailId,
+      subset_id: String(selectedSubsetDetailId),
+      measure_field: [selectedMetric],
+      show_total: false,
+      grid_number: 1,
       filters: filters.map(({ id: _, ...rest }) => rest),
-      measureField: [{ value: selectedMetric, label: '', unit: '', show_label: false }],
+      col_span_2: colSpan2,
     }
     onSave(newItemConfig)
     handleClose()
@@ -152,7 +261,7 @@ export default function AddGridItemModal({
   const isSaveDisabled =
     !title ||
     !selectedSubsetDetailId ||
-    !selectedMetric ||
+    !selectedMetric || // Ensure a metric is always selected
     !areFiltersValid ||
     isLoading.subsets ||
     isLoading.details ||
@@ -165,6 +274,16 @@ export default function AddGridItemModal({
       title='Add New Grid Item'
     >
       <div className='space-y-4'>
+        <div className='flex items-center gap-2'>
+          <input
+            type='checkbox'
+            id='col-span-2'
+            checked={colSpan2}
+            onChange={(e) => setColSpan2(e.target.checked)}
+            className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500'
+          />
+          <label htmlFor='col-span-2' className='text-sm text-gray-700'>2-column width</label>
+        </div>
         {error && <div className='rounded-md bg-red-100 p-3 text-red-500'>{error}</div>}
         <Input
           label='Title for the new item'
@@ -192,92 +311,60 @@ export default function AddGridItemModal({
         <div className='space-y-3 rounded-md border border-gray-200 p-3'>
           <div className='block text-sm font-medium text-gray-700'>Filters</div>
           {filters.length === 0 && <p className='text-sm text-gray-500'>No filters applied.</p>}
-          {filters.map((filter) => {
-            const dimensionsUsedInOtherFilters = filters
-              .filter((f) => f.id !== filter.id)
-              .map((f) => f.dimension)
-            return (
-              <div
-                key={filter.id}
-                className='flex items-end space-x-2'
+          {/* Wrap mapped filters in a fragment to ensure valid JSX */}
+          <>{filters.map((filter) => (
+            <div key={filter.id} className='flex items-end space-x-2'>
+              <select
+                value={filter.dimension}
+                onChange={(e) => updateFilter(filter.id, 'dimension', e.target.value)}
+                disabled={!selectedSubsetDetailId || isLoading.details}
+                className='mt-1 block w-full flex-1 rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
               >
-                <select
-                  value={filter.dimension}
-                  onChange={(e) => updateFilter(filter.id, 'dimension', e.target.value)}
-                  disabled={!selectedSubsetDetailId || isLoading.details}
-                  className='mt-1 block w-full flex-1 rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
-                >
-                  <option
-                    value=''
-                    disabled
-                  >
-                    Dimension
-                  </option>
-                  {dimensions
-                    .filter(
-                      (d) =>
-                        !dimensionsUsedInOtherFilters.includes(d.subset_column) &&
-                        d.subset_field_name.toLowerCase() !== 'month'
-                    )
-                    .map((d: SubsetDimensionField) => (
-                      <option
-                        key={d.id}
-                        value={d.subset_column}
-                      >
-                        {d.subset_field_name}
-                      </option>
-                    ))}
-                </select>
-                <select
-                  value={filter.operator}
-                  onChange={(e) => updateFilter(filter.id, 'operator', e.target.value)}
-                  disabled={!filter.dimension}
-                  className='mt-1 block w-auto rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
-                >
-                  <option value='equals'>equals</option>
-                </select>
-                <select
-                  value={filter.value}
-                  onChange={(e) => updateFilter(filter.id, 'value', e.target.value)}
-                  disabled={!filter.dimension || isLoading.values[filter.dimension]}
-                  className='mt-1 block w-full flex-1 rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
-                >
-                  <option
-                    value=''
-                    disabled
-                  >
-                    {isLoading.values[filter.dimension] ? 'Loading...' : 'Value'}
-                  </option>
-                  {(availableValues[filter.dimension] || []).map((val) => (
-                    <option
-                      key={val.name}
-                      value={val.name}
-                    >
-                      {val.name}
+                <option value='' disabled>Dimension</option>
+                {dimensions
+                  .filter((d) => d.subset_field_name.toLowerCase() !== 'month')
+                  .map((d) => (
+                    <option key={d.id} value={d.subset_column}>
+                      {d.subset_field_name}
                     </option>
                   ))}
-                </select>
-                {/* RESTORED DELETE BUTTON WITH FULL STYLING AND SVG */}
-                <button
-                  type='button'
-                  onClick={() => removeFilter(filter.id)}
-                  className='rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600'
-                >
-                  <svg
-                    className='h-5 w-5'
-                    fill='currentColor'
-                    viewBox='0 0 20 20'
-                  >
-                    <path
-                      fillRule='evenodd'
-                      d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                </button>
-              </div>
-            )
-          })}
+              </select>
+              <select
+                value={filter.operator}
+                onChange={(e) => updateFilter(filter.id, 'operator', e.target.value)}
+                disabled={!filter.dimension}
+                className='mt-1 block w-auto rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
+              >
+                <option value='equals'>equals</option>
+              </select>
+              <select
+                value={filter.value}
+                onChange={(e) => updateFilter(filter.id, 'value', e.target.value)}
+                disabled={!filter.dimension || isLoading.values[filter.dimension]}
+                className='mt-1 block w-full flex-1 rounded-md border-gray-300 px-3 py-2 text-base shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 disabled:bg-gray-200 sm:text-sm'
+              >
+                <option value='' disabled>{isLoading.values[filter.dimension] ? 'Loading...' : 'Value'}</option>
+                {(availableValues[filter.dimension] || []).map((val) => (
+                  <option key={val.name} value={val.name}>
+                    {val.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type='button'
+                onClick={() => removeFilter(filter.id)}
+                className='rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+              >
+                <svg className='h-5 w-5' fill='currentColor' viewBox='0 0 20 20'>
+                  <path
+                    fillRule='evenodd'
+                    d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+                    clipRule='evenodd'
+                  />
+                </svg>
+              </button>
+            </div>
+          ))}</>
           <button
             type='button'
             onClick={addFilter}

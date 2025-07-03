@@ -404,17 +404,17 @@ export interface Trend {
 export interface Overview {
   title: string
   description: string
-  card_type: 'chart_and_table' | 'chart_only' | 'table_only' // extend as needed
+  card_type: 'chart_and_table' | 'chart_only' | 'table_only' 
   overview_chart?: OverviewChart
   overview_table?: OverviewTable
 }
 export interface OverviewChart {
   title: string
   subset_id: string
-  chart_type: string // e.g., "bar", "line", etc.
+  chart_type: string 
   x_axis: string
-  y_axis: string[] // assuming it's an array as per your input
-  [key: string]: any // for flexibility (e.g., filters, extra settings)
+  y_axis: string[] 
+  [key: string]: any 
 }
 
 export interface OverviewTable {
@@ -424,6 +424,8 @@ export interface OverviewTable {
   grid_number: number | null
   measure_field_dimension?: string
   measure_field: string[]
+  col_span_2?: boolean
+  filters?: Filter[]
   [key: string]: any
 }
 
@@ -459,4 +461,10 @@ export interface OfficeCoordinates {
   office_name: string
   latitude: number
   longitude: number
+}
+
+export interface Filter {
+  readonly dimension: string
+  readonly operator: string
+  readonly value: string | number
 }
