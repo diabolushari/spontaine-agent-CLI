@@ -39,6 +39,7 @@ class BlocksConfigGeneralUpdateController extends Controller
             'trend_selected' => $request->trendSelected,
             'ranking_selected' => $request->rankingSelected,
             'overview_selected' => $request->overviewSelected,
+            'overview' => $request->overview,
         ];
         $block->save();
 

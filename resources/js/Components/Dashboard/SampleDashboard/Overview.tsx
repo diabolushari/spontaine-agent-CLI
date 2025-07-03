@@ -42,31 +42,32 @@ export default function Overview({
         <div className='mt-4 flex w-full justify-start p-2'>
           <span className='subheader-sm-1stop'>{content?.title}</span>
         </div>
-        <NormalText>{content?.description}</NormalText>
 
         <div className='grid grid-cols-2 gap-2'>
           <div
-            className={`${overview_chart?.subset_id ? 'col-span-1' : 'col-span-2'} rounded-md border border-gray-200`}
+            className={`${content?.overview?.card_type === 'chart_and_table' ? 'col-span-1' : 'col-span-2'} rounded-md border border-gray-200`}
           >
-            {overview_table?.subset_id && (
-              <OverviewGrid
-                config={overview_table}
-                onAdd={handleOpenModal}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-              />
-            )}
+            {content?.overview?.card_type === 'chart_and_table' ||
+              (content?.overview?.card_type === 'table' && (
+                <OverviewGrid
+                  config={overview_table}
+                  onAdd={handleOpenModal}
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                />
+              ))}
           </div>
           <div
-            className={`${overview_table?.subset_id ? 'col-span-1' : 'col-span-2'} rounded-md border border-gray-200`}
+            className={`${content?.overview?.card_type === 'chart_and_table' ? 'col-span-1' : 'col-span-2'} rounded-md border border-gray-200`}
           >
-            {overview_chart?.subset_id && (
-              <OverviewChart
-                chart_content={overview_chart}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-              />
-            )}
+            {content?.overview?.card_type === 'chart_and_table' ||
+              (content?.overview?.card_type === 'chart' && (
+                <OverviewChart
+                  chart_content={overview_chart}
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                />
+              ))}
           </div>
         </div>
       </div>

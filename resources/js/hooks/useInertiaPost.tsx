@@ -42,6 +42,7 @@ const useInertiaPost = <T,>(url: string, options?: PostOptions) => {
             }
           },
           onError: (errors) => {
+            console.log(errors)
             const keys = Object.keys(errors)
             if (options?.showErrorToast) {
               keys.forEach((key) => {

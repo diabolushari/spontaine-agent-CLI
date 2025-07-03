@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Blocks\BlocksConfigUpdate;
 
+use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigOverviewFields\BlockConfigOverview;
 use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\RequiredIf;
+use Spatie\LaravelData\Attributes\Validation\RequiredWith;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -27,13 +29,16 @@ class BlocksConfigGeneralUpdateRequest extends Data
         #[Required, Exists('subset_groups', 'id')]
         public int $subsetGroupId,
 
-        #[Required]
         public string $defaultView,
 
         public bool $trendSelected,
 
         public bool $rankingSelected,
 
+        #[BooleanType]
         public bool $overviewSelected,
+
+        #[RequiredIf('overviewSelected', true)]
+        public ?BlockConfigOverview $overview,
     ) {}
 }

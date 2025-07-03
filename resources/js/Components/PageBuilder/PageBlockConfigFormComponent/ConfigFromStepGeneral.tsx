@@ -37,6 +37,10 @@ export default function ConfigFormStepGeneral({
   onBack,
   block,
 }: ConfigFormStepGeneralProps) {
+  const { formData: overviewFormData, setFormValue: setOverviewFormValue } = useCustomForm({
+    title: initialData?.overview?.title ?? '',
+    card_type: initialData?.overview?.card_type ?? '',
+  })
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     title: initialData?.title ?? '',
     description: initialData?.description ?? '',
@@ -46,6 +50,7 @@ export default function ConfigFormStepGeneral({
     ranking_selected: initialData?.ranking_selected ?? false,
     overview_selected: initialData?.overview_selected ?? false,
     default_view: initialData?.default_view ?? '',
+    overview: initialData?.overview ?? {},
   })
   const selectedOptions = cardOptions.filter((opt) => {
     if (opt.value === 'trend' && formData.trend_selected) return true
@@ -86,6 +91,21 @@ export default function ConfigFormStepGeneral({
     }
   )
 
+  const overviewOptions = [
+    {
+      label: 'Chart and Table',
+      value: 'chart_and_table',
+    },
+    {
+      label: 'Chart',
+      value: 'chart',
+    },
+    {
+      label: 'Table',
+      value: 'table',
+    },
+  ]
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (initialData && initialData.subset_group_id !== formData.subset_group_id) {
@@ -96,10 +116,17 @@ export default function ConfigFormStepGeneral({
         initialData.ranking.subset_id = ''
       }
     }
-    post({
+    const payload: any = {
       ...formData,
       _method: 'PUT',
-    })
+    }
+
+    // add overview only when selected
+    if (formData.overview_selected) {
+      payload.overview = overviewFormData
+    }
+
+    post(payload)
   }
 
   return (
@@ -189,6 +216,29 @@ export default function ConfigFormStepGeneral({
               />
             </div>
           </div>
+          {formData.overview_selected && (
+            <>
+              <div className='flex flex-col'>
+                <Input
+                  label='Enter overview title'
+                  value={overviewFormData.title}
+                  setValue={setOverviewFormValue('title')}
+                  error={errors?.['overview.title']}
+                />
+              </div>
+              <div className='flex flex-col'>
+                <SelectList
+                  label='Select your card type'
+                  value={overviewFormData.card_type}
+                  setValue={(value) => setOverviewFormValue('card_type')(value as string)}
+                  list={overviewOptions}
+                  dataKey='value'
+                  displayKey='label'
+                  error={errors?.['overview.card_type']}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         <div className='mt-4 flex justify-between border-t pt-4'>
