@@ -135,8 +135,8 @@ export default function Overview({
 
       {/* The same modal is used for adding the first item or subsequent items */}
       <AddGridItemModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
         onSave={handleAddNewItem}
         subsetGroupId={subsetGroupId}
       />
