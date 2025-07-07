@@ -14,26 +14,22 @@ interface Props {
   chart_content: any
 }
 
-const mockData = [
-  { consumer_category: 'Domestic', total_demand: 1200000 },
-  { consumer_category: 'Commercial', total_demand: 800000 },
-  { consumer_category: 'Industrial', total_demand: 600000 },
-  { consumer_category: 'Agriculture', total_demand: 300000 },
-  { consumer_category: 'Public Lighting', total_demand: 100000 },
-]
-const keysToPlot = [
-  {
-    key: 'total_demand',
-    label: 'Total Demand',
-    unit: 'kWh',
-  },
-]
+// Mock data and keys are not used when real data is fetched, so they can be removed or kept for testing.
+
 export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_content }: Props) {
   const [fontClasses, setFontClasses] = useState('text-base')
-  const keysToPlot = chart_content?.y_axis?.map((axis) => ({
-    key: axis.value,
-    label: axis.label,
-  }))
+
+  // FIX 1: Correctly map the y_axis array of strings.
+  // The original code assumed an array of objects ({ value, label }), but it's an array of strings.
+  const keysToPlot = useMemo(() => {
+    if (!chart_content?.y_axis) return []
+    // Capitalize the label for better display (e.g., 'total_demand' becomes 'Total Demand')
+    return chart_content.y_axis.map((axis: string) => ({
+      key: axis,
+      label: axis.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+    }))
+  }, [chart_content?.y_axis])
+
   const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
   }>(
@@ -45,16 +41,19 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
   )
 
   const aggregatedData = useMemo(() => {
-    if (!data?.data || !Array.isArray(data.data)) return []
+    if (!data?.data || !Array.isArray(data.data) || !keysToPlot || keysToPlot.length === 0) {
+      return []
+    }
 
-    // For pie chart: no aggregation needed
-    if (chart_content.chart_type === 'pie') return data.data
+    // FIX 2: Removed the specific case for pie charts.
+    // All chart types require data to be aggregated by the x_axis category.
+    // The original code `if (chart_content.chart_type === 'pie') return data.data` was incorrect.
 
     const grouped = new Map<string, any>()
 
     data.data.forEach((item) => {
       const category = item[chart_content.x_axis] as string
-      if (!category) return
+      if (category === undefined || category === null) return // Skip items without a category
 
       if (!grouped.has(category)) {
         grouped.set(category, {
@@ -62,20 +61,21 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
         })
       }
 
-      keysToPlot?.forEach(({ key }) => {
-        const prev = grouped.get(category)[key] || 0
-        grouped.get(category)[key] = prev + (Number(item[key]) || 0)
+      const group = grouped.get(category)
+      keysToPlot.forEach(({ key }) => {
+        const prevValue = group[key] || 0
+        group[key] = prevValue + (Number(item[key]) || 0)
       })
     })
 
     return Array.from(grouped.values())
-  }, [data?.data, chart_content.x_axis, keysToPlot, chart_content.chart_type])
+  }, [data?.data, chart_content.x_axis, keysToPlot])
+
   const handleSizeChange = (newSize: Size) => {
-    // Map the component's size to a string of Tailwind utility classes
     const sizeMap: Record<Size, string> = {
-      SMALL: 'text-sm', // Small font size
-      MEDIUM: 'text-base', // Normal font size
-      LARGE: 'text-lg', // Large font size
+      SMALL: 'text-sm',
+      MEDIUM: 'text-base',
+      LARGE: 'text-lg',
     }
     setFontClasses(sizeMap[newSize])
   }
@@ -89,7 +89,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
         </div>
       </div>
       {loading && <Skeleton height={200} />}
-      {chart_content.chart_type === 'bar' && (
+      {chart_content.chart_type === 'bar' && !loading && (
         <CustomBarChart
           data={aggregatedData}
           dataKey={chart_content.x_axis}
@@ -98,7 +98,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           fontSize={fontClasses}
         />
       )}
-      {chart_content.chart_type === 'line' && (
+      {chart_content.chart_type === 'line' && !loading && (
         <CustomLineChart
           data={aggregatedData}
           dataKey={chart_content.x_axis}
@@ -106,15 +106,15 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           colors={chart_content.color_scheme}
         />
       )}
-      {chart_content.chart_type === 'pie' && keysToPlot?.length === 1 && (
+      {chart_content.chart_type === 'pie' && keysToPlot?.length > 0 && !loading && (
         <CustomPieChart
           data={aggregatedData}
           dataKey={keysToPlot[0].key}
           nameKey={chart_content.x_axis}
           keysToPlot={keysToPlot}
-          colors={chart_content.color_scheme}
+          colors={'boldWarm'}
           fontSize={fontClasses}
-          sliceCount={chart_content.x_axis_count}
+          sliceCount={3}
           sortOrder={'desc'}
         />
       )}
