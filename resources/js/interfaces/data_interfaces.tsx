@@ -406,7 +406,7 @@ export interface Overview {
   description: string
   card_type: 'chart_and_table' | 'chart_only' | 'table_only' 
   overview_chart?: OverviewChart
-  overview_table?: OverviewTable
+  overview_table?: OverviewTable[]
 }
 export interface OverviewChart {
   title: string

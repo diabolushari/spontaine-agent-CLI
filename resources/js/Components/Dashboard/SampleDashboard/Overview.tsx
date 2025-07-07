@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import OverviewChartComponent from './OverviewComponent/OverviewChart'
 import OverviewGrid from './OverviewComponent/OverviewGrid'
 import AddGridItemModal from './OverviewComponent/AddGridItemModal'
 import AddChartModal from './OverviewComponent/AddChartModal'
 import { OverviewChart } from '@/interfaces/data_interfaces' // Using the main interface
+import useInertiaPost from '@/hooks/useInertiaPost'
 
 interface Props {
   selectedMonth: Date | null
@@ -20,7 +21,17 @@ export default function Overview({ selectedMonth, setSelectedMonth, content, sub
   const [editingChart, setEditingChart] = useState<OverviewChart | null>(null)
   
   const [overviewChart, setOverviewChart] = useState<OverviewChart | null>(initialChart)
-  const [gridItems, setGridItems] = useState<any[]>(() => (overview_table ? [overview_table] : []))
+  const [gridItems, setGridItems] = useState<any[]>(() => (overview_table ? overview_table : []))
+
+  // const {post} = useInertiaPost('/dashboard/overview')
+
+  // useEffect(()=> {
+  //   post({
+  //     overview_chart: overviewChart,
+  //     overview_table: gridItems,
+  //   })
+
+  // }, [gridItems, overviewChart])
 
   // --- Chart Handlers ---
   function handleOpenAddChartModal() {
@@ -47,6 +58,7 @@ export default function Overview({ selectedMonth, setSelectedMonth, content, sub
 
   // --- Grid Item Handlers ---
   function handleAddNewGridItem(newItemConfig: any) {
+    console.log(newItemConfig)
     setGridItems((prev) => [...prev, newItemConfig])
     setGridModalOpen(false)
   }
