@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import OverviewChart from './OverviewComponent/OverviewChart'
 import OverviewGrid from './OverviewComponent/OverviewGrid'
 import AddGridItemModal from './OverviewComponent/AddGridItemModal'
+import AddChartModal from './OverviewComponent/AddChartModal' // Import the new modal
+import { OverviewChart as OverviewChartProps } from '@/interfaces/data_interfaces'
 
 interface Props {
   selectedMonth: Date | null
@@ -17,10 +19,12 @@ export default function Overview({
   subsetGroupId,
 }: Props) {
   // Destructure content for easier access and handle potential null/undefined content
-  const { title, card_type, overview_chart, overview_table } = content || {}
+  const { title, card_type, overview_chart: initialChart, overview_table } = content || {}
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isChartModalOpen, setChartModalOpen] = useState(false) // State for the chart modal
   const [selected, setSelected] = useState<string>('')
+  const [overviewChart, setOverviewChart] = useState<OverviewChartProps | null>(initialChart)
 
   // Local state for demo grid items
   const [demoGridItems, setDemoGridItems] = useState<any[]>(() => {
@@ -36,10 +40,15 @@ export default function Overview({
     setIsModalOpen(false)
   }
 
-  // Placeholder for adding a chart
+  // Open the modal for adding a new chart
   function handleOpenAddChartModal() {
-    // TODO: Implement logic to open a chart configuration modal
-    alert('Add Chart functionality not yet implemented.')
+    setChartModalOpen(true)
+  }
+
+  // Save the new chart and close the modal
+  function handleAddNewChart(newChart: OverviewChartProps) {
+    setOverviewChart(newChart)
+    setChartModalOpen(false)
   }
 
   function handleAddNewItem(newItemConfig: any) {
@@ -111,9 +120,9 @@ export default function Overview({
           {/* --- Chart Section --- */}
           {showChart && (
             <div className='flex-1 rounded-md border border-gray-200'>
-              {overview_chart ? (
+              {overviewChart ? (
                 <OverviewChart
-                  chart_content={overview_chart}
+                  chart_content={overviewChart}
                   selectedMonth={selectedMonth}
                   setSelectedMonth={setSelectedMonth}
                 />
@@ -138,6 +147,14 @@ export default function Overview({
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         onSave={handleAddNewItem}
+        subsetGroupId={subsetGroupId}
+      />
+
+      {/* Modal for adding a new chart */}
+      <AddChartModal
+        isModalOpen={isChartModalOpen}
+        setIsModalOpen={setChartModalOpen}
+        onSave={handleAddNewChart}
         subsetGroupId={subsetGroupId}
       />
     </>
