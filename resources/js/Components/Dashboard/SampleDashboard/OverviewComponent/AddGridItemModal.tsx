@@ -1,38 +1,21 @@
 import { X } from 'lucide-react'
-import { memo } from 'react'
+import { memo, useState, FormEvent } from 'react'
 
 import Modal from '@/Components/Modal'
 import Input from '@/ui/form/Input'
 import InputLabel from '@/Components/InputLabel'
-import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import PrimaryButton from '@/Components/PrimaryButton'
 import SecondaryButton from '@/Components/SecondaryButton'
 import DeleteButton from '@/ui/button/DeleteButton'
 import Checkbox from '@/Components/Checkbox'
 import SelectList from '@/ui/form/SelectList'
-import useCustomForm from '@/hooks/useCustomForm'
+import { useOverviewForm, Filter } from './hooks/useOverviewForm'
 
 import {
     OverviewTable,
-    Filter as BaseFilter,
-    SubsetDetail,
-    SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 
-interface FilterWithId extends BaseFilter {
-    id: number
-    value: string
-}
-
 type NewGridItem = OverviewTable & { id: number }
-
-interface FormData {
-    title: string
-    subsetId: SubsetDetail['id'] | ''
-    metricId: string
-    filters: FilterWithId[]
-    colSpan2: boolean
- }
 
 interface AddGridItemModalProps {
     isModalOpen: boolean
@@ -48,13 +31,6 @@ const operatorOptions = [
     { value: 'less_than', name: 'Less Than' },
 ]
 
-const initialFormData: FormData = {
-    title: '',
-    subsetId: '',
-    metricId: '',
-    filters: [],
-    colSpan2: false,
-}
 
 function AddGridItemModal({
     isModalOpen,
@@ -62,91 +38,80 @@ function AddGridItemModal({
     subsetGroupId,
     onSave,
 }: AddGridItemModalProps) {
-    const { formData, setFormValue, setAll, toggleBoolean } = useCustomForm<FormData>(initialFormData)
+    // Centralized logic from the custom hook
+    const {
+        title,
+        setTitle,
+        subsets,
+        metrics,
+        selectedMetric,
+        setSelectedMetric,
+        dimensions,
+        selectedSubsetDetailId,
+        setSelectedSubsetDetailId,
+        filters,
+        addFilter,
+        removeFilter,
+        updateFilter,
+        availableValues,
+        isLoading,
+        error,
+        resetAllState,
+    } = useOverviewForm(subsetGroupId, isModalOpen)
 
-    const handleChange = <K extends keyof FormData>(field: K, value: FormData[K]) => {
-        if (field === 'subsetId') {
-            setAll({
-                subsetId: value,
-                metricId: '',
-                filters: [],
-            })
-        } else {
-            setFormValue(field)(value)
-        }
-    }
-
-    const addFilter = () => {
-        const newFilter: FilterWithId = {
-            id: Date.now(),
-            dimension: '',
-            operator: 'equals',
-            value: '',
-        }
-        setAll({ filters: [...formData.filters, newFilter] })
-    }
-
-    const removeFilter = (id: number) => {
-        const updatedFilters = formData.filters.filter((f) => f.id !== id)
-        setAll({ filters: updatedFilters })
-    }
-
-    const updateFilter = (id: number, field: keyof BaseFilter, value: string) => {
-        const updatedFilters = formData.filters.map((f) => {
-            if (f.id !== id) return f
-
-            const isDimensionChange = field === 'dimension' && f.dimension !== value
-            return {
-                ...f,
-                [field]: value,
-                ...(isDimensionChange && { value: '' }),
-            }
-        })
-        setAll({ filters: updatedFilters })
-    }
+    // State specific to this modal's UI
+    const [colSpan2, setColSpan2] = useState(false)
 
     const handleClose = () => {
         setIsModalOpen(false)
-        setAll(initialFormData)
+        resetAllState() // Reset hook state
+        setColSpan2(false) // Reset local state
     }
 
     const handleSave = (e: FormEvent) => {
         e.preventDefault()
-
-        // FIX: Extract the single value if metricId is an array
-        const measureField = Array.isArray(formData.metricId)
-            ? formData.metricId[0]
-            : formData.metricId;
+        if (!selectedSubsetDetailId || !selectedMetric) return; // Guard against incomplete form
 
         const newItem: NewGridItem = {
             id: Date.now(),
-            title: formData.title,
-            subset_id: String(formData.subsetId),
-            measure_field: measureField, // Use the corrected value
-            show_total: false,
-            grid_number: null,
-            filters: formData.filters.map(({ id, ...rest }) => rest),
-            col_span_2: formData.colSpan2,
+            title: title,
+            subset_id: String(selectedSubsetDetailId),
+            measure_field: selectedMetric,
+            // Remove the client-side `id` from filters before saving
+            filters: filters.map(({ id, ...rest }) => rest),
+            col_span_2: colSpan2,
         }
         onSave(newItem)
         handleClose()
     }
 
+    const renderFilterRow = (filter: Filter) => {
+        // Get all dimensions that are currently selected in *other* filters.
+        const selectedDimensions = filters
+            .filter((f) => f.id !== filter.id)
+            .map((f) => f.dimension)
 
-    const renderFilterRow = (filter: FilterWithId) => (
-        <div key={filter.id} className="grid grid-cols-12 gap-x-2 items-end">
-            <div className="col-span-4">
-                <DynamicSelectList
-                    label="Dimension"
-                    key={`dim-${formData.subsetId}`}
-                    url={`/api/subset/dimension/${formData.subsetId}`}
-                    dataKey="subset_column"
-                    displayKey="subset_field_name"
-                    value={filter.dimension}
-                    setValue={(value: string) => updateFilter(filter.id, 'dimension', value)}
-                    disabled={!formData.subsetId}
-                />
-            </div>
+        // The available dimensions for the current filter row are those that are not selected in other filters.
+        const availableDimensions = dimensions.filter(
+            (dim) => !selectedDimensions.includes(dim.subset_column)
+        )
+
+        return (
+            <div key={filter.id} className="grid grid-cols-12 gap-x-2 items-end">
+                <div className="col-span-4">
+                    {/* Use SelectList with the filtered list of available dimensions */}
+                    <SelectList
+                        label="Dimension"
+                        list={availableDimensions}
+                        dataKey="subset_column"
+                        displayKey="subset_field_name"
+                        value={filter.dimension}
+                        setValue={(value: string) =>
+                            updateFilter(filter.id, 'dimension', value)
+                        }
+                        disabled={!selectedSubsetDetailId || isLoading.details}
+                    />
+                </div>
             <div className="col-span-3">
                 <SelectList
                     label="Operator"
@@ -158,22 +123,26 @@ function AddGridItemModal({
                 />
             </div>
             <div className="col-span-4">
-                <DynamicSelectList
+                 {/* Use SelectList with dynamically fetched values from the hook */}
+                <SelectList
                     label="Value"
+                    // Use a unique key to ensure the component re-renders when the dimension changes
                     key={`val-${filter.dimension}`}
-                    url={`/api/subset/dimension/fields/${filter.dimension}/${formData.subsetId}`}
+                    list={availableValues[filter.dimension] || []}
                     dataKey="name"
                     displayKey="name"
                     value={filter.value}
                     setValue={(value: string) => updateFilter(filter.id, 'value', value)}
-                    disabled={!filter.dimension}
+                    // Disable if no dimension is selected or if values are currently loading
+                    disabled={!filter.dimension || isLoading.values[filter.dimension]}
                 />
             </div>
             <div className="col-span-1">
                 <DeleteButton onClick={() => removeFilter(filter.id)} />
             </div>
         </div>
-    )
+        )
+    }
 
     return (
         <Modal show={isModalOpen} onClose={handleClose} maxWidth="2xl">
@@ -186,44 +155,49 @@ function AddGridItemModal({
                     </button>
                 </div>
 
+                {error && <div className="mt-4 p-3 text-red-800 bg-red-100 border border-red-300 rounded-md">{error}</div>}
+
                 <div className="mt-6 space-y-6">
                     <Input
                         label="Title"
-                        value={formData.title}
-                        setValue={setFormValue('title')}
+                        value={title}
+                        setValue={setTitle}
                         required
                         type="text"
                     />
 
-                    <DynamicSelectList
+                    <SelectList
                         label="Data Subset"
-                        url={`/api/subset-group/${subsetGroupId}`}
+                        list={subsets}
                         dataKey="subset_detail_id"
                         displayKey="name"
-                        value={formData.subsetId}
-                        setValue={(value: number | string) => handleChange('subsetId', Number(value))}
+                        value={selectedSubsetDetailId}
+                        setValue={(value: string | number) => setSelectedSubsetDetailId(Number(value))}
+                        disabled={isLoading.subsets}
+                        required
                     />
 
-                    <DynamicSelectList
+                    <SelectList
                         label="Metric"
-                        key={formData.subsetId}
-                        url={`/api/subset/${formData.subsetId}`}
+                        // Add key to ensure the component and its selected value are reset when the subset changes
+                        key={selectedSubsetDetailId}
+                        list={metrics}
                         dataKey="subset_column"
                         displayKey="subset_field_name"
-                        value={formData.metricId}
-                        setValue={setFormValue('metricId')}
-                        disabled={!formData.subsetId}
+                        value={selectedMetric}
+                        setValue={setSelectedMetric}
+                        disabled={!selectedSubsetDetailId || isLoading.details}
                         required
                     />
 
                     <div>
                         <InputLabel>Filters</InputLabel>
-                        <div className="mt-2 space-y-4">{formData.filters.map(renderFilterRow)}</div>
+                        <div className="mt-2 space-y-4">{filters.map(renderFilterRow)}</div>
                         <SecondaryButton
                             type="button"
                             className="mt-4"
                             onClick={addFilter}
-                            disabled={!formData.subsetId}
+                            disabled={!selectedSubsetDetailId || isLoading.details}
                         >
                             Add Filter
                         </SecondaryButton>
@@ -233,8 +207,8 @@ function AddGridItemModal({
                         <Checkbox
                             id="col_span_2"
                             name="col_span_2"
-                            checked={formData.colSpan2}
-                            onChange={toggleBoolean('colSpan2')}
+                            checked={colSpan2}
+                            onChange={() => setColSpan2(prev => !prev)}
                         />
                         <InputLabel htmlFor="col_span_2" className="ml-2">
                             2-column width
@@ -246,7 +220,12 @@ function AddGridItemModal({
                     <SecondaryButton type="button" onClick={handleClose}>
                         Cancel
                     </SecondaryButton>
-                    <PrimaryButton type="submit">Save</PrimaryButton>
+                    <PrimaryButton
+                      type="submit"
+                      disabled={!title || !selectedSubsetDetailId || !selectedMetric}
+                    >
+                      Save
+                    </PrimaryButton>
                 </div>
             </form>
         </Modal>
