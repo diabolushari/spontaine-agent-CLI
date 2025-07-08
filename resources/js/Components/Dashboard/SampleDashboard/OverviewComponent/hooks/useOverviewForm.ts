@@ -5,12 +5,10 @@ import {
   SubsetMeasureField,
 } from '@/interfaces/data_interfaces'
 
-// This interface describes a single filter value fetched from the API.
 interface DimensionValue {
   name: string
 }
 
-// This interface defines the structure for a single filter row in the UI.
 export interface Filter {
   id: number
   dimension: string
@@ -73,7 +71,12 @@ export function useOverviewForm(subsetGroupId: number, isModalOpen: boolean) {
 
         const dimRes = await fetch(`/api/subset/dimension/${selectedSubsetDetailId}`)
         if (!dimRes.ok) throw new Error('Failed to fetch dimensions')
-        setDimensions((await dimRes.json()) as SubsetDimensionField[])
+        const rawDimensions = (await dimRes.json()) as SubsetDimensionField[]
+        console.log('Raw dimensions from API:', rawDimensions)
+        const dimensions = rawDimensions.filter(
+          (dimension) => dimension.subset_field_name !== 'Month'
+        )
+        setDimensions(dimensions)
       } catch (e: unknown) {
         const err = e as FetchError
         setError(`Could not load details for this subset: ${err.message}`)
