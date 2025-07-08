@@ -18,16 +18,25 @@ interface Props {
 
 export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_content }: Props) {
   const [fontClasses, setFontClasses] = useState('text-base')
-
+  console.log(chart_content)
   // FIX 1: Correctly map the y_axis array of strings.
   // The original code assumed an array of objects ({ value, label }), but it's an array of strings.
   const keysToPlot = useMemo(() => {
     if (!chart_content?.y_axis) return []
-    // Capitalize the label for better display (e.g., 'total_demand' becomes 'Total Demand')
-    return chart_content.y_axis.map((axis: string) => ({
-      key: axis,
-      label: axis.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
-    }))
+
+    return chart_content.y_axis.map((axis: any) => {
+      const formatLabel = (str: string) =>
+        str.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+
+      if (typeof axis === 'string') {
+        return { key: axis, label: formatLabel(axis) }
+      }
+
+      return {
+        key: axis.value,
+        label: axis.label ?? formatLabel(axis.value),
+      }
+    })
   }, [chart_content?.y_axis])
 
   const [data, loading] = useFetchRecord<{

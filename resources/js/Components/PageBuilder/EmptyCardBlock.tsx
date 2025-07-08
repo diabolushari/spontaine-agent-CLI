@@ -78,6 +78,7 @@ export function EmptyCardBlock({
               setSelectedMonth={setSelectedMonth}
               content={block?.data?.overview}
               subsetGroupId={block.data.subset_group_id}
+              blockId={block.id}
             />
           )}
 

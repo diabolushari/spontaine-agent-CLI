@@ -1,27 +1,44 @@
-import React, { FormEvent, memo, useState, useEffect, ChangeEvent } from 'react'
-import { useOverviewForm } from './hooks/useOverviewForm'
-import {
-  OverviewChart,
-  SubsetGroupItem,
-  SubsetMeasureField,
-  SubsetDimensionField,
-} from '@/interfaces/data_interfaces'
-import Modal from '@/Components/Modal'
+import React, { memo, useEffect } from 'react'
+import { OverviewChart } from '@/interfaces/data_interfaces'
 import Input from '@/ui/form/Input'
-import InputLabel from '@/Components/InputLabel'
-import Checkbox from '@/Components/Checkbox'
 import SelectList from '@/ui/form/SelectList'
-import PrimaryButton from '@/Components/PrimaryButton'
-import SecondaryButton from '@/Components/SecondaryButton'
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import useCustomForm from '@/hooks/useCustomForm'
+import Button from '@/ui/button/Button'
+import ConfigFormMeasureFields from '@/Components/PageBuilder/PageBlockConfigFormComponent/ConfigOverviewForm/ConfigFormMeasureFields'
+import CheckBox from '@/ui/form/CheckBox'
+import StrongText from '@/typography/StrongText'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import useFetchRecord from '@/hooks/useFetchRecord'
+import useInertiaPost from '@/hooks/useInertiaPost'
+import Modal from '@/ui/Modal/Modal'
+import NormalText from '@/typography/NormalText'
+
+interface SubsetField {
+  id: number
+  subset_column: string
+  subset_field_name: string
+}
 
 interface AddChartModalProps {
+  blockId: number
   isModalOpen: boolean
   setIsModalOpen: (isOpen: boolean) => void
   subsetGroupId: number
   onSave: (newChart: OverviewChart) => void
-  chartToEdit?: OverviewChart | null // Optional prop for editing
+  chartToEdit?: OverviewChart | null
 }
+
+const orderOptions = [
+  { label: 'Ascending Order', value: 'ascending' },
+  { label: 'Descending Order', value: 'descending' },
+]
+
+const chartOptions = [
+  { label: 'Bar', value: 'bar' },
+  { label: 'Line', value: 'line' },
+  { label: 'Pie', value: 'pie' },
+]
 
 const colorSchemeOptions = Object.keys(chartPallet).map((key) => ({
   id: key,
@@ -29,167 +46,355 @@ const colorSchemeOptions = Object.keys(chartPallet).map((key) => ({
   colors: chartPallet[key as keyof typeof chartPallet],
 }))
 
-function AddChartModal({ isModalOpen, setIsModalOpen, subsetGroupId, onSave, chartToEdit }: AddChartModalProps) {
-  const form = useOverviewForm(subsetGroupId, isModalOpen)
-  const [chartType, setChartType] = useState('bar')
-  const [selectedDimension, setSelectedDimension] = useState('')
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([])
-  const [selectedColorScheme, setSelectedColorScheme] = useState(colorSchemeOptions[0]?.id || 'boldWarm')
-  const [itemCount, setItemCount] = useState<number | ''>('')
+function AddChartModal({
+  isModalOpen,
+  setIsModalOpen,
+  subsetGroupId,
+  onSave,
+  chartToEdit,
+  blockId,
+}: AddChartModalProps) {
+  const { formData, setFormValue, toggleBoolean, setAll } = useCustomForm({
+    title: chartToEdit?.title ?? '',
+    subsetId: chartToEdit?.subset_id ?? '',
+    chartType: chartToEdit?.chart_type ?? 'bar',
+    dimension: chartToEdit?.dimension ?? '',
+    xAxis: chartToEdit?.x_axis ?? '',
+    xAxisCount: chartToEdit?.x_axis_count ?? 0,
+    xAxisLabel: chartToEdit?.x_axis_label ?? '',
+    xAxisOrder: chartToEdit?.x_axis_order ?? 'ascending',
+    xAxisEnable: chartToEdit?.x_axis_enable ?? false,
+    yAxis: chartToEdit?.y_axis ?? [],
+    pieYaxis: '',
+    colorScheme: chartToEdit?.color_scheme ?? '',
+  })
 
-  const isEditing = !!chartToEdit
+  useEffect(() => {
+    if (formData.chartType === 'pie' && formData.pieYaxis) {
+      const selectedField = subsetFields?.find((f) => f.subset_column === formData.pieYaxis)
+      if (selectedField) {
+        const newData = {
+          label: selectedField.subset_field_name,
+          value: formData.pieYaxis,
+          unit: '',
+          show_label: false,
+        }
+        setFormValue('yAxis')([newData])
+      }
+    }
+  }, [formData.pieYaxis])
 
-  // Find the full color scheme object to get the array of colors for the preview
-  const currentColorSchemeObject = colorSchemeOptions.find(
-    (scheme) => scheme.id === selectedColorScheme
+  useEffect(() => {
+    setAll({
+      dimension: chartToEdit?.dimension ?? '',
+      xAxis: chartToEdit?.x_axis ?? '',
+      xAxisCount: chartToEdit?.x_axis_count ?? 0,
+      xAxisLabel: chartToEdit?.x_axis_label ?? '',
+      xAxisOrder: chartToEdit?.x_axis_order ?? 'ascending',
+      xAxisEnable: chartToEdit?.x_axis_enable ?? false,
+      yAxis: chartToEdit?.y_axis ?? [],
+      pieYaxis: '',
+    })
+  }, [formData.subsetId, formData.chartType])
+
+  const [subsetFields] = useFetchRecord<SubsetField[]>(
+    formData.subsetId ? `/api/subset/${formData.subsetId}` : null
   )
 
-  // Effect to populate form when editing, or reset when adding
-  useEffect(() => {
-    if (isModalOpen) {
-      if (isEditing && chartToEdit) {
-        // Populate form fields for editing
-        form.setTitle(chartToEdit.title)
-        form.setSelectedSubsetDetailId(Number(chartToEdit.subset_id))
-        setChartType(chartToEdit.chart_type)
-        setSelectedDimension(chartToEdit.x_axis)
-        setSelectedMetrics(chartToEdit.y_axis)
-        setSelectedColorScheme(chartToEdit.color_scheme || 'boldWarm')
-        setItemCount(chartToEdit.item_count || '')
-      } else {
-        // Reset form for "Add New" mode
-        resetLocalState()
-        form.resetAllState()
-      }
-    }
-  }, [isModalOpen, chartToEdit, isEditing])
+  const strucetureHighlightChart = (data: any) => ({
+    highlight_chart: {
+      subset_id: data.subsetId ?? null,
+      title: data.title ?? null,
+      chart_type: data.chartType ?? null,
+      x_axis: data.xAxis ?? '',
+      x_axis_label: data.xAxisLabel ?? '',
+      x_axis_enable: data.xAxisEnable ?? false,
+      x_axis_count: data.xAxisCount ?? '',
+      x_axis_order: data.xAxisOrder ?? 'ascending',
+      y_axis: data.yAxis ?? [],
+      color_scheme: data.colorScheme ?? '',
+    },
+  })
 
-  const handleSave = (e: FormEvent) => {
-    e.preventDefault()
-    const newChart: OverviewChart = {
-      ...(isEditing ? chartToEdit : {}), // Preserve other potential properties if editing
-      title: form.title,
-      subset_id: String(form.selectedSubsetDetailId),
-      chart_type: chartType,
-      x_axis: selectedDimension,
-      y_axis: selectedMetrics,
-      color_scheme: selectedColorScheme,
-      item_count: itemCount ? Number(itemCount) : undefined,
-    }
-    onSave(newChart)
-    handleClose()
-  }
+  const { post, loading, errors } = useInertiaPost(route('config.overview.chart.update', blockId), {
+    preserveState: true,
+    preserveScroll: true,
+    onComplete: () => {
+      setIsModalOpen(false)
+    },
+  })
 
-  const resetLocalState = () => {
-    setChartType('bar')
-    setSelectedDimension('')
-    setSelectedMetrics([])
-    setSelectedColorScheme(colorSchemeOptions[0]?.id || 'boldWarm')
-    setItemCount('')
-  }
-
-  const handleClose = () => {
-    setIsModalOpen(false)
-    resetLocalState()
-    form.resetAllState()
-  }
-
-  const handleMetricCheckboxChange = (metricId: string, isChecked: boolean) => {
-    setSelectedMetrics((prev) => {
-      if (isChecked) {
-        return [...prev, metricId]
-      } else {
-        return prev.filter((id) => id !== metricId)
+  const yAxisErrorsByValue = React.useMemo(() => {
+    const map: Record<string, Record<string, string>> = {}
+    Object.entries(errors || {}).forEach(([key, message]) => {
+      const match = key.match(/^overview_chart\.y_axis\.(\d+)\.(.+)$/)
+      if (match) {
+        const index = Number(match[1])
+        const fieldKey = match[2]
+        const yAxisItem = formData.yAxis?.[index]
+        if (!yAxisItem) return
+        if (!map[yAxisItem.value]) {
+          map[yAxisItem.value] = {}
+        }
+        map[yAxisItem.value][fieldKey] = message
       }
     })
+    return map
+  }, [errors, formData.yAxis])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    let finalYAxis = formData.yAxis
+    const overview_chart_data = strucetureHighlightChart(formData).highlight_chart
+    if (formData.chartType === 'pie' && formData.yAxis.length > 0) {
+      finalYAxis = [formData.yAxis[0]]
+    }
+    const finalData = {
+      ...overview_chart_data,
+      y_axis: finalYAxis,
+    }
+    post({ overview_chart: finalData, _method: 'PUT' })
   }
 
-  const chartTypeOptions = [
-    { id: 'bar', name: 'Bar' },
-    { id: 'line', name: 'Line' },
-    { id: 'pie', name: 'Pie' },
-  ]
-
-  const dimensionOptions = form.dimensions.map((d: SubsetDimensionField) => ({
-    id: d.subset_column,
-    name: d.subset_field_name,
+  const paletteOptions = Object.entries(chartPallet).map(([key]) => ({
+    label: key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()),
+    value: key,
   }))
 
-  const metricOptions = form.metrics.map((m: SubsetMeasureField) => ({
-    id: m.subset_column,
-    name: m.subset_field_name,
-  }))
-
-  const isMultiMetric = chartType === 'bar' || chartType === 'line'
-  const canSave = form.title && form.selectedSubsetDetailId && selectedDimension && selectedMetrics.length > 0
+  if (!isModalOpen) return null
 
   return (
-    <Modal show={isModalOpen} onClose={handleClose}>
-      <form onSubmit={handleSave} className="p-6">
-        <h2 className="text-lg font-medium text-gray-900">{isEditing ? 'Edit Chart' : 'Add New Chart'}</h2>
-        <div className="mt-6 space-y-4">
-          <Input label="Title" value={form.title} setValue={form.setTitle} required />
-          <SelectList
-            label="Subset"
-            list={form.subsets.map((s: SubsetGroupItem) => ({ id: s.subset_detail_id, name: s.name }))}
-            dataKey="id"
-            displayKey="name"
-            value={form.selectedSubsetDetailId}
-            setValue={(value: string | number) => form.setSelectedSubsetDetailId(Number(value))}
-            disabled={isEditing} // Prevent changing subset when editing to avoid data mismatches
-          />
-          <SelectList label="Chart Type" list={chartTypeOptions} dataKey="id" displayKey="name" value={chartType} setValue={setChartType} />
-          <SelectList
-            label="X-Axis (Dimension)"
-            list={dimensionOptions}
-            dataKey="id"
-            displayKey="name"
-            value={selectedDimension}
-            setValue={setSelectedDimension}
-            disabled={!form.selectedSubsetDetailId}
-          />
+    <Modal
+      setShowModal={setIsModalOpen}
+      title='Add Chart'
+      large={true}
+    >
+      <div className='flex w-full flex-col p-4'>
+        <StrongText>Overview Chart</StrongText>
+        <form onSubmit={handleSubmit}>
+          <div className='flex flex-col gap-2'>
+            <DynamicSelectList
+              label='Select Subset for Highlight Chart'
+              url={`/api/subset-group/${subsetGroupId}`}
+              dataKey='subset_detail_id'
+              displayKey='name'
+              value={formData.subsetId ?? ''}
+              setValue={setFormValue('subsetId')}
+              error={errors?.['overview_chart.subset_id']}
+              showAllOption={true}
+              allOptionText='-- None --'
+            />
 
-          <div>
-            {isMultiMetric ? (
-              <div>
-                <InputLabel>Y-Axis (Metrics)</InputLabel>
-                <div className="mt-1 space-y-2 rounded-md border p-3 max-h-40 overflow-y-auto">
-                  {metricOptions.map((metric) => (
-                    <div key={metric.id} className="flex items-center">
-                      <Checkbox id={`metric-${metric.id}`} checked={selectedMetrics.includes(metric.id)} onChange={(e: ChangeEvent<HTMLInputElement>) => handleMetricCheckboxChange(metric.id, e.target.checked)} disabled={!form.selectedSubsetDetailId} />
-                      <InputLabel htmlFor={`metric-${metric.id}`} className="ml-2 font-normal text-gray-700">
-                        {metric.name}
-                      </InputLabel>
+            {formData.subsetId && (
+              <>
+                <div className='flex gap-4 md:grid md:grid-cols-4'>
+                  <div className='flex flex-col gap-1'>
+                    <Input
+                      label='Title for chart'
+                      value={formData.title ?? ''}
+                      setValue={setFormValue('title')}
+                      error={errors?.['overview_chart.title']}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <SelectList
+                      label='Chart Type'
+                      list={chartOptions}
+                      dataKey='value'
+                      displayKey='label'
+                      value={formData.chartType ?? 'bar'}
+                      setValue={setFormValue('chartType')}
+                      error={errors?.['overview_chart.chart_type']}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <SelectList
+                      label='Color scheme for chart'
+                      list={paletteOptions}
+                      dataKey='value'
+                      displayKey='label'
+                      value={formData.colorScheme}
+                      setValue={setFormValue('colorScheme')}
+                      error={errors?.['overview_chart.color_scheme']}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <div>
+                      <NormalText> Colors in the list</NormalText>
+                      <div className='flex gap-4'>
+                        {formData.colorScheme &&
+                          chartPallet[formData.colorScheme].map((color) => (
+                            <div
+                              key={color}
+                              className='h-3 w-3 rounded-full'
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
+                      </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <SelectList label="Y-Axis (Metric)" list={metricOptions} dataKey="id" displayKey="name" value={selectedMetrics[0] || ''} setValue={(value: string) => setSelectedMetrics(value ? [value] : [])} disabled={!form.selectedSubsetDetailId} />
+
+                <div className='flex flex-col gap-1'>
+                  <DynamicSelectList
+                    label='Select a dimension for x axis'
+                    url={`/api/subset/dimension/${formData.subsetId}`}
+                    dataKey='subset_column'
+                    displayKey='subset_field_name'
+                    value={formData.xAxis ?? ''}
+                    setValue={setFormValue('xAxis')}
+                    showAllOption={true}
+                    allOptionText='-- None --'
+                    error={errors?.['overview_chart.x_axis']}
+                  />
+                </div>
+              </>
             )}
+
+            <div className='flex flex-col gap-2'>
+              {formData.xAxis && (
+                <div className='flex gap-4 md:grid md:grid-cols-4'>
+                  <div className='flex flex-col gap-1'>
+                    <Input
+                      type='number'
+                      label='Maximum number of items'
+                      value={formData.xAxisCount ?? 0}
+                      setValue={(value) => setFormValue('xAxisCount')(Number(value))}
+                      error={errors?.['overview_chart.x_axis_count']}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <Input
+                      label='Name for x axis'
+                      value={formData.xAxisLabel}
+                      setValue={setFormValue('xAxisLabel')}
+                      error={errors?.['overview_chart.x_axis_label']}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <SelectList
+                      label='Order of dimension'
+                      list={orderOptions}
+                      dataKey='value'
+                      displayKey='label'
+                      value={formData.xAxisOrder ?? 'asc'}
+                      setValue={setFormValue('xAxisOrder')}
+                      error={errors?.['overview_chart.x_axis_order']}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <CheckBox
+                      label='Enable label for x axis'
+                      value={formData.xAxisEnable}
+                      toggleValue={toggleBoolean('xAxisEnable')}
+                      error={errors?.['overview_chart.x_axis_enable']}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {formData.subsetId && subsetFields && formData.xAxis && (
+                <div className='flex flex-col gap-4 md:grid md:grid-cols-4'>
+                  {formData.chartType === 'pie' ? (
+                    <div className='col-span-4 gap-2'>
+                      <SelectList
+                        label='Select a y axis field'
+                        value={formData.pieYaxis ?? ''}
+                        setValue={setFormValue('pieYaxis')}
+                        list={subsetFields}
+                        dataKey='subset_column'
+                        displayKey='subset_field_name'
+                      />
+
+                      {formData.yAxis &&
+                        formData.pieYaxis &&
+                        formData.yAxis.length > 0 &&
+                        (() => {
+                          const fieldErrors = yAxisErrorsByValue[formData.yAxis[0].value] ?? {}
+                          const pieField = subsetFields.find(
+                            (f) => f.subset_column === formData.yAxis[0].value
+                          )
+                          if (!pieField) return null
+                          return (
+                            <ConfigFormMeasureFields
+                              isSelected={true}
+                              field={pieField}
+                              data={formData.yAxis[0]}
+                              onUpdate={(updatedData) => {
+                                setFormValue('yAxis')([updatedData])
+                              }}
+                              errors={fieldErrors}
+                            />
+                          )
+                        })()}
+                    </div>
+                  ) : (
+                    subsetFields?.map((field) => {
+                      const yAxisData = formData.yAxis.find(
+                        (item: any) => item.value === field.subset_column
+                      ) || {
+                        label: '',
+                        unit: '',
+                        show_label: false,
+                        value: field.subset_column,
+                      }
+
+                      const isSelected = formData.yAxis.some(
+                        (item: any) => item.value === field.subset_column
+                      )
+                      const fieldErrors = yAxisErrorsByValue[field.subset_column] ?? {}
+
+                      return (
+                        <div
+                          key={field.id}
+                          className='col-span-4'
+                        >
+                          <ConfigFormMeasureFields
+                            isSelected={isSelected}
+                            field={field}
+                            data={yAxisData}
+                            onUpdate={(updatedData) => {
+                              const exists = formData.yAxis.find(
+                                (item: any) => item.value === updatedData.value
+                              )
+                              if (updatedData.selected) {
+                                if (exists) {
+                                  setFormValue('yAxis')(
+                                    formData.yAxis.map((item: any) =>
+                                      item.value === updatedData.value ? updatedData : item
+                                    )
+                                  )
+                                } else {
+                                  setFormValue('yAxis')([...formData.yAxis, updatedData])
+                                }
+                              } else {
+                                setFormValue('yAxis')(
+                                  formData.yAxis.filter(
+                                    (item: any) => item.value !== updatedData.value
+                                  )
+                                )
+                              }
+                            }}
+                            errors={fieldErrors}
+                          />
+                        </div>
+                      )
+                    })
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div>
-            <SelectList label="Color Scheme" list={colorSchemeOptions.map(({ id, name }) => ({ id, name }))} dataKey="id" displayKey="name" value={selectedColorScheme} setValue={setSelectedColorScheme} />
-            {currentColorSchemeObject && (
-              <div className="mt-2 flex items-center space-x-2 pl-1">
-                {currentColorSchemeObject.colors.map((color) => (
-                  <div key={color} className="h-5 w-5 rounded-full border border-gray-400 shadow-sm" style={{ backgroundColor: color }} title={color} />
-                ))}
-              </div>
-            )}
+          <div className='mt-4 flex justify-end border-t pt-4'>
+            <Button
+              type='submit'
+              label={loading ? 'Saving...' : 'Save'}
+              disabled={loading}
+            />
           </div>
-
-          <Input label="Number of Items to Show" type="number" value={itemCount} setValue={(val) => setItemCount(val === '' ? '' : Number(val))} placeholder="Leave blank to show all" min="1" />
-        </div>
-
-        <div className="mt-6 flex justify-end">
-          <SecondaryButton type="button" onClick={handleClose}>Cancel</SecondaryButton>
-          <PrimaryButton type="submit" className="ml-3" disabled={!canSave}>
-            {isEditing ? 'Save Changes' : 'Save'}
-          </PrimaryButton>
-        </div>
-      </form>
+        </form>
+      </div>
     </Modal>
   )
 }
