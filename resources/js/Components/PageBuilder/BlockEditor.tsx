@@ -4,7 +4,7 @@ import ButtonBorderIcon from '@/ui/button/ButtonBorderIcon'
 import Card from '@/ui/Card/Card'
 import DeleteModal from '@/ui/Modal/DeleteModal'
 import { ArrowDown, ArrowUp, CogIcon, XIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BlockDataDrawer } from './BlockDataDrawer'
 import BlockDrawerForm from './BlockDrawerForm'
 import EditBlockDimension from './EditBlockDimension'
@@ -18,6 +18,7 @@ interface BlockActionProps {
 interface BlockComponentProps {
   dimensions?: BlockDimension
   block?: Block
+  setBlockDimensions?: (dimensions: BlockDimension) => void
 }
 
 const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
@@ -29,6 +30,7 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const Component = blockComponents[block.name]
+  const [dimensions, setDimensions] = useState(block?.dimensions)
   const { post } = useInertiaPost<{ _method: string; action: 'up' | 'down' }>(
     route('blocks.update', block.id),
     {
@@ -46,6 +48,8 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
   const handleEditClick = () => {
     setEditModalOpen(true)
   }
+
+  useEffect(() => {}, [dimensions])
 
   return (
     <>
@@ -67,16 +71,20 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
             <XIcon className='h-4 w-4' />
           </ButtonBorderIcon>
         </div>
-        <div className='grid bg-gray-500'>
+        <div
+          key={JSON.stringify(dimensions)}
+          className='grid bg-gray-500'
+        >
           {Component ? (
             <Component
-              dimensions={block?.dimensions}
+              dimensions={dimensions}
               block={block}
             />
           ) : (
             <p>Unknown block type</p>
           )}
         </div>
+
         {isDrawerOpen && (
           <div className='fixed inset-0 z-40 bg-gray-900/60 backdrop-blur-sm transition-opacity duration-300' />
         )}
@@ -96,10 +104,10 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
       </Card>
       {isEditModalOpen && (
         <EditBlockDimension
+          setBlockDimensions={setDimensions}
           isOpen={isEditModalOpen}
           onClose={() => {
             setEditModalOpen(false)
-            router.reload()
           }}
           block={block}
         />

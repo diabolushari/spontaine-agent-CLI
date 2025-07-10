@@ -25,7 +25,7 @@ interface Props {
   colors: string
   fontSize: string
   sliceCount?: number
-  sortOrder?: 'asc' | 'desc'
+  sortOrder?: 'ascending' | 'descending'
 }
 
 export function CustomPieChart({
@@ -36,7 +36,7 @@ export function CustomPieChart({
   colors,
   fontSize,
   sliceCount,
-  sortOrder = 'desc',
+  sortOrder = 'descending',
 }: Props) {
   if (!data || data.length === 0 || keysToPlot.length === 0) {
     return <div className='px-4 py-2 text-sm text-muted-foreground'>No data available</div>
@@ -66,7 +66,7 @@ export function CustomPieChart({
     const sortedData = [...aggregatedArray].sort((a, b) => {
       const valA = Number(a[dataKey] || 0)
       const valB = Number(b[dataKey] || 0)
-      return sortOrder === 'asc' ? valA - valB : valB - valA
+      return sortOrder === 'ascending' ? valA - valB : valB - valA
     })
 
     if (sliceCount && sortedData.length > sliceCount) {

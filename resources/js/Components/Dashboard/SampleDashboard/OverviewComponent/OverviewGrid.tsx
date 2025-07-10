@@ -4,6 +4,7 @@ import Skeleton from 'react-loading-skeleton'
 import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 
 import type { OverviewTable, Filter } from '@/interfaces/data_interfaces'
+import { router } from '@inertiajs/react'
 
 interface OverviewGridProps {
   readonly config: OverviewTable
@@ -11,6 +12,7 @@ interface OverviewGridProps {
   readonly onSelect: (value: string) => void
   readonly selectedMonth: Date | null
   readonly onDelete?: (id: number) => void
+  readonly blockId: number
 }
 
 const getMonthYear = (selectedMonth: Date | null): string => {
@@ -29,31 +31,36 @@ const getFilterQuery = (filters?: Filter[]): string => {
 const getCellData = (
   graphValues: any,
   title: string,
-  measureField: string 
+  measureField: string
 ): { title: string; value: string } => {
-  if (!graphValues?.data || !Array.isArray(graphValues.data) || graphValues.data.length === 0 || !measureField) {
+  if (
+    !graphValues?.data ||
+    !Array.isArray(graphValues.data) ||
+    graphValues.data.length === 0 ||
+    !measureField
+  ) {
     return { title, value: 'N/A' }
   }
-  
-  const dataKey = measureField;
-  
+
+  const dataKey = measureField
+
   const totalValue = graphValues.data.reduce((sum: number, item: any) => {
     if (item && typeof item[dataKey] === 'number') {
       return sum + item[dataKey]
     }
     return sum
   }, 0)
-  
+
   return { title, value: formatNumber(totalValue) }
 }
-
 
 const OverviewGrid: React.FC<OverviewGridProps> = ({
   config,
   selected,
   onSelect,
   selectedMonth,
-  onDelete
+  onDelete,
+  blockId,
 }) => {
   const { subset_id, measure_field, title, filters, id } = config
 
@@ -63,8 +70,11 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
   const [graphValues, loading] = useFetchRecord(
     `/subset/${subset_id ?? ''}?${selectedMonth == null ? 'latest=month' : `month=${monthYear}`}${filterQuery}`
   )
-    
-  const cellData = useMemo(() => getCellData(graphValues, title, measure_field), [graphValues, title, measure_field])
+
+  const cellData = useMemo(
+    () => getCellData(graphValues, title, measure_field),
+    [graphValues, title, measure_field]
+  )
 
   if (loading) {
     return (
@@ -74,14 +84,18 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
     )
   }
 
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this grid item?')) {
+      router.delete(route('config.overview.table.destroy', [id, blockId]))
+    }
+  }
+
   return (
     <div
       role='button'
       tabIndex={0}
-      onClick={() => {
-        onDelete?.(id) 
-      }}
-      className={`relative cursor-pointer rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg`}
+      onClick={handleDelete}
+      className={`relative h-full min-h-[60px] cursor-pointer rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg`}
     >
       <p className='text-sm uppercase text-gray-600'>{cellData.title}</p>
       <p className='text-xl font-bold'>{cellData.value}</p>

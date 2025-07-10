@@ -28,7 +28,13 @@ interface AddChartModalProps {
   onSave: (newChart: OverviewChart) => void
   chartToEdit?: OverviewChart | null
 }
+const defaultUnits = (field: string) => {
+  const lower = field.toLowerCase()
 
+  if (lower.includes('count') || lower.includes('cnt')) return 'Count'
+  if (lower.includes('demand')) return 'VT'
+  return ''
+}
 const orderOptions = [
   { label: 'Ascending Order', value: 'ascending' },
   { label: 'Descending Order', value: 'descending' },
@@ -65,7 +71,7 @@ function AddChartModal({
     xAxisOrder: chartToEdit?.x_axis_order ?? 'ascending',
     xAxisEnable: chartToEdit?.x_axis_enable ?? false,
     yAxis: chartToEdit?.y_axis ?? [],
-    pieYaxis: '',
+    pieYaxis: chartToEdit?.y_axis[0]?.value ?? '',
     colorScheme: chartToEdit?.color_scheme ?? '',
   })
 
@@ -76,7 +82,7 @@ function AddChartModal({
         const newData = {
           label: selectedField.subset_field_name,
           value: formData.pieYaxis,
-          unit: '',
+          unit: defaultUnits(selectedField.subset_column),
           show_label: false,
         }
         setFormValue('yAxis')([newData])
@@ -85,6 +91,7 @@ function AddChartModal({
   }, [formData.pieYaxis])
 
   useEffect(() => {
+    if (!chartToEdit) return
     setAll({
       dimension: chartToEdit?.dimension ?? '',
       xAxis: chartToEdit?.x_axis ?? '',
@@ -92,8 +99,8 @@ function AddChartModal({
       xAxisLabel: chartToEdit?.x_axis_label ?? '',
       xAxisOrder: chartToEdit?.x_axis_order ?? 'ascending',
       xAxisEnable: chartToEdit?.x_axis_enable ?? false,
-      yAxis: chartToEdit?.y_axis ?? [],
-      pieYaxis: '',
+      yAxis: chartToEdit.chart_type === 'pie' ? [] : chartToEdit.y_axis,
+      pieYaxis: chartToEdit?.y_axis[0]?.value ?? '',
     })
   }, [formData.subsetId, formData.chartType])
 
@@ -110,7 +117,7 @@ function AddChartModal({
       x_axis_label: data.xAxisLabel ?? '',
       x_axis_enable: data.xAxisEnable ?? false,
       x_axis_count: data.xAxisCount ?? '',
-      x_axis_order: data.xAxisOrder ?? 'ascending',
+      x_axis_order: data.xAxisOrder ?? 'descending',
       y_axis: data.yAxis ?? [],
       color_scheme: data.colorScheme ?? '',
     },
@@ -181,8 +188,6 @@ function AddChartModal({
               value={formData.subsetId ?? ''}
               setValue={setFormValue('subsetId')}
               error={errors?.['overview_chart.subset_id']}
-              showAllOption={true}
-              allOptionText='-- None --'
             />
 
             {formData.subsetId && (
@@ -242,7 +247,11 @@ function AddChartModal({
                     dataKey='subset_column'
                     displayKey='subset_field_name'
                     value={formData.xAxis ?? ''}
-                    setValue={setFormValue('xAxis')}
+                    setValue={(value) => {
+                      setFormValue('xAxis')(value)
+                      setFormValue('xAxisEnable')(true)
+                      setFormValue('xAxisLabel')(value)
+                    }}
                     showAllOption={true}
                     allOptionText='-- None --'
                     error={errors?.['overview_chart.x_axis']}
@@ -299,7 +308,7 @@ function AddChartModal({
                     <div className='col-span-4 gap-2'>
                       <SelectList
                         label='Select a y axis field'
-                        value={formData.pieYaxis ?? ''}
+                        value={formData.yAxis[0]?.value ?? ''}
                         setValue={setFormValue('pieYaxis')}
                         list={subsetFields}
                         dataKey='subset_column'
@@ -310,16 +319,23 @@ function AddChartModal({
                         formData.pieYaxis &&
                         formData.yAxis.length > 0 &&
                         (() => {
-                          const fieldErrors = yAxisErrorsByValue[formData.yAxis[0].value] ?? {}
+                          const fieldErrors = yAxisErrorsByValue[formData.yAxis[0]?.value] ?? {}
                           const pieField = subsetFields.find(
-                            (f) => f.subset_column === formData.yAxis[0].value
+                            (f) => f.subset_column === formData.yAxis[0]?.value
                           )
                           if (!pieField) return null
                           return (
                             <ConfigFormMeasureFields
                               isSelected={true}
                               field={pieField}
-                              data={formData.yAxis[0]}
+                              data={
+                                formData.yAxis[0] ?? {
+                                  label: pieField.subset_field_name,
+                                  unit: defaultUnits(pieField.subset_column),
+                                  show_label: true,
+                                  value: pieField.subset_column,
+                                }
+                              }
                               onUpdate={(updatedData) => {
                                 setFormValue('yAxis')([updatedData])
                               }}
@@ -333,9 +349,9 @@ function AddChartModal({
                       const yAxisData = formData.yAxis.find(
                         (item: any) => item.value === field.subset_column
                       ) || {
-                        label: '',
-                        unit: '',
-                        show_label: false,
+                        label: field.subset_field_name,
+                        unit: defaultUnits(field.subset_column),
+                        show_label: true,
                         value: field.subset_column,
                       }
 

@@ -3,17 +3,23 @@
 namespace App\Http\Controllers\Blocks\BlocksConfigUpdate;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableRequest;
 use App\Models\Blocks\Block;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class BlocksConfigOverviewTableUpdateController extends Controller
 {
 
-    public function __invoke(Request $request, $id): RedirectResponse
+    public function __invoke(Request $request, $id)
     {
-        dd($request->all());
-        return redirect()->back()->with('message', 'Block configuration updated.');
+        $block = Block::findOrFail($id);
+        $blockData = $block->data ?? [];
+        $existingTables = $blockData['overview']['overview_table'] ?? [];
+        $existingTables[] = $request->overview_table;
+        $blockData['overview']['overview_table'] = $existingTables;
+        $block->data = $blockData;
+
+        $block->save();
+
+        return redirect()->back();
     }
 }

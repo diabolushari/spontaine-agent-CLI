@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Blocks\BlocksConfigUpdate;
 
 use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigOverviewFields\BlockConfigOverview;
+use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigOverviewFields\BlockConfigOverviewTable;
+use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigOverviewFields\BlockConfigOverviewTableFilter;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigRankingFields\BlockConfigRanking;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigTrendFields\BlockConfigTrend;
 use Spatie\LaravelData\Data;
@@ -15,14 +17,7 @@ use Spatie\LaravelData\Attributes\Validation\Max;
 class BlocksConfigOverviewTableRequest extends Data
 {
     public function __construct(
-        #[StringType, Max(255)]
-        public string $title,
-
-        public string $subsetId,
-
-        public string $measureField,
-
-        public bool $colSpan2,
+        public BlockConfigOverviewTable $overview_table,
 
     ) {}
 }

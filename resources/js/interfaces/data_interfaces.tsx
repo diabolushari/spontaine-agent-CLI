@@ -404,17 +404,17 @@ export interface Trend {
 export interface Overview {
   title: string
   description: string
-  card_type: 'chart_and_table' | 'chart_only' | 'table_only' 
+  card_type: 'chart_and_table' | 'chart_only' | 'table_only'
   overview_chart?: OverviewChart
   overview_table?: OverviewTable[]
 }
 export interface OverviewChart {
   title: string
   subset_id: string
-  chart_type: string 
+  chart_type: string
   x_axis: string
-  y_axis: string[] 
-  [key: string]: any 
+  y_axis: string[]
+  [key: string]: any
 }
 
 export interface OverviewTable {
@@ -422,7 +422,7 @@ export interface OverviewTable {
   subset_id: string | null
   measure_field_dimension?: string
   measure_field: string
-  col_span_2?: boolean
+  col_span?: boolean
   filters?: Filter[]
   [key: string]: any
 }

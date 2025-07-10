@@ -11,6 +11,7 @@ interface BlockEditModalProps {
   isOpen: boolean
   onClose: () => void
   block: Block
+  setBlockDimensions: (dimensions) => void
 }
 
 const paddingTops = [
@@ -88,7 +89,12 @@ const desktopColSpanOptions = [
   { value: 'xl:col-span-1', label: '1/4' },
 ]
 
-const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, block }) => {
+const EditBlockDimension: React.FC<BlockEditModalProps> = ({
+  isOpen,
+  onClose,
+  block,
+  setBlockDimensions,
+}) => {
   const { formData, setFormValue, setAll } = useCustomForm({
     padding_top: '',
     padding_bottom: '',
@@ -103,8 +109,9 @@ const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, bl
     preserveState: false,
 
     onComplete: () => {
+      setBlockDimensions(formData)
+
       onClose()
-      route('page', block.page_id)
     },
     showErrorToast: true,
   })
@@ -123,6 +130,7 @@ const EditBlockDimension: React.FC<BlockEditModalProps> = ({ isOpen, onClose, bl
   }, [block, setAll])
 
   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     post({
       dimensions: formData,
       _method: 'PUT',

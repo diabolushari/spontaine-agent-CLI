@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableDeleteController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateController;
@@ -115,8 +116,9 @@ Route::put('block/config/overview/update/{id}', BlocksConfigOverviewUpdateContro
     ->name('config.overview.update');
 Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewChartUpdateController::class)
     ->name('config.overview.chart.update');
-Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableUpdateController::class)
-    ->name('config.overview.table.update');
+Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableUpdateController::class)->name('config.overview.table.update');
+Route::delete('block/config/overview/table/update/{id}/{blockId}', BlocksConfigOverviewTableDeleteController::class)->name('config.overview.table.destroy');
+
 
 
 

@@ -25,6 +25,7 @@ export default function Overview({
   const [isGridModalOpen, setGridModalOpen] = useState(false)
   const [isChartModalOpen, setChartModalOpen] = useState(false)
   const [editingChart, setEditingChart] = useState<OverviewChart | null>(null)
+  const [editingGridItem, setEditingGridItem] = useState<any | null>(null)
 
   const [overviewChart, setOverviewChart] = useState<OverviewChart | null>(overview_chart)
   const [gridItems, setGridItems] = useState<any[]>(() => (overview_table ? overview_table : []))
@@ -38,6 +39,11 @@ export default function Overview({
   function handleOpenEditChartModal() {
     setEditingChart(overviewChart) // Set the current chart to be edited
     setChartModalOpen(true)
+  }
+
+  function handleEditGridItem(id: number) {
+    setGridModalOpen(true)
+    setEditingGridItem(gridItems.find((item) => item.id === id))
   }
 
   function handleSaveChart(newOrUpdatedChart: OverviewChart) {
@@ -66,6 +72,14 @@ export default function Overview({
   const showTable = card_type === 'chart_and_table' || card_type === 'table'
   const showChart = card_type === 'chart_and_table' || card_type === 'chart'
 
+  useEffect(() => {
+    setOverviewChart(overview_chart)
+  }, [overview_chart])
+
+  useEffect(() => {
+    setGridItems(overview_table)
+  }, [overview_table])
+
   return (
     <>
       <div className='flex min-h-56 w-full flex-col pr-4 transition-all duration-300'>
@@ -78,16 +92,17 @@ export default function Overview({
         >
           {/* --- Table / Grid Section --- */}
           {showTable && (
-            <div className='grid grid-cols-2 gap-4'>
+            <div className='grid grid-cols-2 gap-2'>
               {gridItems.slice(0, 6).map((item, idx) => (
                 <div
                   key={item.id || idx}
-                  className={item.col_span_2 ? 'col-span-2' : ''}
+                  className={item.col_span ? 'col-span-2' : ''}
                 >
                   <OverviewGrid
                     config={item}
                     selectedMonth={selectedMonth}
                     onDelete={handleDeleteGridItem}
+                    blockId={blockId}
                   />
                 </div>
               ))}
@@ -189,6 +204,7 @@ export default function Overview({
         setIsModalOpen={setGridModalOpen}
         onSave={handleAddNewGridItem}
         subsetGroupId={subsetGroupId}
+        blockId={blockId}
       />
       <AddChartModal
         isModalOpen={isChartModalOpen}

@@ -2,11 +2,12 @@ import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
 import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 import { CustomPieChart } from '@/Components/Charts/SampleChart/CustomPieChart'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import FontSizeSelector, {
   Size,
 } from '@/Components/Dashboard/SampleDashboard/OverviewComponent/FontSizeSelector'
+import { defaultUnits } from '@/Components/Dashboard/SampleDashboard/OverviewComponent/OverviewChart'
 
 interface Props {
   selectedMonth: Date | null
@@ -31,6 +32,7 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
       return {
         key: axis.value,
         label: axis.label ?? formatLabel(axis.value),
+        unit: axis.unit,
       }
     })
   }, [chart_content?.y_axis])
@@ -97,14 +99,21 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           keysToPlot={keysToPlot}
           colors={chart_content.color_scheme}
           fontSize={fontClasses}
+          sliceCount={chart_content.x_axis_count}
+          sortOrder={chart_content.x_axis_order}
         />
       )}
       {chart_content.chart_type === 'line' && !loading && (
         <CustomLineChart
           data={aggregatedData}
           dataKey={chart_content.x_axis}
+          displayKey={chart_content.x_axis_label}
+          displayKeyShow={chart_content.x_axis_enable}
           keysToPlot={keysToPlot}
           colors={chart_content.color_scheme}
+          fontSize={fontClasses}
+          sliceCount={chart_content.x_axis_count}
+          sortOrder={chart_content.x_axis_order}
         />
       )}
       {chart_content.chart_type === 'pie' && keysToPlot?.length > 0 && !loading && (
@@ -113,10 +122,10 @@ export default function OverviewChart({ selectedMonth, setSelectedMonth, chart_c
           dataKey={keysToPlot[0].key}
           nameKey={chart_content.x_axis}
           keysToPlot={keysToPlot}
-          colors={'boldWarm'}
+          colors={chart_content.color_scheme}
           fontSize={fontClasses}
-          sliceCount={3}
-          sortOrder={'desc'}
+          sliceCount={chart_content.x_axis_count}
+          sortOrder={chart_content.x_axis_order}
         />
       )}
     </div>
