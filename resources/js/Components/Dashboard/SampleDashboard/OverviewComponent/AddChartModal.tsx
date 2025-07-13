@@ -13,6 +13,8 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import Modal from '@/ui/Modal/Modal'
 import NormalText from '@/typography/NormalText'
+import { snakeToCamel } from '@/formaters/NameFormater'
+import { defaultUnits } from '@/formaters/DataUnits'
 
 interface SubsetField {
   id: number
@@ -28,13 +30,7 @@ interface AddChartModalProps {
   onSave: (newChart: OverviewChart) => void
   chartToEdit?: OverviewChart | null
 }
-const defaultUnits = (field: string) => {
-  const lower = field.toLowerCase()
 
-  if (lower.includes('count') || lower.includes('cnt')) return 'Count'
-  if (lower.includes('demand')) return 'VT'
-  return ''
-}
 const orderOptions = [
   { label: 'Ascending Order', value: 'ascending' },
   { label: 'Descending Order', value: 'descending' },
@@ -250,7 +246,7 @@ function AddChartModal({
                     setValue={(value) => {
                       setFormValue('xAxis')(value)
                       setFormValue('xAxisEnable')(true)
-                      setFormValue('xAxisLabel')(value)
+                      setFormValue('xAxisLabel')(snakeToCamel(value))
                     }}
                     showAllOption={true}
                     allOptionText='-- None --'
@@ -308,15 +304,14 @@ function AddChartModal({
                     <div className='col-span-4 gap-2'>
                       <SelectList
                         label='Select a y axis field'
-                        value={formData.yAxis[0]?.value ?? ''}
+                        value={formData.yAxis[0]?.value ?? formData?.pieYaxis}
                         setValue={setFormValue('pieYaxis')}
                         list={subsetFields}
                         dataKey='subset_column'
                         displayKey='subset_field_name'
                       />
 
-                      {formData.yAxis &&
-                        formData.pieYaxis &&
+                      {(formData.yAxis || formData.pieYaxis) &&
                         formData.yAxis.length > 0 &&
                         (() => {
                           const fieldErrors = yAxisErrorsByValue[formData.yAxis[0]?.value] ?? {}

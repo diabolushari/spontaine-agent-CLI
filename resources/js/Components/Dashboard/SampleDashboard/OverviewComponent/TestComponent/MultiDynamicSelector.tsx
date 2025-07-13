@@ -117,17 +117,19 @@ export default function MultiDynamicSelector({
               />
             </div>
             <div className='flex flex-col'>
-              <DynamicSelectList
-                url={`/api/subset/dimension/fields/${filter.dimension}/${subsetId}`}
-                dataKey='name'
-                displayKey='name'
-                setValue={(val) => handleChange(index, 'value', val)}
-                label='Metric'
-                value={filter.value}
-                error={undefined}
-                disabled={false}
-                showAllOption={false}
-              />
+              {filter.dimension && subsetId && (
+                <DynamicSelectList
+                  url={`/api/subset/dimension/fields/${filter.dimension}/${subsetId}`}
+                  dataKey='name'
+                  displayKey='name'
+                  setValue={(val) => handleChange(index, 'value', val)}
+                  label='Metric'
+                  value={filter.value}
+                  error={undefined}
+                  disabled={false}
+                  showAllOption={false}
+                />
+              )}
             </div>
 
             {/* Value Select — always shows all options */}

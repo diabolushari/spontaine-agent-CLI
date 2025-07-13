@@ -10,6 +10,8 @@ import NormalText from '@/typography/NormalText'
 import TextArea from '@/ui/form/TextArea'
 import CheckBox from '@/ui/form/CheckBox'
 import SelectList from '@/ui/form/SelectList'
+import { CustomScrollArea } from '../CustomScrollArea'
+import useFetchList from '@/hooks/useFetchList'
 
 interface ConfigFormStepGeneralProps {
   initialData: Config
@@ -41,6 +43,7 @@ export default function ConfigFormStepGeneral({
     title: initialData?.overview?.title ?? '',
     card_type: initialData?.overview?.card_type ?? '',
   })
+  const [isSubsetModalOpen, setIsSubsetModalOpen] = useState(false)
   const { formData, setFormValue, toggleBoolean } = useCustomForm({
     title: initialData?.title ?? '',
     description: initialData?.description ?? '',
@@ -128,7 +131,7 @@ export default function ConfigFormStepGeneral({
 
     post(payload)
   }
-
+  const [subsetData] = useFetchList('/api/subset-group/' + formData?.subset_group_id)
   return (
     <div className='flex flex-col gap-6'>
       <div className='flex flex-col'>
@@ -166,7 +169,34 @@ export default function ConfigFormStepGeneral({
               setValue={setFormValue('subset_group_id')}
               error={errors?.subset_group_id}
             />
+            {subsetData && (
+              <div
+                onClick={() => setIsSubsetModalOpen(true)}
+                className='cursor-pointer text-blue-500'
+              >
+                view subsets
+              </div>
+            )}
           </div>
+          {subsetData && isSubsetModalOpen && (
+            <>
+              <div className='col-span-3 flex flex-col'>
+                <CustomScrollArea
+                  onChartClick={() => {}}
+                  title='Subsets'
+                  data={subsetData}
+                  primaryKey='id'
+                />
+              </div>
+              <div className='flex flex-col'>
+                <Button
+                  label='Close'
+                  variant='danger'
+                  onClick={() => setIsSubsetModalOpen(false)}
+                />
+              </div>
+            </>
+          )}
           <div className='col-span-3 flex flex-col'>
             <TextArea
               label='Enter your description'

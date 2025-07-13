@@ -10,10 +10,11 @@ class SubsetFieldsController extends Controller
 {
     public function __invoke(Request $request, $subsetId)
     {
-        
+
 
         $subset = SubsetDetail::with('measures')
             ->find($subsetId);
+
         $measures = $subset->measures->map(function ($measure) {
             return [
                 'subset_field_name' => $measure->subset_field_name,

@@ -37,7 +37,7 @@ function AddGridItemModal({
   const [colSpan2, setColSpan2] = useState(false)
   const { formData, setFormValue } = useCustomForm({
     title: '',
-    subset_id: '0',
+    subset_id: '',
     measure_field: '',
     filters: [],
     col_span: false,
@@ -120,7 +120,6 @@ function AddGridItemModal({
                 dataKey='subset_column'
                 displayKey='subset_field_name'
                 setValue={setFormValue('measure_field')}
-                required
               />
             )}
           </div>

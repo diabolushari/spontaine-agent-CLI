@@ -8,10 +8,7 @@ import { router } from '@inertiajs/react'
 
 interface OverviewGridProps {
   readonly config: OverviewTable
-  readonly selected: string | null
-  readonly onSelect: (value: string) => void
   readonly selectedMonth: Date | null
-  readonly onDelete?: (id: number) => void
   readonly blockId: number
 }
 
@@ -54,14 +51,7 @@ const getCellData = (
   return { title, value: formatNumber(totalValue) }
 }
 
-const OverviewGrid: React.FC<OverviewGridProps> = ({
-  config,
-  selected,
-  onSelect,
-  selectedMonth,
-  onDelete,
-  blockId,
-}) => {
+const OverviewGrid: React.FC<OverviewGridProps> = ({ config, selectedMonth, blockId }) => {
   const { subset_id, measure_field, title, filters, id } = config
 
   const monthYear = useMemo(() => getMonthYear(selectedMonth), [selectedMonth])

@@ -93,7 +93,7 @@ export default function Overview({
           {/* --- Table / Grid Section --- */}
           {showTable && (
             <div className='grid grid-cols-2 gap-2'>
-              {gridItems.slice(0, 6).map((item, idx) => (
+              {gridItems?.slice(0, 6).map((item, idx) => (
                 <div
                   key={item.id || idx}
                   className={item.col_span ? 'col-span-2' : ''}
@@ -106,7 +106,7 @@ export default function Overview({
                   />
                 </div>
               ))}
-              {gridItems.length < 6 && (
+              {(gridItems?.length < 6 || !gridItems) && (
                 <button
                   onClick={() => setGridModalOpen(true)}
                   className='flex h-full min-h-[60px] w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-4 text-center text-indigo-600 shadow outline-none transition hover:border-indigo-500 hover:text-indigo-800 hover:shadow-lg'

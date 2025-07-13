@@ -13,12 +13,12 @@ export function BlockRadioGroup({ block, selectedView, setSelectedView }: BlockR
       value: 'overview',
       label: 'Overview',
       show:
-        block?.data?.overview?.overview_chart?.subset_id ||
-        block?.data?.overview?.overview_table?.subset_id ||
+        block?.data?.overview?.overview_chart ||
+        block?.data?.overview?.overview_table ||
         block?.data?.overview_selected,
     },
     { value: 'trend', label: 'Trend', show: !!block?.data?.trend?.subset_id },
-    { value: 'rank', label: 'Ranking', show: !!block?.data?.ranking?.subset_id },
+    { value: 'ranking', label: 'Ranking', show: !!block?.data?.ranking?.subset_id },
   ]
 
   const visibleTabs = tabs.filter((tab) => tab.show)

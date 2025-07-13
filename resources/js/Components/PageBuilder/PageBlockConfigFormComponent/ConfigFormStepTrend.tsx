@@ -12,6 +12,9 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import NormalText from '@/typography/NormalText'
 import SelectList from '@/ui/form/SelectList'
 import { graphColorPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import { camelToNormal, snakeToCamel } from '@/formaters/NameFormater'
+import { defaultUnits } from '@/formaters/DataUnits'
+import useFetchList from '@/hooks/useFetchList'
 
 interface ConfigFormStepTrendProps {
   initialData: any
@@ -35,7 +38,7 @@ interface FormData {
 }
 
 const colorOptions = Object.entries(graphColorPallet).map(([key, value]) => ({
-  label: key,
+  label: camelToNormal(key),
   value: value,
 }))
 
@@ -61,9 +64,9 @@ export default function ConfigFormStepTrend({
     tooltipShowLabel: initialData.trend?.subset_id
       ? initialData.trend?.tooltip_field?.show_label
       : false,
-    color: initialData.trend?.subset_id ? initialData.trend?.data_field?.color : '',
+    color: initialData.trend?.subset_id ? initialData.trend?.color : '',
   })
-
+  console.log(formData)
   const strucetureTrend = (formData: FormData) => {
     return {
       trend: {
@@ -181,7 +184,14 @@ export default function ConfigFormStepTrend({
                 dataKey='subset_column'
                 displayKey='subset_field_name'
                 value={formData.yAxisValue}
-                setValue={setFormValue('yAxisValue')}
+                setValue={(value) => {
+                  setFormValue('yAxisValue')(value)
+                  setFormValue('yAxisLabel')(snakeToCamel(value))
+                  setFormValue('yAxisShowLabel')(true)
+                  setFormValue('tooltipLabel')(snakeToCamel(value))
+                  setFormValue('tooltipUnit')(defaultUnits(value))
+                  setFormValue('tooltipShowLabel')(true)
+                }}
                 error={errors?.['trend.data_field.y_axis.value']}
               />
             </div>

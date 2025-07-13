@@ -17,7 +17,6 @@ function parseMonthYearString(monthYear: string): Date | null {
   return new Date(year, month, 1)
 }
 
-// Convert Date → "YYYYMM"
 function dateToYearMonth(date?: Date | null) {
   if (!date) return ''
   return `${date.getFullYear()}${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}`
@@ -30,13 +29,14 @@ export function EmptyCardBlock({
   block?: Block
   dimensions?: Record<string, string>
 }) {
-  const [selectedView, setSelectedView] = useState('overview')
+  const [selectedView, setSelectedView] = useState<string>('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
   const [date] = useFetchRecord(
     block?.data?.data_table_id ? route('data-detail.date', block.data.data_table_id) : ''
   )
 
+  // Set default month based on fetched date
   useEffect(() => {
     if (date?.max_value) {
       const parsed = parseMonthYearString(date.max_value)
@@ -46,17 +46,21 @@ export function EmptyCardBlock({
     }
   }, [date])
 
+  // Set default view based on block.data.default_view
+  useEffect(() => {
+    if (block?.data?.default_view) {
+      setSelectedView(block.data.default_view)
+    }
+  }, [block?.data?.default_view])
+
   const monthYear = useMemo(() => dateToYearMonth(selectedMonth), [selectedMonth])
 
   const classNames = useMemo(() => {
     const classes = Object.keys(block?.dimensions ?? {}).map((key) => {
       return block?.dimensions?.[key as keyof BlockDimension]
     })
-
     return classes.join(' ')
   }, [block])
-
-  console.log('block : ', block)
 
   return (
     <div className={classNames}>
@@ -82,7 +86,6 @@ export function EmptyCardBlock({
             />
           )}
 
-          {/* === Trend Graph === */}
           {selectedView === 'trend' &&
             block?.data?.trend_selected &&
             block?.data?.trend?.subset_id &&
@@ -112,8 +115,7 @@ export function EmptyCardBlock({
               />
             )}
 
-          {/* === Ranked List === */}
-          {selectedView === 'rank' &&
+          {selectedView === 'ranking' &&
             block?.data?.ranking_selected &&
             selectedMonth &&
             block?.data?.ranking?.subset_id && (
@@ -132,6 +134,7 @@ export function EmptyCardBlock({
               />
             )}
         </div>
+
         {block?.data?.data_table_id && (
           <div className='mt-auto flex flex-shrink-0 items-center gap-4 justify-self-start rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
             {selectedMonth != null && (

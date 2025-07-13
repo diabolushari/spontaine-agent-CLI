@@ -6,6 +6,7 @@ import React, { useCallback } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import CheckBox from '@/ui/form/CheckBox'
+import { snakeToCamel } from '@/formaters/NameFormater'
 
 interface ConfigFormStepRankingFieldsProps {
   initialData: any
@@ -100,7 +101,11 @@ export default function ConfigFormStepRanking({
               dataKey='subset_column'
               displayKey='subset_field_name'
               value={formData.value}
-              setValue={setFormValue('value')}
+              setValue={(value) => {
+                setFormValue('value')(value)
+                setFormValue('label')(snakeToCamel(value))
+                setFormValue('showLabel')(true)
+              }}
               error={errors?.['ranking.data_field.value']}
             />
           </div>
