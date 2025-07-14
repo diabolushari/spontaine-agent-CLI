@@ -61,7 +61,7 @@ export function EmptyCardBlock({
     })
     return classes.join(' ')
   }, [block])
-  console.log('block', block)
+
   return (
     <div className={classNames}>
       <Card className='min-h-18 rounded-md'>

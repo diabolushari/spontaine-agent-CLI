@@ -78,7 +78,7 @@ export default function MultiDynamicSelector({
     onChange(filters)
   }, [filters])
   const isAddDisabled = hasIncompleteFilter || filters.length >= records.length
-  console.log('chagning', errorBag)
+
   return (
     <div className='flex flex-col gap-4'>
       <label className='font-medium text-gray-700'>{label ?? 'Select Multiple Filters'}</label>

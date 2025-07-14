@@ -2,7 +2,6 @@ import { X } from 'lucide-react'
 import { memo, useState, FormEvent } from 'react'
 import Modal from '@/Components/Modal'
 import Input from '@/ui/form/Input'
-import { OverviewTable } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import CheckBox from '@/ui/form/CheckBox'
 import useInertiaPost from '@/hooks/useInertiaPost'
@@ -10,13 +9,10 @@ import useCustomForm from '@/hooks/useCustomForm'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import MultiDynamicSelector from './TestComponent/MultiDynamicSelector'
 
-type NewGridItem = OverviewTable & { id: number }
-
 interface AddGridItemModalProps {
   isModalOpen: boolean
   setIsModalOpen: (isOpen: boolean) => void
   subsetGroupId: number
-  onSave: (newItem: NewGridItem) => void
   blockId: number
 }
 
@@ -31,7 +27,6 @@ function AddGridItemModal({
   isModalOpen,
   setIsModalOpen,
   subsetGroupId,
-  onSave,
   blockId,
 }: AddGridItemModalProps) {
   const [colSpan2, setColSpan2] = useState(false)
@@ -49,6 +44,11 @@ function AddGridItemModal({
 
   const { post, errors } = useInertiaPost(route('config.overview.table.update', blockId), {
     onComplete: () => {
+      setFormValue('title')('')
+      setFormValue('subset_id')('')
+      setFormValue('measure_field')('')
+      setFormValue('filters')([])
+      setFormValue('col_span')(false)
       handleClose()
     },
   })
@@ -56,7 +56,7 @@ function AddGridItemModal({
   const handleSave = (e: FormEvent) => {
     e.preventDefault()
 
-    const newItem: NewGridItem = {
+    const newItem = {
       id: Date.now(),
       title: formData.title,
       subset_id: String(formData.subset_id),
@@ -64,7 +64,7 @@ function AddGridItemModal({
       filters: formData.filters,
       col_span: colSpan2,
     }
-    console.log(newItem)
+
     post({ overview_table: newItem, _method: 'PUT' })
   }
 
