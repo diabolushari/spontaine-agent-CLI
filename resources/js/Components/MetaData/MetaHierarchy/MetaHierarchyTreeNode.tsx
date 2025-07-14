@@ -24,7 +24,6 @@ export default function MetaHierarchyTreeNode({
   }, [])
 
   return (
-    // eslint-disable-next-line sonarjs/jsx-no-useless-fragment
     <>
       {node.visible && (
         <div
