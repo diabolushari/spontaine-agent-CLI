@@ -53,6 +53,7 @@ export default function MetaHierarchyTreeNode({
               </StrongText>
             </div>
             <div className='flex gap-2'>
+              <span className={'small-1stop'}>Level: {node.level}</span>
               <button
                 onClick={() => openAddNodeModal(node.record ?? null)}
                 className='small-1stop text-1stop-link underline hover:text-cyan-800'
