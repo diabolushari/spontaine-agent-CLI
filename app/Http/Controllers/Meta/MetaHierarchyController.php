@@ -12,6 +12,7 @@ use App\Models\Meta\MetaHierarchyLevelInfo;
 use App\Models\Meta\MetaStructure;
 use App\Services\MetaData\Hierarchy\HierarchyList;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -32,27 +33,48 @@ class MetaHierarchyController extends Controller implements HasMiddleware
 
     public function index(Request $request): Response
     {
-        if ($request->filled('search')) {
-            $search = $request->input('search');
+        $hierarchiesQuery = MetaHierarchy::query();
 
-            $matchedMetadataIds = MetaData::where('name', $search)->pluck('id');
+        $hierarchiesQuery->when($request->filled('search'), function (Builder $query) use ($request) {
+            $searchTerm = $request->input('search');
+            $subtype = $request->input('subtype');
 
-            $matchedItems = MetaHierarchyItem::whereIn('primary_field_id', $matchedMetadataIds)
-                ->orWhereIn('secondary_field_id', $matchedMetadataIds)
-                ->get()
-                ->unique('id')
-                ->values();
+            if ($subtype === 'heirarchies') {
+                $query->where('name', 'like', '%'.$searchTerm.'%');
 
-            $metaHierarchyIds = $matchedItems->pluck('meta_hierarchy_id')->unique()->filter()->values();
+            } elseif (! $subtype || ! $request->filled('type')) {
+                $matchedMetadataIds = MetaData::where('name', $searchTerm)->pluck('id');
 
-            $hierarchies = MetaHierarchy::whereIn('id', $metaHierarchyIds)->paginate(20);
+                $metaHierarchyIds = MetaHierarchyItem::whereIn('primary_field_id', $matchedMetadataIds)
+                    ->orWhereIn('secondary_field_id', $matchedMetadataIds)
+                    ->pluck('meta_hierarchy_id')
+                    ->unique();
 
-        } else {
-            $hierarchies = MetaHierarchy::withCount('items')
-                ->paginate(20)
-                ->withPath(route('meta-hierarchy.index'))
-                ->withQueryString();
-        }
+                $query->where(function (Builder $subQuery) use ($searchTerm, $metaHierarchyIds) {
+                    $subQuery->where('name', $searchTerm) // Exact match on hierarchy name
+                        ->orWhereIn('id', $metaHierarchyIds);
+                });
+
+            } else {
+                $searchTermWithWildcards = '%'.$searchTerm.'%';
+                $matchedMetadataIds = MetaData::where('name', 'like', $searchTermWithWildcards)->pluck('id');
+
+                $metaHierarchyIds = MetaHierarchyItem::whereIn('primary_field_id', $matchedMetadataIds)
+                    ->orWhereIn('secondary_field_id', $matchedMetadataIds)
+                    ->pluck('meta_hierarchy_id')
+                    ->unique();
+
+                $query->where(function (Builder $subQuery) use ($searchTermWithWildcards, $metaHierarchyIds) {
+                    $subQuery->where('name', 'like', $searchTermWithWildcards)
+                        ->orWhereIn('id', $metaHierarchyIds);
+                });
+            }
+        });
+
+        $hierarchies = $hierarchiesQuery->withCount('items')
+            ->paginate(20)
+            ->withPath(route('meta-hierarchy.index'))
+            ->withQueryString();
 
         return Inertia::render('MetaHierarchy/MetaHierarchyIndex', [
             'hierarchies' => $hierarchies,
