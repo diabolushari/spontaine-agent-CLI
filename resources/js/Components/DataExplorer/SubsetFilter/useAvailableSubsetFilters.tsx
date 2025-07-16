@@ -29,6 +29,12 @@ export default function useAvailableSubsetFilters(
 
     dimensions.forEach((dimension) => {
       if (dimension.subset_column == 'month') {
+        fields.push({
+          fieldId: dimension.field_id,
+          fieldName: 'Month',
+          column: 'month',
+          type: 'dimension',
+        })
         return
       }
       if (dimension.subset_column === 'section_code') {
