@@ -18,6 +18,7 @@ interface BlockActionProps {
 interface BlockComponentProps {
   dimensions?: BlockDimension
   block?: Block
+  overviewEditMode?: boolean
   setBlockDimensions?: (dimensions: BlockDimension) => void
 }
 
@@ -79,6 +80,7 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
             <Component
               dimensions={dimensions}
               block={block}
+              overviewEditMode={true}
             />
           ) : (
             <p>Unknown block type</p>

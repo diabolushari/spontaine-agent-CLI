@@ -12,6 +12,7 @@ interface Props {
   content: any
   subsetGroupId: number
   blockId: number
+  editMode?: boolean
 }
 
 export default function Overview({
@@ -20,6 +21,7 @@ export default function Overview({
   content,
   subsetGroupId,
   blockId,
+  editMode = false,
 }: Props) {
   const { title, card_type, overview_chart, overview_table } = content || {}
 
@@ -96,7 +98,7 @@ export default function Overview({
                     />
                   </div>
                 ))}
-              {(gridItems?.length < 6 || !gridItems) && (
+              {(gridItems?.length < 6 || !gridItems) && editMode && (
                 <button
                   onClick={() => setGridModalOpen(true)}
                   className='flex h-full min-h-[60px] w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-4 text-center text-indigo-600 shadow outline-none transition hover:border-indigo-500 hover:text-indigo-800 hover:shadow-lg'
@@ -113,60 +115,62 @@ export default function Overview({
             <div className='group relative flex-1 rounded-md border border-gray-200'>
               {overviewChart ? (
                 <>
-                  <div className='absolute right-2 top-2 z-10 flex gap-x-1 rounded-md bg-white bg-opacity-75 p-1 opacity-0 shadow-sm transition-opacity group-hover:opacity-100'>
-                    <button
-                      onClick={handleOpenEditChartModal}
-                      title='Edit Chart'
-                      className='text-gray-600 hover:text-indigo-600'
-                    >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='20'
-                        height='20'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
+                  {editMode && (
+                    <div className='absolute right-2 top-2 z-10 flex gap-x-1 rounded-md bg-white bg-opacity-75 p-1 opacity-0 shadow-sm transition-opacity group-hover:opacity-100'>
+                      <button
+                        onClick={handleOpenEditChartModal}
+                        title='Edit Chart'
+                        className='text-gray-600 hover:text-indigo-600'
                       >
-                        <path d='M12 20h9' />
-                        <path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z' />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => setChartDeleteModal(true)}
-                      title='Delete Chart'
-                      className='text-gray-600 hover:text-red-600'
-                    >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='20'
-                        height='20'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        >
+                          <path d='M12 20h9' />
+                          <path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z' />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => setChartDeleteModal(true)}
+                        title='Delete Chart'
+                        className='text-gray-600 hover:text-red-600'
                       >
-                        <polyline points='3 6 5 6 21 6' />
-                        <path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' />
-                        <line
-                          x1='10'
-                          y1='11'
-                          x2='10'
-                          y2='17'
-                        />
-                        <line
-                          x1='14'
-                          y1='11'
-                          x2='14'
-                          y2='17'
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        >
+                          <polyline points='3 6 5 6 21 6' />
+                          <path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' />
+                          <line
+                            x1='10'
+                            y1='11'
+                            x2='10'
+                            y2='17'
+                          />
+                          <line
+                            x1='14'
+                            y1='11'
+                            x2='14'
+                            y2='17'
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                   <OverviewChartComponent
                     chart_content={overviewChart}
                     selectedMonth={selectedMonth}

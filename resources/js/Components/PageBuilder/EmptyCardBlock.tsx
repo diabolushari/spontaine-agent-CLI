@@ -10,6 +10,7 @@ import MoreButton from '../MoreButton'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import Overview from '../Dashboard/SampleDashboard/Overview'
 import { Link } from '@inertiajs/react'
+import NormalText from '@/typography/NormalText'
 
 function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
@@ -26,9 +27,11 @@ function dateToYearMonth(date?: Date | null) {
 export function EmptyCardBlock({
   block,
   dimensions,
+  overviewEditMode = false,
 }: {
   block?: Block
   dimensions?: Record<string, string>
+  overviewEditMode?: boolean
 }) {
   const [selectedView, setSelectedView] = useState<string>('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
@@ -72,15 +75,17 @@ export function EmptyCardBlock({
   return (
     <div className={classNames}>
       <Card className='min-h-18 rounded-md'>
-        <CardHeader
-          title={block?.data?.title ?? ''}
-          subheading={block?.data?.description ?? ''}
-        />
-        <BlockRadioGroup
-          selectedView={selectedView}
-          setSelectedView={setSelectedView}
-          block={block}
-        />
+        <CardHeader title={block?.data?.title ?? ''} />
+        <div className='px-4'>
+          <NormalText>{block?.data?.description}</NormalText>
+        </div>
+        <div className='mt-4 flex flex-col'>
+          <BlockRadioGroup
+            selectedView={selectedView}
+            setSelectedView={setSelectedView}
+            block={block}
+          />
+        </div>
 
         <div className='flex flex-col justify-center md:min-h-[400px]'>
           {selectedView === 'overview' && block?.data?.overview_selected && selectedMonth && (
@@ -90,6 +95,7 @@ export function EmptyCardBlock({
               content={block?.data?.overview}
               subsetGroupId={block?.data?.subset_group_id}
               blockId={block?.id}
+              editMode={overviewEditMode}
             />
           )}
 

@@ -127,7 +127,7 @@ Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOvervi
 
 
 //chart
-Route::get('/dashboard/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
+
 Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
 
 //api for subset, data table
@@ -343,5 +343,5 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
-
+Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
 require __DIR__ . '/auth.php';

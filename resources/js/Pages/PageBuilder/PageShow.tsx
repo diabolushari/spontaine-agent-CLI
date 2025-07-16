@@ -4,9 +4,11 @@ import useCustomForm from '@/hooks/useCustomForm'
 import { Block, BlockDimension, Page } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
+import Button from '@/ui/button/Button'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import DeleteModal from '@/ui/Modal/DeleteModal'
+import { router } from '@inertiajs/react'
 import { useState } from 'react'
 
 interface Props {
@@ -68,8 +70,18 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
               <p>Are you sure you want to delete this page?</p>
             </DeleteModal>
           )}
-          <div className='flex justify-end py-5'>
-            <AddPageBlock page={page} />
+          <div className='flex justify-end gap-4 py-5'>
+            <div>
+              <AddPageBlock page={page} />
+            </div>
+            <div>
+              <Button
+                label='Preview'
+                onClick={() => {
+                  router.get(`/${page.url}`)
+                }}
+              />
+            </div>
           </div>
         </Card>
         <div className='grid'>

@@ -207,7 +207,7 @@ export default function ConfigFormStepGeneral({
 
             <div className='flex flex-col'>
               <DynamicSelectList
-                label='Subset for data explore button (optional)'
+                label='Subset group for data explore button (optional)'
                 url='/api/subset-group'
                 dataKey='name'
                 displayKey='name'

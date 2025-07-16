@@ -112,10 +112,12 @@ export function CustomAreaChart({
                 <ChartTooltipContent
                   labelKey={tooltipIndicator.label}
                   indicator='dot'
+                  formatter={(value) => formatNumber(value as number)}
                 />
               }
             />
           )}
+
           {keysToPlot.map((plotKey, index) => (
             <Area
               key={plotKey.key}

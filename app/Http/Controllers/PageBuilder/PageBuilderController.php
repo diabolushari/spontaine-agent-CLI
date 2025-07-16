@@ -13,6 +13,8 @@ use Inertia\Response;
 
 class PageBuilderController extends Controller
 {
+
+
     public function index(): Response
     {
         $pages = PageBuilder::orderBy('created_at', 'desc')->paginate(10);
