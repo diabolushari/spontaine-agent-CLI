@@ -298,6 +298,10 @@ export default function SubsetFilterForm({
     })
   }
 
+  const handleReset = () => {
+    onSubmit(null)
+  }
+
   return (
     <form
       className='flex flex-col gap-5 py-5'
@@ -387,8 +391,13 @@ export default function SubsetFilterForm({
           </div>
         </div>
       ))}
-      <div className='flex'>
+      <div className='flex gap-2'>
         <Button label='Search' />
+        <Button
+          label='Reset'
+          type='button'
+          onClick={handleReset}
+        />
       </div>
     </form>
   )
