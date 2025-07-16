@@ -10,6 +10,8 @@ import BlockDrawerForm from './BlockDrawerForm'
 import EditBlockDimension from './EditBlockDimension'
 import { EmptyCardBlock } from './EmptyCardBlock'
 import { router } from '@inertiajs/react'
+import DataExplorerCard from './DataExplorerCard'
+import DataExplorerCardConfigForm from './CardEditors/DataExplorerCard/DataExplorerCardConfigForm'
 
 interface BlockActionProps {
   block: Block
@@ -24,6 +26,7 @@ interface BlockComponentProps {
 
 const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
   'Sample Card': EmptyCardBlock,
+  'Data Explorer': DataExplorerCard,
 }
 
 export const BlockEditor = ({ block }: BlockActionProps) => {
@@ -56,9 +59,11 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
     <>
       <Card className='relative'>
         <div className='absolute right-0 top-0 z-10 flex flex-row gap-2'>
-          <ButtonBorderIcon onClick={handleEditClick}>
-            <CogIcon className='h-4 w-4' />
-          </ButtonBorderIcon>
+          {block.name !== 'Data Explorer' && (
+            <ButtonBorderIcon onClick={handleEditClick}>
+              <CogIcon className='h-4 w-4' />
+            </ButtonBorderIcon>
+          )}
           <ButtonBorderIcon onClick={() => handleMove('up')}>
             <ArrowUp className='h-4 w-4' />
           </ButtonBorderIcon>
@@ -76,12 +81,14 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
           key={JSON.stringify(dimensions)}
           className='grid bg-gray-500'
         >
-          {Component ? (
+          {Component && block.name === 'Sample Card' ? (
             <Component
               dimensions={dimensions}
               block={block}
               overviewEditMode={true}
             />
+          ) : Component && block.name === 'Data Explorer' ? (
+            <Component dataExplorerData={block.data} />
           ) : (
             <p>Unknown block type</p>
           )}
@@ -96,15 +103,25 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
           setOpen={setIsDrawerOpen}
         >
           <div className='w-full md:p-4'>
-            <BlockDrawerForm
-              initialData={block.data}
-              block={block}
-              setCloseDrawer={setIsDrawerOpen}
-            />
+            {block.name === 'Sample Card' ? (
+              <BlockDrawerForm
+                initialData={block.data}
+                block={block}
+                setCloseDrawer={setIsDrawerOpen}
+              />
+            ) : block.name === 'Data Explorer' ? (
+              <DataExplorerCardConfigForm
+                initialData={block.data}
+                block={block}
+                setCloseDrawer={setIsDrawerOpen}
+              />
+            ) : (
+              <p>Unknown block type</p>
+            )}
           </div>
         </BlockDataDrawer>
       </Card>
-      {isEditModalOpen && (
+      {isEditModalOpen && block.name === 'Sample Card' && (
         <EditBlockDimension
           setBlockDimensions={setDimensions}
           isOpen={isEditModalOpen}

@@ -12,14 +12,14 @@ import Overview from '../Dashboard/SampleDashboard/Overview'
 import { Link } from '@inertiajs/react'
 import NormalText from '@/typography/NormalText'
 
-function parseMonthYearString(monthYear: string): Date | null {
+export function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
   const year = parseInt(monthYear.slice(0, 4), 10)
   const month = parseInt(monthYear.slice(4), 10) - 1
   return new Date(year, month, 1)
 }
 
-function dateToYearMonth(date?: Date | null) {
+export function dateToYearMonth(date?: Date | null) {
   if (!date) return ''
   return `${date.getFullYear()}${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}`
 }

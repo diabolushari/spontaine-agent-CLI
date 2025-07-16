@@ -9,7 +9,7 @@ class SubsetGroupNameController extends Controller
 {
     public function __invoke($id)
     {
-        $data = SubsetGroup::select('id', 'name')
+        $data = SubsetGroup::with('items')
             ->where('id', $id)
             ->first();
         return response($data);

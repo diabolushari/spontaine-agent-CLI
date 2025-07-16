@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils' // Optional utility for conditional classNames
 import { DrawerDescription, DrawerHeader, DrawerTitle } from '../ui/drawer'
 import ConfigFormStepOverviewChart from './PageBlockConfigFormComponent/ConfigFormStepOverviewChart'
 import ConfigFormStepOverviewGeneral from './PageBlockConfigFormComponent/ConfigFormStepOverviewGeneral'
-import StrongText from '@/typography/StrongText'
 import ConfigFormStepOverviewTable from './PageBlockConfigFormComponent/ConfigFormOverviewTable'
 
 interface BlockFormProps {

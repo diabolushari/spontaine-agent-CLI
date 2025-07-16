@@ -9,6 +9,7 @@ interface OverviewGridProps {
   readonly config: OverviewTable
   readonly selectedMonth: Date | null
   readonly blockId: number
+  editMode?: boolean
 }
 
 const getMonthYear = (selectedMonth: Date | null): string => {
@@ -50,7 +51,12 @@ const getCellData = (
   return { title, value: formatNumber(totalValue) }
 }
 
-const OverviewGrid: React.FC<OverviewGridProps> = ({ config, selectedMonth, blockId }) => {
+const OverviewGrid: React.FC<OverviewGridProps> = ({
+  config,
+  selectedMonth,
+  blockId,
+  editMode = false,
+}) => {
   const { subset_id, measure_field, title, filters, id } = config
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const monthYear = useMemo(() => getMonthYear(selectedMonth), [selectedMonth])
@@ -77,12 +83,12 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({ config, selectedMonth, bloc
     <div
       role='button'
       tabIndex={0}
-      onClick={() => setShowDeleteModal(true)}
+      onClick={editMode ? () => setShowDeleteModal(true) : () => {}}
       className={`relative h-full min-h-[60px] cursor-pointer rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg`}
     >
       <p className='text-sm uppercase text-gray-600'>{cellData.title}</p>
       <p className='text-xl font-bold'>{cellData.value}</p>
-      {showDeleteModal && (
+      {showDeleteModal && editMode && (
         <DeleteModal
           setShowModal={setShowDeleteModal}
           title={`Delete Record`}

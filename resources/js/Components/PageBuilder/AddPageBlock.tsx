@@ -13,11 +13,15 @@ import useInertiaPost from '@/hooks/useInertiaPost'
 import { blockForm } from '@/Pages/PageBuilder/PageShow'
 import { Page } from '@/interfaces/data_interfaces'
 import { useCallback, useState } from 'react'
+import DataExplorerCard from './DataExplorerCard'
 
 type Props = {
   page: Page
 }
-const pageBuilderCharts = [{ id: 1, name: 'Sample Card', component: <EmptyCardBlock /> }]
+const pageBuilderCharts = [
+  { id: 1, name: 'Sample Card', component: <EmptyCardBlock /> },
+  { id: 2, name: 'Data Explorer', component: <DataExplorerCard /> },
+]
 
 export function AddPageBlock({ page }: Readonly<Props>) {
   const [open, setOpen] = useState(false)
@@ -40,8 +44,8 @@ export function AddPageBlock({ page }: Readonly<Props>) {
         margin_bottom: 'mb-0',
         mobile_width: 'col-span-full',
         tablet_width: 'md:col-span-full',
-        laptop_width: 'lg:col-span-2',
-        desktop_width: 'xl:col-span-2',
+        laptop_width: name === 'Data Explorer' ? 'lg:col-span-4' : 'lg:col-span-2',
+        desktop_width: name === 'Data Explorer' ? 'xl:col-span-4' : 'xl:col-span-2',
       },
       page_id: page.id,
       position: 0,

@@ -11,8 +11,10 @@ use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewUpdateCon
 use App\Http\Controllers\Blocks\BlocksController;
 use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
 use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
+use App\Http\Controllers\Blocks\DataExplorerCard\DataExplorerCardUpdateController;
 use App\Http\Controllers\ChartData\DataDetailDateController;
 use App\Http\Controllers\ChartData\DataDetailListController;
+use App\Http\Controllers\ChartData\DataExplorerDataController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldItemController;
 use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
 use App\Http\Controllers\ChartData\SubsetFieldsController;
@@ -122,7 +124,7 @@ Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewChartU
 Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableUpdateController::class)->name('config.overview.table.update');
 Route::delete('block/config/overview/table/update/{id}/{blockId}', BlocksConfigOverviewTableDeleteController::class)->name('config.overview.table.destroy');
 Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOverviewChartDeleteController::class)->name('config.overview.chart.destroy');
-
+Route::put('block/config/data-explorer/update/{id}', DataExplorerCardUpdateController::class)->name('config.data-explorer.update');
 
 
 
@@ -141,6 +143,8 @@ Route::get('api/subset/dimension/{subsetId}', SubsetDimensionFieldsController::c
     ->name('subset.dimension.fields');
 Route::get('/subset-group/{id}', SubsetGroupNameController::class);
 Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDimensionFieldItemController::class);
+Route::get('/api/data-explorer/{subsetGroup}', DataExplorerDataController::class)
+    ->name('data-explorer');
 
 //testing
 Route::get('/test', function () {

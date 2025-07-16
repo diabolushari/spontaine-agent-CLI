@@ -4,6 +4,7 @@ import DashboardPadding from '@/Layouts/DashboardPadding'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
 import { EmptyCardBlock } from '@/Components/PageBuilder/EmptyCardBlock'
+import DataExplorerCard from '@/Components/PageBuilder/DataExplorerCard'
 
 interface Props {
   page: Page
@@ -12,6 +13,7 @@ interface Props {
 
 const blockComponents: Record<string, React.FC<{ dimensions: BlockDimension; block: Block }>> = {
   'Sample Card': EmptyCardBlock,
+  'Data Explorer': DataExplorerCard,
 }
 
 function buildResponsiveClass(dimensions: BlockDimension): string {
@@ -55,11 +57,13 @@ export default function PagePreview({ page, blocks }: Readonly<Props>) {
                       key={JSON.stringify(block.dimensions) + block.id}
                       className={`${blockClass} rounded bg-gray-200 shadow`}
                     >
-                      {BlockComponent ? (
+                      {BlockComponent && block.name === 'Sample Card' ? (
                         <BlockComponent
                           dimensions={block.dimensions}
                           block={block}
                         />
+                      ) : block.name === 'Data Explorer' ? (
+                        <BlockComponent dataExplorerData={block?.data} />
                       ) : (
                         <p className='p-4 text-red-600'>Unknown block type</p>
                       )}

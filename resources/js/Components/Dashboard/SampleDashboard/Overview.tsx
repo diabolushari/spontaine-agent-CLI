@@ -95,6 +95,7 @@ export default function Overview({
                       config={item}
                       selectedMonth={selectedMonth}
                       blockId={blockId}
+                      editMode={editMode}
                     />
                   </div>
                 ))}
