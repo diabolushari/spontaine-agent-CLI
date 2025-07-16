@@ -24,7 +24,7 @@ interface BlockComponentProps {
   setBlockDimensions?: (dimensions: BlockDimension) => void
 }
 
-const blockComponents: Record<string, React.FC<BlockComponentProps>> = {
+const blockComponents = {
   'Sample Card': EmptyCardBlock,
   'Data Explorer': DataExplorerCard,
 }
@@ -33,7 +33,7 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const Component = blockComponents[block.name]
+  const Component = blockComponents[block?.name]
   const [dimensions, setDimensions] = useState(block?.dimensions)
   const { post } = useInertiaPost<{ _method: string; action: 'up' | 'down' }>(
     route('blocks.update', block.id),
@@ -81,13 +81,13 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
           key={JSON.stringify(dimensions)}
           className='grid bg-gray-500'
         >
-          {Component && block.name === 'Sample Card' ? (
+          {block.name === 'Sample Card' ? (
             <Component
               dimensions={dimensions}
               block={block}
               overviewEditMode={true}
             />
-          ) : Component && block.name === 'Data Explorer' ? (
+          ) : block.name === 'Data Explorer' ? (
             <Component dataExplorerData={block.data} />
           ) : (
             <p>Unknown block type</p>

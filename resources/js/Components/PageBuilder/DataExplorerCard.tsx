@@ -25,6 +25,9 @@ import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 import useFetchList from '@/hooks/useFetchList'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { parseMonthYearString } from './EmptyCardBlock'
+import Heading from '@/typography/Heading'
+import CardHeader from '@/ui/Card/CardHeader'
+import NormalText from '@/typography/NormalText'
 
 // Define the shape of OfficeData
 export interface OfficeData {
@@ -75,12 +78,10 @@ export default function DataExplorerCard({ dataExplorerData }: { dataExplorerDat
 
   // Fetch data
 
-  // sample data
-  console.log(dataExplorerData)
   const [date] = useFetchRecord(
     dataExplorerData?.data_table_id
       ? route('data-detail.date', dataExplorerData.data_table_id)
-      : exampleData.data_table_id
+      : route('data-detail.date', exampleData.data_table_id)
   )
 
   // Set default month based on fetched date
@@ -190,14 +191,17 @@ export default function DataExplorerCard({ dataExplorerData }: { dataExplorerDat
   // Render
   return (
     <FullSpinnerWrapper processing={isLoading}>
-      <div className='flex w-full flex-col gap-5'>
-        <div>
-          <span className='data-xs-1stop'>
-            {' '}
-            <b>Note:</b> In order to view data at subdivision level and below, please filter at a
-            higher organization level.
-          </span>
+      <div className='flex w-full flex-col bg-white'>
+        <CardHeader title={dataExplorerData?.title ?? ''} />
+        <div className='px-4'>
+          <NormalText>{dataExplorerData?.description}</NormalText>
         </div>
+
+        <span className='data-xs-1stop mt-2 px-4'>
+          {' '}
+          <b>Note:</b> In order to view data at subdivision level and below, please filter at a
+          higher organization level.
+        </span>
 
         <SelectedOfficeContext.Provider
           value={{

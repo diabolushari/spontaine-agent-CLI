@@ -25,9 +25,13 @@ export default function DataExplorerCardConfigForm({
     default_subset_id: initialData?.default_subset_id,
     data_table_id: initialData?.data_table_id,
   })
-  const { post, error } = useInertiaPost(route('config.data-explorer.update', block.id), {
+  const { post, errors } = useInertiaPost(route('config.data-explorer.update', block.id), {
     preserveState: true,
     preserveScroll: true,
+    showErrorToast: true,
+    onComplete: () => {
+      setCloseDrawer(true)
+    },
   })
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -51,6 +55,7 @@ export default function DataExplorerCardConfigForm({
                 label='Enter your title'
                 value={formData.title}
                 setValue={setFormValue('title')}
+                error={errors.title}
               />
             </div>
             <div className='flex flex-col'>
@@ -61,6 +66,7 @@ export default function DataExplorerCardConfigForm({
                 displayKey='name'
                 value={formData.subset_group_id ?? ''}
                 setValue={setFormValue('subset_group_id')}
+                error={errors.subset_group_id}
               />
             </div>
             <div className='flex flex-col'>
@@ -71,23 +77,28 @@ export default function DataExplorerCardConfigForm({
                 displayKey='name'
                 value={formData.data_table_id ?? 0}
                 setValue={setFormValue('data_table_id')}
+                error={errors.data_table_id}
               />
             </div>
             <div className='flex flex-col'>
-              <DynamicSelectList
-                label='Select a default subset'
-                url={`/api/subset-group/${formData?.subset_group_id}`}
-                dataKey='id'
-                displayKey='name'
-                value={formData.default_subset_id ?? ''}
-                setValue={setFormValue('default_subset_id')}
-              />
+              {formData?.subset_group_id && (
+                <DynamicSelectList
+                  label='Select a default subset'
+                  url={`/api/subset-group/${formData?.subset_group_id}`}
+                  dataKey='id'
+                  displayKey='name'
+                  value={formData.default_subset_id ?? ''}
+                  setValue={setFormValue('default_subset_id')}
+                  error={errors.default_subset_id}
+                />
+              )}
             </div>
             <div className='col-span-2 flex flex-col'>
               <TextArea
                 label='Enter your description'
                 value={formData.description}
                 setValue={setFormValue('description')}
+                error={errors.description}
               />
             </div>
           </div>
