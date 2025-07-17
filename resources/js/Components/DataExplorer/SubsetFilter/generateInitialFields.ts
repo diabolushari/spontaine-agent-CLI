@@ -65,20 +65,10 @@ const generateInitialFields = (
       }
     })
     dimensions.forEach((dimension) => {
-      if (dimension.subset_column === 'month' && key === 'month') {
-        fields.push({
-          id: 0,
-          field: 'month',
-          operator: '=',
-          value: filters[key] ?? '',
-          type: 'dimension',
-          officeData: null,
-          dimensionData: { value: filters[key] ?? '' },
-        })
-        return
-      }
-
       dimensionOperations.forEach((dimensionOperation) => {
+        if (dimension.subset_column == 'month') {
+          return
+        }
         const columnName =
           dimension.subset_column === 'section_code' ? 'office_code' : dimension.subset_column
         if (
