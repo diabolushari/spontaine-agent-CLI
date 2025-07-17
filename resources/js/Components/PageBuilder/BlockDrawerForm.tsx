@@ -7,9 +7,6 @@ import ConfigFormStepTrend from './PageBlockConfigFormComponent/ConfigFormStepTr
 import ConfigFormStepRanking from './PageBlockConfigFormComponent/ConfigFormStepRanking'
 import { cn } from '@/lib/utils' // Optional utility for conditional classNames
 import { DrawerDescription, DrawerHeader, DrawerTitle } from '../ui/drawer'
-import ConfigFormStepOverviewChart from './PageBlockConfigFormComponent/ConfigFormStepOverviewChart'
-import ConfigFormStepOverviewGeneral from './PageBlockConfigFormComponent/ConfigFormStepOverviewGeneral'
-import ConfigFormStepOverviewTable from './PageBlockConfigFormComponent/ConfigFormOverviewTable'
 
 interface BlockFormProps {
   initialData: any
@@ -168,55 +165,6 @@ export default function BlockDrawerForm({ initialData, block, setCloseDrawer }: 
                     setStep(1)
                   }
                 }}
-                onNext={(validatedData: any) => {
-                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  setCloseDrawer(false)
-                }}
-              />
-            )}
-          </div>
-          {/* Step 4 */}
-          <div className='w-full shrink-0'>
-            {step === 4 && (
-              <ConfigFormStepOverviewGeneral
-                initialData={stepData}
-                block={block}
-                onBack={() => setStep(3)}
-                onNext={(validatedData: any) => {
-                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  if (validatedData.__skip) {
-                    setCloseDrawer(false)
-                  }
-                  if (validatedData.overview.card_type === 'table') {
-                    setStep(6)
-                  } else {
-                    setStep(5)
-                  }
-                }}
-              />
-            )}
-          </div>
-          {/* Step 5 */}
-          <div className='w-full shrink-0'>
-            {step === 5 && (
-              <ConfigFormStepOverviewChart
-                initialData={stepData}
-                block={block}
-                onBack={() => setStep(4)}
-                onNext={(validatedData: any) => {
-                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
-                  setStep(6)
-                }}
-              />
-            )}
-          </div>
-          {/* Step 6 */}
-          <div className='w-full shrink-0'>
-            {step === 6 && (
-              <ConfigFormStepOverviewTable
-                initialData={stepData}
-                block={block}
-                onBack={() => setStep(5)}
                 onNext={(validatedData: any) => {
                   setStepData((prev: any) => ({ ...prev, ...validatedData }))
                   setCloseDrawer(false)
