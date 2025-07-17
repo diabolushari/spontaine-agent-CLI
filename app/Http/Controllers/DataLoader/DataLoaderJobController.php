@@ -113,8 +113,14 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             'api:id,name',
         );
 
+        $statuses = $dataLoaderJob
+            ->statuses()
+            ->paginate(20)
+            ->withQueryString();
+
         return Inertia::render('DataLoader/DataLoaderJobShow', [
             'dataLoaderJob' => $dataLoaderJob,
+            'statuses' => $statuses,
         ]);
     }
 
