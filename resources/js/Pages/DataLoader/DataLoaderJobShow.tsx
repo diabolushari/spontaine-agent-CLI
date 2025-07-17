@@ -5,6 +5,7 @@ import { DataLoaderJob, JobStatuses } from '@/interfaces/data_interfaces'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import JobStatusesTable from '@/Components/DataLoader/Jobs/JobStatusesTable'
 import JobDetailModal from '@/Components/DataLoader/Jobs/JobDetailModal'
+import Modal from '@/ui/Modal/Modal'
 
 interface Props {
   dataLoaderJob: DataLoaderJob
@@ -97,7 +98,14 @@ export default function MetaGroupShow({ dataLoaderJob }: Readonly<Props>) {
       subtype='data-tables'
       breadCrumbs={breadCrumb}
     >
-      {showStatusModal && <JobDetailModal selectedStatus={selectedStatus} />}
+      {showStatusModal && (
+        <Modal
+          setShowModal={setShowStatusModal}
+          title={selectedStatus?.executed_at}
+        >
+          <JobDetailModal selectedStatus={selectedStatus} />
+        </Modal>
+      )}
 
       <JobStatusesTable
         statuses={dataLoaderJob.statuses}
