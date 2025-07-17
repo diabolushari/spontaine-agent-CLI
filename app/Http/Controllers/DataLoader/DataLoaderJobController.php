@@ -51,6 +51,8 @@ class DataLoaderJobController extends Controller implements HasMiddleware
             ->withPath(route('loader-jobs.index'))
             ->withQueryString();
 
+        //        $oldStructure = $request->filled('structure') ?
+
         return Inertia::render('DataLoader/DataLoaderJobIndex', [
             'dataLoaderJobs' => $dataLoaderJobs,
             'type' => $request->type,
