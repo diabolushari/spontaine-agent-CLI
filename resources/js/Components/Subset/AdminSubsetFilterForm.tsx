@@ -59,7 +59,7 @@ function isLastFieldFilled(fields: SubsetFilterFormField[]): boolean {
   return true
 }
 
-export default function SubsetFilterForm({
+export default function AdminSubsetFilterForm({
   subset,
   dates,
   measures,
@@ -301,6 +301,8 @@ export default function SubsetFilterForm({
       })
     })
   }
+
+  // console.log('formfields :', formFields)
 
   return (
     <form

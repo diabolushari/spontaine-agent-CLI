@@ -11,8 +11,8 @@ import DeleteModal from '@/ui/Modal/DeleteModal'
 import { Paginator } from '@/ui/ui_interfaces'
 import Pagination from '@/ui/Pagination/Pagination'
 import SubsetTable from '@/Components/DataExplorer/SubsetTable'
-import SubsetFilterForm from '@/Components/DataExplorer/SubsetFilter/SubsetFilterForm'
 import { router } from '@inertiajs/react'
+import AdminSubsetFilterForm from '@/Components/Subset/AdminSubsetFilterForm'
 
 interface Props {
   subset: SubsetDetail
@@ -44,7 +44,7 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
       editUrl={route('subset.edit', subset.id)}
     >
       <div className='flex w-full flex-col md:w-1/2'>
-        <SubsetFilterForm
+        <AdminSubsetFilterForm
           dates={subset.dates as SubsetDateField[]}
           measures={subset.measures as SubsetMeasureField[]}
           dimensions={subset.dimensions as SubsetDimensionField[]}
