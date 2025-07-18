@@ -67,11 +67,11 @@ export default function MetaHierarchyIndex({ hierarchies, type, subtype, oldValu
         description: hierarchy.description,
         items_count: 'Members ' + hierarchy.items_count,
         actions: [
-          {
-            title: `Members ${hierarchy.items_count}`,
-            url: route('meta-data.index', { search: hierarchy.name }, false),
-            textStyles: 'hover:scale-105 transition',
-          },
+          // {
+          //   title: `Members ${hierarchy.items_count}`,
+          //   url: route('meta-data.index', { search: hierarchy.name }, false),
+          //   textStyles: 'hover:scale-105 transition',
+          // },
         ],
       }
     })
