@@ -1,76 +1,33 @@
-import {
-  SubsetDateField,
-  SubsetDetail,
-  SubsetDimensionField,
-  SubsetMeasureField,
-} from '@/interfaces/data_interfaces'
+import useAvailableFiltersFromDataDetail from '@/Components/DataDetail/Filter/useAvailableFiltersFromDataDetail'
+import { DataDetail } from '@/interfaces/data_interfaces'
+import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 import { FormEvent, useEffect, useRef, useState } from 'react'
+import generateInitalFieldsDataDetail from '@/Components/DataDetail/Filter/generateInitialFieldsDatadetail'
 import SelectList from '@/ui/form/SelectList'
+import { availableOperators } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
 import Input from '@/ui/form/Input'
-import Button from '@/ui/button/Button'
+import DatePicker from '@/ui/form/DatePicker'
 import ComboBox from '@/ui/form/ComboBox'
 import { XIcon } from 'lucide-react'
-import { availableOperators } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
-import DatePicker from '@/ui/form/DatePicker'
-import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
+import Button from '@/ui/button/Button'
 import { showError } from '@/ui/alerts'
-import useAdminAvailableSubsetFilters from '@/Components/Subset/hooks/useAdminAvailableSubsetFilters'
-import generateInitialFilterFields from '@/Components/Subset/hooks/generateInitialFilterFields'
+import {
+  SubsetFilterFormField,
+  SubsetFilterFormType,
+} from '@/Components/Subset/AdminSubsetFilterForm'
 
 interface Props {
-  dates: SubsetDateField[]
-  measures: SubsetMeasureField[]
-  dimensions: SubsetDimensionField[]
-  subset: SubsetDetail
+  details: DataDetail
   filters: Record<string, string | undefined | null>
   onSubmit: (querystring: string | null) => void
   offices?: OfficeData[]
 }
 
-export type SubsetFilterFormType = 'date' | 'dimension' | 'number' | 'office' | 'month' | 'string'
-
-export interface SubsetFilterFormField {
-  id: number
-  field: string
-  operator: string
-  value: string
-  dimensionData: { value: string } | null
-  officeData: { office_name: string; office_code: string } | null
-  type: SubsetFilterFormType
-}
-
-function isLastFieldFilled(fields: SubsetFilterFormField[]): boolean {
-  if (fields.length === 0) {
-    return true
-  }
-  const lastField = fields[fields.length - 1]
-  if (lastField.field === '' || lastField.operator === '') {
-    return false
-  }
-  if (lastField.type === 'dimension' && lastField.dimensionData == null) {
-    return false
-  }
-  if (lastField.type === 'office' && lastField.officeData == null) {
-    return false
-  }
-  if (lastField.type !== 'dimension' && lastField.type !== 'office' && lastField.value === '') {
-    return false
-  }
-  return true
-}
-
-export default function AdminSubsetFilterForm({
-  subset,
-  dates,
-  measures,
-  dimensions,
-  filters,
-  offices,
-  onSubmit,
-}: Readonly<Props>) {
+export default function DataDetailFIlter({ details, filters, onSubmit, offices }: Readonly<Props>) {
+  const availableFilters = useAvailableFiltersFromDataDetail(details)
   const uuidRef = useRef(1)
-  const [formFields, setFormFields] = useState<SubsetFilterFormField[]>(
-    generateInitialFilterFields(filters, dates, measures, dimensions, offices).map((formField) => {
+  const [formFields, setFormFields] = useState(
+    generateInitalFieldsDataDetail(filters, details, offices).map((formField) => {
       return {
         ...formField,
         id: uuidRef.current++,
@@ -78,7 +35,28 @@ export default function AdminSubsetFilterForm({
     })
   )
 
-  //to add or remove new fields at end
+  console.log(formFields)
+
+  function isLastFieldFilled(fields: SubsetFilterFormField[]): boolean {
+    if (fields.length === 0) {
+      return true
+    }
+    const lastField = fields[fields.length - 1]
+    if (lastField.field === '' || lastField.operator === '') {
+      return false
+    }
+    if (lastField.type === 'dimension' && lastField.dimensionData == null) {
+      return false
+    }
+    if (lastField.type === 'office' && lastField.officeData == null) {
+      return false
+    }
+    if (lastField.type !== 'dimension' && lastField.type !== 'office' && lastField.value === '') {
+      return false
+    }
+    return true
+  }
+
   useEffect(() => {
     if (formFields.length === 0) {
       setFormFields([
@@ -131,62 +109,6 @@ export default function AdminSubsetFilterForm({
       })
     }
   }, [formFields])
-
-  const availableFields = useAdminAvailableSubsetFilters(dates, dimensions, measures)
-
-  const setField = (id: number, value: string) => {
-    const field = availableFields.find((field) => field.column === value)
-    setFormFields((prevFormFields) => {
-      return prevFormFields.map((formField) => {
-        if (formField.id === id) {
-          return {
-            ...formField,
-            field: value,
-            type: (field?.type ?? 'string') as SubsetFilterFormType,
-            operator: '=',
-            value: '',
-            officeData: null,
-            dimensionData: null,
-          }
-        }
-        return formField
-      })
-    })
-  }
-
-  const setOperator = (id: number, value: string) => {
-    setFormFields((prevFormFields) => {
-      return prevFormFields.map((formField) => {
-        if (formField.id === id) {
-          return {
-            ...formField,
-            operator: value,
-            value: '',
-            officeData: null,
-            dimensionData: null,
-          }
-        }
-        return formField
-      })
-    })
-  }
-
-  const setValue = (id: number, value: string) => {
-    setFormFields((prevFormFields) => {
-      return prevFormFields.map((formField) => {
-        if (formField.id === id) {
-          return {
-            ...formField,
-            value: value,
-            officeData: null,
-            dimensionData: null,
-          }
-        }
-        return formField
-      })
-    })
-  }
-
   const formSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const urlParams = new URLSearchParams()
@@ -256,13 +178,58 @@ export default function AdminSubsetFilterForm({
     onSubmit(urlParams.toString())
   }
 
-  const removeField = (id: number) => {
+  const setField = (id: number, value: string) => {
+    const field = availableFilters.find((field) => field.column === value)
     setFormFields((prevFormFields) => {
-      return prevFormFields.filter((formField) => formField.id !== id)
+      return prevFormFields.map((formField) => {
+        if (formField.id === id) {
+          return {
+            ...formField,
+            field: value,
+            type: (field?.type ?? 'string') as SubsetFilterFormType,
+            operator: '=',
+            value: '',
+            officeData: null,
+            dimensionData: null,
+          }
+        }
+        return formField
+      })
+    })
+  }
+  const setOperator = (id: number, value: string) => {
+    setFormFields((prevFormFields) => {
+      return prevFormFields.map((formField) => {
+        if (formField.id === id) {
+          return {
+            ...formField,
+            operator: value,
+            value: '',
+            officeData: null,
+            dimensionData: null,
+          }
+        }
+        return formField
+      })
     })
   }
 
-  //Autocomplete selection for dimension values
+  const setValue = (id: number, value: string) => {
+    setFormFields((prevFormFields) => {
+      return prevFormFields.map((formField) => {
+        if (formField.id === id) {
+          return {
+            ...formField,
+            value: value,
+            officeData: null,
+            dimensionData: null,
+          }
+        }
+        return formField
+      })
+    })
+  }
+
   const setDimensionFieldValue = (id: number, value: { value: string } | null) => {
     setFormFields((prevFormFields) => {
       return prevFormFields.map((formField) => {
@@ -297,7 +264,11 @@ export default function AdminSubsetFilterForm({
       })
     })
   }
-
+  const removeField = (id: number) => {
+    setFormFields((prevFormFields) => {
+      return prevFormFields.filter((formField) => formField.id !== id)
+    })
+  }
   return (
     <form
       className='flex flex-col gap-5 py-5'
@@ -311,7 +282,7 @@ export default function AdminSubsetFilterForm({
           <div className='flex flex-col'>
             <SelectList
               label='Field'
-              list={availableFields}
+              list={availableFilters}
               dataKey='column'
               displayKey='fieldName'
               setValue={(value) => setField(formField.id, value)}
@@ -370,8 +341,8 @@ export default function AdminSubsetFilterForm({
                   dataKey='value'
                   displayKey='value'
                   setValue={(value) => setDimensionFieldValue(formField.id, value)}
-                  url={route('subset.column.search', {
-                    subsetDetail: subset.id,
+                  url={route('data-detail-column-search', {
+                    dataDetail: details.id,
                     column: formField.field,
                     search: '',
                   })}

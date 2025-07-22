@@ -133,6 +133,7 @@ class DataDetailController extends Controller implements HasMiddleware
 
     public function show(DataDetail $dataDetail, QueryDataTable $queryDataTable, Request $request): RedirectResponse|Response
     {
+
         $dataDetail->load(
             'dateFields',
             'dimensionFields.structure',
@@ -141,8 +142,10 @@ class DataDetailController extends Controller implements HasMiddleware
             'textFields'
         );
 
-        $dataTable = $queryDataTable->query($dataDetail)
-            ->paginate(50)
+        $query = $queryDataTable->query($dataDetail);
+        $this->applyFilters($query, $request, $dataDetail);
+
+        $dataTable = $query->paginate(50)
             ->withPath(route('data-detail.show', $dataDetail->id))
             ->withQueryString();
 
@@ -156,7 +159,87 @@ class DataDetailController extends Controller implements HasMiddleware
             'jobs' => $jobs,
             'tab' => $request->input('tab', 'data'),
             'subsets' => SubsetDetail::where('data_detail_id', $dataDetail->id)->get(),
+            'filters' => request()->all(),
         ]);
+    }
+
+    /**
+     * Applies filters to the query based on request params.
+     */
+    protected function applyFilters(
+        \Illuminate\Database\Query\Builder $query,
+        Request $request,
+        DataDetail $dataDetail
+    ): void {
+        // Get all valid fields (mirroring useAvailableFiltersFromDataDetail in frontend)
+        $validDimensions = $dataDetail->dimensionFields->pluck('column')->toArray();
+        $validDates = $dataDetail->dateFields->pluck('column')->toArray();
+        $validMeasures = $dataDetail->measureFields->pluck('column')->toArray();
+
+        // Loop over all query params (flat, like 'section_code_in' => 'val1,val2')
+        foreach ($request->query() as $key => $value) {
+            $value = trim((string) $value);
+            if (empty($value)) {
+                continue;
+            }
+
+            // Parse key into field and operator suffix (e.g., 'section_code_in' -> field='section_code', op='_in')
+            preg_match('/^([a-zA-Z0-9_]+)(_[a-z]+)?$/', $key, $matches);
+            if (count($matches) < 2) {
+                continue; // Invalid key format
+            }
+
+            $field = $matches[1];
+            $operatorSuffix = $matches[2] ?? ''; // Default to '' (implies '=')
+
+            // Determine if it's a dimension (joined) or raw column
+            $isDimension = in_array($field, $validDimensions);
+            $column = $isDimension ? "{$field}_record.name" : "{$dataDetail->table_name}.{$field}";
+
+            // Validate field existence (skip invalid)
+            if (
+                ! in_array($field, $validDimensions) &&
+                ! in_array($field, $validDates) &&
+                ! in_array($field, $validMeasures)
+            ) {
+                continue;
+            }
+
+            // Handle operators based on suffix
+            switch ($operatorSuffix) {
+                case '': // Exact match (=)
+                    $query->where($column, '=', $value);
+                    break;
+                case '_not': // Not equal (!=)
+                    $query->where($column, '!=', $value);
+                    break;
+                case '_in': // IN (split comma-separated)
+                    $values = explode(',', $value);
+                    $query->whereIn($column, $values);
+                    break;
+                case '_not_in': // NOT IN
+                    $values = explode(',', $value);
+                    $query->whereNotIn($column, $values);
+                    break;
+                case '_gt': // >
+                    $query->where($column, '>', $value);
+                    break;
+                case '_gte': // >=
+                    $query->where($column, '>=', $value);
+                    break;
+                case '_lt': // <
+                    $query->where($column, '<', $value);
+                    break;
+                case '_lte': // <=
+                    $query->where($column, '<=', $value);
+                    break;
+                case '_like': // LIKE %value%
+                    $query->where($column, 'LIKE', '%'.$value.'%');
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public function destroy(DataDetail $dataDetail, DeleteDataTable $deleteDataTable): RedirectResponse
