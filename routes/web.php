@@ -33,6 +33,10 @@ use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
 use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
+use App\Http\Controllers\NavController\NavController;
+use App\Http\Controllers\NavController\NavEditorController;
+use App\Http\Controllers\NavController\NavGroupController;
+use App\Http\Controllers\NavController\NavItemController;
 use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
@@ -261,5 +265,21 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
+
+Route::get('/nav-editor', [NavEditorController::class, 'index'])->name('nav.editor');
+
+Route::resource('nav-group', NavGroupController::class)->only([
+    'update',
+    'store',
+    'destroy',
+]);
+
+Route::resource('nav-item', NavItemController::class)->only([
+    'update',
+    'store',
+    'destroy',
+]);
+
+Route::get('nav-data', NavController::class);
 
 require __DIR__.'/auth.php';
