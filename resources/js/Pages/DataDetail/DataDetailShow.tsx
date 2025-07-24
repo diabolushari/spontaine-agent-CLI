@@ -21,7 +21,8 @@ import Pagination from '@/ui/Pagination/Pagination'
 import Tab from '@/ui/Tabs/Tab'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import DataDetailFIlter from '@/Components/DataDetail/Filter/DataDetailFIlter'
 
 interface Props {
   detail: DataDetail
@@ -29,6 +30,7 @@ interface Props {
   jobs: DataLoaderJob[]
   subsets: SubsetDetail[]
   tab?: string
+  filters: Record<string, string>
 }
 
 const tabItems = [
@@ -44,6 +46,7 @@ export default function DataDetailShow({
   jobs,
   tab = 'data',
   subsets,
+  filters,
 }: Readonly<Props>) {
   const [activeTab, setActiveTab] = useState(tab)
   const cronResult = (record: DataLoaderJob) => {
@@ -138,6 +141,14 @@ export default function DataDetailShow({
     setShowDeleteModal(true)
   }
 
+  const handleSubmit = useCallback(
+    (query: string | null) => {
+      console.log(query)
+      router.get(route('data-detail.show', detail.id) + '?' + query)
+    },
+    [detail]
+  )
+
   return (
     <AnalyticsDashboardLayout
       type='data'
@@ -158,6 +169,11 @@ export default function DataDetailShow({
           />
           {activeTab === 'data' && (
             <>
+              <DataDetailFIlter
+                details={detail}
+                onSubmit={handleSubmit}
+                filters={filters}
+              />
               <div className='my-5 flex items-center justify-end gap-5'>
                 <a
                   target='_blank'
