@@ -12,7 +12,9 @@ class GetPrimaryFieldData implements DataFetcherInterface
 {
     public function __construct(
         private readonly FetchJSONAPI $fetchJSONAPI,
-        private readonly FindJsonPrimaryField $findJsonPrimaryField
+        private readonly FindJsonPrimaryField $findJsonPrimaryField,
+        private readonly FlattenJsonResponse $flattenJsonResponse,
+        private readonly PerformJSONProcessing $performFieldMapping
     ) {}
 
     /**
@@ -56,7 +58,15 @@ class GetPrimaryFieldData implements DataFetcherInterface
         // Fetch the data
         $data = $this->fetchJSONAPI->getData();
 
-        return $this->traverseStructure($data, $pathToPrimary);
+        $result = $this->traverseStructure($data, $pathToPrimary);
+
+        if ($dataSource->hasFieldMapping()) {
+            $flattenedData = $this->flattenJsonResponse->flatten($result, '.', 'response');
+
+            return $this->performFieldMapping->handle($flattenedData, $dataSource->fieldMapping);
+        }
+
+        return $result;
     }
 
     /**
