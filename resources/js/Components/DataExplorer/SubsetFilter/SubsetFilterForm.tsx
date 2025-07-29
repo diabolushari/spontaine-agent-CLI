@@ -29,6 +29,7 @@ interface Props {
 
 export type SubsetFilterFormType = 'date' | 'dimension' | 'number' | 'office' | 'month' | 'string'
 
+//
 export interface SubsetFilterFormField {
   id: number
   field: string
@@ -59,6 +60,7 @@ function isLastFieldFilled(fields: SubsetFilterFormField[]): boolean {
   return true
 }
 
+//TODO show reset button to clear all filters
 export default function SubsetFilterForm({
   subset,
   dates,
@@ -77,10 +79,6 @@ export default function SubsetFilterForm({
       }
     })
   )
-
-  useEffect(() => {
-    console.log('formfields :', formFields)
-  }, [formFields])
 
   //to add or remove new fields at end
   useEffect(() => {

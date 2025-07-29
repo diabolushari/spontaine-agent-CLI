@@ -11,6 +11,8 @@ import {
 } from '@/Components/DataExplorer/SubsetFilter/subsetFilterOperations'
 import { OfficeData } from '@/Pages/DataExplorer/DataExplorerPage'
 
+//TODO: initSubsetFilterFormFields should be moved to a separate file
+//TODO add month argument to generateInitialFields
 const generateInitialFields = (
   filters: Record<string, string | undefined | null>,
   dates: SubsetDateField[],
@@ -23,6 +25,8 @@ const generateInitialFields = (
   Object.keys(filters).forEach((key) => {
     dates.forEach((date) => {
       dateOperations.forEach((dateOperation) => {
+        //TOdo find opeatation,
+        // TODO insert to datesList
         if (
           key === `${date.subset_column}${dateOperation.value == '=' ? '' : dateOperation.value}`
         ) {

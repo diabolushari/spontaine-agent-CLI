@@ -22,7 +22,7 @@ import Tab from '@/ui/Tabs/Tab'
 import { Paginator } from '@/ui/ui_interfaces'
 import { router } from '@inertiajs/react'
 import { useCallback, useMemo, useState } from 'react'
-import DataDetailFIlter from '@/Components/DataDetail/Filter/DataDetailFIlter'
+import DataDetailFilter from '@/Components/DataDetail/Filter/DataDetailFilter'
 
 interface Props {
   detail: DataDetail
@@ -169,7 +169,8 @@ export default function DataDetailShow({
           />
           {activeTab === 'data' && (
             <>
-              <DataDetailFIlter
+              {/*TODO Data Detail Table Component*/}
+              <DataDetailFilter
                 details={detail}
                 onSubmit={handleSubmit}
                 filters={filters}

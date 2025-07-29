@@ -30,6 +30,7 @@ export default function SubsetPreview({ subset, data, filters }: Readonly<Props>
   const handleSubmit = useCallback(
     (query: string | null) => {
       console.log(query)
+      // empty string on null query
       router.get(route('subset.preview', subset.id) + '?' + query)
     },
     [subset]
