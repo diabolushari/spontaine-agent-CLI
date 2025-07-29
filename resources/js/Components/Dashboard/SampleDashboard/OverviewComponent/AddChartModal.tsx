@@ -64,6 +64,30 @@ function AddChartModal({
     colorScheme: chartToEdit?.color_scheme ?? '',
   })
 
+  // ✅ Track previous subsetId
+  const prevSubsetId = React.useRef(formData.subsetId)
+
+  // ✅ Reset fields except title when subset changes
+  useEffect(() => {
+    if (prevSubsetId.current !== formData.subsetId) {
+      setAll({
+        title: formData.title, // Keep title
+        subsetId: formData.subsetId, // Keep selected subset
+        chartType: 'bar',
+        dimension: '',
+        xAxis: '',
+        xAxisCount: 0,
+        xAxisLabel: '',
+        xAxisOrder: 'ascending',
+        xAxisEnable: false,
+        yAxis: [],
+        pieYaxis: '',
+        colorScheme: '',
+      })
+      prevSubsetId.current = formData.subsetId
+    }
+  }, [formData.subsetId])
+
   useEffect(() => {
     if (formData.chartType === 'pie' && formData.pieYaxis) {
       const selectedField = subsetFields?.find((f) => f.subset_column === formData.pieYaxis)
@@ -88,10 +112,10 @@ function AddChartModal({
       xAxisLabel: chartToEdit?.x_axis_label ?? '',
       xAxisOrder: chartToEdit?.x_axis_order ?? 'ascending',
       xAxisEnable: chartToEdit?.x_axis_enable ?? false,
-      yAxis: chartToEdit.chart_type === 'pie' ? [] : chartToEdit.y_axis,
+      yAxis: chartToEdit.chart_type === 'pie' ? chartToEdit.y_axis : chartToEdit.y_axis,
       pieYaxis: chartToEdit?.y_axis[0]?.value ?? '',
     })
-  }, [formData.subsetId, formData.chartType])
+  }, [])
 
   const [subsetFields] = useFetchRecord<SubsetField[]>(
     formData.subsetId ? `/api/subset/${formData.subsetId}` : null

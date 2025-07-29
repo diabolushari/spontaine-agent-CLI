@@ -54,7 +54,7 @@ export default function ConfigFormMeasureFields({
       selected: formData.field,
     })
   }, [formData.label, formData.value, formData.unit, formData.show_label, formData.field])
-
+  console.log(formData)
   return (
     <div className='flex flex-col gap-4 md:grid md:grid-cols-4'>
       <div className='col-span-4 flex flex-col'>

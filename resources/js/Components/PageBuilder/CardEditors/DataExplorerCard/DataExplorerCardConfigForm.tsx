@@ -58,17 +58,7 @@ export default function DataExplorerCardConfigForm({
                 error={errors.title}
               />
             </div>
-            <div className='flex flex-col'>
-              <DynamicSelectList
-                label='Select a subset group'
-                url='/api/subset-group'
-                dataKey='id'
-                displayKey='name'
-                value={formData.subset_group_id ?? ''}
-                setValue={setFormValue('subset_group_id')}
-                error={errors.subset_group_id}
-              />
-            </div>
+
             <div className='flex flex-col'>
               <DynamicSelectList
                 label='Select a data table for default date'
@@ -81,15 +71,46 @@ export default function DataExplorerCardConfigForm({
               />
             </div>
             <div className='flex flex-col'>
-              {formData?.subset_group_id && (
+              {formData.data_table_id ? (
                 <DynamicSelectList
-                  label='Select a default subset'
+                  label='Subset group'
+                  url={`/api/data-detail/subset-group/${formData.data_table_id}`}
+                  placeholder='Select a subset group'
+                  dataKey='id'
+                  displayKey='name'
+                  value={formData.subset_group_id ?? ''}
+                  setValue={setFormValue('subset_group_id')}
+                  error={errors.subset_group_id}
+                />
+              ) : (
+                <Input
+                  label='Select subset group'
+                  value={formData.subset_group_id}
+                  setValue={setFormValue('subset_group_id')}
+                  error={errors.subset_group_id}
+                  disabled
+                />
+              )}
+            </div>
+            <div className='flex flex-col'>
+              {formData?.subset_group_id ? (
+                <DynamicSelectList
+                  label='Default subset'
                   url={`/api/subset-group/${formData?.subset_group_id}`}
+                  placeholder='Select a default subset'
                   dataKey='id'
                   displayKey='name'
                   value={formData.default_subset_id ?? ''}
                   setValue={setFormValue('default_subset_id')}
                   error={errors.default_subset_id}
+                />
+              ) : (
+                <Input
+                  label='Select default subset'
+                  value={formData.default_subset_id}
+                  setValue={setFormValue('default_subset_id')}
+                  error={errors.default_subset_id}
+                  disabled
                 />
               )}
             </div>

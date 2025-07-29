@@ -5,6 +5,7 @@ import { dateToYearMonth, formatNumber } from '@/Components/ServiceDelivery/Acti
 import type { OverviewTable, Filter } from '@/interfaces/data_interfaces'
 import { router } from '@inertiajs/react'
 import DeleteModal from '@/ui/Modal/DeleteModal'
+
 interface OverviewGridProps {
   readonly config: OverviewTable
   readonly selectedMonth: Date | null
@@ -83,19 +84,24 @@ const OverviewGrid: React.FC<OverviewGridProps> = ({
     <div
       role='button'
       tabIndex={0}
-      onClick={editMode ? () => setShowDeleteModal(true) : () => {}}
-      className={`relative h-full min-h-[60px] cursor-pointer rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg`}
+      onClick={editMode ? () => setShowDeleteModal(true) : undefined}
+      className='relative h-full min-h-[60px] cursor-pointer rounded-lg border bg-white p-4 text-center shadow outline-none transition hover:shadow-lg'
     >
       <p className='text-sm uppercase text-gray-600'>{cellData.title}</p>
       <p className='text-xl font-bold'>{cellData.value}</p>
+
       {showDeleteModal && editMode && (
-        <DeleteModal
-          setShowModal={setShowDeleteModal}
-          title={`Delete Record`}
-          url={route('config.overview.table.destroy', [id, blockId])}
-        >
-          <p>Are you sure you want to delete this grid item?</p>
-        </DeleteModal>
+        <div onClick={(e) => e.stopPropagation()}>
+          {' '}
+          {/* 🔑 prevent bubbling */}
+          <DeleteModal
+            setShowModal={setShowDeleteModal}
+            title='Delete Record'
+            url={route('config.overview.table.destroy', [id, blockId])}
+          >
+            <p>Are you sure you want to delete this grid item?</p>
+          </DeleteModal>
+        </div>
       )}
     </div>
   )

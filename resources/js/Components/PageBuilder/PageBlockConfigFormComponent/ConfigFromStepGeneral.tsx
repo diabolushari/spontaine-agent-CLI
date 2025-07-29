@@ -195,7 +195,7 @@ export default function ConfigFormStepGeneral({
           <div className='flex flex-col gap-2'>
             <div className='flex flex-col'>
               <DynamicSelectList
-                label='Select a data table for default date'
+                label='Select a data table'
                 url='/api/data-detail'
                 dataKey='id'
                 displayKey='name'
