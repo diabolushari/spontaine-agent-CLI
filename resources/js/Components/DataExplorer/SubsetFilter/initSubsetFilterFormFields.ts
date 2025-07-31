@@ -38,6 +38,23 @@ function addFilterField(
   })
 }
 
+function addDateFilter(
+  fields: SubsetFilterFormField[],
+  date: SubsetDateField,
+  options: {
+    operator: string
+    value?: string | null
+    type: SubsetFilterFormType
+  }
+) {
+  addFilterField(fields, {
+    ...options,
+    field: date.subset_column ?? '',
+    officeData: null,
+    dimensionData: null,
+  })
+}
+
 function handleInNotIn(
   key: string,
   item: { subset_column: string | null },
@@ -63,7 +80,7 @@ function handleInNotIn(
   }
 }
 
-const generateInitialFields = (
+const initSubsetFilterFormFields = (
   filters: Record<string, string | undefined | null>,
   dates: SubsetDateField[],
   measures: SubsetMeasureField[],
@@ -79,10 +96,9 @@ const generateInitialFields = (
         //*TOdo find opeatation,
         // TODO insert to datesList
         if (
-          key === `${date.subset_column}${dateOperation.value == '=' ? '' : dateOperation.value}`
+          key === `${date.subset_column}${dateOperation.value === '=' ? '' : dateOperation.value}`
         ) {
-          addFilterField(fields, {
-            field: date.subset_column ?? '',
+          addDateFilter(fields, date, {
             operator: dateOperation.value,
             value: filters[key],
             type: date.use_expression === 1 ? 'string' : 'date',
@@ -110,7 +126,17 @@ const generateInitialFields = (
         () => null
       )
     })
+
     dimensions.forEach((dimension) => {
+      if (key === dimension.subset_column) {
+        addFilterField(fields, {
+          field: dimension.subset_column ?? '',
+          operator: '==',
+          value: filters[key],
+          type: 'dimension',
+          dimensionData: { value: filters[key] ?? '' },
+        })
+      }
       dimensionOperations.forEach((dimensionOperation) => {
         if (dimension.subset_column == 'month') {
           if (month) {
@@ -176,4 +202,4 @@ const generateInitialFields = (
   return fields
 }
 
-export default generateInitialFields
+export default initSubsetFilterFormFields
