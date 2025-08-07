@@ -104,7 +104,7 @@ export default function MetaGroupShow({ dataLoaderJob, statuses }: Readonly<Prop
       {showStatusModal && (
         <Modal
           setShowModal={setShowStatusModal}
-          title={selectedStatus?.executed_at}
+          // title={selectedStatus?.executed_at}
         >
           <JobDetailModal selectedStatus={selectedStatus} />
         </Modal>
