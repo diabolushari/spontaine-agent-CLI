@@ -122,7 +122,6 @@ export default function MainArea({
                     } `}
                   >
                     <ChatMessageContent message={message} />
-
                     {message.suggestions && message.suggestions.length > 0 && (
                       <div className='mt-3 space-y-2'>
                         {message.suggestions.map((suggestion, idx) => (

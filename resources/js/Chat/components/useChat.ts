@@ -70,7 +70,6 @@ export default function useChat(currentSession: CurrentSession) {
       if (contentBuffer.current == '') {
         return
       }
-      console.log('flushing buffer:', contentBuffer.current)
       const contentToFlush = contentBuffer.current
       contentBuffer.current = ''
 

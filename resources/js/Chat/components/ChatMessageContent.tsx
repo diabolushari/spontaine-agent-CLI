@@ -1,5 +1,10 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from '@/Components/ui/accordion'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/Components/ui/accordion'
 import { Download } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -34,34 +39,6 @@ function formatJsonDescription(description: string): string {
   } catch {
     return description
   }
-}
-
-function findTags(content?: string | null) {
-  const positions: ContentTagInfo[] = []
-
-  if (content == null) {
-    return positions
-  }
-
-  const tagName = '<tool_call>'
-
-  let position = 0
-  while (position < content.length) {
-    position = content.indexOf(tagName)
-    if (position === -1) {
-      break
-    }
-
-    positions.push({
-      tag: tagName,
-      start: position,
-      end: content.indexOf(`</${tagName.slice(1)}`),
-    })
-
-    content = content.slice(position + tagName.length)
-  }
-
-  return positions
 }
 
 const ChatMessageContent = ({ message }: Readonly<Props>) => {
