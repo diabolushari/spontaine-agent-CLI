@@ -1,17 +1,17 @@
-import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
-import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
-import { CustomPieChart } from '@/Components/Charts/SampleChart/SamplePieChart'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { ChatMessage } from './MainArea'
-import { Download, Image } from 'lucide-react'
-import OfficeClusterMap from '@/Components/DataExplorer/OfficeRanking/Map/OfficeClusterMap'
-import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
 import {
   convertChartDataToMapDataItems,
   downloadChartAsImage,
   downloadExcel,
 } from '@/Chat/components/chart-helpers'
 import ChartDataTable from '@/Chat/components/ChartDataTable'
+import { CustomAreaChart } from '@/Components/Charts/SampleChart/CustomAreaChart'
+import { CustomBarChart } from '@/Components/Charts/SampleChart/CustomBarChart'
+import { CustomLineChart } from '@/Components/Charts/SampleChart/CustomLineChart'
+import { CustomPieChart } from '@/Components/Charts/SampleChart/SamplePieChart'
+import OfficeClusterMap from '@/Components/DataExplorer/OfficeRanking/Map/OfficeClusterMap'
+import { Download, Image } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
+import { ChatMessage } from './MainArea'
 
 export interface ChartData {
   key?: 'line' | 'bar' | 'pie' | 'area' | 'map'
@@ -73,10 +73,6 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
         unit: metric.unit ?? '',
       }))
   }, [selectedChart?.metrics_to_plot])
-
-  useEffect(() => {
-    console.log('selectedChart', selectedChart)
-  }, [selectedChart])
 
   return (
     <div className='flex w-full flex-col gap-6'>
@@ -181,7 +177,7 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
 
           {/* Chart View */}
           {viewMode === 'chart' && (
-            <>
+            <div className='flex w-full items-center justify-center'>
               {selectedChart.key === 'bar' && (
                 <CustomBarChart
                   data={(selectedChart.data as Record<string, string | number>[]) ?? []}
@@ -225,7 +221,7 @@ export default function ChatVisualization({ message }: Readonly<Props>) {
                   officeLevel={selectedChart.office_level ?? 'section'}
                 />
               )}
-            </>
+            </div>
           )}
         </div>
       )}

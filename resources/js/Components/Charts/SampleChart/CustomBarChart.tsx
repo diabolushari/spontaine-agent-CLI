@@ -51,15 +51,17 @@ export function CustomBarChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className='w-full'
+      className='aspect-video w-full transition-all xl:w-10/12'
     >
       <ResponsiveContainer
         width='100%'
-        height={550}
+        height='100%'
       >
         <BarChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
+          maxBarSize={60}
+          barCategoryGap='20%'
         >
           <CartesianGrid vertical={false} />
           <XAxis
@@ -88,7 +90,7 @@ export function CustomBarChart({
               dataKey={plotKey.key}
               name={plotKey.label}
               fill={chartColors[index % chartColors.length]}
-              radius={[4, 4, 0, 0]}
+              radius={[8, 8, 8, 8]}
             />
           ))}
         </BarChart>

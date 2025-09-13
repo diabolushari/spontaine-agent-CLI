@@ -30,16 +30,15 @@ export function handleAgentMetaResponse(
 ) {
   if (response.visualization != null && response.visualization.length > 0) {
     setMessages((oldValues) => {
-      return [
-        ...oldValues,
-        {
-          id: currentIdRef.current++,
-          role: 'assistant',
-          content: JSON.stringify(response.visualization),
-          contentType: 'chart',
-          suggestions: [],
-        },
-      ]
+      const newMessages = response.visualization!.map((visualization) => ({
+        id: currentIdRef.current++,
+        role: 'assistant' as const,
+        content: JSON.stringify([visualization]),
+        contentType: 'chart' as const,
+        suggestions: [],
+      }))
+
+      return [...oldValues, ...newMessages]
     })
   }
 

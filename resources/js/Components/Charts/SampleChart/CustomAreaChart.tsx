@@ -1,13 +1,12 @@
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
 } from '@/Components/ui/chart'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts'
-import { cn } from '@/lib/utils'
-import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
 
 const chartColors = [
   'hsl(var(--chart-1))',
@@ -60,11 +59,11 @@ export function CustomAreaChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className={cn('transition-all', 'h-[450px] w-full')}
+      className='aspect-video w-full transition-all xl:w-10/12'
     >
       <ResponsiveContainer
         width='100%'
-        height={200}
+        height='100%'
       >
         <AreaChart
           data={data}

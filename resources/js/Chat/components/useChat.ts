@@ -79,6 +79,7 @@ export default function useChat(currentSession: CurrentSession) {
 
   useEffect(() => {
     const ws = new WebSocket(`${agentURL}?token=${chatToken}`)
+    console.log('🌐 Connecting to WebSocket:', `${agentURL}?token=${chatToken}`)
     ws.onopen = () => console.log('✅ WebSocket Connected')
 
     const flushBuffer = () => {
@@ -157,7 +158,7 @@ export default function useChat(currentSession: CurrentSession) {
 
           case 'tool_call_start':
             console.log('🔧 Tool call started:', messageData.tool_name, messageData.tool_input)
-
+            flushBuffer()
             if (messageData.tool_name?.toLowerCase().includes('vector')) {
               updateStatus(STATUS_SEARCH_VECTOR, setStatus)
             } else if (
@@ -294,19 +295,23 @@ export default function useChat(currentSession: CurrentSession) {
   }
 
   useEffect(() => {
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      const filteredMessages = messages.filter(
-        (message) => message.role === 'user' || message.role === 'assistant'
-      )
-      socketRef.current.send(
-        JSON.stringify({
-          type: 'history',
-          history: filteredMessages,
-        })
-      )
-    } else {
-      console.log('socket not ready')
+    if (isBeingStreamed.current) {
+      return
     }
+
+    if (socketRef.current == null || socketRef.current.readyState !== WebSocket.OPEN) {
+      return
+    }
+
+    const filteredMessages = messages.filter(
+      (message) => message.role === 'user' || message.role === 'assistant'
+    )
+    socketRef.current.send(
+      JSON.stringify({
+        type: 'history',
+        history: filteredMessages,
+      })
+    )
   }, [currentSession, reconnectTrigger, messages])
 
   const setMessageFromHistory = (History: ChatMessage[]) => {
@@ -314,6 +319,10 @@ export default function useChat(currentSession: CurrentSession) {
   }
 
   useEffect(() => {
+    if (isBeingStreamed.current) {
+      return
+    }
+
     axios
       .patch(`/chat-history/${currentSession.id}`, {
         messages: messages,

@@ -1,14 +1,14 @@
 'use client'
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
+import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/Components/ui/chart'
-import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
-import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 
 const tickFormatter = (value: number | string) => {
   const str = String(value)
@@ -56,11 +56,11 @@ export function CustomLineChart({
   return (
     <ChartContainer
       config={chartConfig}
-      className={fontSize}
+      className='aspect-video w-full transition-all xl:w-10/12'
     >
       <ResponsiveContainer
         width='100%'
-        height={300}
+        height='100%'
       >
         <LineChart
           data={data}

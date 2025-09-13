@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import AIInsights from './components/AiInsights'
 import MainArea from './components/MainArea'
 import Sidebar from './components/Sidebar'
 import useChat from './components/useChat'
@@ -62,12 +61,18 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
   }
 
   return (
-    <div className='flex h-screen bg-gray-50'>
-      <Sidebar
-        chatHistory={chatHistory}
-        sessionId={_currentSession.id}
-        onSessionChange={switchConversation}
-      />
+    <div className='flex h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40'>
+      {/* Sidebar with enhanced visual separation */}
+      <div className='relative'>
+        <Sidebar
+          chatHistory={chatHistory}
+          sessionId={_currentSession.id}
+          onSessionChange={switchConversation}
+        />
+        {/* Subtle separator line */}
+        <div className='absolute right-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent opacity-60' />
+      </div>
+
       <MainArea
         currentSession={_currentSession}
         messages={messages}
@@ -78,7 +83,6 @@ export default function Chat({ chatHistory, currentSession }: Readonly<ChatProps
         setInput={setInput}
         onRetry={handleRetryConnection}
       />
-      <AIInsights />
     </div>
   )
 }
