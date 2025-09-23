@@ -27,7 +27,20 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
   const openPreview = () => {
     window.open(`/${page.url}`, '_blank')
   }
-
+  function blockClass(dim: BlockDimension) {
+    return [
+      dim.mobile_width,
+      dim.tablet_width,
+      dim.laptop_width,
+      dim.desktop_width,
+      dim.padding_top,
+      dim.padding_bottom,
+      dim.margin_top,
+      dim.margin_bottom,
+    ]
+      .filter(Boolean)
+      .join(' ')
+  }
   return (
     <AnalyticsDashboardLayout
       type='data'
@@ -65,14 +78,14 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
             </div>
           </div>
         </Card>
-        <div className='grid'>
+        <div>
           {blocks.length === 0 && <p>No blocks available.</p>}{' '}
           {blocks.length > 0 && (
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
               {blocks.map((block) => (
                 <div
                   key={block.id}
-                  className={block.dimensions.desktop_width}
+                  className={blockClass(block.dimensions)}
                 >
                   <BlockEditor block={block} />
                 </div>

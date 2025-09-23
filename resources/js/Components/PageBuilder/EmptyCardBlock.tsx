@@ -69,11 +69,11 @@ export function EmptyCardBlock({ block, dimensions, overviewEditMode = false }: 
     })
     return classes.join(' ')
   }, [block])
-
   const fullUrl = window.location.href
 
+
   return (
-    <div className={classNames}>
+    <div >
       <Card className='min-h-18 rounded-md'>
         <CardHeader title={block?.data?.title ?? ''} />
         <div className='px-4'>
