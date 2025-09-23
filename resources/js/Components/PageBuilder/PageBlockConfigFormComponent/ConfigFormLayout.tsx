@@ -10,18 +10,19 @@ import Top10Icon from '@/Components/ui/Top10Icon'
 import NormalText from '@/typography/NormalText'
 import { DrawerFooter } from '@/Components/ui/drawer'
 import { useState } from 'react'
-import OverviewChartDemo from '@/Cards/Demo/OverviewBarChartDemo'
 
 export default function ConfigFormLayout({
   initialData,
   block,
   onNext,
   onBack,
+  onSave,
 }: {
   initialData: any
   block: Block
   onNext?: (data: any) => void
   onBack?: () => void
+  onSave?: () => void
 }) {
   const { formData, toggleBoolean } = useCustomForm({
     overview_selected: initialData?.overview_selected ?? false,
@@ -80,11 +81,6 @@ export default function ConfigFormLayout({
                   toggleValue={toggleBoolean('overview_selected')}
                   error={errors?.overview_selected}
                 />
-                <Button
-                  label='view demo'
-                  type='button'
-                  onClick={() => setIsOverviewDemoOpen(true)}
-                />
               </div>
 
               <div
@@ -101,11 +97,6 @@ export default function ConfigFormLayout({
                   value={formData.trend_selected}
                   toggleValue={toggleBoolean('trend_selected')}
                   error={errors?.trend_selected}
-                />
-                <Button
-                  label='view demo'
-                  type='button'
-                  onClick={() => setIsTrendDemoOpen(true)}
                 />
               </div>
 
@@ -124,11 +115,6 @@ export default function ConfigFormLayout({
                   toggleValue={toggleBoolean('ranking_selected')}
                   error={errors?.ranking_selected}
                 />
-                <Button
-                  label='view demo'
-                  type='button'
-                  onClick={() => setIsRankingDemoOpen(true)}
-                />
               </div>
             </div>
 
@@ -143,6 +129,7 @@ export default function ConfigFormLayout({
                   type='submit'
                   label='Save'
                   disabled={loading}
+                  onClick={() => onSave?.()}
                 />
               </div>
             </DrawerFooter>

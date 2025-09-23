@@ -10,12 +10,12 @@ interface BlockFormProps {
   initialData: any
   onCloseStep?: () => void
   block: Block
-  setCloseDrawer: (value: boolean) => void
+  setOpenDrawer: (value: boolean) => void
 }
 
 const steps = [{ title: 'General' }, { title: 'Layout' }]
 
-export default function BlockDrawerForm({ initialData, block }: BlockFormProps) {
+export default function BlockDrawerForm({ initialData, block, setOpenDrawer }: BlockFormProps) {
   console.log("initialData",  initialData)
 
   const [step, setStep] = useState(1)
@@ -114,6 +114,7 @@ export default function BlockDrawerForm({ initialData, block }: BlockFormProps) 
                   setStep(3)
                 }}
                 onBack={() => setStep(1)}
+                onSave={() => setOpenDrawer(false)}
               />
             )}
           </div>

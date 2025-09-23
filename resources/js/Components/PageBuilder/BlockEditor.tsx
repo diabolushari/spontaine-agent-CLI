@@ -122,7 +122,7 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
               <BlockDrawerForm
                 initialData={block.data}
                 block={block}
-                setCloseDrawer={setIsDrawerOpen}
+                setOpenDrawer={setIsDrawerOpen}
               />
             ) : block.name === BLOCK_DATA_EXPLORER ? (
               <DataExplorerCardConfigForm
