@@ -10,8 +10,7 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import StrongText from '@/typography/StrongText'
 import OverviewBarChartDemo from '@/Cards/Demo/OverviewBarChartDemo'
 import PieChartBlock from '../../../../../Cards/Demo/PieChartBlock'
-import { ForwardedRef, useEffect, useMemo } from 'react'
-import React, { useImperativeHandle, forwardRef } from 'react'
+import React, { ForwardedRef, forwardRef, useImperativeHandle } from 'react'
 import ConfigFormMeasureFields from '@/Components/PageBuilder/PageBlockConfigFormComponent/ConfigOverviewForm/ConfigFormMeasureFields'
 import ConfigFormField from '@/Components/PageBuilder/PageBlockConfigFormComponent/ConfigOverviewForm/ConfigFormMeasureFields'
 import useInertiaPost from '@/hooks/useInertiaPost'
@@ -49,19 +48,19 @@ export default forwardRef<OverviewChartGeneralEditHandle>(function OverviewChart
       : [],
   })
 
-  const { post, errors } = useInertiaPost(route('config.overview.chart.update', blockId))
+  const { post } = useInertiaPost(route('config.overview.chart.update', blockId))
 
   const selectChartType = (type: string) => {
     setFormValue('chartType')(formData.chartType === type ? '' : type)
   }
 
-  const [subsetDimensionFields, subsetDimensionFieldsLoading] = formData.subsetId
-    ? useFetchRecord<Dimension[]>(`/api/subset/dimension/${formData.subsetId}`)
-    : []
+  const [subsetDimensionFields] = useFetchRecord<Dimension[]>(
+    formData.subsetId ? `/api/subset/dimension/${formData.subsetId}` : null
+  )
 
-  const [measures, measuresLoading] = formData.subsetId
-    ? useFetchRecord<Dimension[]>(`/api/subset/${formData.subsetId}`)
-    : []
+  const [measures] = useFetchRecord<Dimension[]>(
+    formData.subsetId ? `/api/subset/${formData.subsetId}` : null
+  )
 
   useImperativeHandle(ref, () => ({
     submit: async () => {

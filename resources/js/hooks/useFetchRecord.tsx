@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { handleHttpErrors } from '@/ui/alerts'
 import axios from 'axios'
 
-export default function useFetchRecord<T>(url: string): [T | null, boolean] {
+export default function useFetchRecord<T>(url: string | null): [T | null, boolean] {
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState<T | null>(null)
 
@@ -10,8 +10,10 @@ export default function useFetchRecord<T>(url: string): [T | null, boolean] {
     setLoading(true)
     setList(null)
     try {
-      const { data } = await axios.get(url)
-      setList(data)
+      if (url != null) {
+        const { data } = await axios.get(url)
+        setList(data)
+      }
     } catch (error) {
       handleHttpErrors(error)
     } finally {
