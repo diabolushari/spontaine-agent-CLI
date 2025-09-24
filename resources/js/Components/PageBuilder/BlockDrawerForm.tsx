@@ -1,4 +1,4 @@
-import { Block } from '@/interfaces/data_interfaces'
+import { Block, Config } from '@/interfaces/data_interfaces'
 import { cn } from '@/utils'
 import { Check } from 'lucide-react'
 import { useState } from 'react'
@@ -7,7 +7,7 @@ import ConfigFormLayout from './PageBlockConfigFormComponent/ConfigFormLayout'
 import ConfigFormStepGeneral from './PageBlockConfigFormComponent/ConfigFromStepGeneral'
 
 interface BlockFormProps {
-  initialData: any
+  initialData: Partial<Config>
   onCloseStep?: () => void
   block: Block
   setOpenDrawer: (value: boolean) => void
@@ -15,9 +15,11 @@ interface BlockFormProps {
 
 const steps = [{ title: 'General' }, { title: 'Layout' }]
 
-export default function BlockDrawerForm({ initialData, block, setOpenDrawer }: BlockFormProps) {
-  console.log("initialData",  initialData)
-
+export default function BlockDrawerForm({
+  initialData,
+  block,
+  setOpenDrawer,
+}: Readonly<BlockFormProps>) {
   const [step, setStep] = useState(1)
   const [stepData, setStepData] = useState(initialData)
   const isStepOneComplete = !!(
@@ -46,7 +48,6 @@ export default function BlockDrawerForm({ initialData, block, setOpenDrawer }: B
             const currentStep = index + 1
             const isActive = step === currentStep
             const isCompleted = step > currentStep
-
 
             return (
               <div
@@ -91,8 +92,8 @@ export default function BlockDrawerForm({ initialData, block, setOpenDrawer }: B
               <ConfigFormStepGeneral
                 initialData={stepData}
                 block={block}
-                onNext={(validatedData: any) => {
-                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
+                onNext={(validatedData: Partial<Config>) => {
+                  setStepData((prev: Partial<Config>) => ({ ...prev, ...validatedData }))
                   setStep(2)
                 }}
               />
@@ -105,8 +106,8 @@ export default function BlockDrawerForm({ initialData, block, setOpenDrawer }: B
               <ConfigFormLayout
                 initialData={stepData}
                 block={block}
-                onNext={(validatedData: any) => {
-                  setStepData((prev: any) => ({ ...prev, ...validatedData }))
+                onNext={(validatedData: Partial<Config>) => {
+                  setStepData((prev: Partial<Config>) => ({ ...prev, ...validatedData }))
                   setStep(3)
                 }}
                 onBack={() => setStep(1)}

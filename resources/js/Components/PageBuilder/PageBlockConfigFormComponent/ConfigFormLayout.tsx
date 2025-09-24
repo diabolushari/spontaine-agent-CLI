@@ -9,7 +9,6 @@ import TrendIcon from '@/Components/ui/TrendIcon'
 import Top10Icon from '@/Components/ui/Top10Icon'
 import NormalText from '@/typography/NormalText'
 import { DrawerFooter } from '@/Components/ui/drawer'
-import { useState } from 'react'
 
 export default function ConfigFormLayout({
   initialData,
@@ -17,22 +16,18 @@ export default function ConfigFormLayout({
   onNext,
   onBack,
   onSave,
-}: {
-  initialData: any
+}: Readonly<{
+  initialData: Partial<Config>
   block: Block
   onNext?: (data: any) => void
   onBack?: () => void
   onSave?: () => void
-}) {
+}>) {
   const { formData, toggleBoolean } = useCustomForm({
     overview_selected: initialData?.overview_selected ?? false,
     trend_selected: initialData?.trend_selected ?? false,
     ranking_selected: initialData?.ranking_selected ?? false,
   })
-
-  const [isOverviewDemoOpen, setIsOverviewDemoOpen] = useState(false)
-  const [isTrendDemoOpen, setIsTrendDemoOpen] = useState(false)
-  const [isRankingDemoOpen, setIsRankingDemoOpen] = useState(false)
 
   const { post, loading, errors } = useInertiaPost<Partial<Config> & { _method: string }>(
     route('config.layout.update', block.id),

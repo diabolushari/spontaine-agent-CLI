@@ -3,7 +3,7 @@ import { Block, Config } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import Input from '@/ui/form/Input'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import StrongText from '@/typography/StrongText'
 import NormalText from '@/typography/NormalText'
@@ -13,7 +13,7 @@ import { router } from '@inertiajs/react'
 import { DrawerFooter } from '@/Components/ui/drawer'
 
 interface ConfigFormStepGeneralProps {
-  initialData: Config
+  initialData: Partial<Config>
   block: Block
   onNext?: (data: Partial<Config>) => void
 }
@@ -22,11 +22,8 @@ export default function ConfigFormStepGeneral({
   initialData,
   onNext,
   block,
-}: ConfigFormStepGeneralProps) {
-  const { formData: overviewFormData, setFormValue: setOverviewFormValue } = useCustomForm({
-    title: initialData?.overview?.title ?? '',
-    card_type: initialData?.overview?.card_type ?? '',
-  })
+}: Readonly<ConfigFormStepGeneralProps>) {
+  console.log('initaldata  : ', initialData)
 
   const [isSubsetModalOpen, setIsSubsetModalOpen] = useState(false)
   const [isSubsetGroupModalOpen, setIsSubsetGroupModalOpen] = useState(false)

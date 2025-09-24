@@ -1,11 +1,5 @@
 import { CardContent } from '@/Components/ui/card'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/Components/ui/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '@/Components/ui/carousel'
 import {
   Drawer,
   DrawerClose,
@@ -18,7 +12,7 @@ import Card from '@/ui/Card/Card'
 import OverviewChartGeneralEdit from './OverviewCard/OverviewChart/OverviewChartGeneralEdit'
 import Button from '@/ui/button/Button'
 import { X } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 interface OverviewChartEditDrawerProps {
   open: boolean

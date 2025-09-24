@@ -14,19 +14,13 @@ interface Props {
   blocks: Block[]
 }
 
-export type blockForm = {
-  name: string
-  position: number
-  page_id: number
-  dimensions: BlockDimension
-}
-
 export default function PageShow({ page, blocks }: Readonly<Props>) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const openPreview = () => {
     window.open(`/${page.url}`, '_blank')
   }
+
   function blockClass(dim: BlockDimension) {
     return [
       dim.mobile_width,
@@ -41,6 +35,7 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
       .filter(Boolean)
       .join(' ')
   }
+
   return (
     <AnalyticsDashboardLayout
       type='data'
