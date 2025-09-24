@@ -57,7 +57,7 @@ export default function PagePreview({ page, blocks }: Readonly<Props>) {
                       key={JSON.stringify(block.dimensions) + block.id}
                       className={`${blockClass} rounded bg-gray-200 shadow`}
                     >
-                      {BlockComponent && block.name === 'Sample Card' ? (
+                      {block.name === 'Sample Card' ? (
                         <BlockComponent
                           dimensions={block.dimensions}
                           block={block}

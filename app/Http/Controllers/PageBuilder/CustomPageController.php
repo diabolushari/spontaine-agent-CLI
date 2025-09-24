@@ -24,7 +24,7 @@ class CustomPageController extends Controller implements HasMiddleware
             abort(404, 'Page not found');
         }
 
-        if (!$page) {
+        if (! $page) {
             abort(404, 'Page not found');
         }
 
