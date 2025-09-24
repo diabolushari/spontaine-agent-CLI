@@ -48,17 +48,14 @@ export default function ConfigFormStepGeneral({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const payload: any = { ...formData, _method: 'PUT' }
-    if (formData.overview_selected) {
-      payload.overview = overviewFormData
-    } else {
-      payload.overview = null
-    }
+    payload.overview = null
     post(payload)
   }
 
   const [subsetData] = useFetchList(
     formData?.subset_group_id ? `/api/subset-group/${formData?.subset_group_id}` : null
   )
+
   const [subsetGroups] = useFetchList(
     formData?.data_table_id ? `/api/data-detail/subset-group/${formData?.data_table_id}` : null
   )
@@ -112,12 +109,12 @@ export default function ConfigFormStepGeneral({
                   error={errors?.data_table_id}
                 />
                 {!isSubsetGroupModalOpen && subsetGroups && subsetGroups.length > 0 && (
-                  <div
+                  <button
                     onClick={() => setIsSubsetGroupModalOpen(true)}
                     className='cursor-pointer text-blue-500'
                   >
                     view subset groups
-                  </div>
+                  </button>
                 )}
               </div>
 
@@ -133,12 +130,12 @@ export default function ConfigFormStepGeneral({
                     error={errors?.subset_group_id}
                   />
                   {!isSubsetModalOpen && subsetData && subsetData.length > 0 && (
-                    <div
+                    <button
                       onClick={() => setIsSubsetModalOpen(true)}
                       className='cursor-pointer text-blue-500'
                     >
                       view subsets
-                    </div>
+                    </button>
                   )}
                 </div>
               )}
@@ -183,96 +180,4 @@ export default function ConfigFormStepGeneral({
       </div>
     </div>
   )
-}
-
-{
-  /* <div className='flex flex-col'>
-              <DynamicSelectList
-                label='Subset group for data explore button (optional)'
-                url={`/api/data-detail/subset-group/${formData.data_table_id}`}
-                dataKey='name'
-                displayKey='name'
-                value={formData.explore_button_group ?? 0}
-                setValue={setFormValue('explore_button_group')}
-                error={errors?.explore_button_group}
-              />
-            </div> */
-  // <div className='col-span-3 flex flex-col md:grid md:grid-cols-4 md:gap-4'>
-  //   <div className='flex flex-col md:col-span-4'>
-  //     <NormalText>Selecet the contents of the card</NormalText>
-  //   </div>
-  //   <div className='flex flex-col'>
-  //     <CheckBox
-  //       label='Trend'
-  //       value={formData.trend_selected}
-  //       toggleValue={toggleBoolean('trend_selected')}
-  //       error={errors?.trend_selected}
-  //     />
-  //   </div>
-  //   <div className='flex flex-col'>
-  //     <CheckBox
-  //       label='Ranking'
-  //       value={formData.ranking_selected}
-  //       toggleValue={toggleBoolean('ranking_selected')}
-  //       error={errors?.ranking_selected}
-  //     />
-  //   </div>
-  //   <div className='flex flex-col'>
-  //     <CheckBox
-  //       label='Overview'
-  //       value={formData.overview_selected}
-  //       toggleValue={toggleBoolean('overview_selected')}
-  //       error={errors?.overview_selected}
-  //     />
-  //   </div>
-  //   <div className='flex flex-col'>
-  //     <SelectList
-  //       label='Select a default view'
-  //       list={selectedOptions}
-  //       dataKey='value'
-  //       displayKey='label'
-  //       value={formData.default_view}
-  //       setValue={setFormValue('default_view')}
-  //       error={errors?.default_view}
-  //       disabled={selectedOptions.length === 0}
-  //     />
-  //   </div>
-  // </div>
-  // {formData.overview_selected && (
-  //   <>
-  //     <div className='flex flex-col'>
-  //       <Input
-  //         label='Enter overview title'
-  //         value={overviewFormData.title}
-  //         setValue={setOverviewFormValue('title')}
-  //         error={errors?.['overview.title']}
-  //       />
-  //     </div>
-  //     <div className='flex flex-col'>
-  //       <SelectList
-  //         label='Select your card type'
-  //         value={overviewFormData.card_type}
-  //         setValue={(value) => setOverviewFormValue('card_type')(value as string)}
-  //         list={overviewOptions}
-  //         dataKey='value'
-  //         displayKey='label'
-  //         error={errors?.['overview.card_type']}
-  //       />
-  //     </div>
-  //   </>
-  // )}
-  // const overviewOptions = [
-  //   {
-  //     label: 'Chart and Table',
-  //     value: 'chart_and_table',
-  //   },
-  //   {
-  //     label: 'Chart',
-  //     value: 'chart',
-  //   },
-  //   {
-  //     label: 'Table',
-  //     value: 'table',
-  //   },
-  // ]
 }

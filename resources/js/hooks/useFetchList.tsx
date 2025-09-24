@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { handleHttpErrors } from '@/ui/alerts'
 import axios from 'axios'
 
-export default function useFetchList<T>(url: string): [T[], boolean] {
+export default function useFetchList<T>(url: string | null): [T[], boolean] {
   const [loading, setLoading] = useState(false)
   const [list, setList] = useState<T[]>([])
 
@@ -10,8 +10,12 @@ export default function useFetchList<T>(url: string): [T[], boolean] {
     setLoading(true)
     setList([])
     try {
-      const { data } = await axios.get(url)
-      setList(data)
+      if (url == null) {
+        setList([])
+      } else {
+        const { data } = await axios.get(url)
+        setList(data)
+      }
     } catch (error) {
       handleHttpErrors(error)
     } finally {
