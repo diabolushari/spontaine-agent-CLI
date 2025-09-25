@@ -96,7 +96,6 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
         >
           {block.name === BLOCK_SAMPLE_CARD && (
             <EmptyCardBlock
-              dimensions={dimensions}
               block={block}
               overviewEditMode={true}
             />

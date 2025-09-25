@@ -1,7 +1,7 @@
 import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
 import TrendGraph from '@/Components/Dashboard/SampleDashboard/TrendGraph'
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { Block, BlockDimension } from '@/interfaces/data_interfaces'
+import { Block } from '@/interfaces/data_interfaces'
 import NormalText from '@/typography/NormalText'
 import AddButton from '@/ui/button/AddButton'
 import Card from '@/ui/Card/Card'
@@ -27,11 +27,10 @@ export function dateToYearMonth(date?: Date | null) {
 
 interface Props {
   block?: Block
-  dimensions?: BlockDimension
   overviewEditMode?: boolean
 }
 
-export function EmptyCardBlock({ block, dimensions, overviewEditMode = false }: Readonly<Props>) {
+export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Props>) {
   const [selectedView, setSelectedView] = useState<string>('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
 
@@ -63,17 +62,10 @@ export function EmptyCardBlock({ block, dimensions, overviewEditMode = false }: 
 
   const monthYear = useMemo(() => dateToYearMonth(selectedMonth), [selectedMonth])
 
-  const classNames = useMemo(() => {
-    const classes = Object.keys(block?.dimensions ?? {}).map((key) => {
-      return block?.dimensions?.[key as keyof BlockDimension]
-    })
-    return classes.join(' ')
-  }, [block])
   const fullUrl = window.location.href
 
-
   return (
-    <div >
+    <div>
       <Card className='min-h-18 rounded-md'>
         <CardHeader title={block?.data?.title ?? ''} />
         <div className='px-4'>
@@ -101,7 +93,7 @@ export function EmptyCardBlock({ block, dimensions, overviewEditMode = false }: 
           )}
 
           {selectedView === 'trend' &&
-            block?.data?.trend_selected == true &&
+            block?.data?.trend_selected &&
             (block?.data?.trend?.subset_id ? (
               selectedMonth && (
                 <TrendGraph
@@ -136,7 +128,7 @@ export function EmptyCardBlock({ block, dimensions, overviewEditMode = false }: 
             ))}
 
           {selectedView === 'ranking' &&
-            block?.data?.ranking_selected == true &&
+            block?.data?.ranking_selected &&
             selectedMonth &&
             block?.data?.ranking?.subset_id && (
               <RankedList

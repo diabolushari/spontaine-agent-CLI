@@ -387,6 +387,7 @@ export interface Axis {
   value: string
   show_label: boolean
 }
+
 export interface Trend {
   subset_id: number
   title: string
@@ -401,6 +402,7 @@ export interface Trend {
   }
   color: string
 }
+
 export interface Overview {
   title: string
   description: string
@@ -408,12 +410,14 @@ export interface Overview {
   overview_chart?: OverviewChart
   overview_table?: OverviewTable[]
 }
+
 export interface OverviewChart {
   title: string
   subset_id: string
   chart_type: string
   x_axis: string
   y_axis: string[]
+
   [key: string]: any
 }
 
@@ -424,6 +428,7 @@ export interface OverviewTable {
   measure_field: string
   col_span?: boolean
   filters?: Filter[]
+
   [key: string]: any
 }
 
@@ -433,7 +438,7 @@ export interface Config {
   subtitle: string
   default_date?: string
   default_view?: string
-  subset_group_id: string
+  subset_group_id: number
   trend_selected: boolean
   ranking_selected: boolean
   overview_selected: boolean
@@ -467,4 +472,10 @@ export interface Filter {
   readonly dimension: string
   readonly operator: string
   readonly value: string | number
+}
+
+export interface Dimension {
+  id: number
+  subset_field_name: string
+  subset_column: string
 }

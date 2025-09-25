@@ -14,16 +14,10 @@ import React, { ForwardedRef, forwardRef, useImperativeHandle } from 'react'
 import ConfigFormMeasureFields from '@/Components/PageBuilder/PageBlockConfigFormComponent/ConfigOverviewForm/ConfigFormMeasureFields'
 import ConfigFormField from '@/Components/PageBuilder/PageBlockConfigFormComponent/ConfigOverviewForm/ConfigFormMeasureFields'
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { Config } from '@/interfaces/data_interfaces'
+import { Config, Dimension } from '@/interfaces/data_interfaces'
 
 interface OverviewChartGeneralEditHandle {
   submit: () => Promise<void>
-}
-
-interface Dimension {
-  id: number
-  subset_field_name: string
-  subset_column: string
 }
 
 interface OverviewChartGeneralEditProps {
