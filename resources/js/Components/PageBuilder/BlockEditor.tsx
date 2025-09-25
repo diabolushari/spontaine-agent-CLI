@@ -117,19 +117,21 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
           setOpen={setIsDrawerOpen}
         >
           <div className='w-full md:p-4'>
-            {block.name === BLOCK_SAMPLE_CARD ? (
+            {block.name === BLOCK_SAMPLE_CARD && (
               <BlockDrawerForm
                 initialData={block.data}
                 block={block}
                 setOpenDrawer={setIsDrawerOpen}
               />
-            ) : block.name === BLOCK_DATA_EXPLORER ? (
+            )}
+            {block.name === BLOCK_DATA_EXPLORER && (
               <DataExplorerCardConfigForm
                 initialData={block.data}
                 block={block}
                 setCloseDrawer={setIsDrawerOpen}
               />
-            ) : (
+            )}
+            {block.name != BLOCK_SAMPLE_CARD && block.name != BLOCK_DATA_EXPLORER && (
               <p>Unknown block type</p>
             )}
           </div>

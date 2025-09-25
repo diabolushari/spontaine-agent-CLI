@@ -7,15 +7,14 @@ export default function useFetchList<T>(url: string | null): [T[], boolean] {
   const [list, setList] = useState<T[]>([])
 
   const fetchList = useCallback(async () => {
-    setLoading(true)
     setList([])
+    if (url == null) {
+      return
+    }
+    setLoading(true)
     try {
-      if (url == null) {
-        setList([])
-      } else {
-        const { data } = await axios.get(url)
-        setList(data)
-      }
+      const { data } = await axios.get(url)
+      setList(data)
     } catch (error) {
       handleHttpErrors(error)
     } finally {

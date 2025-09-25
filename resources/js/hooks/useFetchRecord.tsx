@@ -7,13 +7,14 @@ export default function useFetchRecord<T>(url: string | null): [T | null, boolea
   const [list, setList] = useState<T | null>(null)
 
   const fetchList = useCallback(async () => {
-    setLoading(true)
     setList(null)
+    if (url == null) {
+      return
+    }
+    setLoading(true)
     try {
-      if (url != null) {
-        const { data } = await axios.get(url)
-        setList(data)
-      }
+      const { data } = await axios.get(url)
+      setList(data)
     } catch (error) {
       handleHttpErrors(error)
     } finally {
