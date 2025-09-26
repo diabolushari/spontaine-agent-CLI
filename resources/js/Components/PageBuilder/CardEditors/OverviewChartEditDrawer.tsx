@@ -1,5 +1,4 @@
 import { CardContent } from '@/Components/ui/card'
-import { Carousel, CarouselContent, CarouselItem } from '@/Components/ui/carousel'
 import {
   Drawer,
   DrawerClose,
@@ -11,14 +10,15 @@ import {
 import Card from '@/ui/Card/Card'
 import OverviewChartGeneralEdit from './OverviewCard/OverviewChart/OverviewChartGeneralEdit'
 import Button from '@/ui/button/Button'
-import { X } from 'lucide-react'
+import { Save, X } from 'lucide-react'
 import { useRef, useState } from 'react'
+import { Config } from '@/interfaces/data_interfaces'
 
 interface OverviewChartEditDrawerProps {
   open: boolean
   setOpen: (value: boolean) => void
-  initialData?: any
-  blockId: string | number
+  initialData: Partial<Config>
+  blockId: number
 }
 
 export default function OverviewChartEditDrawer({
@@ -26,58 +26,38 @@ export default function OverviewChartEditDrawer({
   setOpen,
   initialData,
   blockId,
-}: OverviewChartEditDrawerProps) {
-  const [carouselIndex, setCarouselIndex] = useState(0)
-
-  // Create a ref to the form
+}: Readonly<OverviewChartEditDrawerProps>) {
   const generalEditRef = useRef<OverviewChartGeneralEditHandle>(null)
+  const [isSaving, setIsSaving] = useState(false)
 
-  const editItems = [
-    {
-      item: 'General',
-      component: (
-        <OverviewChartGeneralEdit
-          ref={generalEditRef}
-          initialData={initialData}
-          blockId={blockId}
-        />
-      ),
-    },
-  ]
-
-  // Custom Next click handler
-  const handleNext = async () => {
+  const handleSave = async () => {
     try {
-      if (carouselIndex === 0 && generalEditRef.current) {
+      setIsSaving(true)
+      if (generalEditRef.current) {
         await generalEditRef.current.submit()
+        setOpen(false)
       }
-      setCarouselIndex((prev) => Math.min(prev + 1, editItems.length - 1))
     } catch (err) {
-      alert('Form submission failed. Please check and try again.')
+      alert('Save failed. Please check and try again.')
+    } finally {
+      setIsSaving(false)
     }
-  }
-
-  // Custom Previous click handler
-  const handlePrevious = () => {
-    setCarouselIndex((prev) => Math.max(prev - 1, 0))
   }
 
   return (
     <Drawer
       open={open}
-      onOpenChange={(value) => {
-        if (!value) return
-        setOpen(true)
-      }}
+      onOpenChange={setOpen}
     >
-      <DrawerContent
-        className='h-full duration-300'
-        style={{
-          height: '85vh',
-          minHeight: '5vh',
-        }}
-      >
-        <div className='absolute right-2 top-2 justify-end'>
+      <DrawerContent className='h-full max-h-[85vh] duration-300'>
+        <div className='absolute right-2 top-2 flex gap-2'>
+          <Button
+            variant='primary'
+            label={isSaving ? 'Saving...' : 'Save'}
+            icon={<Save />}
+            onClick={handleSave}
+            disabled={isSaving}
+          />
           <DrawerClose asChild>
             <Button
               variant='danger'
@@ -93,47 +73,22 @@ export default function OverviewChartEditDrawer({
             <DrawerTitle>Overview Chart Edit</DrawerTitle>
             <DrawerDescription>Customize your overview chart here.</DrawerDescription>
           </DrawerHeader>
+
           <div
             className='w-full overflow-y-auto'
             style={{ maxHeight: 'calc(85vh - 100px)' }}
           >
-            <Carousel
-              index={carouselIndex}
-              onIndexChange={setCarouselIndex}
-              className='w-full'
-            >
-              <CarouselContent className='w-full'>
-                {editItems.map((_, index) => (
-                  <CarouselItem key={index}>
-                    <div className='w-full p-1'>
-                      <Card>
-                        <CardContent className='flex w-full p-6'>
-                          {editItems[index].component}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-
-              <div className='flex w-full justify-between'>
-                {/* Replace CarouselPrevious and CarouselNext with buttons to intercept clicks */}
-                <button
-                  onClick={handlePrevious}
-                  disabled={carouselIndex === 0}
-                  className='btn btn-secondary'
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={handleNext}
-                  className='btn btn-primary'
-                  disabled={editItems.length > 1 ? carouselIndex === editItems.length - 1 : false}
-                >
-                  Next
-                </button>
-              </div>
-            </Carousel>
+            <div className='w-full p-1'>
+              <Card>
+                <CardContent className='flex w-full p-6'>
+                  <OverviewChartGeneralEdit
+                    ref={generalEditRef}
+                    initialData={initialData}
+                    blockId={blockId}
+                  />
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </DrawerContent>

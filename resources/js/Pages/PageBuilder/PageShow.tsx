@@ -73,7 +73,7 @@ export default function PageShow({ page, blocks }: Readonly<Props>) {
             </div>
           </div>
         </Card>
-        <div>
+        <div className={'bg-gray-100'}>
           {blocks.length === 0 && <p>No blocks available.</p>}{' '}
           {blocks.length > 0 && (
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>

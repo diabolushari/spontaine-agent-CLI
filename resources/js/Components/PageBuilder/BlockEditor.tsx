@@ -70,8 +70,8 @@ export const BlockEditor = ({ block }: BlockActionProps) => {
 
   return (
     <>
-      <Card className='relative'>
-        <div className='absolute right-0 top-0 z-10 flex flex-row gap-2'>
+      <Card className='relative mt-10'>
+        <div className='absolute -top-10 right-0 z-10 flex flex-row gap-2'>
           {block.name !== BLOCK_DATA_EXPLORER && (
             <ButtonBorderIcon onClick={handleEditClick}>
               <CogIcon className='h-4 w-4' />

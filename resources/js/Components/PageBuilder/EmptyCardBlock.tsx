@@ -6,12 +6,12 @@ import NormalText from '@/typography/NormalText'
 import AddButton from '@/ui/button/AddButton'
 import Card from '@/ui/Card/Card'
 import CardHeader from '@/ui/Card/CardHeader'
-import MonthPicker from '@/ui/form/MonthPicker'
 import { Link } from '@inertiajs/react'
 import { useEffect, useMemo, useState } from 'react'
 import Overview from '../Dashboard/SampleDashboard/Overview'
 import MoreButton from '../MoreButton'
 import { BlockRadioGroup } from './BlockRadioGroup'
+import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
 
 export function parseMonthYearString(monthYear: string): Date | null {
   if (!monthYear || monthYear.length !== 6) return null
@@ -148,11 +148,11 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
         </div>
 
         {block?.data?.data_table_id && (
-          <div className='mt-auto flex flex-shrink-0 items-center gap-4 justify-self-start rounded-b-2xl bg-1stop-alt-gray px-4 pl-12'>
+          <div className='mt-auto flex flex-shrink-0 items-center gap-4 justify-self-start bg-1stop-alt-gray bg-blue-50 px-4 pl-12'>
             {selectedMonth != null && (
               <div className='small-1stop-header flex h-full bg-1stop-accent2 bg-opacity-50'>
                 <div className='flex h-full flex-col items-center justify-center gap-2'>
-                  <MonthPicker
+                  <PageBuilderMonthPicker
                     selectedMonth={selectedMonth}
                     setSelectedMonth={setSelectedMonth}
                   />
