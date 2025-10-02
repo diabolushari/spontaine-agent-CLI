@@ -18,8 +18,11 @@ export const COMMON_DATE_FORMATS = [
   { value: 'd-m-Y', label: 'd-m-Y (31-12-2024)' },
   { value: 'm-d-Y', label: 'm-d-Y (12-31-2024)' },
   { value: 'Y-m-d H:i:s', label: 'Y-m-d H:i:s (2024-12-31 23:59:59)' },
+  { value: 'Y-m-d H:i', label: 'Y-m-d H:i (2024-12-31 23:59)' },
   { value: 'd/m/Y H:i:s', label: 'd/m/Y H:i:s (31/12/2024 23:59:59)' },
+  { value: 'd/m/Y H:i', label: 'd/m/Y H:i (31/12/2024 23:59)' },
   { value: 'm/d/Y H:i:s', label: 'm/d/Y H:i:s (12/31/2024 23:59:59)' },
+  { value: 'm/d/Y H:i', label: 'm/d/Y H:i (12/31/2024 23:59)' },
   { value: 'c', label: 'ISO8601 (2024-12-31T23:59:59+00:00)' },
   { value: 'U', label: 'Unix Timestamp (1735689599)' },
   { value: 'd M Y', label: 'd M Y (31 Dec 2024)' },
@@ -135,6 +138,8 @@ export const useDataTableToJsonMapping = (
     (jsonDefinition: JSONDefinition | null, requestBodyParams?: KeyValue[] | null) => {
       // Extract available JSON paths
       const paths: { value: string; label: string }[] = []
+
+      console.log(jsonDefinition)
 
       // Add request body parameter paths
       if (requestBodyParams != null && requestBodyParams.length > 0) {

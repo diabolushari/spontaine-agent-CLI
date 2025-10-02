@@ -28,7 +28,7 @@ final readonly class PerformJSONProcessing
         return $this->mapFields($flattenedData, $fieldMapping);
     }
 
-    public function attachParams(array &$flattenedData, array $params): void
+    private function attachParams(array &$flattenedData, array $params): void
     {
 
         //create a list with request_params.attached to key of each param
@@ -45,7 +45,7 @@ final readonly class PerformJSONProcessing
         }
     }
 
-    private function convertDateFormats(array &$flattenedData, array $fieldMapping)
+    private function convertDateFormats(array &$flattenedData, array $fieldMapping): void
     {
         foreach ($fieldMapping as $mapping) {
             if ($mapping->dateFormat == null) {

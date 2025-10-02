@@ -1,4 +1,3 @@
-import Checkbox from '@/Components/Checkbox'
 import Input from '@/ui/form/Input'
 import SelectList from '@/ui/form/SelectList'
 import { memo } from 'react'
@@ -45,12 +44,6 @@ function SetDataStructure({
   return (
     <div className='flex flex-col rounded-xl'>
       <div className='flex items-end gap-2 bg-gray-200 p-2'>
-        <div className='my-auto flex h-full flex-col self-center'>
-          <Checkbox
-            checked={definition.primary_field}
-            onChange={() => setAsPrimaryField(definition.id)}
-          />
-        </div>
         <div className='grid w-full grid-cols-2 gap-1'>
           <div className='flex flex-col'>
             <Input

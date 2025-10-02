@@ -61,9 +61,9 @@ class GetPrimaryFieldData implements DataFetcherInterface
         $result = $this->traverseStructure($data, $pathToPrimary);
 
         if ($dataSource->hasFieldMapping()) {
-            $flattenedData = $this->flattenJsonResponse->flatten($result, '.', 'response');
+            $flattenedData = $this->flattenJsonResponse->flatten($result, '.', 'response', $dataSource->fieldMapping);
 
-            return $this->performFieldMapping->handle($flattenedData, $dataSource->fieldMapping);
+            return $this->performFieldMapping->handle($flattenedData, $dataSource->fieldMapping, $body);
         }
 
         return $result;

@@ -65,7 +65,6 @@ use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
 use App\Models\DataLoader\DataLoaderJob;
-use App\Services\DataLoader\JsonStructure\FlattenJsonResponse;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\Route;
 
@@ -237,7 +236,6 @@ Route::get('data-detail-search', DataDetailSearchController::class)
     ->name('data-detail.search');
 
 Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob, RunScheduledJob $runScheduledJob) {
-
     $loaderJob
         ->load(
             'loaderQuery.loaderConnection',
@@ -270,27 +268,5 @@ Route::apiResource('/chat-history', ChatHistoryController::class);
 
 Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
     ->name('data-detail-column-search');
-
-Route::get('/test-flatten-json', function () {
-    $testData = [
-        [
-            'name' => 'John Doe',
-            'age' => 30,
-            'scores' => [85, 90, 78],
-            'address' => [
-                'street' => '123 Main St',
-                'city' => 'Los Angeles',
-                'points' => [
-                    1, 2, 3,
-                ],
-            ],
-        ],
-    ];
-
-    $flattenService = new FlattenJsonResponse;
-    $flattened = $flattenService->flatten($testData, '.', 'response');
-
-    return response()->json($flattened);
-})->name('test-flatten-json');
 
 require __DIR__.'/auth.php';
