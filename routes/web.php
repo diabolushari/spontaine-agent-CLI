@@ -15,6 +15,7 @@ use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
+use App\Http\Controllers\DataLoader\LoaderAPIRecordController;
 use App\Http\Controllers\DataLoader\QueryListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
@@ -227,12 +228,14 @@ Route::resource('loader-apis', DataLoaderAPIController::class)
 Route::get('loader-query-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
     ->name('loader-query-api-data');
 
+Route::get('loader-api-record/{loaderAPI}', LoaderAPIRecordController::class)
+    ->name('loader-api-record');
+
 //autocomplete apis
 Route::get('data-detail-search', DataDetailSearchController::class)
     ->name('data-detail.search');
 
 Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob, RunScheduledJob $runScheduledJob) {
-
     $loaderJob
         ->load(
             'loaderQuery.loaderConnection',
