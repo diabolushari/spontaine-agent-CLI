@@ -2,15 +2,12 @@
 
 namespace App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigTrendFields;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigTrendFields\DataFieldGroup;
+use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredWith;
-use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
-use App\Http\Requests\Blocks\BlocksConfigUpdate\ConfigTrendFields\TooltipFieldData;
 
 #[MapName(SnakeCaseMapper::class)]
 class BlockConfigTrend extends Data
@@ -24,6 +21,8 @@ class BlockConfigTrend extends Data
         public ?string $title,
 
         public string $color,
+
+        public string $chartType,
 
         #[RequiredWith('subset_id')]
         public ?DataFieldGroup $dataField,

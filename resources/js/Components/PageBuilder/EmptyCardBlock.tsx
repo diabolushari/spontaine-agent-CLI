@@ -33,6 +33,7 @@ interface Props {
 }
 
 export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Props>) {
+  console.log('Block Data :', block)
   const [selectedView, setSelectedView] = useState<string>('overview')
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const [openTrendDrawer, setOpenTrendDrawer] = useState<boolean>(false)
@@ -120,7 +121,7 @@ export function EmptyCardBlock({ block, overviewEditMode = false }: Readonly<Pro
                       ? block.data.trend.data_field.y_axis.label
                       : ''
                   }
-                  chartType='area'
+                  chartType={block.data.trend.chart_type || 'area'}
                   tooltipIndicator={block.data.trend.tooltip_field}
                   dimensions={block.dimensions}
                   color={block.data.trend.color}

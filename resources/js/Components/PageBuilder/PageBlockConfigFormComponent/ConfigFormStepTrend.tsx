@@ -35,12 +35,24 @@ interface FormData {
   tooltipUnit: string
   tooltipShowLabel: boolean
   color: string
+  chartType: string
 }
 
 const colorOptions = Object.entries(graphColorPallet).map(([key, value]) => ({
   label: camelToNormal(key),
   value: value,
 }))
+
+const chartType = [
+  {
+    label: 'Area',
+    chartType: 'area',
+  },
+  {
+    label: 'Bar',
+    chartType: 'bar',
+  },
+]
 
 export default function ConfigFormStepTrend({
   initialData,
@@ -64,9 +76,9 @@ export default function ConfigFormStepTrend({
       ? initialData.trend?.tooltip_field?.show_label
       : false,
     color: initialData.trend?.subset_id ? initialData.trend?.color : '#5A0F35',
+    chartType: initialData.trend?.chart_type ?? 'area',
   })
-  console.log(formData)
-  const strucetureTrend = (formData: FormData) => {
+  const structureTrend = (formData: FormData) => {
     return {
       trend: {
         subset_id: formData.subsetId,
@@ -93,6 +105,7 @@ export default function ConfigFormStepTrend({
             }
           : null,
         color: formData.color,
+        chart_type: formData.chartType,
       },
     }
   }
@@ -101,14 +114,16 @@ export default function ConfigFormStepTrend({
   )
   const { post, loading, errors } = useInertiaPost(route('config.trend.update', block.id), {
     onComplete: () => {
-      if (onNext) onNext({ ...initialData, trend: strucetureTrend(formData).trend })
+      if (onNext) onNext({ ...initialData, trend: structureTrend(formData).trend })
     },
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('formData.chartType:', formData.chartType)
+    console.log('structureTrend', structureTrend(formData))
     post({
-      ...strucetureTrend(formData),
+      ...structureTrend(formData),
       _method: 'PUT',
     })
   }
@@ -238,31 +253,46 @@ export default function ConfigFormStepTrend({
                 toggleValue={toggleBoolean('tooltipShowLabel')}
               />
             </div>
-            <div className='flex flex-col'>
+            <div>
               <SelectList
-                label='Select Ranking Color'
-                list={colorOptions}
-                dataKey='value'
-                displayKey='label'
-                value={formData.color}
-                setValue={setFormValue('color')}
-                error={errors?.['trend.color']}
+                label='Select Chart Type'
+                list={chartType}
+                dataKey={'chartType'}
+                displayKey={'label'}
+                setValue={setFormValue('chartType')}
+                value={formData.chartType}
+                error={errors?.['trend.chart_type']}
               />
             </div>
-            <div>
-              <NormalText> Colors in the list</NormalText>
-              <div className='flex gap-4'>
-                {formData.color && (
-                  <>
-                    <div
-                      key={formData.color}
-                      className='h-8 w-8'
-                      style={{ backgroundColor: formData.color }}
-                    />
-                  </>
-                )}
-              </div>
-            </div>
+            {formData.chartType == 'area' && (
+              <>
+                <div className='flex flex-col'>
+                  <SelectList
+                    label='Select Ranking Color'
+                    list={colorOptions}
+                    dataKey='value'
+                    displayKey='label'
+                    value={formData.color}
+                    setValue={setFormValue('color')}
+                    error={errors?.['trend.color']}
+                  />
+                </div>
+                <div>
+                  <NormalText> Colors in the list</NormalText>
+                  <div className='flex gap-4'>
+                    {formData.color && (
+                      <>
+                        <div
+                          key={formData.color}
+                          className='h-8 w-8'
+                          style={{ backgroundColor: formData.color }}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 

@@ -401,6 +401,7 @@ export interface Trend {
     show_label: boolean
   }
   color: string
+  chart_type: 'area' | 'bar'
 }
 
 export interface Overview {

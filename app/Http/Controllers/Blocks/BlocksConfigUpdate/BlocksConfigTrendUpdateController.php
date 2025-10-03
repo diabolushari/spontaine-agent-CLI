@@ -6,11 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateRequest;
 use App\Models\Blocks\PageBlock;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class BlocksConfigTrendUpdateController extends Controller
 {
-
     public function __invoke(BlocksConfigTrendUpdateRequest $request, $id): RedirectResponse
     {
         $block = PageBlock::findOrFail($id);

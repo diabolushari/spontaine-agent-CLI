@@ -12,6 +12,7 @@ class BlocksConfigTrendUpdateRequest extends Data
         #[Required]
         public BlockConfigTrend $trend,
     ) {}
+
     public static function messages(): array
     {
         return [
@@ -34,6 +35,8 @@ class BlocksConfigTrendUpdateRequest extends Data
 
             'trend.data_field.x_axis.label.required' => 'X-axis label is required.',
             'trend.data_field.x_axis.value.required' => 'X-axis value is required.',
+
+            'trend.chart_type.required' => 'Please select a chart type.',
         ];
     }
 }
