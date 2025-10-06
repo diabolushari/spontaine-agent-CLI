@@ -89,6 +89,7 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
@@ -366,6 +367,8 @@ Route::apiResource('/chat-history', ChatHistoryController::class);
 
 Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
     ->name('data-detail-column-search');
+
+Route::resource('/widget-editor', WidgetsEditorController::class);
 
 require __DIR__.'/auth.php';
 

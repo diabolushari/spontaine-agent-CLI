@@ -9,17 +9,12 @@ import ConfigFormStepGeneral from './PageBlockConfigFormComponent/ConfigFromStep
 interface BlockFormProps {
   initialData: Partial<Config>
   onCloseStep?: () => void
-  block: Block
-  setOpenDrawer: (value: boolean) => void
+  block?: Block
 }
 
 const steps = [{ title: 'General' }, { title: 'Layout' }]
 
-export default function BlockDrawerForm({
-  initialData,
-  block,
-  setOpenDrawer,
-}: Readonly<BlockFormProps>) {
+export default function BlockDrawerForm({ initialData, block }: Readonly<BlockFormProps>) {
   const [step, setStep] = useState(1)
   const [stepData, setStepData] = useState(initialData)
   const isStepOneComplete = !!(
@@ -111,7 +106,6 @@ export default function BlockDrawerForm({
                   setStep(3)
                 }}
                 onBack={() => setStep(1)}
-                onSave={() => setOpenDrawer(false)}
               />
             )}
           </div>

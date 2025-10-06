@@ -44,7 +44,6 @@ export default function Overview({
   const { overview_chart } = content || {}
 
   const [isGridModalOpen, setGridModalOpen] = useState(false)
-  const [isChartModalOpen, setChartModalOpen] = useState(false)
   const [chartDeleteModal, setChartDeleteModal] = useState(false)
   const [overviewChart, setOverviewChart] = useState<any | null>(overview_chart)
   // const [gridItems, setGridItems] = useState<any[]>(overview_table || [])
