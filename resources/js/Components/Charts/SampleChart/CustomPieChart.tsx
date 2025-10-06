@@ -45,30 +45,14 @@ export function CustomPieChart({
   const processedData = useMemo(() => {
     if (!data) return []
 
-    const aggregated = data.reduce(
-      (acc, item) => {
-        const key = item[nameKey] as string
-        const value = Number(item[dataKey] || 0)
-        if (!acc[key]) {
-          acc[key] = 0
-        }
-        acc[key] += value
-        return acc
-      },
-      {} as Record<string, number>
-    )
-
-    const aggregatedArray = Object.entries(aggregated).map(([key, value]) => ({
-      [nameKey]: key,
-      [dataKey]: value,
-    }))
-
-    const sortedData = [...aggregatedArray].sort((a, b) => {
+    // Sort the data
+    const sortedData = [...data].sort((a, b) => {
       const valA = Number(a[dataKey] || 0)
       const valB = Number(b[dataKey] || 0)
       return sortOrder === 'ascending' ? valA - valB : valB - valA
     })
 
+    // Apply slice count if specified
     if (sliceCount && sortedData.length > sliceCount) {
       const topItems = sortedData.slice(0, sliceCount)
       const otherItems = sortedData.slice(sliceCount)
@@ -83,7 +67,6 @@ export function CustomPieChart({
       return [...topItems, othersSlice]
     }
 
-    // If no grouping is needed, return the sorted data
     return sortedData
   }, [data, dataKey, nameKey, sliceCount, sortOrder])
 
@@ -98,7 +81,6 @@ export function CustomPieChart({
   }, {} as ChartConfig)
 
   const totalValue = useMemo(() => {
-    // Total value remains correct as it's calculated from the final processedData
     return processedData.reduce((sum, item) => sum + Number(item[dataKey] || 0), 0)
   }, [processedData, dataKey])
 

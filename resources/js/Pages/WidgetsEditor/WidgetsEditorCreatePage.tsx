@@ -7,6 +7,7 @@ import Overview from '@/Components/WidgetsEditor/Overview'
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetLayout'
 import React from 'react'
 import { chartPallet } from '@/Components/Charts/SampleChart/ColorPallets'
+import { BarChart3, LineChart, PieChart } from 'lucide-react'
 
 interface Props {
   widget?: any
@@ -27,9 +28,9 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
   })
 
   const chartTypes = [
-    { value: 'bar', label: 'Bar Chart' },
-    { value: 'pie', label: 'Pie Chart' },
-    { value: 'line', label: 'Line Chart' },
+    { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
+    { value: 'pie', label: 'Pie Chart', icon: PieChart },
+    { value: 'line', label: 'Line Chart', icon: LineChart },
   ]
   const paletteOptions = [
     { value: 'boldWarm', label: 'Bold Warm' },
@@ -94,33 +95,50 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
                 />
               </div>
 
-              {/* Chart Type Selection */}
+              {/* Chart Type Selection - Horizontal with Icons */}
               <div className='flex flex-col'>
                 <label className='mb-3 text-sm font-medium text-slate-700'>Chart type</label>
-                <div className='space-y-3'>
-                  {chartTypes.map((type) => (
-                    <label
-                      key={type.value}
-                      className='group flex cursor-pointer items-center'
-                      htmlFor={type.value}
-                    >
-                      <div className='relative flex items-center'>
+                <div className='flex gap-3'>
+                  {chartTypes.map((type) => {
+                    const Icon = type.icon
+                    return (
+                      <label
+                        key={type.value}
+                        className={`group flex flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 p-4 transition-all hover:border-blue-300 hover:bg-blue-50 ${
+                          formData.chart_type === type.value
+                            ? 'border-blue-600 bg-blue-50'
+                            : 'border-slate-200'
+                        }`}
+                        htmlFor={type.value}
+                      >
                         <input
                           name='chart_type'
                           type='radio'
-                          className='peer h-4 w-4 cursor-pointer appearance-none rounded-full border-2 border-slate-300 transition-all checked:border-blue-600'
+                          className='sr-only'
                           id={type.value}
                           value={type.value}
                           checked={formData.chart_type === type.value}
                           onChange={(e) => setFormValue('chart_type')(e.target.value)}
                         />
-                        <span className='pointer-events-none absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-600 opacity-0 transition-opacity duration-200 peer-checked:opacity-100'></span>
-                      </div>
-                      <span className='ml-3 text-sm text-slate-600 group-hover:text-slate-800'>
-                        {type.label}
-                      </span>
-                    </label>
-                  ))}
+                        <Icon
+                          className={`h-8 w-8 transition-colors ${
+                            formData.chart_type === type.value
+                              ? 'text-blue-600'
+                              : 'text-slate-400 group-hover:text-blue-500'
+                          }`}
+                        />
+                        <span
+                          className={`mt-2 text-sm font-medium transition-colors ${
+                            formData.chart_type === type.value
+                              ? 'text-blue-600'
+                              : 'text-slate-600 group-hover:text-slate-800'
+                          }`}
+                        >
+                          {type.label}
+                        </span>
+                      </label>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -155,46 +173,51 @@ export default function WidgetsEditorCreatePage({ widget }: Readonly<Props>) {
                   setValue={setFormValue('dimension')}
                 />
               </div>
-              {/* Color Palette Selection */}
+              {/* Color Palette Selection - Compact Grid */}
               <div className='flex flex-col'>
                 <label className='mb-3 text-sm font-medium text-slate-700'>Color palette</label>
-                <div className='space-y-3'>
+                <div className='grid grid-cols-4 gap-2'>
                   {paletteOptions.map((palette) => (
                     <label
                       key={palette.value}
-                      className='group flex cursor-pointer items-center justify-between rounded-lg border border-slate-200 p-3 transition-all hover:border-blue-300 hover:bg-blue-50'
+                      className={`group cursor-pointer rounded-lg border-2 p-2 transition-all hover:border-blue-400 ${
+                        formData.color_palette === palette.value
+                          ? 'border-blue-600 bg-blue-50'
+                          : 'border-slate-200'
+                      }`}
                       htmlFor={palette.value}
                     >
-                      <div className='flex items-center'>
-                        <div className='relative flex items-center'>
-                          <input
-                            name='color_palette'
-                            type='radio'
-                            className='peer h-4 w-4 cursor-pointer appearance-none rounded-full border-2 border-slate-300 transition-all checked:border-blue-600'
-                            id={palette.value}
-                            value={palette.value}
-                            checked={formData.color_palette === palette.value}
-                            onChange={(e) => setFormValue('color_palette')(e.target.value)}
-                          />
-                          <span className='pointer-events-none absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-blue-600 opacity-0 transition-opacity duration-200 peer-checked:opacity-100'></span>
-                        </div>
-                        <span className='ml-3 text-sm text-slate-600 group-hover:text-slate-800'>
-                          {palette.label}
-                        </span>
-                      </div>
-                      {/* Color Swatches Preview */}
-                      <div className='flex gap-1'>
+                      <input
+                        name='color_palette'
+                        type='radio'
+                        className='sr-only'
+                        id={palette.value}
+                        value={palette.value}
+                        checked={formData.color_palette === palette.value}
+                        onChange={(e) => setFormValue('color_palette')(e.target.value)}
+                      />
+                      {/* Color swatches */}
+                      <div className='mb-2 flex gap-0.5'>
                         {chartPallet[palette.value as keyof typeof chartPallet]
                           .slice(0, 5)
                           .map((color, idx) => (
                             <div
                               key={idx}
-                              className='h-5 w-5 rounded border border-slate-200 shadow-sm'
+                              className='h-5 flex-1 rounded-sm'
                               style={{ backgroundColor: color }}
-                              title={color}
                             />
                           ))}
                       </div>
+                      {/* Palette name */}
+                      <span
+                        className={`block text-center text-xs font-medium ${
+                          formData.color_palette === palette.value
+                            ? 'text-blue-600'
+                            : 'text-slate-600'
+                        }`}
+                      >
+                        {palette.label}
+                      </span>
                     </label>
                   ))}
                 </div>
