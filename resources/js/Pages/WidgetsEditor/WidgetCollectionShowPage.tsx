@@ -3,15 +3,38 @@ import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { AddWidgetSheet } from '@/Components/WidgetsEditor/AddWidgetSheet'
 
-export default function WidgetCollectionShowPage({ collection }) {
-  // Delete handler with confirmation
+interface Widget {
+  id: number
+  title: string
+  subtitle: string
+  type: string
+  collection_id: number
+  updated_at: string
+  created_at: string
+}
+
+interface WidgetCollection {
+  id: number
+  name: string
+  description: string | null
+  created_at: string
+  updated_at: string
+  widget_count: number
+  last_updated: string
+  widgets?: Widget[]
+}
+
+interface WidgetCollectionShowPageProps {
+  collection: WidgetCollection
+}
+
+export default function WidgetCollectionShowPage({
+  collection,
+}: Readonly<WidgetCollectionShowPageProps>) {
   const handleDelete = (widgetId, widgetTitle) => {
     if (window.confirm(`Are you sure you want to delete "${widgetTitle}"?`)) {
       router.delete(route('widget-editor.destroy', widgetId), {
         preserveScroll: true,
-        onSuccess: () => {
-          // Optional: You can add a toast notification here
-        },
       })
     }
   }
@@ -23,7 +46,7 @@ export default function WidgetCollectionShowPage({ collection }) {
         <div className='mb-6'>
           <div className='flex items-center gap-2 text-sm text-gray-600'>
             <Link
-              href='/widget-collections'
+              href='/widget-collection'
               className='hover:text-blue-600'
             >
               Collections

@@ -7,62 +7,22 @@ import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { router } from '@inertiajs/react'
+import { Widget } from '@/interfaces/data_interfaces'
 
-interface Widget {
-  id?: number
-  title: string
-  subtitle: string
-  type: string
-  collection_id: number
-  data: {
-    data_table_id: number
-    subset_group_id: number
-    overview: {
-      chart_type: string
-      measure: {
-        subset_field_name: string
-        subset_column: string
-        unit?: string
-      }[]
-      dimension: string
-      color_palette: string
-      subset_id: number
-    }
-    trend: {
-      subset_id: number
-      chart_type: 'area' | 'bar'
-      measure: {
-        subset_field_name: string
-        subset_column: string
-        unit?: string
-      }
-      dimension: string
-      color: string
-    }
-    rank: {
-      subset_id: number
-      ranking_field: {
-        subset_field_name: string
-        subset_column: string
-      }
-    }
-  }
+export interface SelectedMeasure {
+  subset_column: string
+  subset_field_name: string
+  unit?: string
 }
 
-interface WidgetFormData {
+export interface WidgetFormData {
   title: string
   subtitle: string
   data_table_id: number | null
   subset_group_id: number | null
   chart_type: string
   subset_id: number | null
-  measure:
-    | {
-        subset_field_name: string
-        subset_column: string
-        unit?: string
-      }[]
-    | null
+  measure: SelectedMeasure[]
   dimension: string | null
   color_palette: string
   trend_subset_id: number | null
@@ -84,7 +44,6 @@ interface WidgetFormData {
 interface Props {
   widget?: Widget
   collection_id: number
-  type: string
 }
 
 /**
@@ -127,7 +86,7 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): 
   }
 }
 
-export default function OverviewWidgetEditorPage({ widget, collection_id, type }: Readonly<Props>) {
+export default function OverviewWidgetEditorPage({ widget, collection_id }: Readonly<Props>) {
   const isEditMode = !!widget
   const [cardState, setCardState] = React.useState<string>('overview')
   const [openItem, setOpenItem] = React.useState<string>('basic')
@@ -140,7 +99,7 @@ export default function OverviewWidgetEditorPage({ widget, collection_id, type }
     subset_group_id: widget?.data?.subset_group_id ?? null,
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',
     subset_id: widget?.data?.overview?.subset_id ?? null,
-    measure: widget?.data?.overview?.measure ?? null,
+    measure: widget?.data?.overview?.measure ?? [],
     dimension: widget?.data?.overview?.dimension ?? null,
     color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
     trend_subset_id: widget?.data?.trend?.subset_id ?? null,

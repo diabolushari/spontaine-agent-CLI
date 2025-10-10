@@ -2,15 +2,24 @@ import Card from '@/ui/Card/Card'
 import NormalText from '@/typography/NormalText'
 import CardHeader from '@/ui/Card/CardHeader'
 import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
+import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
 
 interface WidgetLayoutProps {
   children: React.ReactNode
-  block: any
+  block: WidgetFormData
   selectedMonth: Date | null
-  setSelectedMonth: (date: Date | null) => void
+  setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
   selectedView?: string
   onViewChange?: (view: string) => void
 }
+
+// Constants for repeated class names
+const BASE_BUTTON_CLASSES = 'group rounded-md p-1.5 transition-colors'
+const ACTIVE_BUTTON_CLASSES = 'bg-blue-100 hover:bg-blue-200'
+const INACTIVE_BUTTON_CLASSES = 'hover:bg-slate-200'
+const BASE_ICON_CLASSES = 'h-4 w-4 transition-colors'
+const ACTIVE_ICON_CLASSES = 'text-blue-600 group-hover:text-blue-700'
+const INACTIVE_ICON_CLASSES = 'text-gray-500 group-hover:text-gray-700'
 
 export default function WidgetLayout({
   children,
@@ -34,18 +43,16 @@ export default function WidgetLayout({
           {/* Overview Icon */}
           <button
             onClick={() => handleViewChange('overview')}
-            className={`group rounded-md p-1.5 transition-colors ${
-              selectedView === 'overview' ? 'bg-blue-100 hover:bg-blue-200' : 'hover:bg-slate-200'
+            className={`${BASE_BUTTON_CLASSES} ${
+              selectedView === 'overview' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
             }`}
             aria-label='Overview'
             aria-pressed={selectedView === 'overview'}
             title='Overview'
           >
             <svg
-              className={`h-4 w-4 transition-colors ${
-                selectedView === 'overview'
-                  ? 'text-blue-600 group-hover:text-blue-700'
-                  : 'text-gray-500 group-hover:text-gray-700'
+              className={`${BASE_ICON_CLASSES} ${
+                selectedView === 'overview' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
               }`}
               fill='none'
               stroke='currentColor'
@@ -63,18 +70,16 @@ export default function WidgetLayout({
           {/* Trend Icon */}
           <button
             onClick={() => handleViewChange('trend')}
-            className={`group rounded-md p-1.5 transition-colors ${
-              selectedView === 'trend' ? 'bg-blue-100 hover:bg-blue-200' : 'hover:bg-slate-200'
+            className={`${BASE_BUTTON_CLASSES} ${
+              selectedView === 'trend' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
             }`}
             aria-label='Trend'
             aria-pressed={selectedView === 'trend'}
             title='Trend'
           >
             <svg
-              className={`h-4 w-4 transition-colors ${
-                selectedView === 'trend'
-                  ? 'text-blue-600 group-hover:text-blue-700'
-                  : 'text-gray-500 group-hover:text-gray-700'
+              className={`${BASE_ICON_CLASSES} ${
+                selectedView === 'trend' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
               }`}
               fill='none'
               stroke='currentColor'
@@ -92,18 +97,16 @@ export default function WidgetLayout({
           {/* Ranking Icon */}
           <button
             onClick={() => handleViewChange('ranking')}
-            className={`group rounded-md p-1.5 transition-colors ${
-              selectedView === 'ranking' ? 'bg-blue-100 hover:bg-blue-200' : 'hover:bg-slate-200'
+            className={`${BASE_BUTTON_CLASSES} ${
+              selectedView === 'ranking' ? ACTIVE_BUTTON_CLASSES : INACTIVE_BUTTON_CLASSES
             }`}
             aria-label='Ranking'
             aria-pressed={selectedView === 'ranking'}
             title='Ranking'
           >
             <svg
-              className={`h-4 w-4 transition-colors ${
-                selectedView === 'ranking'
-                  ? 'text-blue-600 group-hover:text-blue-700'
-                  : 'text-gray-500 group-hover:text-gray-700'
+              className={`${BASE_ICON_CLASSES} ${
+                selectedView === 'ranking' ? ACTIVE_ICON_CLASSES : INACTIVE_ICON_CLASSES
               }`}
               fill='none'
               stroke='currentColor'

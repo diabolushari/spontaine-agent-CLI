@@ -41,7 +41,7 @@ class WidgetCollectionController extends Controller
 
         $collection = WidgetCollection::create($validated);
 
-        return redirect()->route('widget-collections.index')
+        return redirect()->route('widget-collection.index')
             ->with('success', 'Collection created successfully');
     }
 

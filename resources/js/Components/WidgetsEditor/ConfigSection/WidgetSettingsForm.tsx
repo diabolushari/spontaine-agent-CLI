@@ -4,10 +4,11 @@ import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/Basic
 import OverviewChartSection from '@/Components/WidgetsEditor/ConfigSection/OverviewChartSelector'
 import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
 import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
+import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
 
 interface WidgetSettingsFormProps {
-  formData: any
-  setFormValue: (key: string) => (value: any) => void
+  formData: WidgetFormData
+  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: number | string) => void
   openItem?: string
   setOpenItem?: (item: string) => void
   handleSubmit: () => void

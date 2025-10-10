@@ -2,10 +2,11 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import ChartTypeSelector from '@/Components/WidgetsEditor/ConfigSection/ChartTypeSelector'
 import MeasureFieldSelector from '../MeasureFieldSelector'
 import ColorPaletteSelector from '@/Components/WidgetsEditor/ConfigSection/ColorPalettSelector'
+import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
 
 interface OverviewChartSectionProps {
-  formData: any
-  setFormValue: (key: string) => (value: any) => void
+  formData: WidgetFormData
+  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: number | string) => void
 }
 
 export default function OverviewChartSection({

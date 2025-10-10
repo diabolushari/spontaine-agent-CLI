@@ -1,5 +1,6 @@
 import Input from '@/ui/form/Input'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
 
 interface BasicSettingsSectionProps {
   formData: {
@@ -8,13 +9,13 @@ interface BasicSettingsSectionProps {
     data_table_id: number | null
     subset_group_id: number | null
   }
-  setFormValue: (key: string) => (value: any) => void
+  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: number | string) => void
 }
 
 export default function BasicSettingsSection({
   formData,
   setFormValue,
-}: BasicSettingsSectionProps) {
+}: Readonly<BasicSettingsSectionProps>) {
   return (
     <div className='space-y-4 px-4'>
       <div className='grid grid-cols-2 gap-4'>

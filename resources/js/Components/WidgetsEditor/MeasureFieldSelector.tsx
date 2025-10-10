@@ -2,19 +2,14 @@ import { useEffect, useState } from 'react'
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Dimension } from '@/interfaces/data_interfaces'
 import { Plus, X } from 'lucide-react'
+import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
 
 interface MeasureFieldSelectorProps {
-  subsetId: number
-  measures?: SelectedMeasure[]
+  subsetId: number | null
+  measures?: SelectedMeasure[] | null
   onMeasuresChange?: (measures: SelectedMeasure[]) => void
   allowMultiple?: boolean
   showUnit?: boolean
-}
-
-interface SelectedMeasure {
-  subset_column: string
-  subset_field_name: string
-  unit?: string
 }
 
 export default function MeasureFieldSelector({
@@ -23,7 +18,7 @@ export default function MeasureFieldSelector({
   onMeasuresChange,
   allowMultiple = true,
   showUnit = false,
-}: MeasureFieldSelectorProps) {
+}: Readonly<MeasureFieldSelectorProps>) {
   const [availableMeasures] = useFetchRecord<Dimension[]>(
     subsetId ? `/api/subset/${subsetId}` : null
   )
