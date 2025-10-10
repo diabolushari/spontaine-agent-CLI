@@ -2,10 +2,11 @@
 
 namespace App\Services\DataLoader\DataSource;
 
+use App\Http\Requests\DataLoader\FieldMappingData;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Models\DataLoader\DataLoaderQuery;
 use App\Models\DataLoader\LoaderAPI;
-use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -18,7 +19,7 @@ class DataLoaderSource extends Data
         public string $type,
         public Optional|null|DataLoaderQuery $queryInfo,
         public Optional|null|LoaderAPI $apiInfo,
-        /** @var Optional|null|\App\Http\Requests\DataLoader\FieldMappingData[] $fieldMapping */
+        /** @var Optional|null|FieldMappingData[] $fieldMapping */
         public Optional|null|array $fieldMapping,
     ) {}
 
@@ -43,6 +44,7 @@ class DataLoaderSource extends Data
             return DataLoaderSource::from([
                 'type' => 'SQL',
                 'queryInfo' => $job->loaderQuery,
+                'fieldMapping' => $job->field_mapping,
             ]);
         }
 
@@ -54,11 +56,11 @@ class DataLoaderSource extends Data
             ]);
         }
 
-        throw new \InvalidArgumentException('DataLoaderJob must have either a query or an API configured');
+        throw new InvalidArgumentException('DataLoaderJob must have either a query or an API configured');
     }
 
     public function hasFieldMapping(): bool
     {
-        return $this->fieldMapping !== null && !($this->fieldMapping instanceof Optional);
+        return $this->fieldMapping !== null && ! ($this->fieldMapping instanceof Optional);
     }
 }

@@ -40,6 +40,8 @@ class SubsetOfficeLevelDataController extends Controller
             ->withSubsetDetail($subsetDetail->id)
             ->getQuery();
 
+        return response()->json($query->toRawSql());
+
         $levelResult = $query?->get();
 
         return response()->json([

@@ -48,11 +48,6 @@ const DataTableToJsonMapping = ({
   )
 
   useEffect(() => {
-    console.log(internalMapping)
-    console.log(jsonPaths)
-  }, [internalMapping, jsonPaths])
-
-  useEffect(() => {
     if (jsonDefinition != null) {
       initializeMapping(jsonDefinition, requestBodyParams)
     }

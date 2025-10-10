@@ -12,13 +12,15 @@
 
 ## Purpose
 
-The Loader APIs module is designed to create and manage definitions for JSON APIs that serve as external data sources for DataDetail tables (data tables) in the KSEB Analytics platform. This module enables the platform to:
+The Loader APIs module is designed to create and manage definitions for JSON APIs that serve as external data sources
+for DataDetail tables (data tables) in the KSEB Analytics platform. This module enables the platform to:
 
 - Define external JSON API endpoints as reusable data sources for data tables
 - Configure API authentication headers and request parameters
 - Map JSON response structures for consistent data consumption
 - Provide a unified interface for accessing diverse external data sources
-- Enable scheduled data loading from external APIs into DataDetail tables, which then provide data for dashboard visualization and API consumption by other systems
+- Enable scheduled data loading from external APIs into DataDetail tables, which then provide data for dashboard
+  visualization and API consumption by other systems
 
 ## Data Flow Architecture
 
@@ -27,17 +29,23 @@ The Loader APIs module follows a structured data flow pattern:
 1. **API Configuration**: Administrators define external JSON API endpoints using the Loader APIs module
 2. **Job Scheduling**: DataLoaderJobs are configured to use these APIs as data sources, with scheduled execution times
 3. **Data Extraction**: Jobs fetch data from external APIs according to the defined schedule
-4. **Data Transformation**: API responses are mapped to DataDetail table schemas using the response structure definitions
+4. **Data Transformation**: API responses are mapped to DataDetail table schemas using the response structure
+   definitions
 5. **Data Storage**: Transformed data is stored in DataDetail tables (data tables)
 6. **Data Consumption**: DataDetail tables serve two purposes:
-   - Provide data for dashboard visualization and analytics
-   - Expose APIs for consumption by other external systems
+    - Provide data for dashboard visualization and analytics
+    - Expose APIs for consumption by other external systems
 
-This architecture ensures data consistency, enables scheduled data updates, and provides a reliable foundation for both internal dashboards and external integrations.
+This architecture ensures data consistency, enables scheduled data updates, and provides a reliable foundation for both
+internal dashboards and external integrations.
 
 ## Overview
 
-The Loader APIs module acts as a bridge between external JSON APIs and DataDetail tables (data tables) in the analytics platform. It allows administrators to configure external API endpoints once and reuse them across multiple data loading jobs that populate DataDetail tables. These data tables then serve as the foundation for dashboard components and provide APIs for consumption by other systems, ensuring consistent data access patterns and reducing configuration overhead.
+The Loader APIs module acts as a bridge between external JSON APIs and DataDetail tables (data tables) in the analytics
+platform. It allows administrators to configure external API endpoints once and reuse them across multiple data loading
+jobs that populate DataDetail tables. These data tables then serve as the foundation for dashboard components and
+provide APIs for consumption by other systems, ensuring consistent data access patterns and reducing configuration
+overhead.
 
 ## Features
 
@@ -55,15 +63,16 @@ The Loader APIs module acts as a bridge between external JSON APIs and DataDetai
 
 ### 3. Authentication & Headers Configuration
 
-- **Custom Headers**: Configure authentication headers (API keys, Bearer tokens, etc.) with intelligent autocomplete suggestions
+- **Custom Headers**: Configure authentication headers (API keys, Bearer tokens, etc.) with intelligent autocomplete
+  suggestions
 - **Header Suggestions**: Built-in suggestions for common HTTP headers including:
-  - Authorization headers (Bearer, Basic, API-Key, Token)
-  - Content-Type options (application/json, application/xml, etc.)
-  - Accept headers for response format specification
-  - User-Agent strings for client identification
-  - API-specific headers (X-API-Key, X-RapidAPI-Key, etc.)
-  - Caching and encoding headers (Cache-Control, Accept-Encoding)
-  - CORS and security headers
+    - Authorization headers (Bearer, Basic, API-Key, Token)
+    - Content-Type options (application/json, application/xml, etc.)
+    - Accept headers for response format specification
+    - User-Agent strings for client identification
+    - API-specific headers (X-API-Key, X-RapidAPI-Key, etc.)
+    - Caching and encoding headers (Cache-Control, Accept-Encoding)
+    - CORS and security headers
 - **Value Suggestions**: Context-aware value suggestions based on selected header keys
 - **Dynamic Header Values**: Support for key-value pair header configuration
 - **Request Body Parameters**: Configure POST request body parameters with helpful placeholders
@@ -79,13 +88,15 @@ The Loader APIs module acts as a bridge between external JSON APIs and DataDetai
 
 ### 7. Data Loading & Testing
 
-- **Smart Autocomplete**: Intelligent header name and value suggestions reduce typing errors and improve configuration speed
+- **Smart Autocomplete**: Intelligent header name and value suggestions reduce typing errors and improve configuration
+  speed
 - **Contextual Help**: Descriptions for common HTTP headers help users understand their purpose
 - **Keyboard Navigation**: Full keyboard support for navigating through suggestions (Arrow keys, Enter, Escape)
 - **Responsive Design**: Optimized interface that works across different screen sizes
 - **Accessibility Features**: Proper ARIA labels and keyboard interactions for screen readers
 - **Real-time Validation**: Immediate feedback on header configuration errors
-- **Scheduled Data Loading**: Configure DataLoaderJobs to fetch data from APIs and populate DataDetail tables on scheduled intervals
+- **Scheduled Data Loading**: Configure DataLoaderJobs to fetch data from APIs and populate DataDetail tables on
+  scheduled intervals
 - **Response Preview**: Preview up to 10 sample records from API responses during configuration
 - **Error Handling**: Comprehensive error reporting for failed API calls and data loading operations
 - **Connection Testing**: Validate API configurations before saving
@@ -101,13 +112,13 @@ The Loader APIs module acts as a bridge between external JSON APIs and DataDetai
 ### 2. Model Layer
 
 - **LoaderAPI Model**: Represents API configuration with properties:
-  - `name`: Human-readable API identifier
-  - `description`: Detailed description of the API purpose
-  - `url`: Complete API endpoint URL
-  - `method`: HTTP method (GET/POST)
-  - `headers`: Array of request headers
-  - `body`: Array of request body parameters (for POST)
-  - `response_structure`: JSON structure definition for response mapping
+    - `name`: Human-readable API identifier
+    - `description`: Detailed description of the API purpose
+    - `url`: Complete API endpoint URL
+    - `method`: HTTP method (GET/POST)
+    - `headers`: Array of request headers
+    - `body`: Array of request body parameters (for POST)
+    - `response_structure`: JSON structure definition for response mapping
 
 ### 3. Request Validation
 
@@ -124,7 +135,7 @@ The Loader APIs module acts as a bridge between external JSON APIs and DataDetai
 ### Resource Routes (loader-apis)
 
 | Method    | Endpoint                 | Action  | Purpose                                  |
-| --------- | ------------------------ | ------- | ---------------------------------------- |
+|-----------|--------------------------|---------|------------------------------------------|
 | GET       | `/loader-apis`           | index   | List all configured APIs with pagination |
 | GET       | `/loader-apis/create`    | create  | Display API creation form                |
 | POST      | `/loader-apis`           | store   | Save new API configuration               |
@@ -135,9 +146,9 @@ The Loader APIs module acts as a bridge between external JSON APIs and DataDetai
 
 ### Data Fetching Route
 
-| Method | Endpoint                             | Purpose                        |
-| ------ | ------------------------------------ | ------------------------------ |
-| GET    | `/loader-query-api-data/{loaderAPI}` | Fetch data from configured API |
+| Method | Endpoint                            | Purpose                        |
+|--------|-------------------------------------|--------------------------------|
+| GET    | `/loader-json-api-data/{loaderAPI}` | Fetch data from configured API |
 
 ## Data Structure
 

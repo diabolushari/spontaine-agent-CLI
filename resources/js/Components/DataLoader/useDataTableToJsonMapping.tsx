@@ -40,7 +40,7 @@ export const COMMON_DATE_FORMATS = [
   { value: 'h:i:s A', label: 'h:i:s A (03:22:30 PM)' },
 ]
 
-const getAllJsonPaths = (definition: JSONDefinition, parentPath: string = ''): string[] => {
+export const getAllJsonPaths = (definition: JSONDefinition, parentPath: string = ''): string[] => {
   const currentPath =
     parentPath != '' ? `${parentPath}.${definition.field_name}` : definition.field_name
   const paths: string[] = []
@@ -77,7 +77,7 @@ export const useDataTableToJsonMapping = (
     dataDetail?.dates?.forEach((date) => {
       mappings.push({
         column: date.column ?? '',
-        field_name: `${date.field_name} (Date)`,
+        field_name: `${date.field_name}`,
         field_type: 'date',
         json_field_path: '',
         date_format: 'Y-m-d',
@@ -87,7 +87,7 @@ export const useDataTableToJsonMapping = (
     dataDetail?.dimensions?.forEach((dim) => {
       mappings.push({
         column: dim.column ?? '',
-        field_name: `${dim.field_name} (Dimension)`,
+        field_name: `${dim.field_name}`,
         field_type: 'dimension',
         json_field_path: '',
       })
@@ -96,7 +96,7 @@ export const useDataTableToJsonMapping = (
     dataDetail?.measures?.forEach((measure) => {
       mappings.push({
         column: measure.column ?? '',
-        field_name: `${measure.field_name} (Measure)`,
+        field_name: `${measure.field_name}`,
         field_type: 'measure',
         json_field_path: '',
       })
@@ -104,7 +104,7 @@ export const useDataTableToJsonMapping = (
       if (measure.unit_column) {
         mappings.push({
           column: measure.unit_column ?? '',
-          field_name: `${measure.unit_field_name} (Unit)`,
+          field_name: `${measure.unit_field_name}`,
           field_type: 'measure',
           json_field_path: '',
         })
@@ -114,7 +114,7 @@ export const useDataTableToJsonMapping = (
     dataDetail?.texts?.forEach((text) => {
       mappings.push({
         column: text.column ?? '',
-        field_name: `${text.field_name} (Text)`,
+        field_name: `${text.field_name}`,
         field_type: 'text',
         json_field_path: '',
       })
@@ -138,8 +138,6 @@ export const useDataTableToJsonMapping = (
     (jsonDefinition: JSONDefinition | null, requestBodyParams?: KeyValue[] | null) => {
       // Extract available JSON paths
       const paths: { value: string; label: string }[] = []
-
-      console.log(jsonDefinition)
 
       // Add request body parameter paths
       if (requestBodyParams != null && requestBodyParams.length > 0) {
