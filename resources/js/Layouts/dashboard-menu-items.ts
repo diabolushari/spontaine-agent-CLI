@@ -1,16 +1,16 @@
 import {
-  Table2,
-  Database,
   Blocks,
-  FileJson,
-  FileCode,
-  Settings,
-  CheckSquare,
-  Users,
-  LucideIcon,
-  DatabaseIcon,
   BookOpen,
+  CheckSquare,
   Cog,
+  Database,
+  DatabaseIcon,
+  FileCode,
+  FileJson,
+  LucideIcon,
+  Settings,
+  Table2,
+  Users,
 } from 'lucide-react'
 
 export interface SvgImage {
@@ -156,8 +156,8 @@ const dashboardMenuItems: DashboardMenuItem[] = [
         subtype: 'reference-data',
       },
       {
-        link: '/page-builder',
-        title: 'Page Builder',
+        link: '/widget-collection',
+        title: 'Widget Editor',
         image: Settings,
         permission: 'page-builder',
         subtype: 'page-builder',
