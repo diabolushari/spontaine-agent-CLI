@@ -41,6 +41,7 @@ use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
 use App\Http\Controllers\DataLoader\LoaderAPIRecordController;
 use App\Http\Controllers\DataLoader\QueryListController;
+use App\Http\Controllers\DataLoader\TestDataLoaderAPIController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
 use App\Http\Controllers\FinancialController;
@@ -91,17 +92,14 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
-use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
-use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
-use App\Models\DataDetail\DataDetail;
 use App\Http\Controllers\Utils\LoaderAPIListController;
 use App\Http\Controllers\Utils\LoaderConnectionListController;
 use App\Http\Controllers\Utils\LoaderQueryListController;
+use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
+use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
-use App\Services\DataTable\JoinDataTable;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     if (! auth()->check()) {
@@ -169,11 +167,6 @@ Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDime
 Route::get('/api/data-explorer/{subsetGroup}', DataExplorerDataController::class)
     ->name('data-explorer');
 Route::get('/api/data-detail/subset-group/{dataDetailId}', DataDetailSubsetGroupController::class);
-
-//testing
-Route::get('/test', function () {
-    return Inertia::render('TestPage');
-});
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);
@@ -327,6 +320,9 @@ Route::resource('loader-apis', DataLoaderAPIController::class)
 Route::get('loader-json-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
     ->name('loader-json-api-data');
 
+Route::post('get-api-response-structure', TestDataLoaderAPIController::class)
+    ->name('get-api-response-structure');
+
 Route::get('loader-api-record/{loaderAPI}', LoaderAPIRecordController::class)
     ->name('loader-api-record');
 
@@ -356,14 +352,6 @@ Route::get('/hierarchy-items/{metaHierarchy}', MetaHierarchyItemController::clas
 Route::get('office-coordinates', OfficeCoordinateListController::class)
     ->name('office-coordinates')
     ->middleware('auth');
-
-Route::get('test', function (JoinDataTable $joinDataTable) {
-    $dataDetail = DataDetail::where('id', 42)->first();
-
-    return $joinDataTable->join($dataDetail)
-        ->selectRaw('MAX(month_year_record.name) as month_year')
-        ->first();
-});
 
 Route::get('/insight-gen', InsightsGen::class)
     ->name('insight-gen');
@@ -451,8 +439,11 @@ Route::get('mock-api', function () {
     ]);
 })->name('mock-api');
 
-Route::resource('widget-editor', WidgetsEditorController::class)->parameters(['widget-editor' => 'widget']);
-Route::resource('widget-collection', WidgetCollectionController::class)->parameters(['widget-collection' => 'widgetCollection']);
+// TODO Plural URL
+Route::resource('widget-editor', WidgetsEditorController::class)
+    ->parameters(['widget-editor' => 'widget']);
+Route::resource('widget-collection', WidgetCollectionController::class)
+    ->parameters(['widget-collection' => 'widgetCollection']);
 
 require __DIR__.'/auth.php';
 

@@ -3,7 +3,9 @@ import CardHeader from '@/ui/Card/CardHeader'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { DataLoaderAPI, DataLoaderQuery, ReferenceData } from '@/interfaces/data_interfaces'
 import DataSourceSelection, { DataSource } from './DataSourceSelection'
-import ManageDataTableFields, { DataTableFieldConfig, } from '@/Components/SetupDataTable/ManageDataTableFields'
+import ManageDataTableFields, {
+  DataTableFieldConfig,
+} from '@/Components/SetupDataTable/ManageDataTableFields'
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import SetupDataTableForm from './SetupDataTableForm'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
