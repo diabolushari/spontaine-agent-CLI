@@ -1,6 +1,17 @@
 import RankedList from '@/Components/Dashboard/SampleDashboard/RankedList'
 
-export default function RankingWidget({ formData, selectedMonth }) {
+interface RankingWidgetProps {
+  formData: {
+    rank_subset_id: number
+    rank_ranking_field: {
+      subset_column: string
+      subset_field_name: string
+    }[]
+  }
+  selectedMonth: Date
+}
+
+export default function RankingWidget({ formData, selectedMonth }: Readonly<RankingWidgetProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`

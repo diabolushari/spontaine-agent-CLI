@@ -5,7 +5,13 @@ import { WidgetBarChart } from '@/Components/WidgetsEditor/Charts/WidgetBarChart
 import { WidgetLineChart } from '@/Components/WidgetsEditor/Charts/WidgetLineChart'
 
 interface OverviewProps {
-  block: any
+  block: {
+    subset_id: number
+    measure: SelectedMeasure[]
+    dimension: string
+    chart_type: string
+    color_palette: string
+  }
   selectedMonth: Date
 }
 

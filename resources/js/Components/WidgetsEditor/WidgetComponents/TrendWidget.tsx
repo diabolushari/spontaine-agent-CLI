@@ -1,6 +1,24 @@
 import TrendGraph from '@/Components/WidgetsEditor/WidgetComponents/TrendGraph'
 
-export default function TrendWidget({ formData, selectedMonth, setSelectedMonth }) {
+interface TrendWidgetProps {
+  formData: {
+    trend_subset_id: number
+    trend_measure: {
+      subset_column: string
+      subset_field_name: string
+    }[]
+    trend_chart_type: string
+    trend_color: string
+  }
+  selectedMonth: Date
+  setSelectedMonth: (date: Date) => void
+}
+
+export default function TrendWidget({
+  formData,
+  selectedMonth,
+  setSelectedMonth,
+}: Readonly<TrendWidgetProps>) {
   if (!formData.trend_subset_id || !formData.trend_measure) {
     return (
       <div className='flex h-full items-center justify-center'>

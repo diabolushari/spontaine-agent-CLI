@@ -62,6 +62,7 @@ use App\Http\Controllers\MetaHierarchy\MetaHierarchyItemController;
 use App\Http\Controllers\OperationsController;
 use App\Http\Controllers\PageBuilder\CustomPageController;
 use App\Http\Controllers\PageBuilder\PageBuilderController;
+use App\Http\Controllers\PageEditor\PageEditorController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
 use App\Http\Controllers\SampleChart\ChartController;
@@ -91,12 +92,12 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
-use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
-use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
-use App\Models\DataDetail\DataDetail;
 use App\Http\Controllers\Utils\LoaderAPIListController;
 use App\Http\Controllers\Utils\LoaderConnectionListController;
 use App\Http\Controllers\Utils\LoaderQueryListController;
+use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
+use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
+use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use App\Services\DataTable\JoinDataTable;
@@ -453,6 +454,7 @@ Route::get('mock-api', function () {
 
 Route::resource('widget-editor', WidgetsEditorController::class)->parameters(['widget-editor' => 'widget']);
 Route::resource('widget-collection', WidgetCollectionController::class)->parameters(['widget-collection' => 'widgetCollection']);
+Route::resource('page-editor', PageEditorController::class);
 
 require __DIR__.'/auth.php';
 
