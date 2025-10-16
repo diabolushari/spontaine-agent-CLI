@@ -98,7 +98,6 @@ use App\Http\Controllers\Utils\LoaderConnectionListController;
 use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
-use App\Models\DataDetail\DataDetail;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\Route;
@@ -446,6 +445,7 @@ Route::resource('widget-editor', WidgetsEditorController::class)
     ->parameters(['widget-editor' => 'widget']);
 Route::resource('widget-collection', WidgetCollectionController::class)
     ->parameters(['widget-collection' => 'widgetCollection']);
+Route::resource('page-editor', PageEditorController::class);
 
 require __DIR__.'/auth.php';
 

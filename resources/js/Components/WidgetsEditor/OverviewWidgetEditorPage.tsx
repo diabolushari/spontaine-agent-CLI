@@ -6,7 +6,6 @@ import React, { useEffect } from 'react'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { router } from '@inertiajs/react'
 import { Widget } from '@/interfaces/data_interfaces'
 
 export interface SelectedMeasure {
@@ -43,11 +42,10 @@ export interface WidgetFormData {
 
 interface Props {
   widget?: Widget
-  collection_id: number
+  collectionId: number
   type: string
 }
 
-//TODO use ?? instead of ||
 /**
  * Parse form data to Widget format matching Laravel Widget model
  */
@@ -62,15 +60,15 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): 
       subset_group_id: formData.subset_group_id!,
       overview: {
         chart_type: formData.chart_type,
-        measure: formData.measure || [],
-        dimension: formData.dimension || '',
+        measure: formData.measure ?? [],
+        dimension: formData.dimension ?? '',
         color_palette: formData.color_palette,
         subset_id: formData.subset_id!,
       },
       trend: {
         subset_id: formData.trend_subset_id!,
         chart_type: formData.trend_chart_type,
-        measure: formData.trend_measure || {
+        measure: formData.trend_measure ?? {
           subset_field_name: '',
           subset_column: '',
         },
@@ -79,7 +77,7 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): 
       },
       rank: {
         subset_id: formData.rank_subset_id!,
-        ranking_field: formData.rank_ranking_field || {
+        ranking_field: formData.rank_ranking_field ?? {
           subset_field_name: '',
           subset_column: '',
         },
@@ -88,10 +86,8 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number): 
   }
 }
 
-//TODO dont use snake_case for js variable names
-export default function OverviewWidgetEditorPage({ widget, collection_id }: Readonly<Props>) {
-  //TODO use widget != null to check if widget is being edited
-  const isEditMode = !!widget
+export default function OverviewWidgetEditorPage({ widget, collectionId }: Readonly<Props>) {
+  const isEditMode = widget != null
   const [cardState, setCardState] = React.useState<string>('overview')
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedMonth, setSelectedMonth] = React.useState(new Date())
@@ -132,17 +128,12 @@ export default function OverviewWidgetEditorPage({ widget, collection_id }: Read
     }
   }, [openItem])
 
-  //TODO use post() for both edit and update
   const handleSubmit = () => {
-    const widgetData = parseFormDataToWidget(formData, collection_id)
+    const widgetData = parseFormDataToWidget(formData, collectionId)
     if (isEditMode) {
-      router.put(route('widget-editor.update', widget.id), widgetData, {
-        onSuccess: () => {
-          console.log('Widget updated successfully')
-        },
-        onError: (errors) => {
-          console.error('Update failed:', errors)
-        },
+      post({
+        ...widgetData,
+        _method: 'PUT',
       })
     } else {
       post(widgetData)

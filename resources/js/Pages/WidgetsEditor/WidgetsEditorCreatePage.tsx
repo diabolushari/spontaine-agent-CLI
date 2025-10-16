@@ -18,7 +18,7 @@ export default function WidgetsEditorCreatePage({ widget, collection_id, type }:
         {type == 'overview' && (
           <OverviewWidgetEditorPage
             widget={widget}
-            collection_id={collection_id}
+            collectionId={collection_id}
             type={type}
           />
         )}

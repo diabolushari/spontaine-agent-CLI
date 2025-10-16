@@ -529,3 +529,14 @@ export interface Widget {
     }
   }
 }
+
+export interface WidgetCollection {
+  id: number
+  name: string
+  description: string | null
+  created_at: string
+  updated_at: string
+  widget_count: number
+  last_updated: string
+  widgets?: Widget[]
+}
