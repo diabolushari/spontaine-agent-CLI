@@ -22,9 +22,6 @@ export default function WidgetSettingsForm({
   setOpenItem,
   handleSubmit,
 }: WidgetSettingsFormProps) {
-  const log = (cards) => {
-    console.log(cards)
-  }
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
       <div className='mb-4'>

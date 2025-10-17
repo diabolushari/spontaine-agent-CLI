@@ -2,7 +2,10 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import { useEffect, useState } from 'react'
 import MeasureFieldSelector from '@/Components/WidgetsEditor/MeasureFieldSelector'
 import { Plus, X } from 'lucide-react'
-import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
+import {
+  SelectedMeasure,
+  WidgetFormData,
+} from '@/Components/WidgetsEditor/OverviewWidgetEditorPage'
 
 interface HighlightCard {
   title: string
@@ -12,23 +15,21 @@ interface HighlightCard {
 }
 
 interface HighlightConfigSectionProps {
-  formData: any
-  setFormValue: (key: string) => (value: any) => void
+  formData: WidgetFormData
+  setFormValue: (key: string) => (value: HighlightCard[]) => void
 }
 
 export default function HighlightConfigSection({
   formData,
   setFormValue,
 }: Readonly<HighlightConfigSectionProps>) {
-  // Initialize with existing data or empty array
   const [selectedCards, setSelectedCards] = useState<HighlightCard[]>(formData.hl_cards || [])
 
-  // Sync with formData when it changes from external source (like loading widget data)
   useEffect(() => {
     if (formData.hl_cards && Array.isArray(formData.hl_cards)) {
       setSelectedCards(formData.hl_cards)
     }
-  }, [formData.subset_group_id]) // Reset when subset group changes
+  }, [formData.subset_group_id])
 
   const handleAddCard = () => {
     if (selectedCards.length < 3) {
