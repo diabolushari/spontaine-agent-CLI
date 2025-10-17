@@ -4,7 +4,11 @@ import ErrorText from '@/typography/ErrorText'
 import SelectList from '@/ui/form/SelectList'
 import { usePage } from '@inertiajs/react'
 import { memo, useEffect, useMemo } from 'react'
-import { COMMON_DATE_FORMATS, DataTableFieldMapping, useDataTableToJsonMapping, } from './useDataTableToJsonMapping'
+import {
+  COMMON_DATE_FORMATS,
+  DataTableFieldMapping,
+  useDataTableToJsonMapping,
+} from './useDataTableToJsonMapping'
 
 interface Props {
   dataTableDetail: DataDetailFields
