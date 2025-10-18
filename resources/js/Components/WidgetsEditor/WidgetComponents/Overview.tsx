@@ -44,8 +44,6 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
       : null
   )
 
-  console.log(data)
-
   // Create keysToPlot array from measures
   const keysToPlot = Array.isArray(block?.measure)
     ? block.measure.map((m: SelectedMeasure) => ({
@@ -58,20 +56,6 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
   // Get first measure for pie chart and highlight bar
   const firstMeasure =
     Array.isArray(block?.measure) && block.measure.length > 0 ? block.measure[0] : null
-
-  // Handle loading state
-  if (loading) {
-    return <div className='flex h-64 items-center justify-center text-slate-400'>Loading...</div>
-  }
-
-  // Handle no measures selected
-  if (!Array.isArray(block?.measure) || block.measure.length === 0) {
-    return (
-      <div className='flex h-64 items-center justify-center text-slate-400'>
-        Please select measures and dimension to display chart
-      </div>
-    )
-  }
 
   // Check if we have data for HighlightBar
   const hasHighlightData = block.hl_cards
