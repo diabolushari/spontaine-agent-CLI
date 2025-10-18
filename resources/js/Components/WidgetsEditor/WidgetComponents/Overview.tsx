@@ -11,6 +11,7 @@ interface OverviewProps {
     dimension: string
     chart_type: string
     color_palette: string
+    hl_cards: any
   }
   selectedMonth: Date
 }
@@ -22,7 +23,6 @@ interface SelectedMeasure {
 }
 
 export default function Overview({ block, selectedMonth }: Readonly<OverviewProps>) {
-  console.log(selectedMonth)
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
@@ -45,72 +45,99 @@ export default function Overview({ block, selectedMonth }: Readonly<OverviewProp
   )
 
   console.log(data)
+
   // Create keysToPlot array from measures
   const keysToPlot = Array.isArray(block?.measure)
     ? block.measure.map((m: SelectedMeasure) => ({
         key: m.subset_column,
         label: m.subset_field_name,
-        unit: m.unit, // You can add unit to the measure object if needed
+        unit: m.unit,
       }))
     : []
 
-  // Get first measure for pie chart (pie charts typically show one measure)
+  // Get first measure for pie chart and highlight bar
   const firstMeasure =
     Array.isArray(block?.measure) && block.measure.length > 0 ? block.measure[0] : null
 
-  // Don't render if data is not ready or no measures selected
-  if (!data?.data || !Array.isArray(block?.measure) || block.measure.length === 0) {
+  // Handle loading state
+  if (loading) {
+    return <div className='flex h-64 items-center justify-center text-slate-400'>Loading...</div>
+  }
+
+  // Handle no measures selected
+  if (!Array.isArray(block?.measure) || block.measure.length === 0) {
     return (
       <div className='flex h-64 items-center justify-center text-slate-400'>
-        {loading ? 'Loading...' : 'Please select measures and dimension to display chart'}
+        Please select measures and dimension to display chart
       </div>
     )
   }
 
+  // Check if we have data for HighlightBar
+  const hasHighlightData = block.hl_cards
+
+  // Check if we have data for charts (requires dimension)
+  const hasChartData = hasHighlightData && block?.dimension
+
   return (
     <div>
-      <HighlightBar
-        data={data.data}
-        subsetColumn={firstMeasure.subset_column}
-      />
-      {block?.chart_type === 'bar' && (
-        <div>
-          <WidgetBarChart
-            data={data.data}
-            dataKey={block.dimension}
-            keysToPlot={keysToPlot}
-            colors={block?.color_palette}
-            fontSize={'text-sm'}
-          />
-        </div>
+      {/* Always show HighlightBar if data is available */}
+      {hasHighlightData && (
+        <HighlightBar
+          hlCards={block.hl_cards}
+          selectedMonth={selectedMonth}
+        />
       )}
-      {block?.chart_type === 'line' && (
-        <div>
-          <WidgetLineChart
-            data={data.data}
-            dataKey={block.dimension}
-            keysToPlot={keysToPlot}
-            colors={block?.color_palette}
-          />
-        </div>
-      )}
-      {block?.chart_type === 'pie' && firstMeasure && (
-        <div>
-          <CustomPieChart
-            data={data.data}
-            dataKey={firstMeasure.subset_column}
-            nameKey={block.dimension}
-            keysToPlot={[
-              {
-                key: firstMeasure.subset_column,
-                label: firstMeasure.subset_field_name,
-                unit: firstMeasure.unit,
-              },
-            ]}
-            colors={block?.color_palette}
-            fontSize={'text-sm'}
-          />
-        </div>
+
+      {/* Show charts only if chart data requirements are met */}
+      {hasChartData ? (
+        <>
+          {block?.chart_type === 'bar' && (
+            <div>
+              <WidgetBarChart
+                data={data.data}
+                dataKey={block.dimension}
+                keysToPlot={keysToPlot}
+                colors={block?.color_palette}
+                fontSize={'text-sm'}
+              />
+            </div>
+          )}
+          {block?.chart_type === 'line' && (
+            <div>
+              <WidgetLineChart
+                data={data.data}
+                dataKey={block.dimension}
+                keysToPlot={keysToPlot}
+                colors={block?.color_palette}
+              />
+            </div>
+          )}
+          {block?.chart_type === 'pie' && firstMeasure && (
+            <div>
+              <CustomPieChart
+                data={data.data}
+                dataKey={firstMeasure.subset_column}
+                nameKey={block.dimension}
+                keysToPlot={[
+                  {
+                    key: firstMeasure.subset_column,
+                    label: firstMeasure.subset_field_name,
+                    unit: firstMeasure.unit,
+                  },
+                ]}
+                colors={block?.color_palette}
+                fontSize={'text-sm'}
+              />
+            </div>
+          )}
+        </>
+      ) : (
+        !hasHighlightData && (
+          <div className='flex h-64 items-center justify-center text-slate-400'>
+            No data available to display
+          </div>
+        )
       )}
     </div>
   )

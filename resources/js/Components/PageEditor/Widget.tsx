@@ -53,6 +53,7 @@ export default function Widget({ widget }: Readonly<Props>) {
             dimension: data.overview.dimension,
             chart_type: data.overview.chart_type,
             color_palette: data.overview.color_palette,
+            hl_cards: data.hl_cards,
           }}
           selectedMonth={selectedMonth}
         />
