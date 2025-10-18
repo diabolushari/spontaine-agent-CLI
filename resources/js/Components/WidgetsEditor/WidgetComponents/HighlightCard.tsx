@@ -29,7 +29,12 @@ export default function HighlightCard({ card, selectedMonth }: Readonly<Highligh
       : null
   )
 
-  const formatIndianNumber = (num: number): string => {
+  const formatIndianNumber = (num: number | null | undefined): string => {
+    // Handle null, undefined, and NaN values
+    if (num == null || Number.isNaN(num)) {
+      return '0'
+    }
+
     if (num >= 10000000) {
       return `${(num / 10000000).toFixed(2)} Cr`
     } else if (num >= 100000) {
