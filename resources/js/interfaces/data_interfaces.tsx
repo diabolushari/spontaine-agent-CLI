@@ -1,6 +1,6 @@
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
-import { JsonFieldMapping } from '@/Components/DataLoader/useJsonFieldMapping'
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
+import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 
 export interface Model {
   id: number
@@ -248,7 +248,7 @@ export interface DataLoaderJob extends Model {
   statuses?: JobStatuses[]
   latest?: JobStatuses
   last_status?: Partial<JobStatus> | null
-  field_mapping?: Partial<JsonFieldMapping>[] | null
+  field_mapping?: DataTableFieldMapping[] | null
 }
 
 export interface JobStatus extends Model {

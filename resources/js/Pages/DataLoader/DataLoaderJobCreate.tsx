@@ -1,5 +1,6 @@
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
 import DataTableToJsonMapping from '@/Components/DataLoader/DataTableToJsonMapping'
+import DataTableToSqlMapping from '@/Components/DataLoader/DataTableToSqlMapping'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
@@ -102,6 +103,12 @@ export default function DataLoaderJobCreate({
   const [dataTableDetail] = useFetchRecord<DataDetailFields>(`/data-detail/${dataDetail.id}/fields`)
 
   const [fieldMapping, setFieldMapping] = useState<DataTableFieldMapping[]>([])
+
+  useEffect(() => {
+    if (job != null && job.source_type === 'sql' && job.field_mapping != null) {
+      setFieldMapping(job.field_mapping)
+    }
+  }, [job])
 
   const handleMappingChange = useCallback((mappings: DataTableFieldMapping[]) => {
     setFieldMapping(mappings)
@@ -267,10 +274,12 @@ export default function DataLoaderJobCreate({
           setFormValue('api_id')('')
           setFormValue('connection_id')('')
           setFormValue('query_id')('')
+          setFieldMapping([])
         },
         list: sourceTypes,
         displayKey: 'label',
         dataKey: 'value',
+        disabled: job != null,
       },
       api_id: {
         type: 'select',
@@ -283,6 +292,7 @@ export default function DataLoaderJobCreate({
         dataKey: 'id',
         allOptionText: 'Select an API',
         hidden: formData.source_type !== 'api',
+        disabled: job != null,
       },
       connection_id: {
         type: 'select',
@@ -296,6 +306,7 @@ export default function DataLoaderJobCreate({
         dataKey: 'id',
         allOptionText: 'Select a connection',
         hidden: formData.source_type === 'api',
+        disabled: job != null,
       },
       query_id: {
         type: 'dynamicSelect',
@@ -306,6 +317,7 @@ export default function DataLoaderJobCreate({
         dataKey: 'id',
         allOptionText: 'Select a query',
         hidden: formData.source_type !== 'sql',
+        disabled: job != null,
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [
@@ -319,6 +331,7 @@ export default function DataLoaderJobCreate({
     formData.delete_existing_data,
     formData.source_type,
     apis,
+    job,
   ])
 
   const backUrl = useMemo(() => {
@@ -367,9 +380,16 @@ export default function DataLoaderJobCreate({
           job={job}
         />
       )}
-
+      {formData.source_type === 'sql' && fieldMapping.length > 0 && (
+        <DataTableToSqlMapping fieldMapping={fieldMapping} />
+      )}
+      {formData.source_type === 'sql' && fieldMapping.length === 0 && (
+        <div className='flex flex-col gap-2'>
+          <p>DataTable fields are not mapped to sql output.</p>
+        </div>
+      )}
       <div className='flex flex-col gap-2'>
-        <Button label='Create Job' />
+        <Button label={job == null ? 'Create Job' : 'Update Job'} />
       </div>
     </FormPage>
   )
