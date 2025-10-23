@@ -12,7 +12,7 @@ export default function BasicSettingsSection({
   setFormValue,
 }: Readonly<BasicSettingsSectionProps>) {
   return (
-    <div className='space-y-4 px-4'>
+    <div className='flex flex-col gap-4 px-4'>
       <div className='grid grid-cols-2 gap-4'>
         <div className='flex flex-col'>
           <Input
@@ -29,8 +29,7 @@ export default function BasicSettingsSection({
           />
         </div>
       </div>
-
-      <div>
+      <div className='flex flex-col'>
         <DynamicSelectList
           label='Data source'
           url='/api/data-detail'
@@ -40,16 +39,18 @@ export default function BasicSettingsSection({
           setValue={setFormValue('data_table_id')}
         />
       </div>
-      <div>
-        <DynamicSelectList
-          label='Subset group'
-          url={`/api/data-detail/subset-group/${formData.data_table_id}`}
-          dataKey='id'
-          displayKey='name'
-          value={formData.subset_group_id}
-          setValue={setFormValue('subset_group_id')}
-        />
-      </div>
+      {formData.data_table_id != null && formData.data_table_id != '' && (
+        <div className='flex flex-col'>
+          <DynamicSelectList
+            label='Subset group'
+            url={`/api/data-detail/subset-group/${formData.data_table_id}`}
+            dataKey='id'
+            displayKey='name'
+            value={formData.subset_group_id}
+            setValue={setFormValue('subset_group_id')}
+          />
+        </div>
+      )}
     </div>
   )
 }

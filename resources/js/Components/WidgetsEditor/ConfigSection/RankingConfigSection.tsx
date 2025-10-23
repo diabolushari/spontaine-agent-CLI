@@ -1,7 +1,18 @@
+import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/MeasureFieldSelector'
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
-import MeasureFieldSelector from '@/Components/WidgetsEditor/MeasureFieldSelector'
+import { useMemo } from 'react'
+import { WidgetFormData } from '../OverviewWidgetEditor'
 
-export function RankingConfigSection({ formData, setFormValue }) {
+interface RankingConfigSectionProps {
+  formData: WidgetFormData
+  setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+}
+
+export function RankingConfigSection({ formData, setFormValue }: RankingConfigSectionProps) {
+  const selectedMeasures = useMemo(() => {
+    return formData.rank_ranking_field != null ? [formData.rank_ranking_field] : []
+  }, [formData.rank_ranking_field])
+
   return (
     <div className='space-y-4 px-4'>
       <div>
@@ -18,7 +29,7 @@ export function RankingConfigSection({ formData, setFormValue }) {
       <div>
         <MeasureFieldSelector
           subsetId={formData.rank_subset_id}
-          measures={formData.rank_ranking_field}
+          measures={selectedMeasures}
           onMeasuresChange={(measures) => setFormValue('rank_ranking_field')(measures)}
           allowMultiple={false}
         />

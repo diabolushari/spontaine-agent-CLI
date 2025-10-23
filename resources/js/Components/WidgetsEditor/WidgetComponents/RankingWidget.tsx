@@ -6,7 +6,7 @@ interface RankingWidgetProps {
     rank_ranking_field: {
       subset_column: string
       subset_field_name: string
-    }[]
+    }
   }
   selectedMonth: Date
 }
@@ -15,24 +15,28 @@ export default function RankingWidget({ formData, selectedMonth }: Readonly<Rank
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
-  if (!formData.rank_subset_id || !formData.rank_ranking_field) {
-    return (
-      <div className='flex h-full items-center justify-center'>
-        <div className='text-gray-500'>No data</div>
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <RankedList
-          subsetId={formData.rank_subset_id}
-          dataField={formData.rank_ranking_field[0].subset_column}
-          dataFieldName={formData.rank_ranking_field[0].subset_field_name}
-          rankingPageUrl={'#'}
-          timePeriod={formattedMonth}
-          timePeriodFieldName={'month'}
-        />
-      </div>
-    )
-  }
+
+  console.log('ranking data', formData.rank_ranking_field)
+
+  return (
+    <>
+      {!formData.rank_subset_id && !formData.rank_ranking_field && (
+        <div className='flex h-full items-center justify-center'>
+          <div className='text-gray-500'>No data</div>
+        </div>
+      )}
+      {formData.rank_ranking_field != null && formData.rank_subset_id && (
+        <div>
+          <RankedList
+            subsetId={formData.rank_subset_id}
+            dataField={formData.rank_ranking_field.subset_column}
+            dataFieldName={formData.rank_ranking_field.subset_field_name}
+            rankingPageUrl={'#'}
+            timePeriod={formattedMonth}
+            timePeriodFieldName={'month'}
+          />
+        </div>
+      )}
+    </>
+  )
 }

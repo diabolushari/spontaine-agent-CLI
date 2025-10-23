@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import useFetchRecord from '@/hooks/useFetchRecord'
-import { Paginator } from '@/ui/ui_interfaces'
-import SelectList from '@/ui/form/SelectList'
-import Skeleton from 'react-loading-skeleton'
-import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
-import RestPagination from '@/ui/Pagination/RestPagination'
-import { Link } from '@inertiajs/react'
 import FieldUniqueValueDropdown from '@/Components/Dashboard/DashbaordCard/FieldUniqueValueDropdown'
+import { formatNumber } from '@/Components/ServiceDelivery/ActiveConnection'
+import useFetchRecord from '@/hooks/useFetchRecord'
+import SelectList from '@/ui/form/SelectList'
+import RestPagination from '@/ui/Pagination/RestPagination'
+import Table from '@/ui/Table/Table'
+import { Paginator } from '@/ui/ui_interfaces'
+import { Link } from '@inertiajs/react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
 
 interface Props {
   subsetId: number
@@ -96,13 +97,10 @@ export default function RankedList({
     filterValue,
     pageNumber,
   ])
-  console.log('Ranking fetchUrl : ', fetchUrl)
-
   const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
-  console.log('Ranking graphvalues : ', graphValues)
 
   const headers = useMemo(() => {
-    const selectedLevel = levelTypes.find((value) => value.value == officeLevel)
+    const selectedLevel = levelTypes.find((value) => value.value === officeLevel)
     return [selectedLevel?.name ?? '', selectedFieldName]
   }, [officeLevel, selectedFieldName])
 
@@ -145,7 +143,7 @@ export default function RankedList({
         )}
         <div className='flex rounded-lg bg-1stop-white p-1'>
           <button
-            className={`${sortOrder == 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
+            className={`${sortOrder === 'desc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setSortOrder('desc')
             }}
@@ -196,7 +194,7 @@ export default function RankedList({
             </svg>
           </button>
           <button
-            className={`${sortOrder == 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
+            className={`${sortOrder === 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setSortOrder('asc')
             }}
@@ -276,37 +274,28 @@ export default function RankedList({
       )}
       {!isLoading && (
         <>
-          <table className='mx-4 mt-5'>
-            <thead className='rounded-2xl text-left'>
-              <tr className=''>
-                {headers.map((header) => {
-                  return (
-                    <th
-                      key={header}
-                      className='subheader-sm-1stop bg-1stop-white'
-                    >
-                      {header}
-                    </th>
-                  )
-                })}
-              </tr>
-            </thead>
+          <Table
+            heads={headers}
+            className='mx-4 mt-5'
+          >
             <tbody>
-              {graphValues?.data.data.map((value) => {
+              {graphValues?.data.data.map((value, index) => {
+                const officeName = typeof value.office_name === 'string' ? value.office_name : ''
+                const rowKey = officeName !== '' ? officeName : `row-${index}`
+                const columnValue = value[selectedColumn] ?? null
+
                 return (
                   <tr
-                    className='data-xs-1stop text-start'
-                    key={value.office_name}
+                    className='standard-tr'
+                    key={rowKey}
                   >
-                    <td className=''>{value.office_name}</td>
-                    <td className='pl-2 text-start'>
-                      {formatNumber((value[selectedColumn] ?? null) as number)}
-                    </td>
+                    <td className='standard-td'>{officeName}</td>
+                    <td className='standard-td'>{formatNumber(columnValue as number)}</td>
                   </tr>
                 )
               })}
             </tbody>
-          </table>
+          </Table>
           <div className='flex w-full items-center gap-6 px-4'>
             <div className='flex flex-grow flex-col'>
               {graphValues?.data != null && (

@@ -98,6 +98,7 @@ use App\Http\Controllers\Utils\LoaderConnectionListController;
 use App\Http\Controllers\Utils\LoaderQueryListController;
 use App\Http\Controllers\Utils\StoreLoaderAPIController;
 use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
+use App\Http\Controllers\Utils\SubsetMaxValueController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataLoader\DataLoaderJob;
@@ -369,6 +370,12 @@ Route::apiResource('/chat-history', ChatHistoryController::class);
 Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
     ->name('data-detail-column-search');
 
+Route::resource('widget-editor', WidgetsEditorController::class)
+    ->parameters(['widget-editor' => 'widget']);
+Route::resource('widget-collection', WidgetCollectionController::class)
+    ->parameters(['widget-collection' => 'widgetCollection']);
+Route::resource('page-editor', PageEditorController::class);
+
 //Util APIS
 Route::get('loader-apis-list', LoaderAPIListController::class)
     ->name('loader-apis-list');
@@ -385,11 +392,8 @@ Route::post('api/store-loader-query', StoreLoaderQueryWithConnectionController::
 Route::post('api/store-loader-json-api', StoreLoaderAPIController::class)
     ->name('api-store-loader-json-api');
 
-Route::resource('widget-editor', WidgetsEditorController::class)
-    ->parameters(['widget-editor' => 'widget']);
-Route::resource('widget-collection', WidgetCollectionController::class)
-    ->parameters(['widget-collection' => 'widgetCollection']);
-Route::resource('page-editor', PageEditorController::class);
+Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::class)
+    ->name('subset-field-max-value');
 
 require __DIR__.'/auth.php';
 

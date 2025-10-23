@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
 import { handleHttpErrors } from '@/ui/alerts'
 import axios from 'axios'
+import { useCallback, useEffect, useState } from 'react'
 
 export default function useFetchRecord<T>(url: string | null): [T | null, boolean] {
   const [loading, setLoading] = useState(false)
@@ -14,6 +14,7 @@ export default function useFetchRecord<T>(url: string | null): [T | null, boolea
     setLoading(true)
     try {
       const { data } = await axios.get(url)
+      console.log('Fetched data:', data)
       setList(data)
     } catch (error) {
       handleHttpErrors(error)

@@ -1,6 +1,6 @@
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import ChartTypeSelector from '@/Components/WidgetsEditor/ConfigSection/ChartTypeSelector'
-import MeasureFieldSelector from '../MeasureFieldSelector'
+import MeasureFieldSelector from '../ConfigMeasures/MeasureFieldSelector'
 import ColorPaletteSelector from '@/Components/WidgetsEditor/ConfigSection/ColorPalettSelector'
 import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 
@@ -13,7 +13,6 @@ export default function OverviewChartConfigForm({
   formData,
   setFormValue,
 }: Readonly<OverviewChartSectionProps>) {
-  console.log(formData.subset_id)
   return (
     <div className='space-y-4 px-4'>
       <div>

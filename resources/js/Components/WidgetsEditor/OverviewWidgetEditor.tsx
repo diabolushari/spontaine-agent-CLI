@@ -1,12 +1,9 @@
-import useCustomForm from '@/hooks/useCustomForm'
-import OverviewWidget from '@/Components/WidgetsEditor/WidgetComponents/OverviewWidget'
-import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'
+import OverviewWidget from '@/Components/Widgets/OverviewWidget'
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
-import React, { useEffect } from 'react'
-import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
-import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
+import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { Widget } from '@/interfaces/data_interfaces'
+import React, { useMemo } from 'react'
 import { toast } from 'react-toastify'
 
 export interface SelectedMeasure {
@@ -29,19 +26,11 @@ export interface WidgetFormData {
     title: string
     subtitle: string
     subsetId: number
-    measure: {
-      subset_field_name: string
-      subset_column: string
-      unit?: string
-    }
+    measure: SelectedMeasure
   }[]
   trend_subset_id: string
   trend_chart_type: 'area' | 'bar'
-  trend_measure: {
-    subset_field_name: string
-    subset_column: string
-    unit?: string
-  } | null
+  trend_measure: SelectedMeasure | null
   trend_dimension: string
   trend_color: string
   rank_subset_id: string
@@ -74,11 +63,11 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number) {
         measure: formData.measure ?? [],
         dimension: formData.dimension ?? '',
         color_palette: formData.color_palette,
-        subset_id: formData.subset_id!,
+        subset_id: formData.subset_id,
       },
       hl_cards: formData.hl_cards ?? [],
       trend: {
-        subset_id: formData.trend_subset_id!,
+        subset_id: formData.trend_subset_id,
         chart_type: formData.trend_chart_type,
         measure: formData.trend_measure ?? {
           subset_field_name: '',
@@ -88,7 +77,7 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number) {
         color: formData.trend_color,
       },
       rank: {
-        subset_id: formData.rank_subset_id!,
+        subset_id: formData.rank_subset_id,
         ranking_field: formData.rank_ranking_field ?? {
           subset_field_name: '',
           subset_column: '',
@@ -100,9 +89,7 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number) {
 
 export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<Props>) {
   const isEditMode = widget != null
-  const [cardState, setCardState] = React.useState<string>('overview')
   const [openItem, setOpenItem] = React.useState<string>('basic')
-  const [selectedMonth, setSelectedMonth] = React.useState<Date | null>(new Date())
 
   const { formData, setFormValue } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
@@ -131,16 +118,6 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
     }
   )
 
-  useEffect(() => {
-    if (openItem === 'chart') {
-      setCardState('overview')
-    } else if (openItem === 'trend') {
-      setCardState('trend')
-    } else if (openItem === 'ranking') {
-      setCardState('ranking')
-    }
-  }, [openItem])
-
   const handleOpenItem = (item: string) => {
     if (formData.data_table_id && formData.subset_group_id) {
       setOpenItem(item)
@@ -162,6 +139,45 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
     // }
   }
 
+  // Convert formData to Widget format for preview
+  const previewWidget = useMemo<Widget>(() => {
+    return {
+      title: formData.title ?? 'Untitled Widget',
+      subtitle: formData.subtitle ?? '',
+      type: 'overview',
+      collection_id: collectionId,
+      data: {
+        data_table_id: Number(formData.data_table_id) || 0,
+        subset_group_id: Number(formData.subset_group_id) || 0,
+        overview: {
+          chart_type: formData.chart_type,
+          measure: formData.measure ?? [],
+          dimension: formData.dimension ?? '',
+          color_palette: formData.color_palette,
+          subset_id: Number(formData.subset_id) || 0,
+        },
+        hl_cards: formData.hl_cards ?? [],
+        trend: {
+          subset_id: Number(formData.trend_subset_id) || 0,
+          chart_type: formData.trend_chart_type,
+          measure: formData.trend_measure ?? {
+            subset_field_name: '',
+            subset_column: '',
+          },
+          dimension: formData.trend_dimension,
+          color: formData.trend_color,
+        },
+        rank: {
+          subset_id: Number(formData.rank_subset_id) || 0,
+          ranking_field: formData.rank_ranking_field ?? {
+            subset_field_name: '',
+            subset_column: '',
+          },
+        },
+      },
+    }
+  }, [formData, collectionId])
+
   return (
     <div className='grid grid-cols-1 gap-6 pt-6 lg:grid-cols-3'>
       <div className='lg:col-span-1'>
@@ -174,34 +190,8 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
         />
       </div>
 
-      <div className='max-h-[600px] lg:col-span-2'>
-        <WidgetLayout
-          block={formData}
-          selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
-          selectedView={cardState}
-          onViewChange={setCardState}
-        >
-          {cardState === 'overview' && (
-            <OverviewWidget
-              block={formData}
-              selectedMonth={selectedMonth}
-            />
-          )}
-          {cardState === 'trend' && (
-            <TrendWidget
-              formData={formData}
-              selectedMonth={selectedMonth}
-              setSelectedMonth={setSelectedMonth}
-            />
-          )}
-          {cardState === 'ranking' && (
-            <RankingWidget
-              formData={formData}
-              selectedMonth={selectedMonth}
-            />
-          )}
-        </WidgetLayout>
+      <div className='min-h-[600px] lg:col-span-2'>
+        <OverviewWidget widget={previewWidget} />
       </div>
     </div>
   )
