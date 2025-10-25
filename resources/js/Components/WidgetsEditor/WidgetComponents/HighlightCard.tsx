@@ -1,16 +1,8 @@
 import useFetchRecord from '@/hooks/useFetchRecord'
+import { HighlightCardData } from '../ConfigSection/HighlightConfigSection'
 
 interface HighlightCardProps {
-  card: {
-    title: string
-    subtitle: string
-    subsetId: number
-    measure: {
-      subset_field_name: string
-      subset_column: string
-      unit?: string
-    }
-  }
+  card: HighlightCardData
   selectedMonth: Date
 }
 
@@ -24,8 +16,8 @@ export default function HighlightCard({ card, selectedMonth }: Readonly<Highligh
   const [data, loading] = useFetchRecord<{
     data: Record<string, number | string>[]
   }>(
-    card?.subsetId && fieldsParam
-      ? `/subset/${card.subsetId}?month=${formattedMonth}&fields=${fieldsParam}`
+    card?.subset_id && fieldsParam
+      ? `/subset/${card.subset_id}?month=${formattedMonth}&fields=${fieldsParam}`
       : null
   )
 

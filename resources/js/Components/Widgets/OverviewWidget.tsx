@@ -1,4 +1,4 @@
-import OverviewWidgetContent from '@/Components/WidgetsEditor/WidgetComponents/OverviewWidget'
+import OverviewWidgetContent from '@/Components/WidgetsEditor/WidgetComponents/OverviewWidgetContent'
 import RankingWidget from '@/Components/WidgetsEditor/WidgetComponents/RankingWidget'
 import TrendWidget from '@/Components/WidgetsEditor/WidgetComponents/TrendWidget'
 import WidgetLayout from '@/Components/WidgetsEditor/WidgetComponents/WidgetLayout'

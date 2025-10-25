@@ -16,7 +16,6 @@ export default function TrendWidget({
   subsetColumn,
   subsetFieldName,
   trendChartType,
-  trendColor,
   selectedMonth,
   setSelectedMonth,
 }: Readonly<TrendWidgetProps>) {

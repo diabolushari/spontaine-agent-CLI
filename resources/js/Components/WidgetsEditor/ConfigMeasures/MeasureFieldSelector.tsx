@@ -120,8 +120,8 @@ export default function MeasureFieldSelector({
   }
 
   const showAddMeasureButton = useMemo(() => {
-    if (!allowMultiple && selectedMeasures.length === 0) {
-      return true
+    if (!allowMultiple && selectedMeasures.length === 1) {
+      return false
     }
     return availableMeasures?.length !== selectedMeasures.length
   }, [allowMultiple, availableMeasures, selectedMeasures.length])

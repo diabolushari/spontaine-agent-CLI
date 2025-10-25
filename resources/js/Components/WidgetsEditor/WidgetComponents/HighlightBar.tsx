@@ -1,9 +1,15 @@
 import HighlightCard from '@/Components/WidgetsEditor/WidgetComponents/HighlightCard'
+import { HighlightCardData } from '../ConfigSection/HighlightConfigSection'
 
-export default function HighlightBar({ hlCards, selectedMonth }) {
+interface Props {
+  highlightCards: HighlightCardData[]
+  selectedMonth: Date
+}
+
+export default function HighlightBar({ highlightCards, selectedMonth }: Props) {
   return (
     <div className='flex gap-4 overflow-x-auto pb-2'>
-      {hlCards.map((card, index) => (
+      {highlightCards.map((card, index) => (
         <HighlightCard
           key={index}
           card={card}

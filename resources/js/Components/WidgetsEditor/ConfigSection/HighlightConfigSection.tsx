@@ -1,116 +1,95 @@
-import DynamicSelectList from '@/ui/form/DynamicSelectList'
-import { useEffect, useState } from 'react'
 import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/MeasureFieldSelector'
-import { Plus, X } from 'lucide-react'
 import { SelectedMeasure, WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
+import Input from '@/ui/form/Input'
+import { Plus, X } from 'lucide-react'
+import { Dispatch, SetStateAction } from 'react'
 
-interface HighlightCard {
+export interface HighlightCardData {
   title: string
   subtitle: string
-  subsetId: number | null
+  subset_id: number | null
   measure: SelectedMeasure
 }
 
 interface HighlightConfigSectionProps {
   formData: WidgetFormData
-  setFormValue: (key: string) => (value: HighlightCard[]) => void
+  highlightCards: HighlightCardData[]
+  setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
+}
+
+const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
+  title: '',
+  subtitle: '',
+  subset_id: null,
+  measure: { subset_column: '', subset_field_name: '', unit: '' },
 }
 
 export default function HighlightConfigSection({
   formData,
-  setFormValue,
+  highlightCards,
+  setHighlightCards,
 }: Readonly<HighlightConfigSectionProps>) {
-  const [selectedCards, setSelectedCards] = useState<HighlightCard[]>(formData.hl_cards || [])
-
-  useEffect(() => {
-    if (formData.hl_cards && Array.isArray(formData.hl_cards)) {
-      setSelectedCards(formData.hl_cards)
-    }
-  }, [formData.subset_group_id])
-
   const handleAddCard = () => {
-    if (selectedCards.length < 3) {
-      const newCards = [
-        ...selectedCards,
-        {
-          title: '',
-          subtitle: '',
-          subsetId: null,
-          measure: {
-            subset_column: '',
-            subset_field_name: '',
-            unit: '',
-          },
-        },
-      ]
-      setSelectedCards(newCards)
-      setFormValue('hl_cards')(newCards)
+    if (highlightCards.length < 3) {
+      const newCards = [...highlightCards, EMPTY_HIGHLIGHT_CARD]
+      setHighlightCards(newCards)
     }
   }
 
   const handleRemoveCard = (index: number) => {
-    const updatedCards = selectedCards.filter((_, i) => i !== index)
-    setSelectedCards(updatedCards)
-    setFormValue('hl_cards')(updatedCards)
+    const updatedCards = highlightCards.filter((_, i) => i !== index)
+    setHighlightCards(updatedCards)
   }
 
   const handleTitleChange = (index: number, title: string) => {
-    const updatedCards = selectedCards.map((card, i) => (i === index ? { ...card, title } : card))
-    setSelectedCards(updatedCards)
-    setFormValue('hl_cards')(updatedCards)
+    setHighlightCards((prevCards) =>
+      prevCards.map((card, i) => (i === index ? { ...card, title } : card))
+    )
   }
 
   const handleSubtitleChange = (index: number, subtitle: string) => {
-    const updatedCards = selectedCards.map((card, i) =>
-      i === index ? { ...card, subtitle } : card
+    setHighlightCards((prevCards) =>
+      prevCards.map((card, i) => (i === index ? { ...card, subtitle } : card))
     )
-    setSelectedCards(updatedCards)
-    setFormValue('hl_cards')(updatedCards)
   }
 
   const handleSubsetChange = (index: number, subsetId: number) => {
-    const updatedCards = selectedCards.map((card, i) =>
-      i === index
-        ? {
+    setHighlightCards((prevCards) => {
+      return prevCards.map((card, i) => {
+        if (i === index) {
+          return {
             ...card,
-            subsetId,
-            // Reset measure when subset changes
-            measure: {
-              subset_column: '',
-              subset_field_name: '',
-              unit: '',
-            },
+            subset_id: subsetId,
+            measure: { subset_column: '', subset_field_name: '', unit: '' },
           }
-        : card
-    )
-    setSelectedCards(updatedCards)
-    setFormValue('hl_cards')(updatedCards)
+        }
+        return card
+      })
+    })
   }
 
   const handleMeasureChange = (index: number, measures: SelectedMeasure[]) => {
-    // Since we only allow single measure per card, take the first one
-    const measure = measures[0] || {
-      subset_column: '',
-      subset_field_name: '',
-      unit: '',
+    if (measures.length === 0) {
+      return
     }
-
-    const updatedCards = selectedCards.map((card, i) => (i === index ? { ...card, measure } : card))
-    setSelectedCards(updatedCards)
-    setFormValue('hl_cards')(updatedCards)
+    const measure = measures[0]
+    setHighlightCards((prevCards) =>
+      prevCards.map((card, i) => (i === index ? { ...card, measure } : card))
+    )
   }
 
   return (
     <div className='space-y-4 px-4'>
       {/* Header */}
       <div className='flex items-center justify-between'>
-        <label className='standard-label text-sm font-normal text-slate-700'>Highlight Cards</label>
-        <span className='text-sm text-slate-500'>{selectedCards.length}/3 cards</span>
+        <span className='standard-label text-sm font-normal text-slate-700'>Highlight Cards</span>
+        <span className='text-sm text-slate-500'>{highlightCards.length}/3 cards</span>
       </div>
 
       {/* Cards */}
       <div className='space-y-4'>
-        {selectedCards.map((card, index) => (
+        {highlightCards.map((card, index) => (
           <div
             key={index}
             className='space-y-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm'
@@ -127,53 +106,37 @@ export default function HighlightConfigSection({
                 <X className='h-4 w-4' />
               </button>
             </div>
-
-            {/* Title */}
-            <div>
-              <label className='standard-label small-1stop mb-1 block text-sm font-normal text-slate-700'>
-                Title
-              </label>
-              <input
-                type='text'
+            <div className='flex flex-col'>
+              <Input
+                label='Title'
                 value={card.title}
-                onChange={(e) => handleTitleChange(index, e.target.value)}
+                setValue={(value) => handleTitleChange(index, value)}
                 placeholder='Enter title'
-                className='w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
               />
             </div>
-
-            {/* Subtitle */}
-            <div>
-              <label className='standard-label small-1stop mb-1 block text-sm font-normal text-slate-700'>
-                Subtitle
-              </label>
-              <input
-                type='text'
+            <div className='flex flex-col'>
+              <Input
+                label='Subtitle'
                 value={card.subtitle}
-                onChange={(e) => handleSubtitleChange(index, e.target.value)}
+                setValue={(value) => handleSubtitleChange(index, value)}
                 placeholder='Enter subtitle'
-                className='w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
               />
             </div>
-
-            {/* Subset Selection */}
             <div>
               <DynamicSelectList
                 label='Subset'
                 url={`/api/subset-group/${formData?.subset_group_id}`}
                 dataKey='subset_detail_id'
                 displayKey='name'
-                value={card.subsetId}
-                setValue={(value) => handleSubsetChange(index, value)}
+                value={card.subset_id ?? undefined}
+                setValue={(value) => handleSubsetChange(index, Number(value))}
               />
             </div>
-
-            {/* Measure Selection */}
-            {card.subsetId && (
+            {card.subset_id && (
               <div className='border-t border-slate-200 pt-3'>
                 <MeasureFieldSelector
-                  subsetId={card.subsetId}
-                  measures={card.measure ? [card.measure] : []}
+                  subsetId={card.subset_id.toString()}
+                  measures={card.measure != null ? [card.measure] : []}
                   onMeasuresChange={(measures) => handleMeasureChange(index, measures)}
                   allowMultiple={false}
                   showUnit={true}
@@ -185,7 +148,7 @@ export default function HighlightConfigSection({
       </div>
 
       {/* Add Card Button */}
-      {selectedCards.length < 3 && (
+      {highlightCards.length < 3 && (
         <button
           type='button'
           onClick={handleAddCard}
@@ -197,10 +160,12 @@ export default function HighlightConfigSection({
       )}
 
       {/* Empty State */}
-      {selectedCards.length === 0 && (
+      {highlightCards.length === 0 && (
         <div className='rounded-lg border border-dashed border-slate-300 bg-slate-50 py-12 text-center'>
           <p className='text-sm text-slate-500'>No highlight cards added yet.</p>
-          <p className='mt-1 text-xs text-slate-400'>Click "Add Highlight Card" to create one.</p>
+          <p className='mt-1 text-xs text-slate-400'>
+            Click &quot;Add Highlight Card&quot; to create one.
+          </p>
         </div>
       )}
     </div>

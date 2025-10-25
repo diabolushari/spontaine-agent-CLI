@@ -3,8 +3,9 @@ import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetS
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { Widget } from '@/interfaces/data_interfaces'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
+import { HighlightCardData } from './ConfigSection/HighlightConfigSection'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -22,12 +23,6 @@ export interface WidgetFormData {
   measure: SelectedMeasure[]
   dimension: string
   color_palette: string
-  hl_cards: {
-    title: string
-    subtitle: string
-    subsetId: number
-    measure: SelectedMeasure
-  }[]
   trend_subset_id: string
   trend_chart_type: 'area' | 'bar'
   trend_measure: SelectedMeasure | null
@@ -49,25 +44,29 @@ interface Props {
 /**
  * Parse form data to Widget format matching Laravel Widget model
  */
-function parseFormDataToWidget(formData: WidgetFormData, collectionId: number) {
+function parseFormDataToWidget(
+  formData: WidgetFormData,
+  highlightCards: HighlightCardData[],
+  collectionId: number
+): Widget {
   return {
-    title: formData.title,
-    subtitle: formData.subtitle,
+    title: formData.title ?? 'Untitled Widget',
+    subtitle: formData.subtitle ?? '',
     type: 'overview',
     collection_id: collectionId,
     data: {
-      data_table_id: formData.data_table_id,
-      subset_group_id: formData.subset_group_id,
+      data_table_id: Number(formData.data_table_id) || 0,
+      subset_group_id: Number(formData.subset_group_id) || 0,
       overview: {
         chart_type: formData.chart_type,
         measure: formData.measure ?? [],
         dimension: formData.dimension ?? '',
         color_palette: formData.color_palette,
-        subset_id: formData.subset_id,
+        subset_id: Number(formData.subset_id) ?? null,
       },
-      hl_cards: formData.hl_cards ?? [],
+      hl_cards: highlightCards ?? [],
       trend: {
-        subset_id: formData.trend_subset_id,
+        subset_id: Number(formData.trend_subset_id) ?? null,
         chart_type: formData.trend_chart_type,
         measure: formData.trend_measure ?? {
           subset_field_name: '',
@@ -77,7 +76,7 @@ function parseFormDataToWidget(formData: WidgetFormData, collectionId: number) {
         color: formData.trend_color,
       },
       rank: {
-        subset_id: formData.rank_subset_id,
+        subset_id: Number(formData.rank_subset_id) ?? null,
         ranking_field: formData.rank_ranking_field ?? {
           subset_field_name: '',
           subset_column: '',
@@ -101,7 +100,6 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
     measure: widget?.data?.overview?.measure ?? [],
     dimension: widget?.data?.overview?.dimension.toString() ?? '',
     color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
-    hl_cards: widget?.data?.hl_cards ?? [],
     trend_subset_id: widget?.data?.trend?.subset_id.toString() ?? '',
     trend_chart_type: widget?.data?.trend?.chart_type ?? 'area',
     trend_measure: widget?.data?.trend?.measure ?? null,
@@ -110,6 +108,9 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
     rank_subset_id: widget?.data?.rank?.subset_id.toString() ?? '',
     rank_ranking_field: widget?.data?.rank?.ranking_field ?? null,
   })
+  const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
+    widget?.data?.hl_cards ?? []
+  )
 
   const { post } = useInertiaPost(
     isEditMode ? route('widget-editor.update', widget.id) : route('widget-editor.store'),
@@ -127,56 +128,22 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
   }
 
   const handleSubmit = () => {
-    const widgetData = parseFormDataToWidget(formData, collectionId)
+    const widgetData = parseFormDataToWidget(formData, highlightCards, collectionId)
     console.log(widgetData)
-    // if (isEditMode) {
-    //   post({
-    //     ...widgetData,
-    //     _method: 'PUT',
-    //   })
-    // } else {
-    //   post(widgetData)
-    // }
+    if (isEditMode) {
+      post({
+        ...widgetData,
+        _method: 'PUT',
+      })
+    } else {
+      post(widgetData)
+    }
   }
 
   // Convert formData to Widget format for preview
   const previewWidget = useMemo<Widget>(() => {
-    return {
-      title: formData.title ?? 'Untitled Widget',
-      subtitle: formData.subtitle ?? '',
-      type: 'overview',
-      collection_id: collectionId,
-      data: {
-        data_table_id: Number(formData.data_table_id) || 0,
-        subset_group_id: Number(formData.subset_group_id) || 0,
-        overview: {
-          chart_type: formData.chart_type,
-          measure: formData.measure ?? [],
-          dimension: formData.dimension ?? '',
-          color_palette: formData.color_palette,
-          subset_id: Number(formData.subset_id) ?? null,
-        },
-        hl_cards: formData.hl_cards ?? [],
-        trend: {
-          subset_id: Number(formData.trend_subset_id) ?? null,
-          chart_type: formData.trend_chart_type,
-          measure: formData.trend_measure ?? {
-            subset_field_name: '',
-            subset_column: '',
-          },
-          dimension: formData.trend_dimension,
-          color: formData.trend_color,
-        },
-        rank: {
-          subset_id: Number(formData.rank_subset_id) ?? null,
-          ranking_field: formData.rank_ranking_field ?? {
-            subset_field_name: '',
-            subset_column: '',
-          },
-        },
-      },
-    }
-  }, [formData, collectionId])
+    return parseFormDataToWidget(formData, highlightCards, collectionId)
+  }, [formData, collectionId, highlightCards])
 
   return (
     <div className='grid grid-cols-1 gap-6 pt-6 lg:grid-cols-3'>
@@ -184,6 +151,8 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
         <WidgetSettingsForm
           formData={formData}
           setFormValue={setFormValue}
+          highlightCards={highlightCards}
+          setHighlightCards={setHighlightCards}
           openItem={openItem}
           setOpenItem={handleOpenItem}
           handleSubmit={handleSubmit}

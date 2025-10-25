@@ -1,15 +1,20 @@
-import * as Accordion from '@radix-ui/react-accordion'
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
 import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/BasicSettingsSection'
+import HighlightConfigSection, {
+  HighlightCardData,
+} from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
 import OverviewChartConfigForm from '@/Components/WidgetsEditor/ConfigSection/OverviewChartConfigForm'
-import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
 import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
+import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
 import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
-import HighlightConfigSection from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
+import * as Accordion from '@radix-ui/react-accordion'
+import { Dispatch, SetStateAction } from 'react'
 
 interface WidgetSettingsFormProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  highlightCards: HighlightCardData[]
+  setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
   openItem?: string
   setOpenItem?: (item: string) => void
   handleSubmit: () => void
@@ -18,6 +23,8 @@ interface WidgetSettingsFormProps {
 export default function WidgetSettingsForm({
   formData,
   setFormValue,
+  highlightCards,
+  setHighlightCards,
   openItem,
   setOpenItem,
   handleSubmit,
@@ -49,15 +56,15 @@ export default function WidgetSettingsForm({
           </AccordionContent>
         </Accordion.Item>
         <Accordion.Item
-          value='hlcard'
+          value='highlight_cards'
           className='rounded-lg border border-slate-200'
         >
           <AccordionTrigger>Highlight Card</AccordionTrigger>
           <AccordionContent>
             <HighlightConfigSection
               formData={formData}
-              setFormValue={setFormValue}
-              onHlCardsChange={setFormValue('hl_cards')}
+              highlightCards={highlightCards}
+              setHighlightCards={setHighlightCards}
             />
           </AccordionContent>
         </Accordion.Item>
