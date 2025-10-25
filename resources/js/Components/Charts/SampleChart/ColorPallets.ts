@@ -1,5 +1,5 @@
 export const chartPallet = {
-  boldWarm: ['#5A0F35', '#A70028', '#FF8C1C', '#E0581F', '#0B4C5F'],
+  boldWarm: ['#235cc0', '#5A0F35', '#A70028', '#FF8C1C', '#E0581F', '#0B4C5F'],
   softNeutral: ['#E9AEB3', '#F8DED3', '#E4DFD9', '#B3C3B4', '#5D6966'],
   freshGreen: ['#C7ECD7', '#A8DBBF', '#81CDA9', '#58B38F', '#26765C', '#0C3E2F'],
   fireSunset: ['#030014', '#3F001E', '#730015', '#B10006', '#E53300', '#FFA100'],
@@ -10,7 +10,7 @@ export const chartPallet = {
 }
 
 export const graphColorPallet = {
-  boldWarm: '#5A0F35',
+  boldWarm: '#235cc0',
   softNeutral: '#E9AEB3',
   freshGreen: '#C7ECD7',
   fireSunset: '#030014',
