@@ -1,5 +1,6 @@
 import useFetchRecord from '@/hooks/useFetchRecord'
-import { HighlightCardData } from '../ConfigSection/HighlightConfigSection'
+
+import { HighlightCardData } from '@/interfaces/data_interfaces'
 
 interface HighlightCardProps {
   card: HighlightCardData
@@ -22,7 +23,6 @@ export default function HighlightCard({ card, selectedMonth }: Readonly<Highligh
   )
 
   const formatIndianNumber = (num: number | null | undefined): string => {
-    // Handle null, undefined, and NaN values
     if (num == null || Number.isNaN(num)) {
       return '0'
     }
@@ -34,7 +34,7 @@ export default function HighlightCard({ card, selectedMonth }: Readonly<Highligh
     } else if (num >= 1000) {
       return `${(num / 1000).toFixed(2)} K`
     }
-    return num.toString()
+    return num.toFixed(2)
   }
 
   if (loading) {

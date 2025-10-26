@@ -27,16 +27,24 @@ export function RankingConfigSection({
     [setFormValue]
   )
 
+  const handleSubsetChange = useCallback(
+    (value: string) => {
+      setFormValue('rank_subset_id')(value)
+      setFormValue('rank_ranking_field')(null)
+    },
+    [setFormValue]
+  )
+
   return (
     <div className='space-y-4 px-4'>
-      <div>
+      <div className='flex flex-col'>
         <DynamicSelectList
           label='Subset'
           url={`/api/subset-group/${formData?.subset_group_id}`}
           dataKey='subset_detail_id'
           displayKey='name'
           value={formData.rank_subset_id}
-          setValue={setFormValue('rank_subset_id')}
+          setValue={handleSubsetChange}
         />
       </div>
       <div>

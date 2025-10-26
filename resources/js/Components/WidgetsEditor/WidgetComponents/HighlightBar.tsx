@@ -1,5 +1,6 @@
 import HighlightCard from '@/Components/WidgetsEditor/WidgetComponents/HighlightCard'
-import { HighlightCardData } from '../ConfigSection/HighlightConfigSection'
+
+import { HighlightCardData } from '@/interfaces/data_interfaces'
 
 interface Props {
   highlightCards: HighlightCardData[]

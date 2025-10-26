@@ -14,12 +14,12 @@ interface Props {
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
 }
 
-export default function TrendConfigSection({ formData, setFormValue }: Readonly<Props>) {
-  const chartTypes = [
-    { value: 'area', label: 'Area Chart', icon: AreaChart },
-    { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
-  ]
+const chartTypes = [
+  { value: 'area', label: 'Area Chart', icon: AreaChart },
+  { value: 'bar', label: 'Bar Chart', icon: BarChart3 },
+]
 
+export default function TrendConfigSection({ formData, setFormValue }: Readonly<Props>) {
   const colorOptions = Object.entries(graphColorPallet).map(([key, value]) => ({
     label: camelToNormal(key),
     value: value,
@@ -43,22 +43,37 @@ export default function TrendConfigSection({ formData, setFormValue }: Readonly<
     [setFormValue]
   )
 
+  const handleSubsetChange = useCallback(
+    (value: string) => {
+      setFormValue('trend_subset_id')(value)
+      setFormValue('trend_measure')(null)
+    },
+    [setFormValue]
+  )
+
+  const handleChartTypeChange = useCallback(
+    (value: string) => {
+      setFormValue('trend_chart_type')(value as 'area' | 'bar')
+    },
+    [setFormValue]
+  )
+
   return (
     <div className='space-y-4 px-4'>
-      <div>
+      <div className='flex flex-col'>
         <DynamicSelectList
           label='Subset'
           url={`/api/subset-group/${formData?.subset_group_id}`}
           dataKey='subset_detail_id'
           displayKey='name'
           value={formData.trend_subset_id}
-          setValue={setFormValue('trend_subset_id')}
+          setValue={handleSubsetChange}
         />
       </div>
       <div>
         <ChartTypeSelector
           selectedType={formData.trend_chart_type}
-          onTypeChange={setFormValue('trend_chart_type')}
+          onTypeChange={handleChartTypeChange}
           chartTypes={chartTypes}
         />
       </div>

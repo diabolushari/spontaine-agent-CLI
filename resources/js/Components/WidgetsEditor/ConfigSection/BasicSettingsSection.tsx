@@ -5,11 +5,15 @@ import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 interface BasicSettingsSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  handleDataTableChange: (value: string) => void
+  handleSubsetGroupChange: (value: string) => void
 }
 
 export default function BasicSettingsSection({
   formData,
   setFormValue,
+  handleDataTableChange,
+  handleSubsetGroupChange,
 }: Readonly<BasicSettingsSectionProps>) {
   return (
     <div className='flex flex-col gap-4 px-4'>
@@ -36,7 +40,7 @@ export default function BasicSettingsSection({
           dataKey='id'
           displayKey='name'
           value={formData.data_table_id}
-          setValue={setFormValue('data_table_id')}
+          setValue={handleDataTableChange}
         />
       </div>
       {formData.data_table_id != null && formData.data_table_id != '' && (
@@ -47,7 +51,7 @@ export default function BasicSettingsSection({
             dataKey='id'
             displayKey='name'
             value={formData.subset_group_id}
-            setValue={setFormValue('subset_group_id')}
+            setValue={handleSubsetGroupChange}
           />
         </div>
       )}

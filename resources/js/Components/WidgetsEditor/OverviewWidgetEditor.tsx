@@ -2,10 +2,9 @@ import OverviewWidget from '@/Components/Widgets/OverviewWidget'
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { Widget } from '@/interfaces/data_interfaces'
-import React, { useMemo, useState } from 'react'
+import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
+import React, { useCallback, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
-import { HighlightCardData } from './ConfigSection/HighlightConfigSection'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -20,7 +19,7 @@ export interface WidgetFormData {
   subset_group_id: string
   chart_type: string
   subset_id: string
-  measure: SelectedMeasure[]
+  measures: SelectedMeasure[]
   dimension: string
   color_palette: string
   trend_subset_id: string
@@ -59,14 +58,14 @@ function parseFormDataToWidget(
       subset_group_id: Number(formData.subset_group_id) || 0,
       overview: {
         chart_type: formData.chart_type,
-        measure: formData.measure ?? [],
+        measures: formData.measures ?? [],
         dimension: formData.dimension ?? '',
         color_palette: formData.color_palette,
-        subset_id: Number(formData.subset_id) ?? null,
+        subset_id: formData.subset_id == '' ? null : Number(formData.subset_id),
       },
-      hl_cards: highlightCards ?? [],
+      highlight_cards: highlightCards ?? [],
       trend: {
-        subset_id: Number(formData.trend_subset_id) ?? null,
+        subset_id: formData.trend_subset_id == '' ? null : Number(formData.trend_subset_id),
         chart_type: formData.trend_chart_type,
         measure: formData.trend_measure ?? {
           subset_field_name: '',
@@ -76,8 +75,8 @@ function parseFormDataToWidget(
         color: formData.trend_color,
       },
       rank: {
-        subset_id: Number(formData.rank_subset_id) ?? null,
-        ranking_field: formData.rank_ranking_field ?? {
+        subset_id: formData.rank_subset_id == '' ? null : Number(formData.rank_subset_id),
+        order_by: formData.rank_ranking_field ?? {
           subset_field_name: '',
           subset_column: '',
         },
@@ -90,33 +89,80 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
   const isEditMode = widget != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
 
-  const { formData, setFormValue } = useCustomForm<WidgetFormData>({
+  const { formData, setFormValue, setAll } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
     subtitle: widget?.subtitle ?? '',
     data_table_id: widget?.data?.data_table_id.toString() ?? '',
     subset_group_id: widget?.data?.subset_group_id.toString() ?? '',
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',
-    subset_id: widget?.data?.overview?.subset_id.toString() ?? '',
-    measure: widget?.data?.overview?.measure ?? [],
-    dimension: widget?.data?.overview?.dimension.toString() ?? '',
+    subset_id: widget?.data?.overview?.subset_id?.toString() ?? '',
+    measures: widget?.data?.overview?.measures ?? [],
+    dimension: widget?.data?.overview?.dimension?.toString() ?? '',
     color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
-    trend_subset_id: widget?.data?.trend?.subset_id.toString() ?? '',
+    trend_subset_id: widget?.data?.trend?.subset_id?.toString() ?? '',
     trend_chart_type: widget?.data?.trend?.chart_type ?? 'area',
     trend_measure: widget?.data?.trend?.measure ?? null,
     trend_dimension: widget?.data?.trend?.dimension ?? 'month',
     trend_color: widget?.data?.trend?.color ?? '#5A0F35',
-    rank_subset_id: widget?.data?.rank?.subset_id.toString() ?? '',
-    rank_ranking_field: widget?.data?.rank?.ranking_field ?? null,
+    rank_subset_id: widget?.data?.rank?.subset_id?.toString() ?? '',
+    rank_ranking_field: widget?.data?.rank?.order_by ?? null,
   })
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
-    widget?.data?.hl_cards ?? []
+    widget?.data?.highlight_cards ?? []
   )
 
-  const { post } = useInertiaPost(
+  const { post, loading } = useInertiaPost(
     isEditMode ? route('widget-editor.update', widget.id) : route('widget-editor.store'),
     {
       showErrorToast: true,
     }
+  )
+
+  const handleDataTableChange = useCallback(
+    (value: string) => {
+      setAll({
+        ...formData,
+        data_table_id: value,
+        subset_group_id: '',
+        chart_type: 'bar',
+        subset_id: '',
+        measures: [],
+        dimension: '',
+        color_palette: 'boldWarm',
+        trend_subset_id: '',
+        trend_chart_type: 'area',
+        trend_measure: null,
+        trend_dimension: 'month',
+        trend_color: '#5A0F35',
+        rank_subset_id: '',
+        rank_ranking_field: null,
+      })
+      setHighlightCards([])
+    },
+    [setAll, formData]
+  )
+
+  const handleSubsetGroupChange = useCallback(
+    (value: string) => {
+      setAll({
+        ...formData,
+        subset_group_id: value,
+        chart_type: 'bar',
+        subset_id: '',
+        measures: [],
+        dimension: '',
+        color_palette: 'boldWarm',
+        trend_subset_id: '',
+        trend_chart_type: 'area',
+        trend_measure: null,
+        trend_dimension: 'month',
+        trend_color: '#5A0F35',
+        rank_subset_id: '',
+        rank_ranking_field: null,
+      })
+      setHighlightCards([])
+    },
+    [setAll, formData]
   )
 
   const handleOpenItem = (item: string) => {
@@ -129,7 +175,6 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
 
   const handleSubmit = () => {
     const widgetData = parseFormDataToWidget(formData, highlightCards, collectionId)
-    console.log(widgetData)
     if (isEditMode) {
       post({
         ...widgetData,
@@ -151,11 +196,14 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
         <WidgetSettingsForm
           formData={formData}
           setFormValue={setFormValue}
+          handleDataTableChange={handleDataTableChange}
+          handleSubsetGroupChange={handleSubsetGroupChange}
           highlightCards={highlightCards}
           setHighlightCards={setHighlightCards}
           openItem={openItem}
           setOpenItem={handleOpenItem}
           handleSubmit={handleSubmit}
+          loading={loading}
         />
       </div>
       <div className='min-h-[600px] lg:col-span-2'>

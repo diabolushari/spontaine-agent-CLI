@@ -31,7 +31,8 @@ export default function Widget({ widget }: Readonly<Props>) {
 
   return (
     <WidgetLayout
-      block={{ title, subtitle }}
+      title={title}
+      subtitle={subtitle}
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectView}
@@ -43,18 +44,16 @@ export default function Widget({ widget }: Readonly<Props>) {
       {/* Overview Widget */}
       {selectView == 'overview' && selectedMonth != null && (
         <OverviewWidgetContent
-          block={{
-            subset_id: data.overview.subset_id,
-            measure: (data.overview.measure || []).map((m) => ({
-              subset_column: m.subset_column,
-              subset_field_name: m.subset_field_name,
-              unit: m.unit ?? '',
-            })),
-            dimension: data.overview.dimension,
-            chart_type: data.overview.chart_type,
-            color_palette: data.overview.color_palette,
-            hl_cards: data.hl_cards,
-          }}
+          subsetId={data.overview.subset_id}
+          measure={(data.overview.measures || []).map((m) => ({
+            subset_column: m.subset_column,
+            subset_field_name: m.subset_field_name,
+            unit: m.unit ?? '',
+          }))}
+          dimension={data.overview.dimension}
+          chartType={data.overview.chart_type}
+          colorPalette={data.overview.color_palette}
+          highlightCards={data.highlight_cards}
           selectedMonth={selectedMonth}
         />
       )}
@@ -76,8 +75,8 @@ export default function Widget({ widget }: Readonly<Props>) {
       {selectView == 'ranking' && selectedMonth != null && (
         <RankingWidget
           subsetId={data.rank.subset_id}
-          subsetColumn={data.rank.ranking_field?.subset_column ?? null}
-          subsetFieldName={data.rank.ranking_field?.subset_field_name ?? null}
+          subsetColumn={data.rank.order_by?.subset_column ?? null}
+          subsetFieldName={data.rank.order_by?.subset_field_name ?? null}
           selectedMonth={selectedMonth}
         />
       )}

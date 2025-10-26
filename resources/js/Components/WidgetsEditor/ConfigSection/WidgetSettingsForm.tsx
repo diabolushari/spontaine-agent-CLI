@@ -1,33 +1,39 @@
 import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
 import BasicSettingsSection from '@/Components/WidgetsEditor/ConfigSection/BasicSettingsSection'
-import HighlightConfigSection, {
-  HighlightCardData,
-} from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
+import HighlightConfigSection from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
 import OverviewChartConfigForm from '@/Components/WidgetsEditor/ConfigSection/OverviewChartConfigForm'
 import { RankingConfigSection } from '@/Components/WidgetsEditor/ConfigSection/RankingConfigSection'
 import TrendConfigSection from '@/Components/WidgetsEditor/ConfigSection/TrendConfigSection'
 import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import * as Accordion from '@radix-ui/react-accordion'
 import { Dispatch, SetStateAction } from 'react'
+import { HighlightCardData } from '@/interfaces/data_interfaces'
+import FullSpinnerWrapper from '@/ui/FullSpinnerWrapper'
 
 interface WidgetSettingsFormProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  handleDataTableChange: (value: string) => void
+  handleSubsetGroupChange: (value: string) => void
   highlightCards: HighlightCardData[]
   setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
   openItem?: string
   setOpenItem?: (item: string) => void
   handleSubmit: () => void
+  loading: boolean
 }
 
 export default function WidgetSettingsForm({
   formData,
   setFormValue,
+  handleDataTableChange,
+  handleSubsetGroupChange,
   highlightCards,
   setHighlightCards,
   openItem,
   setOpenItem,
   handleSubmit,
+  loading,
 }: Readonly<WidgetSettingsFormProps>) {
   return (
     <div className='space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'>
@@ -35,7 +41,6 @@ export default function WidgetSettingsForm({
         <h2 className='mb-1 text-lg font-semibold text-slate-800'>Widget settings</h2>
         <p className='text-sm text-slate-500'>Configure the basic information for your widget.</p>
       </div>
-
       <Accordion.Root
         type='single'
         collapsible={true}
@@ -52,6 +57,8 @@ export default function WidgetSettingsForm({
             <BasicSettingsSection
               formData={formData}
               setFormValue={setFormValue}
+              handleDataTableChange={handleDataTableChange}
+              handleSubsetGroupChange={handleSubsetGroupChange}
             />
           </AccordionContent>
         </Accordion.Item>
@@ -105,12 +112,14 @@ export default function WidgetSettingsForm({
           </AccordionContent>
         </Accordion.Item>
       </Accordion.Root>
-      <button
-        onClick={() => handleSubmit()}
-        className='w-full rounded-lg border border-blue-500 bg-white px-4 py-3 text-center font-medium text-blue-500 transition-colors hover:bg-blue-50'
-      >
-        Save
-      </button>
+      <FullSpinnerWrapper processing={loading}>
+        <button
+          onClick={() => handleSubmit()}
+          className='w-full rounded-lg border border-blue-500 bg-white px-4 py-3 text-center font-medium text-blue-500 transition-colors hover:bg-blue-50'
+        >
+          Save Widget
+        </button>
+      </FullSpinnerWrapper>
     </div>
   )
 }

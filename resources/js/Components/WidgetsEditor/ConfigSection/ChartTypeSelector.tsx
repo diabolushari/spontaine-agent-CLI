@@ -19,7 +19,7 @@ export default function ChartTypeSelector({
 }: Readonly<ChartTypeSelectorProps>) {
   return (
     <div className='flex flex-col'>
-      <label className='mb-3 text-sm font-medium text-slate-700'>Chart type</label>
+      <span className='mb-3 text-sm font-medium text-slate-700'>Chart type</span>
       <div className='flex gap-3'>
         {chartTypes.map((type) => {
           const Icon = type.icon
