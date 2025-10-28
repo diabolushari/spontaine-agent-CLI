@@ -73,20 +73,19 @@ export default function PageEditorCreatePage({
   const handleSaveDraft = () => {
     const draftData = { ...pageStructure, published: false }
     if (!page) {
-      post(pageStructure)
+      post(draftData)
     } else {
-      post({ ...pageStructure, _method: 'PUT' })
+      post({ ...draftData, _method: 'PUT' })
     }
     console.log('Draft saved:', draftData)
   }
 
   const handlePublish = () => {
     const publishData = { ...pageStructure, published: true }
-    setFormValue('published')(true)
     if (!page) {
-      post(pageStructure)
+      post(publishData)
     } else {
-      post({ ...pageStructure, _method: 'PUT' })
+      post({ ...publishData, _method: 'PUT' })
     }
     console.log('Publish data:', publishData)
   }
