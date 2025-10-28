@@ -37,6 +37,10 @@ export default function Widget({ widget }: Readonly<Props>) {
       setSelectedMonth={setSelectedMonth}
       selectedView={selectView}
       onViewChange={setSelectView}
+      hasOverview={widget.data.overview.subset_id != null}
+      hasTrend={widget.data.trend.subset_id != null}
+      hasRanking={widget.data.rank.subset_id != null}
+      hasHighlightCards={widget.data.highlight_cards != null}
     >
       {/* No data state */}
       {!data && <EmptyState message='No data' />}

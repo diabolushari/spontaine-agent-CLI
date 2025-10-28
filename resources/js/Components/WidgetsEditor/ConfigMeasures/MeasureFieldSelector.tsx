@@ -2,29 +2,15 @@ import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor
 import useFetchRecord from '@/hooks/useFetchRecord'
 import { Dimension } from '@/interfaces/data_interfaces'
 import { Plus, X } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import PickAvailableMeasure from './PickAvailableMeasure'
 
 interface MeasureFieldSelectorProps {
   subsetId: string | null
-  measures?: SelectedMeasure[] | null
-  onMeasuresChange?: (measures: SelectedMeasure[]) => void
+  measures: SelectedMeasure[]
+  onMeasuresChange: (measures: SelectedMeasure[]) => void
   allowMultiple?: boolean
   showUnit?: boolean
-}
-
-function initSelectedMeasures(measures?: SelectedMeasure[] | null): SelectedMeasure[] {
-  if (measures != null && measures.length > 0) {
-    const validMeasures = measures.filter(
-      (m: SelectedMeasure) => m.subset_column && m.subset_field_name
-    )
-
-    if (validMeasures.length > 0) {
-      return validMeasures
-    }
-  }
-
-  return []
 }
 
 export default function MeasureFieldSelector({
@@ -38,27 +24,12 @@ export default function MeasureFieldSelector({
     subsetId ? `/api/subset/${subsetId}` : null
   )
 
-  const [selectedMeasures, setSelectedMeasures] = useState<SelectedMeasure[]>(() =>
-    initSelectedMeasures(measures)
-  )
-
-  const prevSubsetIdRef = useRef(subsetId)
-
-  // Only reset when subsetId changes
-  useEffect(() => {
-    if (prevSubsetIdRef.current !== subsetId) {
-      prevSubsetIdRef.current = subsetId
-      setSelectedMeasures(initSelectedMeasures(measures))
-    }
-  }, [subsetId, measures])
-
-  // Get already selected measure columns
-  const usedColumns = selectedMeasures.map((m) => m.subset_column).filter((col) => col !== '')
+  const usedColumns = measures.map((m) => m.subset_column).filter((col) => col !== '')
 
   const handleMeasureChange = useCallback(
     (index: number, subsetColumn: string) => {
       const selectedMeasure = availableMeasures?.find((m) => m.subset_column === subsetColumn)
-      const updatedMeasures = selectedMeasures.map((measure, i) => {
+      const updatedMeasures = measures.map((measure, i) => {
         if (i === index && selectedMeasure != null) {
           return {
             subset_column: selectedMeasure.subset_column,
@@ -68,63 +39,62 @@ export default function MeasureFieldSelector({
         }
         return measure
       })
-      setSelectedMeasures(updatedMeasures)
-      onMeasuresChange?.(updatedMeasures)
+      onMeasuresChange(updatedMeasures)
     },
-    [availableMeasures, selectedMeasures, onMeasuresChange]
+    [availableMeasures, measures, onMeasuresChange]
   )
 
-  const handleFieldNameChange = (index: number, subsetFieldName: string) => {
-    const updatedMeasures = selectedMeasures.map((measure, i) => {
-      if (i === index) {
-        return {
-          ...measure,
-          subset_field_name: subsetFieldName,
+  const handleFieldNameChange = useCallback(
+    (index: number, subsetFieldName: string) => {
+      const updatedMeasures = measures.map((measure, i) => {
+        if (i === index) {
+          return {
+            ...measure,
+            subset_field_name: subsetFieldName,
+          }
         }
-      }
-      return measure
-    })
+        return measure
+      })
+      onMeasuresChange(updatedMeasures)
+    },
+    [measures, onMeasuresChange]
+  )
 
-    setSelectedMeasures(updatedMeasures)
-    onMeasuresChange?.(updatedMeasures)
-  }
-
-  const handleUnitChange = (index: number, unit: string) => {
-    const updatedMeasures = selectedMeasures.map((measure, i) => {
-      if (i === index) {
-        return {
-          ...measure,
-          unit,
+  const handleUnitChange = useCallback(
+    (index: number, unit: string) => {
+      const updatedMeasures = measures.map((measure, i) => {
+        if (i === index) {
+          return {
+            ...measure,
+            unit,
+          }
         }
-      }
-      return measure
-    })
+        return measure
+      })
+      onMeasuresChange(updatedMeasures)
+    },
+    [measures, onMeasuresChange]
+  )
 
-    setSelectedMeasures(updatedMeasures)
-    onMeasuresChange?.(updatedMeasures)
-  }
+  const handleAddMeasure = useCallback(() => {
+    const newMeasures = [...measures, { subset_column: '', subset_field_name: '', unit: '' }]
+    onMeasuresChange(newMeasures)
+  }, [measures, onMeasuresChange])
 
-  const handleAddMeasure = () => {
-    const newMeasures = [
-      ...selectedMeasures,
-      { subset_column: '', subset_field_name: '', unit: '' },
-    ]
-    setSelectedMeasures(newMeasures)
-    onMeasuresChange?.(newMeasures)
-  }
-
-  const handleRemoveMeasure = (index: number) => {
-    const updatedMeasures = selectedMeasures.filter((_, i) => i !== index)
-    setSelectedMeasures(updatedMeasures)
-    onMeasuresChange?.(updatedMeasures)
-  }
+  const handleRemoveMeasure = useCallback(
+    (index: number) => {
+      const updatedMeasures = measures.filter((_, i) => i !== index)
+      onMeasuresChange(updatedMeasures)
+    },
+    [measures, onMeasuresChange]
+  )
 
   const showAddMeasureButton = useMemo(() => {
-    if (!allowMultiple && selectedMeasures.length === 1) {
+    if (!allowMultiple && measures.length === 1) {
       return false
     }
-    return availableMeasures?.length !== selectedMeasures.length
-  }, [allowMultiple, availableMeasures, selectedMeasures.length])
+    return availableMeasures?.length !== measures.length
+  }, [allowMultiple, availableMeasures, measures.length])
 
   return (
     <>
@@ -132,9 +102,8 @@ export default function MeasureFieldSelector({
         {allowMultiple ? 'Measures' : 'Measure'}
       </label>
 
-      {/* Measure Selectors */}
       <div className='space-y-4'>
-        {selectedMeasures.map((selectedMeasure, index) => (
+        {measures.map((selectedMeasure, index) => (
           <div
             key={selectedMeasure.subset_column + index}
             className='space-y-2 rounded-lg border border-slate-200 bg-slate-50/50 p-3 transition-colors hover:border-slate-300'
@@ -162,7 +131,6 @@ export default function MeasureFieldSelector({
               />
             </div>
 
-            {/* Editable field name and unit inputs - only show if a measure is selected */}
             {selectedMeasure.subset_column && (
               <div className='flex items-center gap-2'>
                 <input
