@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
-import { Widget as WidgetType } from '@/interfaces/data_interfaces'
 import { DragSource } from '@/Components/PageEditor/DraggableWidget'
 import { PageStructure, WidgetSlot } from '@/Components/PageEditor/PreviewArea'
 import useCustomForm from '@/hooks/useCustomForm'
+import { DashboardPage, Widget } from '@/interfaces/data_interfaces'
+import { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import { useState } from 'react'
 
-export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
+export function usePageEditor(initialPage: DashboardPage | null, widgets: Widget[]) {
   const {
     formData: pageStructure,
     setFormValue,
@@ -19,7 +19,7 @@ export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
   })
 
   const [nextId, setNextId] = useState(1)
-  const [activeWidget, setActiveWidget] = useState<WidgetType | null>(null)
+  const [activeWidget, setActiveWidget] = useState<Widget | null>(null)
 
   const createWidgetSlots = (type: 'singleCol' | 'doubleCol' | 'tripleCol'): WidgetSlot[] => {
     const slotCount = type === 'singleCol' ? 1 : type === 'doubleCol' ? 2 : 3
@@ -66,69 +66,30 @@ export function usePageEditor(initialPage: any, widgets: WidgetType[]) {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
-
-    if (over && active.data.current?.widgetId) {
+    console.log('drag end', event)
+    if (over != null && active.data.current?.widgetId != null) {
       const widgetId = active.data.current.widgetId as number
       const source = active.data.current.source as DragSource | undefined
       const dropData = over.data.current as { rowId: number; position: number }
 
-      if (dropData) {
+      if (dropData != null) {
         let newPage = [...pageStructure.page]
 
         const targetRow = newPage.find((row) => row.id === dropData.rowId)
         const targetSlot = targetRow?.widgets.find((slot) => slot.position === dropData.position)
         const targetWidgetId = targetSlot?.widgetId
 
-        if (source && targetWidgetId !== null && targetWidgetId !== widgetId) {
-          newPage = newPage.map((row) => {
-            if (row.id === source.rowId) {
-              return {
-                ...row,
-                widgets: row.widgets.map((slot) =>
-                  slot.position === source.position ? { ...slot, widgetId: targetWidgetId } : slot
-                ),
-              }
+        newPage = newPage.map((row) => {
+          if (row.id === dropData.rowId) {
+            return {
+              ...row,
+              widgets: row.widgets.map((slot) =>
+                slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
+              ),
             }
-            return row
-          })
-          newPage = newPage.map((row) => {
-            if (row.id === dropData.rowId) {
-              return {
-                ...row,
-                widgets: row.widgets.map((slot) =>
-                  slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
-                ),
-              }
-            }
-            return row
-          })
-        } else {
-          if (source) {
-            newPage = newPage.map((row) => {
-              if (row.id === source.rowId) {
-                return {
-                  ...row,
-                  widgets: row.widgets.map((slot) =>
-                    slot.position === source.position ? { ...slot, widgetId: null } : slot
-                  ),
-                }
-              }
-              return row
-            })
           }
-
-          newPage = newPage.map((row) => {
-            if (row.id === dropData.rowId) {
-              return {
-                ...row,
-                widgets: row.widgets.map((slot) =>
-                  slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
-                ),
-              }
-            }
-            return row
-          })
-        }
+          return row
+        })
 
         setFormValue('page')(newPage)
       }

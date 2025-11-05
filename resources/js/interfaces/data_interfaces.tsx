@@ -542,3 +542,25 @@ export interface WidgetCollection {
   last_updated: string
   widgets?: Widget[]
 }
+
+export interface WidgetPosition {
+  position: number
+  widgetId: number | null
+}
+
+export interface PageSection {
+  id: number
+  type: string
+  title: string | null
+  widgets: WidgetPosition[]
+  description: string | null
+}
+
+export interface DashboardPage extends Model {
+  id: number
+  title: string
+  description: string
+  link: string
+  page: PageSection[]
+  published: boolean
+}
