@@ -7,11 +7,18 @@ import Modal from '@/ui/Modal/Modal'
 import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import { getAllJsonPaths } from '@/Components/DataLoader/useDataTableToJsonMapping'
-import { Plus } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import { DataLoaderAPI } from '@/interfaces/data_interfaces'
 import SourceFieldCard from '@/Components/SetupDataTable/cards/SourceFieldCard'
 import DataTableFieldCard from '@/Components/SetupDataTable/cards/DataTableFieldCard'
 import { FieldErrors } from './SetupDataTable'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/Components/ui/sheet'
 
 const DUPLICATE_FIELD_ERROR = 'Duplicate Field: Field is already present in list.'
 
@@ -67,6 +74,7 @@ export default function ManageDataTableFields({
   const [showModal, setShowModal] = useState(false)
   const [selectedField, setSelectedField] = useState<DataTableFieldConfig | null>(null)
   const [selectedAvailableField, setSelectedAvailableField] = useState<AvailableField | null>(null)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   const openAddFieldModal = () => {
     setShowModal(true)
@@ -184,21 +192,27 @@ export default function ManageDataTableFields({
 
   return (
     <>
-      <div className='grid grid-cols-2 gap-4 md:gap-2'>
-        {availableFields.length > 0 && (
-          <div className='flex flex-col p-5'>
-            <h4 className='mb-4 font-semibold'>Available From {sourceName}</h4>
-            <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-              {availableFields.map((field) => (
-                <SourceFieldCard
-                  key={field.path}
-                  field={field}
-                  onMoveToConfigured={handleMoveToConfigured}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+      {/* Search and Add New Field */}
+      <div className='mb-6 flex gap-3'>
+        <div className='relative flex-1'>
+          <Search className='absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
+          <input
+            type='text'
+            placeholder='Search fields...'
+            // value={searchQuery}
+            // onChange={(e) => onSearchChange(e.target.value)}
+            className='w-full rounded-lg border border-gray-300 py-3 pl-12 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500'
+          />
+        </div>
+        <button
+          onClick={() => setIsSheetOpen(true)}
+          className='whitespace-nowrap rounded-lg border-2 border-blue-500 px-6 py-3 font-medium text-blue-500 transition-colors hover:bg-blue-50'
+        >
+          + Add New Field
+        </button>
+      </div>
+
+      <div className='grid md:gap-2'>
         <div className='flex flex-col p-5'>
           <div className='mb-4 flex flex-col gap-5'>
             <h4 className='font-semibold'>Added To DataTable</h4>
@@ -210,7 +224,7 @@ export default function ManageDataTableFields({
               Add A Field That Is Not In {sourceName}
             </button>
           </div>
-          <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+          <div className='grid gap-2'>
             {fields.map((field) => (
               <DataTableFieldCard
                 key={field.column}
@@ -222,6 +236,35 @@ export default function ManageDataTableFields({
           </div>
         </div>
       </div>
+
+      <Sheet
+        open={isSheetOpen && !showModal}
+        onOpenChange={setIsSheetOpen}
+      >
+        <SheetContent className='w-full overflow-y-auto sm:max-w-2xl'>
+          <SheetHeader>
+            <SheetTitle>TITLE</SheetTitle>
+            <SheetDescription>DES</SheetDescription>
+          </SheetHeader>
+          <div className='mt-6'>
+            {availableFields.length > 0 && (
+              <div className='flex flex-col p-5'>
+                <h4 className='mb-4 font-semibold'>Available From {sourceName}</h4>
+                <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+                  {availableFields.map((field) => (
+                    <SourceFieldCard
+                      key={field.path}
+                      field={field}
+                      onMoveToConfigured={handleMoveToConfigured}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+
       {showModal && (
         <Modal setShowModal={setShowModal}>
           <DataTableFieldInfoForm

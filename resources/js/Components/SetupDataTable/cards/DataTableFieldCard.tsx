@@ -1,7 +1,7 @@
 import { DataTableFieldConfig } from '@/Components/SetupDataTable/ManageDataTableFields'
 import { cn } from '@/utils'
 import React from 'react'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, BarChart3, Box, Calendar, Type } from 'lucide-react'
 
 interface Props {
   field: DataTableFieldConfig
@@ -9,13 +9,32 @@ interface Props {
   errors?: string[]
 }
 
+const getTypeIcon = (type: string) => {
+  switch (type) {
+    case 'text':
+      return Type
+    case 'date':
+      return Calendar
+    case 'dimension':
+      return Box
+    case 'measure':
+      return BarChart3
+    default:
+      return Type
+  }
+}
+
+const getTypeColor = (type: string) => {
+  return 'bg-teal-500'
+}
+
 export default function DataTableFieldCard({ field, onClick, errors }: Readonly<Props>) {
   const typeDisplay =
-    field.type === 'dimension'
-      ? (field.meta_structure?.structure_name ?? 'dimension')
-      : field.type
+    field.type === 'dimension' ? (field.meta_structure?.structure_name ?? 'dimension') : field.type
 
   const hasErrors = errors != null && errors.length > 0
+  const TypeIcon = getTypeIcon(field.type)
+  const iconBgColor = getTypeColor(field.type)
 
   return (
     <div
@@ -27,24 +46,23 @@ export default function DataTableFieldCard({ field, onClick, errors }: Readonly<
           : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
       )}
     >
+      {/* Icon Section */}
+      <div
+        className={cn(
+          'flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg',
+          iconBgColor
+        )}
+      >
+        <TypeIcon className='h-6 w-6 text-white' />
+      </div>
+
+      {/* Content Section */}
       <div className='min-w-0 flex-1'>
         <div className='flex items-start gap-2'>
           <h4 className='flex-1 font-semibold text-gray-900'>{field.field_name}</h4>
           {hasErrors && <AlertCircle className='h-5 w-5 flex-shrink-0 text-red-600' />}
         </div>
-        <p className='mt-1 font-mono text-xs text-gray-500'>
-          {field.source_field_path == null ? '' : `${field.source_field_path} > `} {field.column}
-        </p>
-        <div className='mt-2 flex flex-wrap gap-2'>
-          <span className='inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700'>
-            {typeDisplay}
-          </span>
-          {field.unit_field_name && (
-            <span className='inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600'>
-              Unit: {field.unit_field_name}
-            </span>
-          )}
-        </div>
+        <p className='mt-1 text-sm text-gray-500'>Column: {field.column}</p>
         {hasErrors && (
           <div className='mt-3 space-y-1'>
             {errors.map((error, index) => (
