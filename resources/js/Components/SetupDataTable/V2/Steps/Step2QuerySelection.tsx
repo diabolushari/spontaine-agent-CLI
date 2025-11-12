@@ -3,8 +3,10 @@ import { Search } from 'lucide-react'
 import QueryItem from '../QueryItem'
 import useFetchPagination from '@/hooks/useFetchPagination'
 import { DataLoaderQuery } from '@/interfaces/data_interfaces'
+import RestPagination from '@/ui/Pagination/RestPagination'
 
 interface Step2QuerySelectionProps {
+  selectedQuery: DataLoaderQuery | null
   searchQuery: string
   onSearchChange: (query: string) => void
   onQuerySelect: (query: DataLoaderQuery) => void
@@ -13,6 +15,7 @@ interface Step2QuerySelectionProps {
 }
 
 const Step2QuerySelection: React.FC<Step2QuerySelectionProps> = ({
+  selectedQuery,
   searchQuery,
   onSearchChange,
   onQuerySelect,
@@ -28,6 +31,10 @@ const Step2QuerySelection: React.FC<Step2QuerySelectionProps> = ({
 
   const [pagination, loading] = useFetchPagination<DataLoaderQuery>(url)
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+
   useEffect(() => {
     setCurrentPage(1)
   }, [searchQuery])
@@ -35,12 +42,7 @@ const Step2QuerySelection: React.FC<Step2QuerySelectionProps> = ({
   const handleQuerySelect = (query: DataLoaderQuery) => {
     console.log(query)
     onQuerySelect(query)
-    onContinue()
   }
-
-  const canPrev = (pagination?.current_page ?? 1) > 1
-  const canNext =
-    pagination && (pagination.current_page as number) < (pagination.last_page as number)
 
   return (
     <div>
@@ -78,9 +80,19 @@ const Step2QuerySelection: React.FC<Step2QuerySelectionProps> = ({
                 item.loader_connection?.name ? ` | ${item.loader_connection.name}` : ''
               }`}
               onClick={() => handleQuerySelect(item)}
+              isSelected={selectedQuery?.id === item.id}
             />
           ))}
       </div>
+
+      {pagination != null && pagination.last_page > 1 && (
+        <div className='mt-5'>
+          <RestPagination
+            pagination={pagination}
+            onNewPage={handlePageChange}
+          />
+        </div>
+      )}
 
       {/* Navigation Buttons */}
       <div className='mt-8 flex items-center justify-between'>
@@ -89,19 +101,14 @@ const Step2QuerySelection: React.FC<Step2QuerySelectionProps> = ({
         </span>
         <div className='flex gap-3'>
           <button
-            disabled={!canPrev}
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            onClick={onBack}
             className='rounded-lg border border-gray-300 px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50'
           >
             Back
           </button>
           <button
-            disabled={!canNext}
-            onClick={() =>
-              setCurrentPage((p) =>
-                pagination ? Math.min(pagination.last_page as number, p + 1) : p + 1
-              )
-            }
+            disabled={selectedQuery == null}
+            onClick={onContinue}
             className='rounded-lg bg-blue-500 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
           >
             Continue

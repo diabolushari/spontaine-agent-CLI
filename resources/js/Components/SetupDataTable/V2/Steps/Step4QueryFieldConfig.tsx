@@ -16,11 +16,6 @@ interface Step4QueryFieldConfigProps {
   onContinue: () => void
 }
 
-interface AvailableField {
-  path: string
-  name: string
-}
-
 const Step4QueryFieldConfig: React.FC<Step4QueryFieldConfigProps> = ({
   searchQuery,
   onSearchChange,
@@ -32,34 +27,32 @@ const Step4QueryFieldConfig: React.FC<Step4QueryFieldConfigProps> = ({
   setFields,
 }) => {
   return (
-    <>
-      <div>
-        <h2 className='mb-5 text-lg font-semibold text-gray-900'>Field Configuration</h2>
+    <div>
+      <h2 className='mb-5 text-lg font-semibold text-gray-900'>Field Configuration</h2>
 
-        <ManageDataTableFields
-          fields={fields}
-          setFields={setFields}
-          responseStructure={responseStructure}
-          selectedAPI={selectedAPI}
-        />
+      <ManageDataTableFields
+        fields={fields}
+        setFields={setFields}
+        responseStructure={responseStructure}
+        selectedAPI={selectedAPI}
+      />
 
-        {/* Navigation Buttons */}
-        <div className='mt-8 flex justify-end gap-3'>
-          <button
-            onClick={onBack}
-            className='rounded-lg border border-gray-300 px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50'
-          >
-            Back
-          </button>
-          <button
-            onClick={onContinue}
-            className='rounded-lg bg-blue-500 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-600'
-          >
-            Continue
-          </button>
-        </div>
+      {/* Navigation Buttons */}
+      <div className='mt-8 flex justify-end gap-3'>
+        <button
+          onClick={onBack}
+          className='rounded-lg border border-gray-300 px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50'
+        >
+          Back
+        </button>
+        <button
+          onClick={onContinue}
+          className='rounded-lg bg-blue-500 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-600'
+        >
+          Continue
+        </button>
       </div>
-    </>
+    </div>
   )
 }
 

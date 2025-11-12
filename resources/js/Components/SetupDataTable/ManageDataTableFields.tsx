@@ -4,7 +4,7 @@ import DataTableFieldInfoForm, {
 import { generateSnakeCaseName } from '@/Pages/SubjectArea/SubjectAreaCreate'
 import { showError } from '@/ui/alerts'
 import Modal from '@/ui/Modal/Modal'
-import React, { SetStateAction, useCallback, useMemo, useState } from 'react'
+import React, { SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import { getAllJsonPaths } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import { Plus, Search } from 'lucide-react'
@@ -19,10 +19,25 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/Components/ui/sheet'
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 
 const DUPLICATE_FIELD_ERROR = 'Duplicate Field: Field is already present in list.'
 
 export interface DataTableFieldConfig extends DataTableFieldInfo {
+  id: number
   column: string
   unit_column?: string | null
   source_field_path?: string | null
@@ -42,14 +57,16 @@ interface AvailableField {
   name: string
 }
 
+let fieldIdCounter = 0
+
 const convertToFieldInfo = (data: DataTableFieldInfo): DataTableFieldConfig => {
   const column = generateSnakeCaseName(data.field_name)
   const unitColumnName =
     data.unit_field_name != null && data.unit_field_name !== '' ? column + '_unit' : null
 
   return data.type === 'measure' && data.create_unit_column
-    ? { ...data, column, unit_column: unitColumnName }
-    : { ...data, column }
+    ? { ...data, id: ++fieldIdCounter, column, unit_column: unitColumnName }
+    : { ...data, id: ++fieldIdCounter, column }
 }
 
 const isDuplicateField = (
@@ -190,6 +207,30 @@ export default function ManageDataTableFields({
     setShowModal(true)
   }, [])
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  function handleDragEnd(event) {
+    const { active, over } = event
+
+    if (active.id !== over.id) {
+      setFields((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id)
+        const newIndex = items.findIndex((item) => item.id === over.id)
+
+        return arrayMove(items, oldIndex, newIndex)
+      })
+    }
+  }
+
+  useEffect(() => {
+    console.log(fields)
+  }, [fields])
+
   return (
     <>
       {/* Search and Add New Field */}
@@ -224,16 +265,28 @@ export default function ManageDataTableFields({
               Add A Field That Is Not In {sourceName}
             </button>
           </div>
-          <div className='grid gap-2'>
-            {fields.map((field) => (
-              <DataTableFieldCard
-                key={field.column}
-                field={field}
-                onClick={handleConfiguredFieldClick}
-                errors={fieldErrors[field.column]}
-              />
-            ))}
-          </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <div className='grid gap-2'>
+              <SortableContext
+                items={fields}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field) => (
+                  <DataTableFieldCard
+                    key={field.id}
+                    id={field.id}
+                    field={field}
+                    onClick={handleConfiguredFieldClick}
+                    errors={fieldErrors[field.column]}
+                  />
+                ))}
+              </SortableContext>
+            </div>
+          </DndContext>
         </div>
       </div>
 

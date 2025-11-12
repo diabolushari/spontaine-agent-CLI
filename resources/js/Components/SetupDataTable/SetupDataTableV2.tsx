@@ -1,16 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Step from '@/Components/SetupDataTable/V2/Step'
 import Step2QuerySelection from '@/Components/SetupDataTable/V2/Steps/Step2QuerySelection'
 import Step3QueryPreview from '@/Components/SetupDataTable/V2/Steps/Step3QueryPreview'
 import Step4QueryFieldConfig from '@/Components/SetupDataTable/V2/Steps/Step4QueryFieldConfig'
 import Step1DataSource from '@/Components/SetupDataTable/V2/Steps/Step1DataShource'
-import { DataLoaderQuery, ReferenceData } from '@/interfaces/data_interfaces'
+import { DataLoaderAPI, DataLoaderQuery, ReferenceData } from '@/interfaces/data_interfaces'
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import { DataTableFieldConfig } from '@/Components/SetupDataTable/ManageDataTableFields'
-import { DataSource } from '@/Components/SetupDataTable/DataSourceSelection'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import Step5DataTableDetail from '@/Components/SetupDataTable/V2/Steps/Step5DataTableDetail'
 import { FieldErrors } from '@/Components/SetupDataTable/SetupDataTable'
+import Step2APISelection from '@/Components/SetupDataTable/V2/Steps/Step2APISelection'
+import Step3APIPreview from '@/Components/SetupDataTable/V2/Steps/Step3APIPreview'
 
 type DataSourceType = 'sql' | 'api' | 'excel' | null
 
@@ -23,32 +24,14 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
   const [dataSource, setDataSource] = useState<DataSourceType>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [fields, setFields] = useState<DataTableFieldConfig[]>([])
-  const [selectedSource, setSelectedSource] = useState<DataSource>(null)
 
   const [selectedQuery, setSelectedQuery] = useState<DataLoaderQuery | null>(null)
-  const [selectedAPI, setSelectedAPI] = useState<DataLoaderQuery | null>(null)
+  const [selectedAPI, setSelectedAPI] = useState<DataLoaderAPI | null>(null)
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
   const [sourceResponseStructure, setSourceResponseStructure] =
     useState<JSONStructureDefinition | null>(null)
-
-  useEffect(() => {
-    console.log('sourceres :', sourceResponseStructure)
-  }, [sourceResponseStructure])
-
-  const sourceName = useMemo(() => {
-    switch (selectedSource) {
-      case 'api':
-        return 'REST API'
-      case 'sql':
-        return 'SQL Query'
-      case 'excel':
-        return 'Excel File'
-      default:
-        return null
-    }
-  }, [selectedSource])
 
   const steps = [
     { number: 1, label: 'Data Source' },
@@ -76,6 +59,13 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
     if (currentStep < 5) {
       setCurrentStep((currentStep + 1) as 1 | 2 | 3 | 4 | 5)
     }
+  }
+
+  const handleStepClick = (step: number) => {
+    if (selectedAPI == null && selectedQuery == null) {
+      return
+    }
+    setCurrentStep(step)
   }
 
   const fieldMapping = useMemo(() => {
@@ -107,12 +97,14 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
           <div className='flex items-start justify-between'>
             {steps.map((step, index) => (
               <React.Fragment key={step.number}>
-                <Step
-                  number={step.number}
-                  label={step.label}
-                  isActive={step.number === currentStep}
-                  isCompleted={step.number < currentStep}
-                />
+                <button onClick={() => handleStepClick(step.number)}>
+                  <Step
+                    number={step.number}
+                    label={step.label}
+                    isActive={step.number === currentStep}
+                    isCompleted={step.number < currentStep}
+                  />
+                </button>
                 {index < steps.length - 1 && <div className='mx-2 mt-6 h-px flex-1 bg-gray-300' />}
               </React.Fragment>
             ))}
@@ -124,6 +116,7 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
 
         {currentStep === 2 && dataSource === 'sql' && (
           <Step2QuerySelection
+            selectedQuery={selectedQuery}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             onQuerySelect={setSelectedQuery}
@@ -132,14 +125,15 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
           />
         )}
 
-        {/*{currentStep === 2 && dataSource === 'api' && (*/}
-        {/*  <Step2APISelection*/}
-        {/*    searchQuery={searchQuery}*/}
-        {/*    onSearchChange={setSearchQuery}*/}
-        {/*    onBack={handleBack}*/}
-        {/*    onContinue={handleContinue}*/}
-        {/*  />*/}
-        {/*)}*/}
+        {currentStep === 2 && dataSource === 'api' && (
+          <Step2APISelection
+            selectedAPI={selectedAPI}
+            setSelectedAPI={setSelectedAPI}
+            setSourceResponseStructure={setSourceResponseStructure}
+            onBack={handleBack}
+            onContinue={handleContinue}
+          />
+        )}
 
         {/*{currentStep === 2 && dataSource === 'excel' && (*/}
         {/*  <Step2ExcelSelection*/}
@@ -159,12 +153,13 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
           />
         )}
 
-        {/*{currentStep === 3 && dataSource === 'api' && (*/}
-        {/*  <Step3APIPreview*/}
-        {/*    onBack={handleBack}*/}
-        {/*    onContinue={handleContinue}*/}
-        {/*  />*/}
-        {/*)}*/}
+        {currentStep === 3 && dataSource === 'api' && (
+          <Step3APIPreview
+            selectedAPI={selectedAPI}
+            onContinue={handleContinue}
+            onBack={handleBack}
+          />
+        )}
 
         {/*{currentStep === 3 && dataSource === 'excel' && (*/}
         {/*  <Step3ExcelPreview*/}
@@ -173,7 +168,7 @@ function SetupDataTableV2({ types }: Readonly<Props>) {
         {/*  />*/}
         {/*)}*/}
 
-        {currentStep === 4 && dataSource === 'sql' && (
+        {currentStep === 4 && (dataSource === 'sql' || dataSource === 'api') && (
           <Step4QueryFieldConfig
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
