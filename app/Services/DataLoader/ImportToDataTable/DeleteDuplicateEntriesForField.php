@@ -93,29 +93,32 @@ trait DeleteDuplicateEntriesForField
                 }
             }
 
+            $chunkSize = 100;
             // Delete rows matching the unique combinations in batches
-            do {
-                $deleted = DB::table($dataDetail->table_name)
-                    ->where(function ($query) use ($uniqueCombinations, $columns, $dimensionMappings) {
-                        foreach ($uniqueCombinations as $combination) {
-                            $query->orWhere(function ($subQuery) use ($combination, $columns, $dimensionMappings) {
-                                foreach ($columns as $column) {
-                                    $value = $combination[$column];
+            foreach (array_chunk($uniqueCombinations, $chunkSize) as $combinationBatch) {
+                do {
+                    $deleted = DB::table($dataDetail->table_name)
+                        ->where(function ($query) use ($combinationBatch, $columns, $dimensionMappings) {
+                            foreach ($combinationBatch as $combination) {
+                                $query->orWhere(function ($subQuery) use ($combination, $columns, $dimensionMappings) {
+                                    foreach ($columns as $column) {
+                                        $value = $combination[$column];
 
-                                    // Use mapped metadata_id if this is a dimension column
-                                    if (isset($dimensionMappings[$column][$value])) {
-                                        $value = $dimensionMappings[$column][$value];
+                                        // Use mapped metadata_id if this is a dimension column
+                                        if (isset($dimensionMappings[$column][$value])) {
+                                            $value = $dimensionMappings[$column][$value];
+                                        }
+
+                                        $subQuery->where($column, $value);
                                     }
-
-                                    $subQuery->where($column, $value);
-                                }
-                            });
-                        }
-                    })
-                    ->orderBy('id')
-                    ->limit(10000)
-                    ->delete();
-            } while ($deleted > 0);
+                                });
+                            }
+                        })
+                        ->orderBy('id')
+                        ->limit(10000)
+                        ->delete();
+                } while ($deleted > 0);
+            }
         }
 
     }
