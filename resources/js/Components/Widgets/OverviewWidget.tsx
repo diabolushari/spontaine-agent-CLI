@@ -170,6 +170,7 @@ export default function OverviewWidget({
             subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
             subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}
             selectedMonth={selectedMonth}
+            level={widget.data.rank.level ?? null}
           />
         )}
     </WidgetLayout>

@@ -528,6 +528,7 @@ export interface Widget {
     rank: {
       subset_id: number | null
       order_by: SelectedMeasure | null
+      level: string
     }
   }
 }

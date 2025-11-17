@@ -32,6 +32,7 @@ export interface WidgetFormData {
     subset_field_name: string
     subset_column: string
   } | null
+  rank_level: string | null
 }
 
 interface Props {
@@ -80,6 +81,7 @@ function parseFormDataToWidget(
           subset_field_name: '',
           subset_column: '',
         },
+        level: formData.rank_level,
       },
     },
   }
@@ -118,9 +120,10 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
     trend_chart_type: widget?.data?.trend?.chart_type ?? 'area',
     trend_measure: widget?.data?.trend?.measure ?? null,
     trend_dimension: widget?.data?.trend?.dimension ?? 'month',
-    trend_color: widget?.data?.trend?.color ?? '#5A0F35',
+    trend_color: widget?.data?.trend?.color ?? 'boldWarm',
     rank_subset_id: widget?.data?.rank?.subset_id?.toString() ?? '',
     rank_ranking_field: widget?.data?.rank?.order_by ?? null,
+    rank_level: widget?.data?.rank?.level ?? null,
   })
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
     widget?.data?.highlight_cards ?? []

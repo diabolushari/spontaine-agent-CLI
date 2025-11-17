@@ -82,6 +82,7 @@ export default function Widget({ widget }: Readonly<Props>) {
           subsetColumn={data.rank.order_by?.subset_column ?? null}
           subsetFieldName={data.rank.order_by?.subset_field_name ?? null}
           selectedMonth={selectedMonth}
+          level={data.rank.level ?? null}
         />
       )}
 

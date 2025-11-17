@@ -28,6 +28,7 @@ interface Props {
   filterListFetchURL?: string
   defaultFilterValue?: string
   onFilterChange?: (value: string) => void
+  level?: string
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -53,12 +54,17 @@ export default function RankedList({
   filterListKey,
   filterFieldName,
   onFilterChange,
+  level = 'section',
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
   const [itemLimit, setItemLimit] = useState('10')
-  const [officeLevel, setOfficeLevel] = useState('section')
+  const [officeLevel, setOfficeLevel] = useState(level)
   const [filterValue, setFilterValue] = useState<string>(defaultFilterValue ?? '')
+
+  useEffect(() => {
+    setOfficeLevel(level)
+  }, [level])
 
   useEffect(() => {
     if (onFilterChange == null) {

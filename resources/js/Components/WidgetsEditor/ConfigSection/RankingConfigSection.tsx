@@ -2,11 +2,20 @@ import MeasureFieldSelector from '@/Components/WidgetsEditor/ConfigMeasures/Meas
 import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import { useCallback, useMemo } from 'react'
 import { SelectedMeasure, WidgetFormData } from '../OverviewWidgetEditor'
+import SelectList from '@/ui/form/SelectList'
 
 interface RankingConfigSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
 }
+
+const levelTypes: { name: string; value: string }[] = [
+  { name: 'Section', value: 'section' },
+  { name: 'Subdivision', value: 'subdivision' },
+  { name: 'Division', value: 'division' },
+  { name: 'Circle', value: 'circle' },
+  { name: 'Region', value: 'region' },
+]
 
 export function RankingConfigSection({
   formData,
@@ -53,6 +62,16 @@ export function RankingConfigSection({
           measures={selectedMeasures}
           onMeasuresChange={updateMeasures}
           allowMultiple={false}
+        />
+      </div>
+      <div className='flex flex-col'>
+        <SelectList
+          label={'Default Level'}
+          list={levelTypes}
+          dataKey={'value'}
+          displayKey={'name'}
+          setValue={setFormValue('rank_level')}
+          value={formData.rank_level}
         />
       </div>
     </div>

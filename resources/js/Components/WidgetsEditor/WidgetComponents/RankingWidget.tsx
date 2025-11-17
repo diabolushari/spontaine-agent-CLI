@@ -5,6 +5,7 @@ interface RankingWidgetProps {
   subsetColumn: string | null
   subsetFieldName: string | null
   selectedMonth: Date
+  level: string
 }
 
 export default function RankingWidget({
@@ -12,6 +13,7 @@ export default function RankingWidget({
   subsetColumn,
   subsetFieldName,
   selectedMonth,
+  level,
 }: Readonly<RankingWidgetProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -19,7 +21,7 @@ export default function RankingWidget({
 
   return (
     <>
-      {(subsetId == null || !subsetColumn || !subsetFieldName) && (
+      {subsetId == null && (
         <div className='flex h-full items-center justify-center'>
           <div className='text-gray-500'>No data</div>
         </div>
@@ -33,6 +35,7 @@ export default function RankingWidget({
             rankingPageUrl={'#'}
             timePeriod={formattedMonth}
             timePeriodFieldName={'month'}
+            level={level}
           />
         </div>
       )}
