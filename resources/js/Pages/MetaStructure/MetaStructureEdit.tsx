@@ -1,10 +1,12 @@
 import SelectList from '@/ui/form/SelectList'
 import useCustomForm from '@/hooks/useCustomForm'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import { MetaStructure, DataClassificationProperty } from '@/interfaces/meta_interfaces'
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
+import { AccordionContent, AccordionTrigger } from '@/Components/WidgetsEditor/AccrodionDropdown'
+import * as Accordion from '@radix-ui/react-accordion'
 
 interface MetaStructureLabel {
   id: number
@@ -24,6 +26,7 @@ interface Props {
 }
 
 export default function MetaStructureEdit({ metaStructure, pageNo, dataClassificationProperties = [] }: Props) {
+  const [openItem, setOpenItem] = useState<string | undefined>(undefined)
   
   // Helper to find existing value for a property type
   const getInitialValue = (type: string) => {
@@ -113,60 +116,74 @@ export default function MetaStructureEdit({ metaStructure, pageNo, dataClassific
       subtype={'blocks'}
       breadCrumbs={breadCrumb}
     >
-      <div className='mt-6 rounded border bg-white p-4 shadow-sm'>
-        <h3 className='mb-4 text-lg font-bold'>Data Classification</h3>
-        <div className='grid grid-cols-1 gap-4'>
-          <div>
-            <SelectList
-              label='Data Classification Level'
-              list={classificationLevels}
-              value={formData.data_classification_level}
-              setValue={setFormValue('data_classification_level')}
-              dataKey='id'
-              displayKey='property_value'
-            />
-          </div>
-          <div>
-            <SelectList
-              label='Data Category'
-              list={dataCategories}
-              value={formData.data_category}
-              setValue={setFormValue('data_category')}
-              dataKey='id'
-              displayKey='property_value'
-            />
-          </div>
-          <div>
-            <SelectList
-              label='Encryption'
-              list={encryptions}
-              value={formData.encryption}
-              setValue={setFormValue('encryption')}
-              dataKey='id'
-              displayKey='property_value'
-            />
-          </div>
-          <div>
-            <SelectList
-              label='Access Level'
-              list={accessLevels}
-              value={formData.access_level}
-              setValue={setFormValue('access_level')}
-              dataKey='id'
-              displayKey='property_value'
-            />
-          </div>
-          <div>
-            <SelectList
-              label='Data Owner'
-              list={dataOwners}
-              value={formData.data_owner}
-              setValue={setFormValue('data_owner')}
-              dataKey='id'
-              displayKey='property_value'
-            />
-          </div>
-        </div>
+      <div className='mt-6'>
+        <Accordion.Root
+          type='single'
+          collapsible={true}
+          value={openItem}
+          onValueChange={setOpenItem}
+        >
+          <Accordion.Item
+            value='data_classification'
+            className='rounded-lg border border-slate-200'
+          >
+            <AccordionTrigger>Data Classification</AccordionTrigger>
+            <AccordionContent>
+              <div className='grid grid-cols-1 gap-4 px-4'>
+                <div>
+                  <SelectList
+                    label='Data Classification Level'
+                    list={classificationLevels}
+                    value={formData.data_classification_level}
+                    setValue={setFormValue('data_classification_level')}
+                    dataKey='id'
+                    displayKey='property_value'
+                  />
+                </div>
+                <div>
+                  <SelectList
+                    label='Data Category'
+                    list={dataCategories}
+                    value={formData.data_category}
+                    setValue={setFormValue('data_category')}
+                    dataKey='id'
+                    displayKey='property_value'
+                  />
+                </div>
+                <div>
+                  <SelectList
+                    label='Encryption'
+                    list={encryptions}
+                    value={formData.encryption}
+                    setValue={setFormValue('encryption')}
+                    dataKey='id'
+                    displayKey='property_value'
+                  />
+                </div>
+                <div>
+                  <SelectList
+                    label='Access Level'
+                    list={accessLevels}
+                    value={formData.access_level}
+                    setValue={setFormValue('access_level')}
+                    dataKey='id'
+                    displayKey='property_value'
+                  />
+                </div>
+                <div>
+                  <SelectList
+                    label='Data Owner'
+                    list={dataOwners}
+                    value={formData.data_owner}
+                    setValue={setFormValue('data_owner')}
+                    dataKey='id'
+                    displayKey='property_value'
+                  />
+                </div>
+              </div>
+            </AccordionContent>
+          </Accordion.Item>
+        </Accordion.Root>
       </div>
     </FormPage>
   )
