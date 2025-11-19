@@ -64,6 +64,7 @@ export function usePageEditor(
     setFormValue('page')(pageStructure.page.filter((row) => row.id !== id))
   }
   const handleDragStart = (event: DragStartEvent) => {
+    console.log('start  :', event)
     setSheetOpen(false)
     const { active } = event
     if (active.data.current?.widgetId) {
@@ -75,6 +76,7 @@ export function usePageEditor(
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
+    console.log(event)
     const { active, over } = event
     if (over != null && active.data.current?.widgetId != null) {
       const widgetId = active.data.current.widgetId as number
@@ -160,10 +162,8 @@ export function usePageEditor(
 
       const targetIndex = direction === 'up' ? index - 1 : index + 1
 
-      // Copy array first (immutability)
       const page = [...pageStructure.page]
 
-      // Swap elements
       ;[page[index], page[targetIndex]] = [page[targetIndex], page[index]]
 
       setFormValue('page')(page)

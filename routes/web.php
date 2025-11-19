@@ -100,6 +100,7 @@ use App\Http\Controllers\Utils\StoreLoaderAPIController;
 use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
 use App\Http\Controllers\Utils\SubsetMaxValueController;
 use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
+use App\Http\Controllers\WidgetsEditor\WidgetSearchController;
 use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
@@ -375,6 +376,8 @@ Route::resource('widget-editor', WidgetsEditorController::class)
 Route::resource('widget-collection', WidgetCollectionController::class)
     ->parameters(['widget-collection' => 'widgetCollection']);
 Route::resource('page-editor', PageEditorController::class);
+
+Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
 
 //Util APIS
 Route::get('loader-apis-list', LoaderAPIListController::class)

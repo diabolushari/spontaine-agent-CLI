@@ -6,7 +6,7 @@ import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Button from '@/ui/button/Button'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/Components/ui/sheet'
 import DraggableWidgetSidebar from '@/Components/PageEditor/DraggableWidgetSidebar'
 
@@ -16,6 +16,7 @@ interface Props {
 }
 
 export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>) {
+  console.log('PageEditorCreatePage', page)
   const [sheetOpen, setSheetOpen] = useState(false)
   const { post } = useInertiaPost(
     page ? route('page-editor.update', page.id) : route('page-editor.store'),
@@ -66,10 +67,6 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
     }
     console.log('Publish data:', publishData)
   }
-
-  useEffect(() => {
-    console.log('Page Structure:', pageStructure)
-  }, [pageStructure])
 
   return (
     <AnalyticsDashboardLayout>
