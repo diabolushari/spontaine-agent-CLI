@@ -15,6 +15,8 @@ export interface SelectedMeasure {
 export interface WidgetFormData {
   title: string
   subtitle: string
+  description: string
+  link: string
   data_table_id: string
   subset_group_id: string
   chart_type: string
@@ -52,6 +54,8 @@ function parseFormDataToWidget(
   return {
     title: formData.title ?? 'Untitled Widget',
     subtitle: formData.subtitle ?? '',
+    description: formData.description ?? '',
+    link: formData.link ?? '',
     type: 'overview',
     collection_id: collectionId,
     data: {
@@ -109,6 +113,8 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
   const { formData, setFormValue, setAll } = useCustomForm<WidgetFormData>({
     title: widget?.title ?? '',
     subtitle: widget?.subtitle ?? '',
+    description: widget?.description ?? '',
+    link: widget?.link ?? '',
     data_table_id: widget?.data?.data_table_id.toString() ?? '',
     subset_group_id: widget?.data?.subset_group_id.toString() ?? '',
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',

@@ -115,10 +115,12 @@ export default function OverviewWidget({
     <WidgetLayout
       title={widget.title}
       subtitle={widget.subtitle}
+      description={widget.description}
+      link={widget.link}
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectedView}
-      onViewChange={setSelectedView}
+      onViewChange={(view) => setSelectedView(view as 'overview' | 'trend' | 'ranking')}
       hasOverview={hasOverview}
       hasRanking={hasRanking}
       hasTrend={hasTrend}
@@ -162,7 +164,7 @@ export default function OverviewWidget({
           setSelectedMonth={setSelectedMonth}
         />
       )}
-      {selectedView === 'ranking' && selectedMonth != null && (
+      {selectedView === 'ranking' && selectedMonth != null && widget.data.rank.subset_id != null && (
         <RankingWidget
           subsetId={widget.data.rank.subset_id}
           subsetColumn={widget.data.rank.order_by?.subset_column ?? null}

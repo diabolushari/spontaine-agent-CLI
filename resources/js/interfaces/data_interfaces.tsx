@@ -502,6 +502,8 @@ export interface Widget {
   title: string
   subtitle: string
   type: string
+  description?: string
+  link?: string
   collection_id: number
   data: {
     data_table_id: number

@@ -6,8 +6,9 @@ import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import Button from '@/ui/button/Button'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/Components/ui/sheet'
+import { Plus } from 'lucide-react'
 import DraggableWidgetSidebar from '@/Components/PageEditor/DraggableWidgetSidebar'
 
 interface Props {
@@ -48,6 +49,15 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
     })
   )
 
+  useEffect(() => {
+    if (page && localStorage.getItem('open_preview_after_save') === 'true') {
+      localStorage.removeItem('open_preview_after_save')
+      if (pageStructure.link) {
+        window.open(`/${pageStructure.link}`, '_blank')
+      }
+    }
+  }, [page, pageStructure.link])
+
   const handleSaveDraft = () => {
     const draftData = { ...pageStructure, published: false }
     if (!page) {
@@ -66,6 +76,15 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
       post({ ...publishData, _method: 'PUT' })
     }
     console.log('Publish data:', publishData)
+  }
+
+  const handlePreview = () => {
+    if (!page) {
+      localStorage.setItem('open_preview_after_save', 'true')
+      handleSaveDraft()
+    } else if (pageStructure.link) {
+      window.open(`/${pageStructure.link}`, '_blank')
+    }
   }
 
   return (
@@ -151,6 +170,12 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
                   type='button'
                 />
                 <Button
+                  label='Preview'
+                  variant='secondary'
+                  onClick={handlePreview}
+                  type='button'
+                />
+                <Button
                   label='Publish'
                   variant='primary'
                   onClick={handlePublish}
@@ -206,10 +231,11 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
               />
             </div>
 
-            <div className='fixed bottom-10 right-10'>
+            <div className='fixed bottom-8 right-8 z-50'>
               <SheetTrigger asChild>
-                <button className='inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg'>
-                  +
+                <button className='group flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-white shadow-lg transition-all hover:bg-blue-700 hover:shadow-xl active:scale-95'>
+                  <Plus className='h-5 w-5 transition-transform group-hover:rotate-90' />
+                  <span className='font-medium'>Add Widget</span>
                 </button>
               </SheetTrigger>
             </div>
