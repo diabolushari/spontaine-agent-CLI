@@ -56,6 +56,7 @@ use App\Http\Controllers\Meta\MetaGroupDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchyAddItemController;
 use App\Http\Controllers\Meta\MetaHierarchyController;
 use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
+use App\Http\Controllers\Meta\MetaHierarchyLevelController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
@@ -207,6 +208,10 @@ Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::clas
     ->name('meta-group-delete-item');
 Route::delete('meta-hierarchy-delete-item/{metaHierarchyItem}', MetaHierarchyDeleteItemController::class)
     ->name('meta-hierarchy-delete-item');
+Route::get('meta-hierarchy-level/{metaHierarchyLevel}', [MetaHierarchyLevelController::class, 'show'])
+    ->name('meta-hierarchy-level.show');
+Route::get('meta-hierarchy/{metaHierarchy}/levels', [MetaHierarchyLevelController::class, 'getByHierarchy'])
+    ->name('meta-hierarchy.levels');
 
 //subject areas & data details
 Route::resource('subject-area', SubjectAreaController::class)

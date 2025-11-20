@@ -5,6 +5,7 @@ import useInertiaPost from '@/hooks/useInertiaPost'
 import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -35,12 +36,14 @@ export interface WidgetFormData {
     subset_column: string
   } | null
   rank_level: string | null
+  rank_hierarchy_id: number | null
 }
 
 interface Props {
   widget?: Widget
   collectionId: number
   type: string
+  metaHierarchy: MetaHierarchy[]
 }
 
 /**
@@ -86,6 +89,7 @@ function parseFormDataToWidget(
           subset_column: '',
         },
         level: formData.rank_level,
+        hierarchy_id : formData.rank_hierarchy_id
       },
     },
   }
@@ -97,7 +101,7 @@ const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
   subset_id: null,
   measure: { subset_column: '', subset_field_name: '', unit: '' },
 }
-export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<Props>) {
+export default function OverviewWidgetEditor({ widget, collectionId, metaHierarchy }: Readonly<Props>) {
   const isEditMode = widget != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
@@ -130,6 +134,7 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
     rank_subset_id: widget?.data?.rank?.subset_id?.toString() ?? '',
     rank_ranking_field: widget?.data?.rank?.order_by ?? null,
     rank_level: widget?.data?.rank?.level ?? null,
+    rank_hierarchy_id: widget?.data?.rank?.hierarchy_id ?? null,
   })
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
     widget?.data?.highlight_cards ?? []
@@ -228,6 +233,7 @@ export default function OverviewWidgetEditor({ widget, collectionId }: Readonly<
           setOpenItem={handleOpenItem}
           handleSubmit={handleSubmit}
           loading={loading}
+          metaHierarchy={metaHierarchy}
         />
       </div>
       <div className='min-h-[600px] lg:col-span-2'>

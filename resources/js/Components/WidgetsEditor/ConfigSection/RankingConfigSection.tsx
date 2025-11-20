@@ -3,10 +3,12 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import { useCallback, useMemo } from 'react'
 import { SelectedMeasure, WidgetFormData } from '../OverviewWidgetEditor'
 import SelectList from '@/ui/form/SelectList'
+import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 
 interface RankingConfigSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
+  metaHierarchy: MetaHierarchy[]
 }
 
 const levelTypes: { name: string; value: string }[] = [
@@ -20,6 +22,7 @@ const levelTypes: { name: string; value: string }[] = [
 export function RankingConfigSection({
   formData,
   setFormValue,
+  metaHierarchy
 }: Readonly<RankingConfigSectionProps>) {
   const selectedMeasures = useMemo(() => {
     return formData.rank_ranking_field == null ? [] : [formData.rank_ranking_field]
@@ -57,6 +60,16 @@ export function RankingConfigSection({
         />
       </div>
       <div>
+        <SelectList
+        label='Hierarchy'
+        list={metaHierarchy}
+        dataKey='id'
+        displayKey='name'
+        setValue={setFormValue('rank_hierarchy_id')}
+        value={formData.rank_hierarchy_id}
+        />
+      </div>
+      <div>
         <MeasureFieldSelector
           subsetId={formData.rank_subset_id}
           measures={selectedMeasures}
@@ -64,16 +77,19 @@ export function RankingConfigSection({
           allowMultiple={false}
         />
       </div>
-      <div className='flex flex-col'>
-        <SelectList
+      {formData.rank_hierarchy_id && (
+       <div className='flex flex-col'>
+        <DynamicSelectList
           label={'Default Level'}
-          list={levelTypes}
+          url={`/meta-hierarchy/${formData.rank_hierarchy_id}/levels`}
           dataKey={'value'}
           displayKey={'name'}
           setValue={setFormValue('rank_level')}
           value={formData.rank_level}
         />
-      </div>
+      </div> 
+      )}
+      
     </div>
   )
 }

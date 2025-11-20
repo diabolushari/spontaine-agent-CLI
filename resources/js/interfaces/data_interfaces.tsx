@@ -531,6 +531,7 @@ export interface Widget {
       subset_id: number | null
       order_by: SelectedMeasure | null
       level: string
+      hierarchy_id: number | null
     }
   }
 }
