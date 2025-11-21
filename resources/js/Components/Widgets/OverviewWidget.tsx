@@ -7,12 +7,18 @@ import { Widget } from '@/interfaces/data_interfaces'
 import { useEffect, useMemo, useState } from 'react'
 import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 import { CustomChartSkeleton } from '@/Components/WidgetsEditor/CustomChartSkeleton'
+import axios from 'axios'
 
 interface OverviewWidgetProps {
   widget: Widget
   initialMonth?: Date | null
   selectedView: 'overview' | 'trend' | 'ranking'
   setSelectedView: (view: 'overview' | 'trend' | 'ranking') => void
+}
+
+interface SubsetGroupDetail {
+  name: string
+  description: string
 }
 
 interface SubsetMaxValueResponse {
@@ -111,6 +117,24 @@ export default function OverviewWidget({
 
   console.log(widget.data.highlight_cards, selectedView)
 
+  const [subsetGroupName, setSubsetGroupName] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (widget.data.subset_group_id) {
+      axios
+        .get<SubsetGroupDetail>(`/api/subset-group-detail/${widget.data.subset_group_id}`)
+        .then((response) => {
+          setSubsetGroupName(response.data.name)
+        })
+        .catch((error) => {
+          console.error('Error fetching subset group detail:', error)
+          setSubsetGroupName(null)
+        })
+    } else {
+      setSubsetGroupName(null)
+    }
+  }, [widget.data.subset_group_id])
+
   return (
     <WidgetLayout
       title={widget.title}
@@ -125,6 +149,7 @@ export default function OverviewWidget({
       hasRanking={hasRanking}
       hasTrend={hasTrend}
       hasHighlightCards={hasHighlightCards}
+      subsetGroupName={subsetGroupName}
     >
       {hasHighlightData && selectedView === 'overview' && (
         <HighlightBar
@@ -166,7 +191,7 @@ export default function OverviewWidget({
       )}
       {selectedView === 'ranking' && selectedMonth != null && (
         <RankingWidget
-          subsetGroupId={widget.data.subset_group_id}
+          subsetGroupName={subsetGroupName}
           subsetId={widget.data.rank.subset_id}
           subsetColumn={widget.data.rank.order_by?.subset_column ?? null}
           subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}

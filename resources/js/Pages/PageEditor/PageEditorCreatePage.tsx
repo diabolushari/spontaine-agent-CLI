@@ -9,12 +9,7 @@ import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@
 import { useState, useEffect } from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/Components/ui/sheet'
 import { HelpCircle, Plus } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/Components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip'
 import DraggableWidgetSidebar from '@/Components/PageEditor/DraggableWidgetSidebar'
 import SelectList from '@/ui/form/SelectList'
 import useFetchRecord from '@/hooks/useFetchRecord'
@@ -53,9 +48,8 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
     getWidgetById,
     moveRow,
     pageWidgets,
-    setAnchorWidget
+    setAnchorWidget,
   } = usePageEditor(page ?? null, widgets, setSheetOpen)
-
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -97,7 +91,7 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
   const handlePreview = () => {
     if (!page) {
       localStorage.setItem('open_preview_after_save', 'true')
-      handleSaveDraft()
+      handlePublish()
     } else if (pageStructure.link) {
       window.open(`/${pageStructure.link}`, '_blank')
     }
@@ -107,8 +101,11 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
 
   const anchor_widget = getWidgetById(pageStructure.anchor_widget)
 
-const url = anchor_widget?.data.overview.subset_id
-    ? route('subset-field-max-value', { subsetDetail: anchor_widget?.data.overview.subset_id, field: 'month' })
+  const url = anchor_widget?.data.overview.subset_id
+    ? route('subset-field-max-value', {
+        subsetDetail: anchor_widget?.data.overview.subset_id,
+        field: 'month',
+      })
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)

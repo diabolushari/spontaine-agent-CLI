@@ -26,18 +26,16 @@ export default function OverviewChartConfigForm({
   )
 
   // Fetch and filter dimensions to exclude 'month'
-  const dimensionUrl = formData.subset_id 
-    ? `/api/subset/dimension/${formData.subset_id}` 
-    : null
-  const [rawDimensions] = useFetchList<{ 
+  const dimensionUrl = formData.subset_id ? `/api/subset/dimension/${formData.subset_id}` : null
+  const [rawDimensions] = useFetchList<{
     id: number
     subset_field_name: string
-    subset_column: string 
+    subset_column: string
   }>(dimensionUrl)
 
   const filteredDimensions = useMemo(() => {
     return rawDimensions.filter(
-      (dim) => 
+      (dim) =>
         !dim.subset_column?.toLowerCase().includes('month') &&
         !dim.subset_field_name?.toLowerCase().includes('month')
     )

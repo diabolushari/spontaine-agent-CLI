@@ -3,6 +3,9 @@ import NormalText from '@/typography/NormalText'
 import PageBuilderMonthPicker from '@/Components/PageBuilder/PageBuilderMonthPicker'
 import React from 'react'
 import Heading from '@/typography/Heading'
+import { EllipsisIcon } from 'lucide-react'
+
+import { Link } from '@inertiajs/react'
 
 interface WidgetLayoutProps {
   children: React.ReactNode
@@ -18,6 +21,7 @@ interface WidgetLayoutProps {
   hasRanking?: boolean
   hasTrend?: boolean
   hasHighlightCards?: boolean
+  subsetGroupName: string | null
 }
 
 const BASE_BUTTON_CLASSES = 'group rounded-md p-1.5 transition-colors'
@@ -41,6 +45,7 @@ export default function WidgetLayout({
   hasRanking = false,
   hasTrend = false,
   hasHighlightCards = false,
+  subsetGroupName,
 }: Readonly<WidgetLayoutProps>) {
   const handleViewChange = (view: string) => {
     if (onViewChange) {
@@ -136,13 +141,24 @@ export default function WidgetLayout({
               </svg>
             </button>
           )}
+          {subsetGroupName && (
+            <div className='mt-auto flex justify-center'>
+              <Link
+                href={`/data-explorer/${subsetGroupName}`}
+                target='_blank'
+                className='flex h-8 w-8 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+              >
+                <EllipsisIcon className='h-5 w-5' />
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Main Content */}
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='flex shrink-0 items-center justify-between px-4 py-3'>
             <div className='flex flex-col gap-2'>
-              {title && <Heading className={`subheader-1stop uppercase`}>{title}</Heading>}
+              {title && <Heading className={`subheader-1stop line-clamp-2`}>{title}</Heading>}
               {!title && (
                 <Heading className={`subheader-1stop uppercase text-gray-400`}>title</Heading>
               )}
@@ -154,7 +170,7 @@ export default function WidgetLayout({
               setSelectedMonth={setSelectedMonth}
             />
           </div>
-          <div className='flex-1 overflow-auto px-4 pb-4'>{children}</div>
+          <div className='flex flex-1 flex-col overflow-hidden px-4 pb-4'>{children}</div>
           {(description || link) && (
             <div className='border-t border-gray-100 px-4 py-3'>
               {description && (
@@ -165,7 +181,7 @@ export default function WidgetLayout({
                   href={link}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='inline-flex items-center text-xs font-medium text-gray-400 hover:text-blue-600'
+                  className='mx-2 inline-flex items-center text-xs font-medium text-gray-400 hover:text-blue-600'
                 >
                   View Details
                   <svg

@@ -5,6 +5,15 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import { useMemo } from 'react'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
+import { DotIcon, EllipsisIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { Link } from '@inertiajs/react'
+
+interface SubsetGroupDetail {
+  name: string
+  description: string
+}
 
 interface OverviewProps {
   subsetId: number
@@ -65,30 +74,31 @@ export default function OverviewWidgetContent({
   }, [measure, chartType])
 
   return (
-    <div>
+    <div className='min-h-0 w-full flex-1'>
       {chartType === 'bar' && data != null && (
-        <div>
+        <div className='h-full w-full'>
           <CustomBarChart
             data={data.data}
             dataKey={dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
-            containerClassName={'text-sm aspect-video w-full transition-all xl:w-10/12'}
+            containerClassName={'h-full w-full'}
           />
         </div>
       )}
       {chartType === 'line' && data != null && (
-        <div>
+        <div className='h-full w-full'>
           <CustomLineChart
             data={data.data}
             dataKey={dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
+            containerClassName={'h-full w-full'}
           />
         </div>
       )}
       {chartType === 'pie' && data != null && (
-        <div>
+        <div className='h-full w-full'>
           <CustomPieChart
             data={data.data}
             dataKey={fieldsToPlot[0].key}
@@ -96,6 +106,7 @@ export default function OverviewWidgetContent({
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             fontSize={'text-sm'}
+            containerClassName={'h-full w-full'}
           />
         </div>
       )}

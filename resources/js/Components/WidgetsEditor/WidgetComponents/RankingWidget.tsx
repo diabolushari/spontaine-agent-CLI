@@ -8,7 +8,7 @@ interface RankingWidgetProps {
   subsetFieldName: string | null
   selectedMonth: Date
   level: string
-  subsetGroupId: number
+  subsetGroupName: string | null
 }
 
 interface SubsetGroupDetail {
@@ -22,28 +22,11 @@ export default function RankingWidget({
   subsetFieldName,
   selectedMonth,
   level,
-  subsetGroupId,
+  subsetGroupName,
 }: Readonly<RankingWidgetProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
-
-  const [subsetGroupName, setSubsetGroupName] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (subsetGroupId) {
-      axios.get<SubsetGroupDetail>(`/api/subset-group-detail/${subsetGroupId}`)
-        .then(response => {
-          setSubsetGroupName(response.data.name)
-        })
-        .catch(error => {
-          console.error('Error fetching subset group detail:', error)
-          setSubsetGroupName(null)
-        })
-    } else {
-      setSubsetGroupName(null)
-    }
-  }, [subsetGroupId])
 
   return (
     <>

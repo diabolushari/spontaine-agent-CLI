@@ -43,7 +43,7 @@ export default function BasicSettingsSection({
         </div>
         <div className='flex flex-col'>
           <Input
-            label='Link'
+            label='View Details Link'
             value={formData.link}
             setValue={setFormValue('link')}
           />
