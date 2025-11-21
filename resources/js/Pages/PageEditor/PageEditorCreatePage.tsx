@@ -49,6 +49,7 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
     moveRow,
     pageWidgets,
     setAnchorWidget,
+    handleRowUpdate,
   } = usePageEditor(page ?? null, widgets, setSheetOpen)
 
   const sensors = useSensors(
@@ -291,6 +292,7 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
                 onLayoutClick={handleLayoutClick}
                 moveRow={moveRow}
                 selectedMonth={selectedMonth}
+                onRowUpdate={handleRowUpdate}
               />
             </div>
 

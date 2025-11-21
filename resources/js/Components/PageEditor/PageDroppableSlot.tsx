@@ -46,7 +46,10 @@ export default function PageDroppableSlot({
             widget={widget}
             source={{ rowId, position }}
           >
-            <Widget widget={widget} anchorMonth={selectedMonth} />
+            <Widget
+              widget={widget}
+              anchorMonth={selectedMonth}
+            />
           </DraggableWidgetWrapper>
         </div>
       ) : (

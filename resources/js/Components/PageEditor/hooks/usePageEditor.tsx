@@ -216,6 +216,19 @@ export function usePageEditor(
     [pageStructure.page, setFormValue]
   )
 
+  const handleRowUpdate = useCallback(
+    (rowId: number, data: { title?: string; description?: string }) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return { ...row, ...data }
+        }
+        return row
+      })
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
   const handleTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormValue('title')(e.target.value)
@@ -292,5 +305,6 @@ export function usePageEditor(
     moveRow,
     setAnchorWidget,
     pageWidgets,
+    handleRowUpdate,
   }
 }

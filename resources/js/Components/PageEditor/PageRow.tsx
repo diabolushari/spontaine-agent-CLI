@@ -9,6 +9,7 @@ interface PageRowProps {
   getWidgetById: (id: number) => Widget | undefined
   moveRow: (id: number, pos: string) => void
   selectedMonth: Date
+  onRowUpdate: (rowId: number, data: { title?: string; description?: string }) => void
 }
 
 export default function PageRow({
@@ -18,6 +19,7 @@ export default function PageRow({
   getWidgetById,
   moveRow,
   selectedMonth,
+  onRowUpdate,
 }: Readonly<PageRowProps>) {
   return (
     <div
@@ -54,6 +56,24 @@ export default function PageRow({
       >
         <XIcon className='h-4 w-4' />
       </button>
+
+      <div className='mb-3 space-y-2'>
+        <input
+          type='text'
+          placeholder='Section Title (Optional)'
+          value={row.title || ''}
+          onChange={(e) => onRowUpdate(row.id, { title: e.target.value })}
+          className='w-full border-0 border-b border-transparent bg-transparent px-0 py-1 text-lg font-semibold placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-0'
+        />
+        <textarea
+          placeholder='Add a description...'
+          value={row.description || ''}
+          onChange={(e) => onRowUpdate(row.id, { description: e.target.value })}
+          rows={1}
+          className='w-full resize-none border-0 border-b border-transparent bg-transparent px-0 py-1 text-sm text-gray-600 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-0'
+          style={{ minHeight: '2rem' }}
+        />
+      </div>
 
       <div
         className={`grid gap-4 rounded border border-gray-200 p-4 ${

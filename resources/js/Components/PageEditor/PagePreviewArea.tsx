@@ -10,6 +10,7 @@ interface PreviewAreaProps {
   onLayoutClick: (layout: string) => void
   moveRow: (id: number, pos: 'up' | 'down') => void
   selectedMonth: Date
+  onRowUpdate: (rowId: number, data: { title?: string; description?: string }) => void
 }
 
 export default function PagePreviewArea({
@@ -20,6 +21,7 @@ export default function PagePreviewArea({
   onLayoutClick,
   moveRow,
   selectedMonth,
+  onRowUpdate,
 }: Readonly<PreviewAreaProps>) {
   return (
     <>
@@ -43,6 +45,7 @@ export default function PagePreviewArea({
           getWidgetById={getWidgetById}
           moveRow={moveRow}
           selectedMonth={selectedMonth}
+          onRowUpdate={onRowUpdate}
         />
       ))}
 
