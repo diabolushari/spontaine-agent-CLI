@@ -116,16 +116,6 @@ Route::get('/', function () {
     return redirect()->route('data-detail.index');
 });
 
-// TEMP DEBUG: remove after troubleshooting
-Route::get('/debug-session', function () {
-    return response()->json([
-        'session_id' => session()->getId(),
-        'authenticated' => auth()->check(),
-        'user_id' => optional(auth()->user())->id,
-        'intended_url' => session()->get('url.intended'),
-        'all_session_keys' => array_keys(session()->all()),
-    ]);
-});
 
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
@@ -214,6 +204,9 @@ Route::get('meta-hierarchy-level/{metaHierarchyLevel}', [MetaHierarchyLevelContr
     ->name('meta-hierarchy-level.show');
 Route::get('meta-hierarchy/{metaHierarchy}/levels', [MetaHierarchyLevelController::class, 'getByHierarchy'])
     ->name('meta-hierarchy.levels');
+
+Route::resource('data-classification-property', \App\Http\Controllers\Meta\DataClassificationPropertyController::class)
+    ->parameters(['data-classification-property' => 'dataClassificationProperty']);
 
 //subject areas & data details
 Route::resource('subject-area', SubjectAreaController::class)

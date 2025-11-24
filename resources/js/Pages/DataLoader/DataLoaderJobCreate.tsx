@@ -21,6 +21,8 @@ import {
 import { daysOfWeek, monthList } from '@/libs/dates'
 import Button from '@/ui/button/Button'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import CheckBox from '@/ui/form/CheckBox'
+import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -49,6 +51,8 @@ interface FormData {
   delete_existing_data: boolean
   duplicate_identification_field: string
   predecessor_job_id: string
+  schedule_start_time?: string
+  sub_hour_interval?: number
 }
 
 const sourceTypes = [
@@ -99,6 +103,8 @@ export default function DataLoaderJobCreate({
     delete_existing_data: job?.delete_existing_data === 1,
     duplicate_identification_field: job?.duplicate_identification_field ?? '',
     predecessor_job_id: job?.predecessor_job_id?.toString() ?? '',
+    schedule_start_time: job?.schedule_start_time ?? '',
+    sub_hour_interval: job?.sub_hour_interval ?? 0,
   })
   const [dataTableDetail] = useFetchRecord<DataDetailFields>(`/data-detail/${dataDetail.id}/fields`)
 
@@ -238,24 +244,21 @@ export default function DataLoaderJobCreate({
         type: 'time',
         label: 'Time',
         setValue: setFormValue('schedule_time'),
-        hidden: formData.cron_type === 'HOURLY',
+        hidden: formData.cron_type === 'HOURLY' || formData.cron_type === 'SUB_HOUR',
       },
-      delete_existing_data: {
-        type: 'checkbox',
-        label: 'Delete Existing Data When Running A Job',
-        setValue: toggleBoolean('delete_existing_data'),
+      schedule_start_time: {
+        type: 'time',
+        label: 'Start Time',
+        setValue: setFormValue('schedule_start_time'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
       },
-      duplicate_identification_field: {
-        type: 'select',
-        list: dataTableFields,
-        dataKey: 'column',
-        displayKey: 'field',
-        label: 'Duplicate Identification Field',
-        setValue: setFormValue('duplicate_identification_field'),
-        showAllOption: true,
-        allOptionText: 'DELETE ALL DATA',
-        hidden: !formData.delete_existing_data,
+      sub_hour_interval: {
+        type: 'number',
+        label: 'Sub Hour Interval',
+        setValue: setFormValue('sub_hour_interval'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
       },
+
       predecessor_job_id: {
         type: 'select',
         list: availableJobs,
@@ -372,6 +375,28 @@ export default function DataLoaderJobCreate({
       hideSubmitButton
       customSubmitData={customFormData}
     >
+      <div>
+        <div className='flex flex-col md:col-span-2'>
+          <CheckBox
+            value={formData.delete_existing_data}
+            label='Delete Existing Data When Running A Job'
+            toggleValue={toggleBoolean('delete_existing_data')}
+          />
+        </div>
+        {formData.delete_existing_data && (
+          <div className='flex flex-col md:col-span-2'>
+            <MultiSelectDropdown
+              value={formData.duplicate_identification_field}
+              label='Duplicate Identification Fields'
+              setValue={setFormValue('duplicate_identification_field')}
+              list={dataTableFields}
+              displayKey='field'
+              dataKey='column'
+              placeholder='Select one or more fields'
+            />
+          </div>
+        )}
+      </div>
       {formData.source_type === 'api' && dataTableDetail != null && formData.api_id != '' && (
         <DataTableToJsonMapping
           dataTableDetail={dataTableDetail}
