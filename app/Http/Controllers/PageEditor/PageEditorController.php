@@ -12,9 +12,14 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class PageEditorController extends Controller
+class PageEditorController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return ['auth'];
+    }
     public function index(): Response
     {
         $pages = DashboardPage::all();
