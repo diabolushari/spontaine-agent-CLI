@@ -9,6 +9,9 @@ interface RankingWidgetProps {
   selectedMonth: Date
   level: string
   subsetGroupName: string | null
+  hierarchyId: number | null
+  dimension: string | null
+  fieldColumn: string | null
 }
 
 interface SubsetGroupDetail {
@@ -23,10 +26,15 @@ export default function RankingWidget({
   selectedMonth,
   level,
   subsetGroupName,
+  hierarchyId,
+  dimension,
+  fieldColumn,
 }: Readonly<RankingWidgetProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
+
+  console.log('dimenstion in ranked : ', dimension)
 
   return (
     <>
@@ -40,7 +48,10 @@ export default function RankingWidget({
             rankingPageUrl={`/office-rankings/${subsetGroupName}`}
             timePeriod={formattedMonth}
             timePeriodFieldName={'month'}
+            hierarchyId={hierarchyId}
             level={level}
+            dimension={dimension}
+            fieldColumn={fieldColumn}
           />
         </div>
       )}

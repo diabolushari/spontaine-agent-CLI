@@ -15,6 +15,7 @@ import { Paginator } from '@/ui/ui_interfaces'
 import { Link } from '@inertiajs/react'
 import { useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
 
 interface Props {
   subsetId: number
@@ -29,6 +30,9 @@ interface Props {
   defaultFilterValue?: string
   onFilterChange?: (value: string) => void
   level?: string
+  hierarchyId?: number
+  dimension?: string
+  fieldColumn?: string
 }
 
 const listTypes: { name: string }[] = [{ name: '3' }, { name: '5' }, { name: '10' }, { name: '20' }]
@@ -55,6 +59,9 @@ export default function RankedList({
   filterFieldName,
   onFilterChange,
   level = 'section',
+  hierarchyId,
+  dimension,
+  fieldColumn,
 }: Readonly<Props>) {
   const [pageNumber, setPageNumber] = useState(1)
   const [sortOrder, setSortOrder] = useState('desc')
@@ -88,6 +95,10 @@ export default function RankedList({
       params[filterFieldName] = filterValue
     }
 
+    if (dimension != null) {
+      params['dimension'] = dimension
+    }
+
     return route('subset.summary', {
       ...params,
     })
@@ -102,16 +113,35 @@ export default function RankedList({
     filterFieldName,
     filterValue,
     pageNumber,
+    dimension,
   ])
   const [graphValues, isLoading] = useFetchRecord<{ data: Paginator<SummaryItem> }>(fetchUrl)
 
-  console.log('fetchUrl:', fetchUrl)
-  console.log('graphValues:', graphValues)
-
   const headers = useMemo(() => {
-    const selectedLevel = levelTypes.find((value) => value.value === officeLevel)
-    return [selectedLevel?.name ?? '', dataFieldName]
-  }, [officeLevel, dataFieldName])
+    if (fieldColumn) {
+      const dimensionDisplayName = fieldColumn
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+      return [dimensionDisplayName, dataFieldName]
+    }
+
+    const firstRow = graphValues?.data.data[0]
+    if (!firstRow) {
+      return ['', dataFieldName]
+    }
+
+    const columnNames = Object.keys(firstRow).filter(
+      (key) => key !== dataField && key !== 'id' && key !== 'created_at' && key !== 'updated_at'
+    )
+    const dimensionColumn = columnNames[0] || ''
+    const dimensionDisplayName = dimensionColumn
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+
+    return [dimensionDisplayName, dataFieldName]
+  }, [graphValues?.data.data, dataFieldName, dataField, fieldColumn])
 
   return (
     <div className='relative flex w-full flex-col'>
@@ -177,7 +207,7 @@ export default function RankedList({
             </svg>
           </button>
           <button
-            className={`${sortOrder === 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
+            className={`rotate-180 ${sortOrder === 'asc' ? 'bg-1stop-highlight2' : 'cursor-pointer hover:bg-1stop-accent2'} rounded-lg p-1`}
             onClick={() => {
               setSortOrder('asc')
             }}
@@ -239,12 +269,12 @@ export default function RankedList({
           />
         </div>
         <div className='flex flex-col'>
-          <SelectList
-            list={levelTypes}
-            value={officeLevel}
+          <DynamicSelectList
+            url={`/meta-hierarchy/${hierarchyId}/levels`}
+            dataKey={'name'}
+            displayKey={'name'}
             setValue={setOfficeLevel}
-            dataKey='value'
-            displayKey='name'
+            value={officeLevel}
             style='1stop-small'
           />
         </div>
@@ -268,13 +298,25 @@ export default function RankedList({
               </TableHeader>
               <TableBody>
                 {graphValues?.data.data.map((value, index) => {
-                  const officeName = typeof value.office_name === 'string' ? value.office_name : ''
-                  const rowKey = officeName !== '' ? officeName : `row-${index}`
+                  // Extract all keys except the measure field
+                  const columnNames = Object.keys(value).filter(
+                    (key) =>
+                      key !== dataField &&
+                      key !== 'id' &&
+                      key !== 'created_at' &&
+                      key !== 'updated_at'
+                  )
+
+                  // Use the first available column (dimension/hierarchy column)
+                  const dimensionKey = fieldColumn || columnNames[0] || 'office_name'
+                  const displayValue =
+                    typeof value[dimensionKey] === 'string' ? value[dimensionKey] : ''
+                  const rowKey = displayValue !== '' ? displayValue : `row-${index}`
                   const columnValue = value[dataField] ?? null
 
                   return (
                     <TableRow key={rowKey}>
-                      <TableCell>{officeName}</TableCell>
+                      <TableCell>{displayValue}</TableCell>
                       <TableCell>{formatNumber(columnValue as number)}</TableCell>
                     </TableRow>
                   )
@@ -292,16 +334,18 @@ export default function RankedList({
               )}
             </div>
             <div className='flex flex-shrink-0 justify-end pt-4'>
-              <Link
-                href={rankingPageUrl}
-                className='small-2stop'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <div className='bg-2stop-highlight2 rounded-md px-1 text-xl hover:opacity-70'>
-                  <i className='las la-expand-arrows-alt'></i>
-                </div>
-              </Link>
+              {(fieldColumn === 'office_code' || fieldColumn === 'office_name') && (
+                <Link
+                  href={rankingPageUrl}
+                  className='small-2stop'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  <div className='bg-2stop-highlight2 rounded-md px-1 text-xl hover:opacity-70'>
+                    <i className='las la-expand-arrows-alt'></i>
+                  </div>
+                </Link>
+              )}
             </div>
           </div>
         </>

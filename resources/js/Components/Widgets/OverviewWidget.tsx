@@ -205,6 +205,9 @@ export default function OverviewWidget({
           subsetFieldName={widget.data.rank.order_by?.subset_field_name ?? null}
           selectedMonth={selectedMonth}
           level={widget.data.rank.level ?? null}
+          hierarchyId={widget.data.rank.hierarchy_id}
+          dimension={widget.data.rank.dimension_column}
+          fieldColumn={widget.data.rank.field_column}
         />
       )}
     </WidgetLayout>

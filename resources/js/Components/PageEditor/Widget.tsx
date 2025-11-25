@@ -124,6 +124,9 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           subsetFieldName={data.rank.order_by?.subset_field_name ?? null}
           selectedMonth={selectedMonth}
           level={data.rank.level ?? null}
+          hierarchyId={widget.data.rank.hierarchy_id}
+          dimension={widget.data.rank.dimension_column}
+          fieldColumn={widget.data.rank.field_column}
         />
       )}
 

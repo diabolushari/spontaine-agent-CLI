@@ -205,6 +205,9 @@ Route::get('meta-hierarchy-level/{metaHierarchyLevel}', [MetaHierarchyLevelContr
 Route::get('meta-hierarchy/{metaHierarchy}/levels', [MetaHierarchyLevelController::class, 'getByHierarchy'])
     ->name('meta-hierarchy.levels');
 
+Route::get('meta-hierarchy-data/{metaHierarchy}', \App\Http\Controllers\Meta\MetaHierarchyDataController::class)
+    ->name('meta-hierarchy-data.show');
+
 Route::resource('data-classification-property', \App\Http\Controllers\Meta\DataClassificationPropertyController::class)
     ->parameters(['data-classification-property' => 'dataClassificationProperty']);
 

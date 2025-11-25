@@ -37,6 +37,8 @@ export interface WidgetFormData {
   } | null
   rank_level: string | null
   rank_hierarchy_id: number | null
+  rank_dimension_column: string | null
+  rank_field_column: string | null
 }
 
 interface Props {
@@ -90,6 +92,8 @@ function parseFormDataToWidget(
         },
         level: formData.rank_level,
         hierarchy_id: formData.rank_hierarchy_id,
+        dimension_column: formData.rank_dimension_column,
+        field_column: formData.rank_field_column,
       },
     },
   }
@@ -139,6 +143,8 @@ export default function OverviewWidgetEditor({
     rank_ranking_field: widget?.data?.rank?.order_by ?? null,
     rank_level: widget?.data?.rank?.level ?? null,
     rank_hierarchy_id: widget?.data?.rank?.hierarchy_id ?? null,
+    rank_dimension_column: widget?.data?.rank?.dimension_column ?? null,
+    rank_field_column: widget?.data?.rank?.field_column ?? null,
   })
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
     widget?.data?.highlight_cards ?? []

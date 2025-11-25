@@ -540,6 +540,8 @@ export interface Widget {
       order_by: SelectedMeasure | null
       level: string
       hierarchy_id: number | null
+      dimension_column: string | null
+      field_column: string | null
     }
   }
 }
