@@ -1,14 +1,16 @@
 import { BreadcrumbItemLink } from '@/Components/BreadCrumbs'
-import JsonToDataTableMapping from '@/Components/DataLoader/JsonToDataTableMapping'
-import { JSONDefinition } from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
-import { useJsonFieldMapping } from '@/Components/DataLoader/useJsonFieldMapping'
+import DataTableToJsonMapping from '@/Components/DataLoader/DataTableToJsonMapping'
+import DataTableToSqlMapping from '@/Components/DataLoader/DataTableToSqlMapping'
+import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import { FormItem } from '@/FormBuilder/FormBuilder'
 import FormPage from '@/FormBuilder/FormPage'
 import useCustomForm from '@/hooks/useCustomForm'
+import useFetchRecord from '@/hooks/useFetchRecord'
 import {
   cronTypes,
   DAILY_CRON,
   DataDetail,
+  DataDetailFields,
   DataLoaderAPI,
   DataLoaderConnection,
   DataLoaderJob,
@@ -18,7 +20,9 @@ import {
 } from '@/interfaces/data_interfaces'
 import { daysOfWeek, monthList } from '@/libs/dates'
 import Button from '@/ui/button/Button'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import CheckBox from '@/ui/form/CheckBox'
+import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -26,12 +30,8 @@ interface Props {
   connectionId?: number | null
   dataDetail: DataDetail
   dataDetails: DataDetail[]
-  apis: Pick<DataLoaderAPI, 'id' | 'name' | 'response_structure'>[]
+  apis: Pick<DataLoaderAPI, 'id' | 'name' | 'response_structure' | 'body'>[]
 }
-
-type JSONValue = string | number | boolean | null | JSONArray | JSONObject
-type JSONArray = JSONValue[]
-type JSONObject = { [key: string]: JSONValue }
 
 interface FormData {
   name: string
@@ -51,6 +51,8 @@ interface FormData {
   delete_existing_data: boolean
   duplicate_identification_field: string
   predecessor_job_id: string
+  schedule_start_time?: string
+  sub_hour_interval?: number
 }
 
 const sourceTypes = [
@@ -64,19 +66,16 @@ const sourceTypes = [
   },
 ]
 
-const getPrimaryField = (structure: JSONDefinition): JSONDefinition | null => {
-  if (structure.primary_field) {
-    return structure
-  }
-  let primaryFieldInChild = null
-  structure.children.forEach((child) => {
-    const primaryField = getPrimaryField(child)
-    if (primaryField != null) {
-      primaryFieldInChild = primaryField
-    }
-  })
-  return primaryFieldInChild
-}
+const breadCrumb: BreadcrumbItemLink[] = [
+  {
+    item: 'Loader jobs',
+    link: '/loader-jobs',
+  },
+  {
+    item: 'Loader job create',
+    link: '',
+  },
+]
 
 export default function DataLoaderJobCreate({
   job,
@@ -104,16 +103,29 @@ export default function DataLoaderJobCreate({
     delete_existing_data: job?.delete_existing_data === 1,
     duplicate_identification_field: job?.duplicate_identification_field ?? '',
     predecessor_job_id: job?.predecessor_job_id?.toString() ?? '',
+    schedule_start_time: job?.schedule_start_time ?? '',
+    sub_hour_interval: job?.sub_hour_interval ?? 0,
   })
+  const [dataTableDetail] = useFetchRecord<DataDetailFields>(`/data-detail/${dataDetail.id}/fields`)
 
-  const { fieldMapping, changeJsonDefinition, changeDataTableColumn } = useJsonFieldMapping()
+  const [fieldMapping, setFieldMapping] = useState<DataTableFieldMapping[]>([])
+
+  useEffect(() => {
+    if (job != null && job.source_type === 'sql' && job.field_mapping != null) {
+      setFieldMapping(job.field_mapping)
+    }
+  }, [job])
+
+  const handleMappingChange = useCallback((mappings: DataTableFieldMapping[]) => {
+    setFieldMapping(mappings)
+  }, [])
 
   const availableJobs = useMemo(() => {
     const jobs: { id: number; name: string }[] = []
 
     dataDetails.forEach((dataDetail) => {
       dataDetail.jobs?.forEach((job) => {
-        if (job == null || job.id == null || job.name == null) {
+        if (job?.id == null || job?.name == null) {
           return
         }
         jobs.push({
@@ -232,24 +244,21 @@ export default function DataLoaderJobCreate({
         type: 'time',
         label: 'Time',
         setValue: setFormValue('schedule_time'),
-        hidden: formData.cron_type === 'HOURLY',
+        hidden: formData.cron_type === 'HOURLY' || formData.cron_type === 'SUB_HOUR',
       },
-      delete_existing_data: {
-        type: 'checkbox',
-        label: 'Delete Existing Data When Running A Job',
-        setValue: toggleBoolean('delete_existing_data'),
+      schedule_start_time: {
+        type: 'time',
+        label: 'Start Time',
+        setValue: setFormValue('schedule_start_time'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
       },
-      duplicate_identification_field: {
-        type: 'select',
-        list: dataTableFields,
-        dataKey: 'column',
-        displayKey: 'field',
-        label: 'Duplicate Identification Field',
-        setValue: setFormValue('duplicate_identification_field'),
-        showAllOption: true,
-        allOptionText: 'DELETE ALL DATA',
-        hidden: !formData.delete_existing_data,
+      sub_hour_interval: {
+        type: 'number',
+        label: 'Sub Hour Interval',
+        setValue: setFormValue('sub_hour_interval'),
+        hidden: formData.cron_type !== 'SUB_HOUR',
       },
+
       predecessor_job_id: {
         type: 'select',
         list: availableJobs,
@@ -268,10 +277,12 @@ export default function DataLoaderJobCreate({
           setFormValue('api_id')('')
           setFormValue('connection_id')('')
           setFormValue('query_id')('')
+          setFieldMapping([])
         },
         list: sourceTypes,
         displayKey: 'label',
         dataKey: 'value',
+        disabled: job != null,
       },
       api_id: {
         type: 'select',
@@ -284,6 +295,7 @@ export default function DataLoaderJobCreate({
         dataKey: 'id',
         allOptionText: 'Select an API',
         hidden: formData.source_type !== 'api',
+        disabled: job != null,
       },
       connection_id: {
         type: 'select',
@@ -297,6 +309,7 @@ export default function DataLoaderJobCreate({
         dataKey: 'id',
         allOptionText: 'Select a connection',
         hidden: formData.source_type === 'api',
+        disabled: job != null,
       },
       query_id: {
         type: 'dynamicSelect',
@@ -307,6 +320,7 @@ export default function DataLoaderJobCreate({
         dataKey: 'id',
         allOptionText: 'Select a query',
         hidden: formData.source_type !== 'sql',
+        disabled: job != null,
       },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [
@@ -320,6 +334,7 @@ export default function DataLoaderJobCreate({
     formData.delete_existing_data,
     formData.source_type,
     apis,
+    job,
   ])
 
   const backUrl = useMemo(() => {
@@ -338,45 +353,12 @@ export default function DataLoaderJobCreate({
         })
   }, [dataDetail, job])
 
-  const breadCrumb: BreadcrumbItemLink[] = [
-    {
-      item: 'Loader jobs',
-      link: '/loader-jobs',
-    },
-    {
-      item: 'Loader job create',
-      link: '',
-    },
-  ]
-
-  const primaryField = useMemo(() => {
-    if (formData.api_id == '') {
-      return null
-    }
-    const selectedApi = apis.find((api) => api.id.toString() === formData.api_id)
-    if (selectedApi == null || selectedApi.response_structure == null) {
-      return null
-    }
-    const responseStructure = selectedApi.response_structure
-    return getPrimaryField(responseStructure.definition)
-  }, [formData.api_id, apis])
-
-  useEffect(() => {
-    if (primaryField != null) {
-      changeJsonDefinition(primaryField)
-    }
-  }, [primaryField, changeJsonDefinition])
-
   const customFormData = useMemo(() => {
     return {
       ...formData,
       field_mapping: fieldMapping ?? [],
     }
   }, [formData, fieldMapping])
-
-  useEffect(() => {
-    console.log(fieldMapping)
-  }, [fieldMapping])
 
   return (
     <FormPage
@@ -393,16 +375,46 @@ export default function DataLoaderJobCreate({
       hideSubmitButton
       customSubmitData={customFormData}
     >
-      {primaryField != null && (
-        <JsonToDataTableMapping
-          dataDetailId={dataDetail.id}
-          fieldMapping={fieldMapping}
-          changeDataTableColumn={changeDataTableColumn}
+      <div>
+        <div className='flex flex-col md:col-span-2'>
+          <CheckBox
+            value={formData.delete_existing_data}
+            label='Delete Existing Data When Running A Job'
+            toggleValue={toggleBoolean('delete_existing_data')}
+          />
+        </div>
+        {formData.delete_existing_data && (
+          <div className='flex flex-col md:col-span-2'>
+            <MultiSelectDropdown
+              value={formData.duplicate_identification_field}
+              label='Duplicate Identification Fields'
+              setValue={setFormValue('duplicate_identification_field')}
+              list={dataTableFields}
+              displayKey='field'
+              dataKey='column'
+              placeholder='Select one or more fields'
+            />
+          </div>
+        )}
+      </div>
+      {formData.source_type === 'api' && dataTableDetail != null && formData.api_id != '' && (
+        <DataTableToJsonMapping
+          dataTableDetail={dataTableDetail}
+          apiId={formData.api_id}
+          onMappingChange={handleMappingChange}
+          job={job}
         />
       )}
-
+      {formData.source_type === 'sql' && fieldMapping.length > 0 && (
+        <DataTableToSqlMapping fieldMapping={fieldMapping} />
+      )}
+      {formData.source_type === 'sql' && fieldMapping.length === 0 && (
+        <div className='flex flex-col gap-2'>
+          <p>DataTable fields are not mapped to sql output.</p>
+        </div>
+      )}
       <div className='flex flex-col gap-2'>
-        <Button label='Create Job' />
+        <Button label={job == null ? 'Create Job' : 'Update Job'} />
       </div>
     </FormPage>
   )

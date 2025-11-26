@@ -1,7 +1,32 @@
 <?php
 
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigLayoutUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartDeleteController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewChartUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableDeleteController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewTableUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigOverviewUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigRankingUpdateController;
+use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigTrendUpdateController;
+use App\Http\Controllers\Blocks\BlocksController;
+use App\Http\Controllers\Blocks\BlocksUpdateConfigController;
+use App\Http\Controllers\Blocks\BlocksUpdateDimensionController;
+use App\Http\Controllers\Blocks\DataExplorerCard\DataExplorerCardUpdateController;
+use App\Http\Controllers\ChartData\DataDetailDateController;
+use App\Http\Controllers\ChartData\DataDetailListController;
+use App\Http\Controllers\ChartData\DataDetailSubsetGroupController;
+use App\Http\Controllers\ChartData\SubsetGroupDetailController;
+use App\Http\Controllers\ChartData\DataExplorerDataController;
+use App\Http\Controllers\ChartData\SubsetDimensionFieldItemController;
+use App\Http\Controllers\ChartData\SubsetDimensionFieldsController;
+use App\Http\Controllers\ChartData\SubsetGroupItemsController;
+use App\Http\Controllers\ChartData\SubsetGroupListController;
+use App\Http\Controllers\ChartData\SubsetGroupNameController;
+use App\Http\Controllers\ChartData\SubsetMeasuresController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
+use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
 use App\Http\Controllers\DataDetail\DataTableExcelUploadController;
@@ -14,7 +39,10 @@ use App\Http\Controllers\DataLoader\DataLoaderConnectionController;
 use App\Http\Controllers\DataLoader\DataLoaderJobController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryController;
 use App\Http\Controllers\DataLoader\DataLoaderQueryDataController;
+use App\Http\Controllers\DataLoader\LoaderAPIRecordController;
 use App\Http\Controllers\DataLoader\QueryListController;
+use App\Http\Controllers\DataLoader\StoreLoaderQueryWithConnectionController;
+use App\Http\Controllers\DataLoader\TestDataLoaderAPIController;
 use App\Http\Controllers\DistributionHierarchy\OfficeListController;
 use App\Http\Controllers\DistributionHierarchy\OfficeSearchController;
 use App\Http\Controllers\FinancialController;
@@ -29,6 +57,7 @@ use App\Http\Controllers\Meta\MetaGroupDeleteItemController;
 use App\Http\Controllers\Meta\MetaHierarchyAddItemController;
 use App\Http\Controllers\Meta\MetaHierarchyController;
 use App\Http\Controllers\Meta\MetaHierarchyDeleteItemController;
+use App\Http\Controllers\Meta\MetaHierarchyLevelController;
 use App\Http\Controllers\Meta\MetaHierarchySearchController;
 use App\Http\Controllers\Meta\MetaStructureController;
 use App\Http\Controllers\Meta\MetaStructureSearchController;
@@ -38,8 +67,12 @@ use App\Http\Controllers\NavController\NavEditorController;
 use App\Http\Controllers\NavController\NavGroupController;
 use App\Http\Controllers\NavController\NavItemController;
 use App\Http\Controllers\OperationsController;
+use App\Http\Controllers\PageBuilder\PageBuilderController;
+use App\Http\Controllers\PageEditor\CustomPageController;
+use App\Http\Controllers\PageEditor\PageEditorController;
 use App\Http\Controllers\ReferenceData\ReferenceDataAPIController;
 use App\Http\Controllers\ReferenceData\ReferenceDataController;
+use App\Http\Controllers\SampleChart\ChartController;
 use App\Http\Controllers\ServiceDeliveryController;
 use App\Http\Controllers\StaticListController;
 use App\Http\Controllers\SubjectArea\SubjectAreaController;
@@ -66,17 +99,78 @@ use App\Http\Controllers\SubsetDocumentation\SubsetDocumentationController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupController;
 use App\Http\Controllers\SubsetGroup\SubsetGroupItemController;
 use App\Http\Controllers\TabController;
+use App\Http\Controllers\Utils\LoaderAPIListController;
+use App\Http\Controllers\Utils\LoaderConnectionListController;
+use App\Http\Controllers\Utils\LoaderQueryListController;
+use App\Http\Controllers\Utils\StoreLoaderAPIController;
+use App\Http\Controllers\Utils\SubsetHavingDimensionMeasureController;
+use App\Http\Controllers\Utils\SubsetMaxValueController;
+use App\Http\Controllers\WidgetsEditor\WidgetCollectionController;
+use App\Http\Controllers\WidgetsEditor\WidgetSearchController;
+use App\Http\Controllers\WidgetsEditor\WidgetsEditorController;
 use App\Models\DataLoader\DataLoaderJob;
 use App\Services\DataLoader\Query\RunScheduledJob;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    return redirect()->route('data-detail.index');
 });
+
 
 Route::get('/dashboard', function () {
     return redirect()->route('data-detail.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+// Page building
+Route::resource('page-builder', PageBuilderController::class);
+Route::resource('blocks', BlocksController::class);
+Route::put('builder/dimension/update/{id}', BlocksUpdateDimensionController::class)
+    ->name('dimension.update');
+
+// page block urls
+Route::put('builder/config/update/{id}', BlocksUpdateConfigController::class)
+    ->name('config.update');
+Route::put('block/config/general/update/{id}', BlocksConfigGeneralUpdateController::class)
+    ->name('config.general.update');
+Route::put('block/config/trend/update/{id}', BlocksConfigTrendUpdateController::class)
+    ->name('config.trend.update');
+Route::put('block/config/ranking/update/{id}', BlocksConfigRankingUpdateController::class)
+    ->name('config.ranking.update');
+Route::put('block/config/overview/update/{id}', BlocksConfigOverviewUpdateController::class)
+    ->name('config.overview.update');
+Route::put('block/config/overview/chart/update/{id}', BlocksConfigOverviewChartUpdateController::class)
+    ->name('config.overview.chart.update');
+Route::put('block/config/overview/table/update/{id}', BlocksConfigOverviewTableUpdateController::class)->name('config.overview.table.update');
+Route::delete('block/config/overview/table/update/{id}/{blockId}', BlocksConfigOverviewTableDeleteController::class)->name('config.overview.table.destroy');
+Route::delete('block/config/overview/chart/update/{blockId}', BlocksConfigOverviewChartDeleteController::class)->name('config.overview.chart.destroy');
+Route::put('block/config/data-explorer/update/{id}', DataExplorerCardUpdateController::class)->name('config.data-explorer.update');
+Route::put('block/config/layout/update/{id}', BlocksConfigLayoutUpdateController::class)->name('config.layout.update');
+
+//chart
+
+Route::get('/sample-line-chart', [ChartController::class, 'showLineChart'])->name('charts.line');
+
+//api for subset, data table
+Route::get('/api/data-detail', DataDetailListController::class);
+Route::get('/api/subset/{subsetId}', SubsetMeasuresController::class);
+Route::get('/api/subset-group', SubsetGroupListController::class);
+Route::get('/api/subset-group/{subsetGroupId}', SubsetGroupItemsController::class);
+Route::get('/api/subset-group-detail/{subsetGroupId}', SubsetGroupDetailController::class);
+Route::get('/api/subset-groups/subset-having-dimension-measure/{group}', SubsetHavingDimensionMeasureController::class)
+    ->name('subset-having-dimension-measure');
+Route::get('/api/data-detail/date/{dataDetailId}', DataDetailDateController::class)
+    ->name('data-detail.date');
+Route::get('api/subset/dimension/{subsetId}', SubsetDimensionFieldsController::class)
+    ->name('subset.dimension.fields');
+Route::get('/subset-group/{id}', SubsetGroupNameController::class);
+Route::get('/api/subset/dimension/fields/{subsetColumn}/{subsetId}/', SubsetDimensionFieldItemController::class);
+Route::get('/api/data-explorer/{subsetGroup}', DataExplorerDataController::class)
+    ->name('data-explorer');
+Route::get('/api/data-detail/subset-group/{dataDetailId}', DataDetailSubsetGroupController::class);
 
 //reference data
 Route::resource('reference-data', ReferenceDataController::class);
@@ -110,6 +204,16 @@ Route::delete('meta-group-delete-item/{id}', MetaGroupDeleteItemController::clas
     ->name('meta-group-delete-item');
 Route::delete('meta-hierarchy-delete-item/{metaHierarchyItem}', MetaHierarchyDeleteItemController::class)
     ->name('meta-hierarchy-delete-item');
+Route::get('meta-hierarchy-level/{metaHierarchyLevel}', [MetaHierarchyLevelController::class, 'show'])
+    ->name('meta-hierarchy-level.show');
+Route::get('meta-hierarchy/{metaHierarchy}/levels', [MetaHierarchyLevelController::class, 'getByHierarchy'])
+    ->name('meta-hierarchy.levels');
+
+Route::get('meta-hierarchy-data/{metaHierarchy}', \App\Http\Controllers\Meta\MetaHierarchyDataController::class)
+    ->name('meta-hierarchy-data.show');
+
+Route::resource('data-classification-property', \App\Http\Controllers\Meta\DataClassificationPropertyController::class)
+    ->parameters(['data-classification-property' => 'dataClassificationProperty']);
 
 //subject areas & data details
 Route::resource('subject-area', SubjectAreaController::class)
@@ -227,15 +331,20 @@ Route::get('subset-documentation', SubsetDocumentationController::class)
 Route::resource('loader-apis', DataLoaderAPIController::class)
     ->parameters(['loader-apis' => 'dataLoaderAPI']);
 
-Route::get('loader-query-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
-    ->name('loader-query-api-data');
+Route::get('loader-json-api-data/{loaderAPI}', DataLoaderAPIDataController::class)
+    ->name('loader-json-api-data');
+
+Route::post('get-api-response-structure', TestDataLoaderAPIController::class)
+    ->name('get-api-response-structure');
+
+Route::get('loader-api-record/{loaderAPI}', LoaderAPIRecordController::class)
+    ->name('loader-api-record');
 
 //autocomplete apis
 Route::get('data-detail-search', DataDetailSearchController::class)
     ->name('data-detail.search');
 
 Route::get('test/{loaderJob}', function (DataLoaderJob $loaderJob, RunScheduledJob $runScheduledJob) {
-
     $loaderJob
         ->load(
             'loaderQuery.loaderConnection',
@@ -283,3 +392,39 @@ Route::resource('nav-item', NavItemController::class)->only([
 Route::get('nav-data', NavController::class);
 
 require __DIR__.'/auth.php';
+Route::get('/data-detail-column-search/{dataDetail}', DataDetailColumnSearchController::class)
+    ->name('data-detail-column-search');
+
+Route::resource('widget-editor', WidgetsEditorController::class)
+    ->parameters(['widget-editor' => 'widget']);
+Route::resource('widget-collection', WidgetCollectionController::class)
+    ->parameters(['widget-collection' => 'widgetCollection']);
+Route::get('page-editor/widget/{widget}', [PageEditorController::class, 'getWidget'])->name('page-editor.get-widget');
+Route::post('page-editor/preview', [PageEditorController::class, 'storePreview'])->name('page-editor.preview.store');
+Route::get('page-editor/preview/{key}', [CustomPageController::class, 'preview'])->name('page-editor.preview.show');
+Route::resource('page-editor', PageEditorController::class);
+
+Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
+
+//Util APIS
+Route::get('loader-apis-list', LoaderAPIListController::class)
+    ->name('loader-apis-list');
+
+Route::get('loader-queries-list', LoaderQueryListController::class)
+    ->name('loader-queries-list');
+
+Route::get('loader-connections-list', LoaderConnectionListController::class)
+    ->name('loader-connections-list');
+
+Route::post('api/store-loader-query', StoreLoaderQueryWithConnectionController::class)
+    ->name('api-store-loader-query');
+
+Route::post('api/store-loader-json-api', StoreLoaderAPIController::class)
+    ->name('api-store-loader-json-api');
+
+Route::get('subset-field-max-value/{subsetDetail}', SubsetMaxValueController::class)
+    ->name('subset-field-max-value');
+
+require __DIR__ . '/auth.php';
+
+Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');

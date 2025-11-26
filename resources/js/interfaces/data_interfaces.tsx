@@ -1,5 +1,6 @@
 import { JSONStructureDefinition } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
-import { JsonFieldMapping } from '@/Components/DataLoader/useJsonFieldMapping'
+import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
+import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
 import { MetaData, MetaHierarchy, MetaStructure } from '@/interfaces/meta_interfaces'
 
 export interface Model {
@@ -53,9 +54,17 @@ export interface DataDetail extends Model {
   dimension_fields?: Partial<TableDimensionField>[]
   measure_fields?: Partial<TableMeasureField>[]
   relation_fields?: Partial<DataTableRelation>[]
-  text_fields?: Partial<DataTableText>[]
+  text_fields?: Partial<TableTextField>[]
   jobs?: Partial<DataLoaderJob>[]
   is_active: 0 | 1
+}
+
+export interface DataDetailFields {
+  dates: TableDateField[]
+  dimensions: TableDimensionField[]
+  measures: TableMeasureField[]
+  texts: TableTextField[]
+  relations: DataDetail[]
 }
 
 export interface TableDateField extends Model {
@@ -80,6 +89,23 @@ export interface TableMeasureField extends Model {
   unit_field_name: string | null
 }
 
+/**
+ * The data structure for a subset detail, which is used to configure the output of a subset.
+ *
+ * @property {string} name - The name of the subset detail.
+ * @property {string | null} description - The description of the subset detail.
+ * @property {0 | 1} group_data - Indicates whether the subset detail should group data.
+ * @property {number} data_detail_id - The ID of the data detail that the subset detail belongs to.
+ * @property {Partial<SubsetDateField>[]} [dates] - The date fields of the subset detail.
+ * @property {Partial<SubsetDimensionField>[]} [dimensions] - The dimension fields of the subset detail.
+ * @property {Partial<SubsetMeasureField>[]} [measures] - The measure fields of the subset detail.
+ * @property {Partial<DataDetail> | null} [data_detail] - The data detail that the subset detail belongs to.
+ * @property {number | null} max_rows_to_fetch - The maximum number of rows to fetch for the subset detail.
+ * @property {0 | 1} use_for_training_ai - Indicates whether the subset detail should be used for training AI.
+ * @property {string | null} proactive_insight_instructions - The proactive insights instructions for the subset detail.
+ * @property {string | null} visualization_instructions - The visualization instructions for the subset detail.
+ * @property {string | null} type - The type of the subset detail.
+ */
 export interface SubsetDetail extends Model {
   name: string
   description: string | null
@@ -164,6 +190,7 @@ export interface DataLoaderQuery extends Model {
   loader_connection?: Partial<DataLoaderConnection> | null
 }
 
+export const SUB_HOUR_CRON = 'SUB_HOUR'
 export const HOURLY_CRON = 'HOURLY'
 export const DAILY_CRON = 'DAILY'
 export const WEEKLY_CRON = 'WEEKLY'
@@ -171,6 +198,7 @@ export const MONTHLY_CRON = 'MONTHLY'
 export const YEARLY_CRON = 'YEARLY'
 
 export type CronType =
+  | typeof SUB_HOUR_CRON
   | typeof HOURLY_CRON
   | typeof DAILY_CRON
   | typeof WEEKLY_CRON
@@ -178,6 +206,10 @@ export type CronType =
   | typeof YEARLY_CRON
 
 export const cronTypes = [
+  {
+    value: SUB_HOUR_CRON,
+    label: 'Sub-Hourly',
+  },
   {
     value: HOURLY_CRON,
     label: 'Hourly',
@@ -223,7 +255,9 @@ export interface DataLoaderJob extends Model {
   statuses?: JobStatuses[]
   latest?: JobStatuses
   last_status?: Partial<JobStatus> | null
-  field_mapping?: Partial<JsonFieldMapping>[] | null
+  field_mapping?: DataTableFieldMapping[] | null
+  schedule_start_time?: string | null
+  sub_hour_interval?: number | null
 }
 
 export interface JobStatus extends Model {
@@ -329,11 +363,117 @@ export interface DataTableRelation extends Model {
   related_table?: Partial<DataDetail> | null
 }
 
-export interface DataTableText extends Model {
+export interface TableTextField extends Model {
   data_detail_id: number
   column: string
   field_name: string
   is_long_text: boolean
+}
+
+export interface Page extends Model {
+  id: number
+  title: string
+  description: string
+  url: string
+  published_at: string
+}
+
+export interface BlockDimension {
+  padding_top: string
+  padding_bottom: string
+  margin_top: string
+  margin_bottom: string
+  mobile_width: string
+  tablet_width: string
+  laptop_width: string
+  desktop_width: string
+}
+
+export interface Ranking {
+  subset_id: number
+  title: string
+  data_field: {
+    label: string
+    value: string
+    show_label: boolean
+  }
+}
+
+export interface Axis {
+  label: string
+  value: string
+  show_label: boolean
+}
+
+export interface Trend {
+  subset_id: number
+  title: string
+  data_field: {
+    x_axis: Axis
+    y_axis: Axis
+  }
+  tooltip_field: {
+    label: string
+    unit: string
+    show_label: boolean
+  }
+  color: string
+  chart_type: 'area' | 'bar'
+}
+
+export interface Overview {
+  title: string
+  description: string
+  card_type: 'chart_and_table' | 'chart_only' | 'table_only'
+  overview_chart?: OverviewChart
+  overview_table?: OverviewTable[]
+}
+
+export interface OverviewChart {
+  title: string
+  subset_id: string
+  chart_type: string
+  x_axis: string
+  y_axis: string[]
+
+  [key: string]: any
+}
+
+export interface OverviewTable {
+  title: string
+  subset_id: string | null
+  measure_field_dimension?: string
+  measure_field: string
+  col_span?: boolean
+  filters?: Filter[]
+
+  [key: string]: any
+}
+
+export interface Config {
+  title: string
+  data_table_id: string
+  subtitle: string
+  default_date?: string
+  default_view?: string
+  subset_group_id: number
+  trend_selected: boolean
+  ranking_selected: boolean
+  overview_selected: boolean
+  explore_button_group?: string
+  data_explore_selected?: boolean
+  trend: Trend
+  ranking: Ranking
+  overview: Overview
+}
+
+export interface Block extends Model {
+  id: number
+  page_id: number
+  name: string
+  position: number
+  dimensions: BlockDimension
+  data: Config
 }
 
 export interface OfficeCoordinates {
@@ -344,4 +484,99 @@ export interface OfficeCoordinates {
   office_name: string
   latitude: number
   longitude: number
+}
+
+export interface Filter {
+  readonly dimension: string
+  readonly operator: string
+  readonly value: string | number
+}
+
+export interface Dimension {
+  id: number
+  subset_field_name: string
+  subset_column: string
+}
+
+export interface HighlightCardData {
+  title: string
+  subtitle: string
+  subset_id: number | null
+  measure: SelectedMeasure
+}
+
+export interface Widget {
+  id?: number
+  title: string
+  subtitle: string
+  type: string
+  description?: string
+  link?: string
+  collection_id: number
+  data: {
+    data_table_id: number
+    subset_group_id: number
+    overview: {
+      chart_type: string
+      measures: {
+        subset_field_name: string
+        subset_column: string
+        unit?: string
+      }[]
+      dimension: string
+      color_palette: string
+      subset_id: number | null
+    }
+    highlight_cards: HighlightCardData[]
+    trend: {
+      subset_id: number | null
+      chart_type: 'area' | 'bar'
+      measure: SelectedMeasure | null
+      dimension: string
+      color: string
+    }
+    rank: {
+      subset_id: number | null
+      order_by: SelectedMeasure | null
+      level: string
+      hierarchy_id: number | null
+      dimension_column: string | null
+      field_column: string | null
+    }
+  }
+}
+
+export interface WidgetCollection {
+  id: number
+  name: string
+  description: string | null
+  created_at: string
+  updated_at: string
+  widget_count: number
+  last_updated: string
+  widgets?: Widget[]
+}
+
+export interface WidgetPosition {
+  position: number
+  widgetId: number | null
+  widget?: Widget | null
+}
+
+export interface PageSection {
+  id: number
+  type: 'singleCol' | 'doubleCol' | 'tripleCol'
+  title: string | null
+  widgets: WidgetPosition[]
+  description: string | null
+}
+
+export interface DashboardPage extends Model {
+  id: number
+  title: string
+  description: string
+  link: string
+  page: PageSection[]
+  published: boolean
+  anchor_widget: number | null
 }
