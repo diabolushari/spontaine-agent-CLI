@@ -221,7 +221,9 @@ export function AppSidebar(props: AppSidebarProps) {
                         <>
                           <button
                             className='flex-1 text-left'
-                            onClick={(e) => handleLinkClick(e, group.group_url)}
+                            onClick={(e) => {
+                              currentMenu === 'dashboard' && handleLinkClick(e, group.group_url)
+                            }}
                           >
                             {group.group_label}
                           </button>

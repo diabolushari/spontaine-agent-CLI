@@ -197,6 +197,20 @@ const manageMenuData: NavGroup[] = [
         item_pos: 1,
         item_icon: 'Settings',
       },
+      {
+        id: 4003,
+        item_url: '/widget-collection',
+        item_label: 'Widget Editor',
+        item_icon: 'Settings',
+        item_pos: 1,
+      },
+      {
+        id: 4004,
+        item_url: '/page-editor',
+        item_label: 'Page Editor',
+        item_icon: 'Settings',
+        item_pos: 1,
+      },
     ],
   },
 ]

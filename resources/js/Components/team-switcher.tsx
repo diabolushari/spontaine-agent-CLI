@@ -42,6 +42,10 @@ export function TeamSwitcher({ onMenuChange }: TeamSwitcherProps) {
     // Store the sidebar state in localStorage
     localStorage.setItem('sidebarState', 'expanded')
 
+    if (menu.value === 'dashboard') {
+      router.visit(route('dashboard.default-page'))
+      return
+    }
     // Navigate after a small delay to ensure sidebar state is saved
     if (menu.url) {
       setTimeout(() => {

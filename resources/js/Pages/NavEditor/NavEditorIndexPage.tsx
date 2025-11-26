@@ -1,12 +1,13 @@
 // src/Pages/Admin/NavEditorIndexPage.tsx
 
 import React, { useEffect, useState } from 'react'
-import { AlertCircle, Pencil, Plus, Trash2 } from 'lucide-react'
+import { AlertCircle, Pencil, Plus, Save, Trash2 } from 'lucide-react'
 
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import Card from '@/ui/Card/Card'
 import ManageLinkModal from '@/Components/Nav/ManageLinkModal'
 import { router } from '@inertiajs/react'
+import DynamicSelectList from '@/ui/form/DynamicSelectList'
 
 interface NavItem {
   id: number
@@ -27,6 +28,7 @@ interface NavGroup {
 
 interface NavEditorIndexPageProps {
   allNavData: NavGroup[]
+  defaultDashboardPageId: number | null
 }
 
 type ModalType = 'addSection' | 'editSection' | 'addLink' | 'editLink'
@@ -37,7 +39,13 @@ interface ModalState {
   data?: NavGroup | NavItem | { parentGroupId: number }
 }
 
-export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPageProps) {
+export default function NavEditorIndexPage({
+  allNavData,
+  defaultDashboardPageId,
+}: NavEditorIndexPageProps) {
+  const [defaultDashboardPage, setDefaultDashboardPage] = useState<number | null>(
+    defaultDashboardPageId
+  )
   const [navData, setNavData] = useState<NavGroup[]>(allNavData || [])
   const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
@@ -241,6 +249,19 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
     }
   }
 
+  const handleDefaultDashboardPage = () => {
+    router.post(
+      `/nav-items/${defaultDashboardPage}/set-default`,
+      {},
+      {
+        preserveScroll: true,
+        onSuccess: (e) => {
+          console.log('Default dashboard updated', e)
+        },
+      }
+    )
+  }
+
   return (
     <AnalyticsDashboardLayout
       title='Navigation Editor'
@@ -259,6 +280,28 @@ export default function NavEditorIndexPage({ allNavData }: NavEditorIndexPagePro
             <p className='text-sm font-medium text-blue-800'>
               Changes are saved instantly when you add, edit, or delete items.
             </p>
+          </div>
+          <div className='mt-6 flex items-center gap-3 rounded-md bg-blue-50 p-4'>
+            <div>
+              <DynamicSelectList
+                label={'Default Dashboard Page'}
+                url={'nav-item/list'}
+                dataKey={'id'}
+                displayKey={'item_label'}
+                setValue={setDefaultDashboardPage}
+                value={defaultDashboardPage}
+              />
+            </div>
+            <div className='flex items-center gap-2'>
+              {defaultDashboardPageId != defaultDashboardPage && (
+                <button
+                  onClick={handleDefaultDashboardPage}
+                  className='mt-5 rounded-md bg-blue-50 p-2 transition-colors hover:bg-blue-100'
+                >
+                  <Save />
+                </button>
+              )}
+            </div>
           </div>
           <div className='mt-8 grid grid-cols-1 gap-x-6 gap-y-8 border-t border-gray-200 pt-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
             {navData.map((section) => (

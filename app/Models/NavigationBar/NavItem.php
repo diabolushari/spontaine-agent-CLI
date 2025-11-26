@@ -44,6 +44,11 @@ class NavItem extends Model
         'item_url',
         'item_icon',
         'item_pos',
+        'is_default',
+    ];
+
+    protected $casts = [
+        'is_default' => 'boolean',
     ];
 
     /**
