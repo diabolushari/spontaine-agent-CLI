@@ -514,6 +514,7 @@ export interface Widget {
   link?: string
   collection_id: number
   data: {
+    ai_agent: boolean
     data_table_id: number
     subset_group_id: number
     overview: {
@@ -536,12 +537,16 @@ export interface Widget {
       color: string
     }
     rank: {
+      subset_group_name: string | null
       subset_id: number | null
       order_by: SelectedMeasure | null
       level: string
       hierarchy_id: number | null
       dimension_column: string | null
       field_column: string | null
+    }
+    explore: {
+      subset_group_name: string | null
     }
   }
 }

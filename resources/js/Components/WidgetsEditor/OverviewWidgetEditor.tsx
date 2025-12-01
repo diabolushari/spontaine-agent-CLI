@@ -30,6 +30,7 @@ export interface WidgetFormData {
   trend_measure: SelectedMeasure | null
   trend_dimension: string
   trend_color: string
+  rank_subset_group_name: string
   rank_subset_id: string
   rank_ranking_field: {
     subset_field_name: string
@@ -39,6 +40,7 @@ export interface WidgetFormData {
   rank_hierarchy_id: number | null
   rank_dimension_column: string | null
   rank_field_column: string | null
+  explore_subset_group_name: string
 }
 
 interface Props {
@@ -85,6 +87,7 @@ function parseFormDataToWidget(
         color: formData.trend_color,
       },
       rank: {
+        subset_group_name: formData.rank_subset_group_name,
         subset_id: formData.rank_subset_id == '' ? null : Number(formData.rank_subset_id),
         order_by: formData.rank_ranking_field ?? {
           subset_field_name: '',
@@ -94,6 +97,9 @@ function parseFormDataToWidget(
         hierarchy_id: formData.rank_hierarchy_id,
         dimension_column: formData.rank_dimension_column,
         field_column: formData.rank_field_column,
+      },
+      explore: {
+        subset_group_name: formData.explore_subset_group_name,
       },
     },
   }
@@ -110,7 +116,7 @@ export default function OverviewWidgetEditor({
   collectionId,
   metaHierarchy,
 }: Readonly<Props>) {
-  const isEditMode = widget != null
+  const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
 
@@ -139,16 +145,54 @@ export default function OverviewWidgetEditor({
     trend_measure: widget?.data?.trend?.measure ?? null,
     trend_dimension: widget?.data?.trend?.dimension ?? 'month',
     trend_color: widget?.data?.trend?.color ?? 'boldWarm',
+    rank_subset_group_name: widget?.data?.rank?.subset_group_name ?? '',
     rank_subset_id: widget?.data?.rank?.subset_id?.toString() ?? '',
     rank_ranking_field: widget?.data?.rank?.order_by ?? null,
     rank_level: widget?.data?.rank?.level ?? null,
     rank_hierarchy_id: widget?.data?.rank?.hierarchy_id ?? null,
     rank_dimension_column: widget?.data?.rank?.dimension_column ?? null,
     rank_field_column: widget?.data?.rank?.field_column ?? null,
+    explore_subset_group_name: widget?.data?.explore?.subset_group_name ?? '',
   })
+
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
     widget?.data?.highlight_cards ?? []
   )
+
+  useEffect(() => {
+    if (!widget) return
+
+    // 1. Update the Form Data
+    setAll({
+      title: widget.title ?? '',
+      subtitle: widget.subtitle ?? '',
+      description: widget.description ?? '',
+      link: widget.link ?? '',
+      data_table_id: widget.data?.data_table_id.toString() ?? '',
+      subset_group_id: widget.data?.subset_group_id.toString() ?? '',
+      chart_type: widget.data?.overview?.chart_type ?? 'bar',
+      subset_id: widget.data?.overview?.subset_id?.toString() ?? '',
+      measures: widget.data?.overview?.measures ?? [],
+      dimension: widget.data?.overview?.dimension?.toString() ?? '',
+      color_palette: widget.data?.overview?.color_palette ?? 'boldWarm',
+      trend_subset_id: widget.data?.trend?.subset_id?.toString() ?? '',
+      trend_chart_type: widget.data?.trend?.chart_type ?? 'area',
+      trend_measure: widget.data?.trend?.measure ?? null,
+      trend_dimension: widget.data?.trend?.dimension ?? 'month',
+      trend_color: widget.data?.trend?.color ?? 'boldWarm',
+      rank_subset_group_name: widget.data?.rank?.subset_group_name ?? '',
+      rank_subset_id: widget.data?.rank?.subset_id?.toString() ?? '',
+      rank_ranking_field: widget.data?.rank?.order_by ?? null,
+      rank_level: widget.data?.rank?.level ?? null,
+      rank_hierarchy_id: widget.data?.rank?.hierarchy_id ?? null,
+      rank_dimension_column: widget.data?.rank?.dimension_column ?? null,
+      rank_field_column: widget.data?.rank?.field_column ?? null,
+      explore_subset_group_name: widget.data?.explore?.subset_group_name ?? '',
+    })
+
+    // 2. Update the Highlight Cards
+    setHighlightCards(widget.data?.highlight_cards ?? [])
+  }, [widget, setAll])
 
   const { post, loading } = useInertiaPost(
     isEditMode ? route('widget-editor.update', widget.id) : route('widget-editor.store'),
@@ -173,8 +217,10 @@ export default function OverviewWidgetEditor({
         trend_measure: null,
         trend_dimension: 'month',
         trend_color: '#5A0F35',
+        rank_subset_group_name: '',
         rank_subset_id: '',
         rank_ranking_field: null,
+        explore_subset_group_name: '',
       })
       setHighlightCards([])
     },
@@ -196,8 +242,10 @@ export default function OverviewWidgetEditor({
         trend_measure: null,
         trend_dimension: 'month',
         trend_color: '#5A0F35',
+        rank_subset_group_name: '',
         rank_subset_id: '',
         rank_ranking_field: null,
+        explore_subset_group_name: '',
       })
       setHighlightCards([])
     },
@@ -205,7 +253,11 @@ export default function OverviewWidgetEditor({
   )
 
   const handleOpenItem = (item: string) => {
-    if (formData.data_table_id && formData.subset_group_id) {
+    if (
+      item === 'basic' ||
+      item === 'data_source' ||
+      (formData.data_table_id && formData.subset_group_id)
+    ) {
       setOpenItem(item)
     } else {
       toast.error('Please select data source and subset group')
@@ -244,6 +296,7 @@ export default function OverviewWidgetEditor({
           handleSubmit={handleSubmit}
           loading={loading}
           metaHierarchy={metaHierarchy}
+          ai_agent={widget?.data?.ai_agent}
         />
       </div>
       <div className='min-h-[600px] lg:col-span-2'>
