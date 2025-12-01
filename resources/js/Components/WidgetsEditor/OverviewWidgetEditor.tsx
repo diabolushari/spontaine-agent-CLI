@@ -256,7 +256,8 @@ export default function OverviewWidgetEditor({
     if (
       item === 'basic' ||
       item === 'data_source' ||
-      (formData.data_table_id && formData.subset_group_id)
+      (formData.data_table_id && formData.subset_group_id) ||
+      item === 'data_exploration'
     ) {
       setOpenItem(item)
     } else {
