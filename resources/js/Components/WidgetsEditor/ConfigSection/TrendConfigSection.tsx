@@ -8,7 +8,8 @@ import DynamicSelectList from '@/ui/form/DynamicSelectList'
 import ComboBox from '@/ui/form/ComboBox'
 import Input from '@/ui/form/Input'
 import { AreaChart, BarChart3 } from 'lucide-react'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useState, useMemo } from 'react'
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 
 interface Props {
   formData: WidgetFormData
@@ -33,7 +34,7 @@ export default function TrendConfigSection({ formData, setFormValue, ai_agent }:
       return []
     }
     return [formData.trend_measure]
-  }, [formData.trend_measure])
+  }, [formData.trend_measure, formData.trend_subset_id])
 
   const updateMeasures = useCallback(
     (measures: SelectedMeasure[]) => {
@@ -68,6 +69,19 @@ export default function TrendConfigSection({ formData, setFormValue, ai_agent }:
     [setFormValue]
   )
 
+  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
+    id: Number(formData.trend_subset_id),
+  })
+
+  const handleSubsetChangeAi = useCallback(
+    (value: SubsetDetail | Record<string, any>) => {
+      setSubset(value)
+      setFormValue('trend_subset_id')(value.id.toString())
+      setFormValue('trend_measure')(null)
+    },
+    [setFormValue]
+  )
+
   return (
     <div className='space-y-4 px-4'>
       <div>
@@ -81,17 +95,19 @@ export default function TrendConfigSection({ formData, setFormValue, ai_agent }:
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={'/subset-list'}
-            dataKey='subset_detail_id'
+            url={route('subset.list', {
+              search: '',
+            })}
+            dataKey='id'
             displayKey='name'
-            value={formData.trend_subset_id}
-            setValue={handleSubsetChange}
+            value={subset}
+            setValue={handleSubsetChangeAi}
           />
         ) : (
           <DynamicSelectList
             label='Subset'
             url={`/api/subset-group/${formData?.subset_group_id}`}
-            dataKey='subset_detail_id'
+            dataKey='id'
             displayKey='name'
             value={formData.trend_subset_id}
             setValue={handleSubsetChange}

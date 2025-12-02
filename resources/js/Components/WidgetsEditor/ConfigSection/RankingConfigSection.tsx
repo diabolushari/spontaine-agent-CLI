@@ -8,6 +8,7 @@ import axios from 'axios'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip'
 import { Info } from 'lucide-react'
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 
 interface RankingConfigSectionProps {
   formData: WidgetFormData
@@ -80,6 +81,17 @@ export function RankingConfigSection({
     },
     [setFormValue]
   )
+  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
+    id: Number(formData.rank_subset_id),
+  })
+  const handleSubsetChangeAi = useCallback(
+    (value: SubsetDetail) => {
+      setSubset(value)
+      setFormValue('rank_subset_id')(value.id.toString())
+      setFormValue('rank_ranking_field')(null)
+    },
+    [setFormValue]
+  )
 
   const handleDimensionChange = useCallback(
     (value: string) => {
@@ -89,7 +101,7 @@ export function RankingConfigSection({
         setFormValue('rank_hierarchy_id')(selectedDimension.hierarchy_id)
       }
     },
-    [dimensions, setFormValue]
+    [dimensions]
   )
 
   return (
@@ -98,17 +110,19 @@ export function RankingConfigSection({
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={'/subset-list'}
-            dataKey='subset_detail_id'
+            url={route('subset.list', {
+              search: '',
+            })}
+            dataKey='id'
             displayKey='name'
-            value={formData.rank_subset_id}
-            setValue={handleSubsetChange}
+            value={subset}
+            setValue={handleSubsetChangeAi}
           />
         ) : (
           <DynamicSelectList
             label='Subset'
             url={`/api/subset-group/${formData?.subset_group_id}`}
-            dataKey='subset_detail_id'
+            dataKey='id'
             displayKey='name'
             value={formData.rank_subset_id}
             setValue={handleSubsetChange}

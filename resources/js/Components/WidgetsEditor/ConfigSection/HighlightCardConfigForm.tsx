@@ -6,6 +6,7 @@ import ComboBox from '@/ui/form/ComboBox'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
 import { Save, Trash } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 
 interface HighlightCardProps {
   card: HighlightCardData
@@ -96,6 +97,22 @@ export default function HighlightCardConfigForm({
     onRemove(index)
   }, [index, onRemove])
 
+  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>(
+    card?.subset_id
+      ? {
+          id: Number(card?.subset_id),
+        }
+      : null
+  )
+
+  const handleSubsetChangeAi = useCallback(
+    (value: SubsetDetail | Record<string, any>) => {
+      setSubset(value)
+      setLocalCard((prev) => ({ ...prev, subset_id: value.id }))
+    },
+    [setLocalCard]
+  )
+
   return (
     <div className='space-y-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm'>
       {/* Card Header */}
@@ -152,17 +169,19 @@ export default function HighlightCardConfigForm({
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={'/subset-list'}
-            dataKey='subset_detail_id'
+            url={route('subset.list', {
+              search: '',
+            })}
+            dataKey='id'
             displayKey='name'
-            value={localCard.subset_id?.toString() ?? ''}
-            setValue={handleLocalSubsetChange}
+            value={subset}
+            setValue={handleSubsetChangeAi}
           />
         ) : (
           <DynamicSelectList
             label='Subset'
             url={`/api/subset-group/${subsetGroupId}`}
-            dataKey='subset_detail_id'
+            dataKey='id'
             displayKey='name'
             value={localCard.subset_id ?? undefined}
             setValue={handleLocalSubsetChange}

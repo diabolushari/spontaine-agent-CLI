@@ -3,10 +3,11 @@ import ChartTypeSelector from '@/Components/WidgetsEditor/ConfigSection/ChartTyp
 import MeasureFieldSelector from '../ConfigMeasures/MeasureFieldSelector'
 import ColorPaletteSelector from '@/Components/WidgetsEditor/ConfigSection/ColorPalettSelector'
 import { WidgetFormData } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import useFetchList from '@/hooks/useFetchList'
 import SelectList from '@/ui/form/SelectList'
 import ComboBox from '@/ui/form/ComboBox'
+import { SubsetDetail } from '@/interfaces/data_interfaces'
 
 interface OverviewChartSectionProps {
   formData: WidgetFormData
@@ -19,6 +20,18 @@ export default function OverviewChartConfigForm({
   setFormValue,
   ai_agent,
 }: Readonly<OverviewChartSectionProps>) {
+  const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
+    id: Number(formData?.subset_id),
+  })
+
+  const handleSubsetChangeAi = useCallback(
+    (value: SubsetDetail | Record<string, any>) => {
+      setSubset(value)
+      setFormValue('subset_id')(value.id)
+    },
+    [setFormValue]
+  )
+
   const handleSubsetChange = useCallback(
     (newSubsetId: string | null) => {
       setFormValue('measures')([])
@@ -54,11 +67,13 @@ export default function OverviewChartConfigForm({
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={'/subset-list'}
+            url={route('subset.list', {
+              search: '',
+            })}
             dataKey='id'
             displayKey='name'
-            value={formData.subset_id}
-            setValue={handleSubsetChange}
+            value={subset}
+            setValue={handleSubsetChangeAi}
           />
         ) : (
           <DynamicSelectList
