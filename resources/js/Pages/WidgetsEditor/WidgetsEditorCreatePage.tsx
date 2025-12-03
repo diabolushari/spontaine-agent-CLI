@@ -11,6 +11,7 @@ interface Props {
   collection_id: number
   type: string
   meta_hierarchy: MetaHierarchy[]
+  widget_agent_url: string
 }
 
 export default function WidgetsEditorCreatePage({
@@ -18,12 +19,11 @@ export default function WidgetsEditorCreatePage({
   collection_id,
   type,
   meta_hierarchy,
+  widget_agent_url,
 }: Readonly<Props>) {
   const [currentWidget, setCurrentWidget] = useState<Widget | undefined>(widget)
   const [thinking, setThinking] = useState<string | null>(null)
-  const { messages, sendMessage } = useWebSocket(
-    'ws://localhost:8080/widget-agent/ws/generate-widget'
-  )
+  const { messages, sendMessage } = useWebSocket(widget_agent_url)
   const [input, setInput] = React.useState('')
 
   const handleSend = () => {
