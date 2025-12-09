@@ -8,8 +8,8 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -18,7 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        // Exclude widget save routes from CSRF verification for external API calls
+        $middleware->validateCsrfTokens(except: [
+            'widgets/save',
+            'widgets/save/*',
+            'pages/save',
+            'pages/save/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

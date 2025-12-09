@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\PageEditorApiController;
+use App\Http\Controllers\Api\WidgetApiController;
 use App\Http\Controllers\Utils\SubsetGroupDetailedController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigGeneralUpdateController;
 use App\Http\Controllers\Blocks\BlocksConfigUpdate\BlocksConfigLayoutUpdateController;
@@ -415,6 +417,14 @@ Route::get('page-editor/preview/{key}', [CustomPageController::class, 'preview']
 Route::resource('page-editor', PageEditorController::class);
 
 Route::get('widget-search', WidgetSearchController::class)->name('widget.search');
+
+Route::post('widgets/save', [WidgetApiController::class, 'store'])->name('widgets.api.store');
+Route::put('widgets/save/{widget}', [WidgetApiController::class, 'update'])->name('widgets.api.update');
+
+Route::post('pages/save', [PageEditorApiController::class, 'store'])->name('pages.api.store');
+Route::put('pages/save/{page}', [PageEditorApiController::class, 'update'])->name('pages.api.update');
+Route::get('pages/list', [PageEditorApiController::class, 'index'])->name('pages.api.index');
+Route::get('pages/{page}', [PageEditorApiController::class, 'show'])->name('pages.api.show');
 
 //Util APIS
 Route::get('loader-apis-list', LoaderAPIListController::class)

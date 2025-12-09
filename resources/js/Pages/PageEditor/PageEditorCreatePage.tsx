@@ -26,6 +26,7 @@ interface SubsetMaxValueResponse {
 }
 
 export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>) {
+  console.log(page)
   const [sheetOpen, setSheetOpen] = useState(false)
   const { post } = useInertiaPost(
     page ? route('page-editor.update', page.id) : route('page-editor.store'),

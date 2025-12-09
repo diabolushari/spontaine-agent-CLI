@@ -8,21 +8,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
-class WidgetSearchController extends Controller implements HasMiddleware
+class WidgetSearchController extends Controller
 {
-    /**
-     * @return string[]
-     */
-    public static function middleware(): array
-    {
-        return [
-            'auth',
-        ];
-    }
+
+
 
     public function __invoke(Request $request): JsonResponse
     {
-        if (! $request->filled('search')) {
+        if (!$request->filled('search')) {
             return response()
                 ->json();
         }
