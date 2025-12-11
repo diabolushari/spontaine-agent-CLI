@@ -36,6 +36,7 @@ interface PageConfigurationSidebarProps {
   onPreview: () => void
   isEditMode: boolean
   onPageUpdate: (data: Partial<DashboardPage>) => void // <--- Add this prop
+  agentUrl: string
 }
 
 export default function PageConfigurationSidebar({
@@ -51,15 +52,14 @@ export default function PageConfigurationSidebar({
   onPublish,
   onPreview,
   isEditMode,
-  onPageUpdate, // <--- Destructure it
+  onPageUpdate,
+  agentUrl,
 }: Readonly<PageConfigurationSidebarProps>) {
   const [isChatMode, setIsChatMode] = useState(false)
   const [chatMessage, setChatMessage] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const { messages, sendMessage } = useWebSocket(
-    'ws://127.0.0.1:8080/page-builder-agent/ws/generate-page'
-  )
+  const { messages, sendMessage } = useWebSocket(agentUrl)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })

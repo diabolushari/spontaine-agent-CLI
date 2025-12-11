@@ -35,6 +35,7 @@ class PageEditorController extends Controller implements HasMiddleware
         $widgets = Widget::latest()->take(10)->get();
 
         return Inertia::render('PageEditor/PageEditorCreatePage', [
+            'page_agent_url' => config('app.page_agent_url'),
             'widgets' => $widgets,
         ]);
     }
@@ -75,6 +76,7 @@ class PageEditorController extends Controller implements HasMiddleware
 
         return Inertia::render('PageEditor/PageEditorCreatePage', [
             'page' => $pageEditor,
+            'page_agent_url' => config('app.page_agent_url'),
             'widgets' => $allWidgets,
         ]);
     }

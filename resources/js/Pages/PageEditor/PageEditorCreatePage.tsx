@@ -14,6 +14,7 @@ import DraggableWidgetSidebar from '@/Components/PageEditor/DraggableWidgetSideb
 import useFetchRecord from '@/hooks/useFetchRecord'
 
 interface Props {
+  page_agent_url?: string
   page?: DashboardPage
   widgets: Widget[]
 }
@@ -23,7 +24,7 @@ interface SubsetMaxValueResponse {
   max_value: string | null
 }
 
-export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>) {
+export default function PageEditorCreatePage({ page_agent_url, page, widgets }: Readonly<Props>) {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
@@ -148,6 +149,7 @@ export default function PageEditorCreatePage({ page, widgets }: Readonly<Props>)
               onPreview={handlePreview}
               isEditMode={!!page}
               onPageUpdate={setAll}
+              agentUrl={page_agent_url}
             />
 
             {/* Main Content Area */}
