@@ -1,26 +1,9 @@
 import { DashboardPage, Widget } from '@/interfaces/data_interfaces'
 import Button from '@/ui/button/Button'
 import SelectList from '@/ui/form/SelectList'
-import {
-  HelpCircle,
-  ChevronLeft,
-  Settings,
-  Sparkles,
-  Send,
-  User,
-  Bot,
-  CheckCircle,
-  RotateCcw,
-} from 'lucide-react'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip'
-import { useState, useEffect, useRef } from 'react'
-import { useWebSocket } from '@/Pages/WidgetsEditor/hook/useWebsocket'
-
-interface PlannedWidget {
-  title: string
-  description: string
-  subset_id: number
-}
+import { ChevronLeft, Settings } from 'lucide-react'
+import { useState } from 'react'
+import PageBuilderChat from './PageBuilderChat'
 
 interface PageConfigurationSidebarProps {
   pageStructure: Partial<DashboardPage>
@@ -56,107 +39,6 @@ export default function PageConfigurationSidebar({
   agentUrl,
 }: Readonly<PageConfigurationSidebarProps>) {
   const [isChatMode, setIsChatMode] = useState(false)
-  const [chatMessage, setChatMessage] = useState('')
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const { messages, sendMessage } = useWebSocket(agentUrl)
-  const hasError = messages.some((msg) => msg.type === 'error')
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-
-  // Monitor incoming messages for the "complete" type
-  useEffect(() => {
-    if (messages.length > 0) {
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage.type === 'complete' && lastMessage.page) {
-        console.log('Applying AI generated page:', lastMessage.page)
-
-        // Remove the ID from the update payload as requested
-        const { id, created_at, updated_at, ...pageData } = lastMessage.page
-
-        onPageUpdate(pageData)
-      }
-    }
-  }, [messages, onPageUpdate])
-
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!chatMessage.trim() || hasError) return
-    sendMessage({ message: chatMessage })
-    setChatMessage('')
-  }
-
-  const handleApprove = () => sendMessage({ action: 'approve' })
-  const handleRetry = () => sendMessage({ action: 'retry' })
-
-  const renderMessageContent = (msg: any) => {
-    // 1. Awaiting Approval
-    if (msg.type === 'awaiting_approval') {
-      return (
-        <div className='w-full space-y-3'>
-          <p className='text-sm text-gray-700'>{msg.message}</p>
-          {msg.planned_widgets && msg.planned_widgets.length > 0 && (
-            <div className='space-y-2'>
-              {msg.planned_widgets.map((widget: PlannedWidget, idx: number) => (
-                <div
-                  key={idx}
-                  className='rounded-md border border-gray-200 bg-gray-50 p-3'
-                >
-                  <h4 className='text-xs font-bold text-gray-800'>{widget.title}</h4>
-                  <p className='mt-1 line-clamp-2 text-[10px] text-gray-500'>
-                    {widget.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-          <div className='flex gap-2 pt-1'>
-            <button
-              onClick={handleApprove}
-              className='flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-xs font-medium text-white hover:bg-emerald-700'
-            >
-              <CheckCircle className='h-3.5 w-3.5' /> Approve
-            </button>
-            <button
-              onClick={handleRetry}
-              className='flex flex-1 items-center justify-center gap-1.5 rounded-md bg-amber-500 px-3 py-2 text-xs font-medium text-white hover:bg-amber-600'
-            >
-              <RotateCcw className='h-3.5 w-3.5' /> Retry
-            </button>
-          </div>
-          <p className='text-center text-[10px] italic text-gray-400'>
-            Or type below to create a new query
-          </p>
-        </div>
-      )
-    }
-
-    // 2. Complete Message
-    if (msg.type === 'complete') {
-      return (
-        <div className='flex items-center gap-2 text-emerald-700'>
-          <CheckCircle className='h-5 w-5' />
-          <p className='font-medium'>{msg.message || 'Page updated successfully!'}</p>
-        </div>
-      )
-    }
-
-    // 3. User Message
-    if (msg.type === 'user') {
-      if (msg.action === 'approve') return 'Approved the plan.'
-      if (msg.action === 'retry') return 'Retrying generation...'
-      return <p className='whitespace-pre-wrap leading-relaxed'>{msg.message}</p>
-    }
-
-    // 4. Fallback
-    return (
-      <p className='whitespace-pre-wrap leading-relaxed'>
-        {msg.content || msg.message || JSON.stringify(msg)}
-      </p>
-    )
-  }
 
   return (
     <>
@@ -194,101 +76,11 @@ export default function PageConfigurationSidebar({
           </div>
 
           {isChatMode ? (
-            <div className='flex flex-grow flex-col overflow-hidden bg-slate-50'>
-              <div className='flex-1 overflow-y-auto p-4'>
-                {messages.length === 0 ? (
-                  <div className='flex h-full flex-col items-center justify-center text-gray-400'>
-                    <p>No messages yet.</p>
-                    <p className='text-sm'>Start chatting to edit the page.</p>
-                  </div>
-                ) : (
-                  messages.map((msg, idx) => {
-                    const isUser = msg.type === 'user'
-                    const isError = msg.type === 'error'
-
-                    if (isError) {
-                      return (
-                        <div
-                          key={idx}
-                          className='mb-4 flex justify-center'
-                        >
-                          <div className='rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600'>
-                            Connection lost. Please refresh to reconnect.
-                          </div>
-                        </div>
-                      )
-                    }
-
-                    return (
-                      <div
-                        key={idx}
-                        className={`mb-6 flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}
-                      >
-                        {!isUser && (
-                          <div className='mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600'>
-                            <svg
-                              className='h-5 w-5'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              stroke='currentColor'
-                            >
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M13 10V3L4 14h7v7l9-11h-7z'
-                              />
-                            </svg>
-                          </div>
-                        )}
-                        <div
-                          className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${
-                            isUser
-                              ? 'rounded-tr-sm bg-[#007AFF] text-white'
-                              : 'rounded-tl-sm bg-white text-gray-800'
-                          }`}
-                        >
-                          <div className='whitespace-pre-wrap text-sm leading-relaxed'>
-                            {renderMessageContent(msg)}
-                          </div>
-                        </div>
-                        {isUser && (
-                          <div className='ml-2 h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100'>
-                            <img
-                              src='https://ui-avatars.com/api/?name=User&background=random'
-                              alt='User'
-                              className='h-full w-full object-cover'
-                            />
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-              <div className='p-4'>
-                <div className='relative flex items-center rounded-full bg-white shadow-sm ring-1 ring-gray-200 transition-shadow focus-within:ring-2 focus-within:ring-blue-500'>
-                  <input
-                    type='text'
-                    placeholder='Ask your questions'
-                    className='w-full border-none bg-transparent py-3.5 pl-6 pr-24 text-sm text-gray-900 placeholder-gray-400 focus:ring-0 disabled:opacity-50'
-                    disabled={hasError}
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && !hasError && handleSendMessage(e)}
-                  />
-                  <button
-                    type='button'
-                    disabled={hasError}
-                    onClick={handleSendMessage}
-                    className='absolute bottom-1.5 right-1.5 top-1.5 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 px-6 text-sm font-medium text-white shadow-sm transition-all hover:from-teal-600 hover:to-blue-600 hover:shadow disabled:cursor-not-allowed disabled:opacity-70'
-                  >
-                    Ask
-                  </button>
-                </div>
-              </div>
-            </div>
+            <PageBuilderChat
+              agentUrl={agentUrl}
+              onPageUpdate={onPageUpdate}
+              onSave={onPublish}
+            />
           ) : (
             <div className='flex flex-grow flex-col overflow-y-auto p-5 pt-2'>
               <form
