@@ -1,4 +1,5 @@
 export const chartPallet = {
+  vivid: ['#56EDCA', '#7DC7E2', '#7A95FC', '#F8D851', '#73AD7A'],
   boldWarm: ['#235cc0', '#FF8C1C', '#0B4C5F', '#E0581F', '#5A0F35', '#A70028'],
   softNeutral: ['#E9AEB3', '#5D6966', '#F8DED3', '#B3C3B4', '#E4DFD9'],
   freshGreen: ['#C7ECD7', '#0C3E2F', '#A8DBBF', '#26765C', '#81CDA9', '#58B38F'],
@@ -10,6 +11,7 @@ export const chartPallet = {
 }
 
 export const graphColorPallet = {
+  vivid: '#56EDCA',
   boldWarm: '#235cc0',
   softNeutral: '#E9AEB3',
   freshGreen: '#C7ECD7',
