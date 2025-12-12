@@ -35,10 +35,17 @@ class WidgetsEditorController extends Controller
     {
         $widget = Widget::create($request->toArray());
 
-        return to_route('widget-collection.show', [
-            'widgetCollection' => $request->collectionId,
-        ])
+        return to_route('widget-collection.index')
             ->with('success', 'Widget created successfully');
+    }
+
+    public function show(Widget $widget)
+    {
+        $widget->load('collection');
+
+        return Inertia::render('WidgetsEditor/WidgetsEditorShowPage', [
+            'widget' => $widget,
+        ]);
     }
 
     public function edit(Widget $widget)
@@ -61,15 +68,14 @@ class WidgetsEditorController extends Controller
 
         $widget->update($request->toArray());
 
-        return to_route('widget-collection.show', ['widgetCollection' => $widget->collection_id])
+        return to_route('widget-collection.index')
             ->with('success', 'Widget updated successfully');
     }
 
     public function destroy(Widget $widget)
     {
-        $collectionId = $widget->collection_id;
         $widget->delete();
 
-        return to_route('widget-collection.show', ['widgetCollection' => $collectionId])->with('success', 'Widget deleted successfully');
+        return to_route('widget-collection.index')->with('success', 'Widget deleted successfully');
     }
 }

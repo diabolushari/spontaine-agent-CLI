@@ -512,6 +512,8 @@ export interface Widget {
   subtitle: string
   type: string
   collection_id: number
+  updated_at?: string
+  collection?: WidgetCollection
   data: {
     description?: string
     link?: string
@@ -570,6 +572,8 @@ export interface WidgetPosition {
   position: number
   widgetId: number | null
   widget?: Widget | null
+  type?: 'widget' | 'text'
+  textContent?: string
 }
 
 export interface PageSection {

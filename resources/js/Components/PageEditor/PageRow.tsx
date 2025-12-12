@@ -10,6 +10,10 @@ interface PageRowProps {
   moveRow: (id: number, pos: string) => void
   selectedMonth: Date
   onRowUpdate: (rowId: number, data: { title?: string; description?: string }) => void
+  handleAddTextBlock: (rowId: number, position: number) => void
+  handleTextUpdate: (rowId: number, position: number, content: string) => void
+  onAddWidget: () => void
+  onSelectWidget: () => void
 }
 
 export default function PageRow({
@@ -20,6 +24,10 @@ export default function PageRow({
   moveRow,
   selectedMonth,
   onRowUpdate,
+  handleAddTextBlock,
+  handleTextUpdate,
+  onAddWidget,
+  onSelectWidget,
 }: Readonly<PageRowProps>) {
   return (
     <div
@@ -93,6 +101,11 @@ export default function PageRow({
             widget={slot.widgetId ? getWidgetById(slot.widgetId) : undefined}
             onRemove={() => onRemoveWidget(row.id, slot.position)}
             selectedMonth={selectedMonth}
+            onAddTextBlock={() => handleAddTextBlock(row.id, slot.position)}
+            onTextUpdate={(content) => handleTextUpdate(row.id, slot.position, content)}
+            onAddWidget={onAddWidget}
+            slot={slot}
+            selectWidget={onSelectWidget}
           />
         ))}
       </div>

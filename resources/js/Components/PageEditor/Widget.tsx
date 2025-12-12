@@ -38,24 +38,24 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
 
   if (!widget) return null
 
-  const { title, subtitle, data, type, link, description } = widget
+  const { title, subtitle, data, type } = widget
   const normalizedType = type?.toLowerCase()
 
   return (
     <WidgetLayout
       title={title}
       subtitle={subtitle}
-      description={description}
-      link={link}
+      description={widget.data?.description}
+      link={widget.data?.link}
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectView}
       onViewChange={setSelectView}
-      hasOverview={widget.data.overview.subset_id != null}
-      hasTrend={widget.data.trend.subset_id != null}
-      hasRanking={widget.data.rank.subset_id != null}
+      hasOverview={widget.data.overview?.subset_id != null}
+      hasTrend={widget.data.trend?.subset_id != null}
+      hasRanking={widget.data.rank?.subset_id != null}
       hasHighlightCards={widget.data.highlight_cards != null}
-      subsetGroupName={widget.data.explore.subset_group_name}
+      subsetGroupName={widget.data.explore?.subset_group_name}
     >
       {/* No data state */}
       {!data && <EmptyState message='No data' />}

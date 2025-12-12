@@ -229,6 +229,44 @@ export function usePageEditor(
     [pageStructure.page, setFormValue]
   )
 
+  const handleAddTextBlock = useCallback(
+    (rowId: number, position: number) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) =>
+              slot.position === position
+                ? { ...slot, type: 'text' as const, textContent: '<p>Start typing...</p>' }
+                : slot
+            ),
+          }
+        }
+        return row
+      })
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
+  const handleTextUpdate = useCallback(
+    (rowId: number, position: number, content: string) => {
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) =>
+              slot.position === position ? { ...slot, textContent: content } : slot
+            ),
+          }
+        }
+        return row
+      })
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
   const handleTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormValue('title')(e.target.value)
@@ -288,6 +326,45 @@ export function usePageEditor(
     [setFormValue]
   )
 
+  const handleAddWidgetToSlot = useCallback(
+    (rowId: number, position: number, widget: Widget) => {
+      // 1. Ensure widget is in knownWidgets map so it renders correctly
+      if (widget.id) {
+        setKnownWidgets((prev) => {
+          if (prev.has(widget.id!)) return prev
+          const newMap = new Map(prev)
+          newMap.set(widget.id!, widget)
+          return newMap
+        })
+      }
+
+      // 2. Update the page structure to place the widget
+      const newPage = (pageStructure.page ?? []).map((row) => {
+        if (row.id === rowId) {
+          return {
+            ...row,
+            widgets: row.widgets.map((slot) => {
+              if (slot.position === position) {
+                return {
+                  ...slot,
+                  widgetId: widget.id!,
+                  // Reset text content if this slot was previously text
+                  type: 'widget' as const,
+                  textContent: undefined,
+                }
+              }
+              return slot
+            }),
+          }
+        }
+        return row
+      })
+
+      setFormValue('page')(newPage)
+    },
+    [pageStructure.page, setFormValue]
+  )
+
   return {
     pageStructure,
     setFormValue,
@@ -306,5 +383,8 @@ export function usePageEditor(
     setAnchorWidget,
     pageWidgets,
     handleRowUpdate,
+    handleAddTextBlock,
+    handleTextUpdate,
+    handleAddWidgetToSlot,
   }
 }

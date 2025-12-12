@@ -2,9 +2,18 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/Co
 import Button from '@/ui/button/Button'
 import { useState } from 'react'
 import { Link } from '@inertiajs/react'
+import { WidgetCollection } from '@/interfaces/data_interfaces'
+import SelectList from '@/ui/form/SelectList'
 
-export function AddWidgetSheet({ collectionId }) {
+export function AddWidgetSheet({
+  collections = [],
+  children,
+}: {
+  collections?: WidgetCollection[]
+  children?: React.ReactNode
+}) {
   const [open, setOpen] = useState(false)
+  const [selectedCollectionId, setSelectedCollectionId] = useState<number | string>('')
 
   return (
     <Sheet
@@ -12,11 +21,13 @@ export function AddWidgetSheet({ collectionId }) {
       onOpenChange={setOpen}
     >
       <SheetTrigger asChild>
-        <Button
-          type='button'
-          label='Add Widget'
-          onClick={() => setOpen(true)}
-        />
+        {children ?? (
+          <Button
+            type='button'
+            label='Add Widget'
+            onClick={() => setOpen(true)}
+          />
+        )}
       </SheetTrigger>
 
       <SheetContent className='sm:max-w-2xl'>
@@ -24,9 +35,32 @@ export function AddWidgetSheet({ collectionId }) {
           <SheetTitle>Widgets</SheetTitle>
         </SheetHeader>
 
-        <div>
-          <Link href={`/widget-editor/create?collection_id=${collectionId}&type=overview`}>
-            <div className='h-50 w-36 rounded-md border border-gray-200 bg-white p-3'>
+        <div className='space-y-4'>
+          {/* Collection Selector */}
+          {collections.length > 0 && (
+            <div className='mb-4'>
+              <SelectList
+                label='Collection'
+                value={selectedCollectionId}
+                setValue={(value) => setSelectedCollectionId(value)}
+                list={collections}
+                dataKey='id'
+                displayKey='name'
+                showAllOption={true}
+                allOptionText='No Collection'
+                style='normal'
+              />
+            </div>
+          )}
+
+          <Link
+            href={
+              selectedCollectionId
+                ? `/widget-editor/create?collection_id=${selectedCollectionId}&type=overview`
+                : '/widget-editor/create?type=overview'
+            }
+          >
+            <div className='h-50 w-36 rounded-md border border-gray-200 bg-white p-3 transition-all hover:border-gray-300 hover:shadow-md'>
               {/* Mini header */}
               <div className='mb-2 flex items-center justify-between'>
                 <span className='text-xs font-semibold text-gray-700'>Chart</span>

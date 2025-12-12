@@ -119,8 +119,8 @@ export default function OverviewWidget({
     <WidgetLayout
       title={widget.title}
       subtitle={widget.subtitle}
-      description={widget.description}
-      link={widget.link}
+      description={widget.data?.description}
+      link={widget.data?.link}
       selectedMonth={selectedMonth}
       setSelectedMonth={setSelectedMonth}
       selectedView={selectedView}
