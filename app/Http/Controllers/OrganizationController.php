@@ -3,14 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Organization\OrganizationFormRequest;
+use App\Http\Requests\Organization\OrganizationIndexRequest;
 use App\Models\Meta\MetaHierarchy;
 use App\Models\Organization;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
+use Inertia\Response;
 
-class OrganizationController extends Controller
+final class OrganizationController extends Controller implements HasMiddleware
 {
-    public function index(Request $request)
+    public static function middleware(): array
+    {
+        return [
+            'auth',
+        ];
+    }
+
+    public function index(Request $request): Response
     {
         $query = Organization::query();
 
@@ -26,7 +36,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): Response
     {
         $metaHierarchies = MetaHierarchy::select('id', 'name')->get();
 
@@ -35,7 +45,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    public function store(OrganizationFormRequest $request)
+    public function store(OrganizationFormRequest $request): RedirectResponse
     {
         // The $request is already validated. 
         // We use toArray() to get the clean data from the DTO.
@@ -47,7 +57,7 @@ class OrganizationController extends Controller
             ->with('message', 'Organization created successfully.');
     }
 
-    public function show($id)
+    public function show($id): Response
     {
         $organization = Organization::with([
             'metaHierarchyItem.primaryField.metaStructure',
@@ -59,7 +69,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit($id): Response
     {
         $organization = Organization::with('metaHierarchyItem.primaryField.metaStructure')->findOrFail($id);
         $metaHierarchies = MetaHierarchy::select('id', 'name')->get();
@@ -70,7 +80,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    public function update(OrganizationFormRequest $request, $id)
+    public function update(OrganizationFormRequest $request, $id): RedirectResponse
     {
         $organization = Organization::findOrFail($id);
 
@@ -80,7 +90,7 @@ class OrganizationController extends Controller
             ->with('message', 'Organization updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         $organization = Organization::findOrFail($id);
         $organization->delete();
