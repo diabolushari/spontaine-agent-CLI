@@ -5,6 +5,8 @@ import WidgetChatSection from '@/Components/WidgetsEditor/ConfigSection/WidgetCh
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
@@ -152,6 +154,8 @@ export default function OverviewWidgetEditor({
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
   const [activeTab, setActiveTab] = useState<'config' | 'chat'>('config')
+
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
   useEffect(() => {
     if (openItem === 'trend') setSelectedView('trend')
@@ -410,6 +414,7 @@ export default function OverviewWidgetEditor({
               metaHierarchy={metaHierarchy}
               ai_agent={widget?.data?.ai_agent}
               embedded={true}
+              widget_data_url={widget_data_url}
             />
           ) : (
             <WidgetChatSection

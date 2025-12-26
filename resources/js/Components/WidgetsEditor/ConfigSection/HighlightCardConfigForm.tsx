@@ -18,6 +18,7 @@ interface HighlightCardProps {
   onMeasureChange: (index: number, measures: SelectedMeasure[]) => void
   onRemove: (index: number) => void
   ai_agent?: boolean
+  widget_data_url: string
 }
 
 export default function HighlightCardConfigForm({
@@ -30,6 +31,7 @@ export default function HighlightCardConfigForm({
   onMeasureChange,
   onRemove,
   ai_agent,
+  widget_data_url,
 }: Readonly<HighlightCardProps>) {
   // Local state for form data
   const [localCard, setLocalCard] = useState<HighlightCardData>(card)
@@ -169,9 +171,13 @@ export default function HighlightCardConfigForm({
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={route('subset.list', {
-              search: '',
-            })}
+            url={`${widget_data_url}${route(
+              'subset.list',
+              {
+                search: '',
+              },
+              false
+            )}`}
             dataKey='id'
             displayKey='name'
             value={subset}
@@ -180,7 +186,7 @@ export default function HighlightCardConfigForm({
         ) : (
           <DynamicSelectList
             label='Subset'
-            url={`/api/subset-group/${subsetGroupId}`}
+            url={`${widget_data_url}/api/subset-group/${subsetGroupId}`}
             dataKey='id'
             displayKey='name'
             value={localCard.subset_id ?? undefined}

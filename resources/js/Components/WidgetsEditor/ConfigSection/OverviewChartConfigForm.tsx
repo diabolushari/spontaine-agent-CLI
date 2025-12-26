@@ -14,12 +14,14 @@ interface OverviewChartSectionProps {
   formData: WidgetFormData
   setFormValue: <K extends keyof WidgetFormData>(key: K) => (value: WidgetFormData[K]) => void
   ai_agent?: boolean
+  widget_data_url: string
 }
 
 export default function OverviewChartConfigForm({
   formData,
   setFormValue,
   ai_agent,
+  widget_data_url,
 }: Readonly<OverviewChartSectionProps>) {
   const [subset, setSubset] = useState<SubsetDetail | Record<string, any> | null>({
     id: Number(formData?.subset_id),
@@ -34,9 +36,9 @@ export default function OverviewChartConfigForm({
   )
 
   const handleSubsetChangeAi = useCallback(
-    (value: SubsetDetail | Record<string, any>) => {
+    (value: SubsetDetail | Record<string, any> | null) => {
       setSubset(value)
-      setFormValue('subset_id')(value.id)
+      setFormValue('subset_id')(value?.id ?? '')
     },
     [setFormValue]
   )
@@ -54,7 +56,9 @@ export default function OverviewChartConfigForm({
   )
 
   // 1. Fetch and filter dimensions
-  const dimensionUrl = formData.subset_id ? `/api/subset/dimension/${formData.subset_id}` : null
+  const dimensionUrl = formData.subset_id
+    ? `${widget_data_url}/api/subset/dimension/${formData.subset_id}`
+    : ''
   const [rawDimensions] = useFetchList<{
     id: number
     subset_field_name: string
@@ -78,7 +82,9 @@ export default function OverviewChartConfigForm({
       }
 
       try {
-        const response = await axios.get(`/subset-fields?subset_id=${formData.subset_id}`)
+        const response = await axios.get(
+          `${widget_data_url}/subset-fields?subset_id=${formData.subset_id}`
+        )
         const dimensions = response.data.dimensions
 
         const validDimensions = dimensions.filter((d: any) => d.hierarchy_id != null)
@@ -92,7 +98,9 @@ export default function OverviewChartConfigForm({
           return
         }
 
-        const hierarchyPromises = hierarchyIds.map((id) => axios.get(`/meta-hierarchy-data/${id}`))
+        const hierarchyPromises = hierarchyIds.map((id) =>
+          axios.get(`${widget_data_url}/meta-hierarchy-data/${id}`)
+        )
         const hierarchyResponses = await Promise.all(hierarchyPromises)
         const hierarchyData = hierarchyResponses.map((res) => res.data)
 
@@ -104,7 +112,7 @@ export default function OverviewChartConfigForm({
     }
 
     fetchSubsetFieldsAndHierarchies()
-  }, [formData.subset_id])
+  }, [formData.subset_id, widget_data_url])
 
   const handleHierarchyChange = (value: string) => {
     setFormValue('hierarchy_id')(value)
@@ -133,7 +141,7 @@ export default function OverviewChartConfigForm({
         {ai_agent ? (
           <ComboBox
             label='Subset'
-            url={route('subset.list', { search: '' })}
+            url={`${widget_data_url}${route('subset.list', { search: '' }, false)}`}
             dataKey='id'
             displayKey='name'
             value={subset}
@@ -142,7 +150,7 @@ export default function OverviewChartConfigForm({
         ) : (
           <DynamicSelectList
             label='Subset'
-            url={route('subset-having-dimension-measure', formData.subset_group_id)}
+            url={`${widget_data_url}${route('subset-having-dimension-measure', formData.subset_group_id, false)}`}
             dataKey='id'
             displayKey='name'
             value={formData.subset_id}
@@ -199,7 +207,7 @@ export default function OverviewChartConfigForm({
               <div className='flex flex-col'>
                 <ComboBox
                   label='Hierarchy Item'
-                  url={`/meta-hierarchy-item-search?hierarchy_id=${formData.hierarchy_id}&search=`}
+                  url={`${widget_data_url}/meta-hierarchy-item-search?hierarchy_id=${formData.hierarchy_id}&search=`}
                   dataKey='id'
                   displayKey='name'
                   value={hierarchyItem}

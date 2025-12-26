@@ -5,6 +5,8 @@ import useFetchRecord from '@/hooks/useFetchRecord'
 import { useMemo, useEffect, useState } from 'react'
 import { HighlightCardData } from '@/interfaces/data_interfaces'
 import { SelectedMeasure } from '@/Components/WidgetsEditor/OverviewWidgetEditor'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 
 interface OverviewProps {
@@ -34,6 +36,8 @@ export default function OverviewWidgetContent({
   const year = selectedMonth.getFullYear()
   const formattedMonth = `${year}${month}`
 
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
+
   const [hierarchyFilter, setHierarchyFilter] = useState<{ col: string; val: string } | null>(null)
 
   // 1. Fetch hierarchy details using the CORRECT API endpoint
@@ -46,7 +50,9 @@ export default function OverviewWidgetContent({
     const fetchHierarchyDetails = async () => {
       try {
         // Updated URL to match your route definition
-        const res = await axios.get(`/meta-hierarchy-item-detail/${hierarchy_item_id}`)
+        const res = await axios.get(
+          `${widget_data_url}/meta-hierarchy-item-detail/${hierarchy_item_id}`
+        )
 
         if (res.data?.primary_column && res.data?.primary_value) {
           setHierarchyFilter({
@@ -85,13 +91,13 @@ export default function OverviewWidgetContent({
 
     if (hierarchy_item_id) {
       if (hierarchyFilter) {
-        return `${baseUrl}&${hierarchyFilter.col}=${hierarchyFilter.val}`
+        return `${widget_data_url}${baseUrl}&${hierarchyFilter.col}=${hierarchyFilter.val}`
       } else {
         return null // Wait for filter details to load
       }
     }
 
-    return baseUrl
+    return `${widget_data_url}${baseUrl}`
   }, [subsetId, fieldsParam, formattedMonth, hierarchyFilter, hierarchy_item_id])
 
   console.log('overview url', url)
