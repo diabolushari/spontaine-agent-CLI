@@ -531,6 +531,9 @@ export interface Widget {
       color_palette: string
       subset_id: number | null
       subset_name?: string
+      hierarchy_id: number | null
+      hierarchy_item_id: number | null
+      hierarchy_item_name: string | null
     }
     highlight_cards: HighlightCardData[]
     trend: {
@@ -592,4 +595,7 @@ export interface DashboardPage extends Model {
   page: PageSection[]
   published: boolean
   anchor_widget: number | null
+  config: {
+    heading_style: number | null
+  } | null
 }

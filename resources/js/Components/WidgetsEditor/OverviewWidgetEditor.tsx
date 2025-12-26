@@ -5,6 +5,8 @@ import WidgetChatSection from '@/Components/WidgetsEditor/ConfigSection/WidgetCh
 import useCustomForm from '@/hooks/useCustomForm'
 import useInertiaPost from '@/hooks/useInertiaPost'
 import { HighlightCardData, Widget } from '@/interfaces/data_interfaces'
+import { PageProps } from '@/types'
+import { usePage } from '@inertiajs/react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
@@ -26,6 +28,9 @@ export interface WidgetFormData {
   chart_type: string
   subset_id: string
   subset_name: string
+  hierarchy_id: string
+  hierarchy_item_id: string
+  hierarchy_item_name: string
   measures: SelectedMeasure[]
   dimension: string
   color_palette: string
@@ -69,9 +74,11 @@ interface Props {
 function parseFormDataToWidget(
   formData: WidgetFormData,
   highlightCards: HighlightCardData[],
-  collectionId: number
+  collectionId: number,
+  id?: number
 ): Widget {
   return {
+    id: id,
     title: formData.title ?? 'Untitled Widget',
     subtitle: formData.subtitle ?? '',
     type: 'overview',
@@ -89,6 +96,10 @@ function parseFormDataToWidget(
         color_palette: formData.color_palette,
         subset_id: formData.subset_id == '' ? null : Number(formData.subset_id),
         subset_name: formData.subset_name,
+        hierarchy_id: formData.hierarchy_id == '' ? null : Number(formData.hierarchy_id),
+        hierarchy_item_id:
+          formData.hierarchy_item_id == '' ? null : Number(formData.hierarchy_item_id),
+        hierarchy_item_name: formData.hierarchy_item_name,
       },
       highlight_cards: highlightCards ?? [],
       trend: {
@@ -144,6 +155,8 @@ export default function OverviewWidgetEditor({
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
   const [activeTab, setActiveTab] = useState<'config' | 'chat'>('config')
 
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
+
   useEffect(() => {
     if (openItem === 'trend') setSelectedView('trend')
     if (openItem === 'ranking') setSelectedView('ranking')
@@ -162,6 +175,9 @@ export default function OverviewWidgetEditor({
     chart_type: widget?.data?.overview?.chart_type ?? 'bar',
     subset_id: widget?.data?.overview?.subset_id?.toString() ?? '',
     subset_name: widget?.data?.overview?.subset_name ?? '',
+    hierarchy_id: widget?.data?.overview?.hierarchy_id?.toString() ?? '',
+    hierarchy_item_id: widget?.data?.overview?.hierarchy_item_id?.toString() ?? '',
+    hierarchy_item_name: widget?.data?.overview?.hierarchy_item_name ?? '',
     measures: widget?.data?.overview?.measures ?? [],
     dimension: widget?.data?.overview?.dimension?.toString() ?? '',
     color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
@@ -201,6 +217,9 @@ export default function OverviewWidgetEditor({
       chart_type: widget.data?.overview?.chart_type ?? 'bar',
       subset_id: widget.data?.overview?.subset_id?.toString() ?? '',
       subset_name: widget.data?.overview?.subset_name ?? '',
+      hierarchy_id: widget.data?.overview?.hierarchy_id?.toString() ?? '',
+      hierarchy_item_id: widget.data?.overview?.hierarchy_item_id?.toString() ?? '',
+      hierarchy_item_name: widget.data?.overview?.hierarchy_item_name ?? '',
       measures: widget.data?.overview?.measures ?? [],
       dimension: widget.data?.overview?.dimension?.toString() ?? '',
       color_palette: widget.data?.overview?.color_palette ?? 'boldWarm',
@@ -241,6 +260,9 @@ export default function OverviewWidgetEditor({
         subset_group_id: '',
         chart_type: 'bar',
         subset_id: '',
+        hierarchy_id: '',
+        hierarchy_item_id: '',
+        hierarchy_item_name: '',
         measures: [],
         dimension: '',
         color_palette: 'boldWarm',
@@ -266,6 +288,9 @@ export default function OverviewWidgetEditor({
         subset_group_id: value,
         chart_type: 'bar',
         subset_id: '',
+        hierarchy_id: '',
+        hierarchy_item_id: '',
+        hierarchy_item_name: '',
         measures: [],
         dimension: '',
         color_palette: 'boldWarm',
@@ -312,8 +337,8 @@ export default function OverviewWidgetEditor({
 
   // Convert formData to Widget format for preview
   const previewWidget = useMemo<Widget>(() => {
-    return parseFormDataToWidget(formData, highlightCards, collectionId)
-  }, [formData, collectionId, highlightCards])
+    return parseFormDataToWidget(formData, highlightCards, collectionId, widget?.id)
+  }, [formData, collectionId, highlightCards, widget?.id])
 
   // Notify parent component when preview widget changes
   useEffect(() => {
@@ -389,6 +414,7 @@ export default function OverviewWidgetEditor({
               metaHierarchy={metaHierarchy}
               ai_agent={widget?.data?.ai_agent}
               embedded={true}
+              widget_data_url={widget_data_url}
             />
           ) : (
             <WidgetChatSection

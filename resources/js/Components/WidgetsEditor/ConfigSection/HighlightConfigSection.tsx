@@ -9,6 +9,7 @@ interface HighlightConfigSectionProps {
   highlightCards: HighlightCardData[]
   setHighlightCards: Dispatch<SetStateAction<HighlightCardData[]>>
   ai_agent?: boolean
+  widget_data_url: string
 }
 
 const EMPTY_HIGHLIGHT_CARD: HighlightCardData = {
@@ -23,6 +24,7 @@ export default function HighlightConfigSection({
   highlightCards,
   setHighlightCards,
   ai_agent,
+  widget_data_url,
 }: Readonly<HighlightConfigSectionProps>) {
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null)
 
@@ -180,6 +182,7 @@ export default function HighlightConfigSection({
             onMeasureChange={handleMeasureChange}
             onRemove={handleRemoveCard}
             ai_agent={ai_agent}
+            widget_data_url={widget_data_url}
           />
         </div>
       )}
