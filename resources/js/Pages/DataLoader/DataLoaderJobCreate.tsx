@@ -23,6 +23,7 @@ import Button from '@/ui/button/Button'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import CheckBox from '@/ui/form/CheckBox'
 import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
+import { calculateNextRunTime } from '@/libs/jobSchedule'
 
 interface Props {
   connections: Pick<DataLoaderConnection, 'id' | 'name'>[]
@@ -137,6 +138,8 @@ export default function DataLoaderJobCreate({
 
     return jobs
   }, [dataDetails])
+
+  const nextRunTime = useMemo(() => calculateNextRunTime(formData), [formData])
 
   useEffect(() => {
     if (formData.cron_type === HOURLY_CRON) {
@@ -254,7 +257,7 @@ export default function DataLoaderJobCreate({
       },
       sub_hour_interval: {
         type: 'number',
-        label: 'Sub Hour Interval',
+        label: 'Sub Hour Interval (in minutes)',
         setValue: setFormValue('sub_hour_interval'),
         hidden: formData.cron_type !== 'SUB_HOUR',
       },
@@ -375,6 +378,13 @@ export default function DataLoaderJobCreate({
       hideSubmitButton
       customSubmitData={customFormData}
     >
+      <div className='mb-6'>
+        {nextRunTime && (
+          <div className='rounded-md bg-blue-50 p-3'>
+            <p className='text-sm font-medium text-blue-700'>{nextRunTime}</p>
+          </div>
+        )}
+      </div>
       <div>
         <div className='flex flex-col md:col-span-2'>
           <CheckBox

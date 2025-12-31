@@ -24,6 +24,7 @@ import TimePicker from '@/ui/form/TimePicker'
 import { FieldErrors } from './SetupDataTable'
 import { DataTableFieldMapping } from '@/Components/DataLoader/useDataTableToJsonMapping'
 import MultiSelectDropdown from '@/Components/SetupDataTable/V2/MultiSelectDropdown'
+import { calculateNextRunTime } from '@/libs/jobSchedule'
 
 interface Props {
   fields: DataTableFieldConfig[]
@@ -118,6 +119,8 @@ export default function SetupDataTableForm({
       setFormValue('month_of_year')('')
     }
   }, [formData.cron_type, setFormValue])
+
+  const nextRunTime = useMemo(() => calculateNextRunTime(formData), [formData])
 
   const dataTableFields = useMemo(() => {
     return fields.map((field) => ({
@@ -399,7 +402,7 @@ export default function SetupDataTableForm({
                 <Input
                   value={formData.sub_hour_interval}
                   setValue={setFormValue('sub_hour_interval')}
-                  label={'Sub-hour Interval'}
+                  label={'Sub-hour Interval (in minutes)'}
                   type={'number'}
                 />
               </div>
@@ -452,6 +455,11 @@ export default function SetupDataTableForm({
             </div>
           )}
         </div>
+        {nextRunTime && (
+          <div className='mt-4 rounded-md bg-blue-50 p-3'>
+            <p className='text-sm font-medium text-blue-700'>{nextRunTime}</p>
+          </div>
+        )}
       </div>
 
       {/* Data Management Options Section */}
