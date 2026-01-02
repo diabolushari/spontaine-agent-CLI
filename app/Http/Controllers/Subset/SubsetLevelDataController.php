@@ -9,7 +9,7 @@ use App\Services\Subset\SubsetFindMaxValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class SubsetOfficeLevelDataController extends Controller
+class SubsetLevelDataController extends Controller
 {
     public function __invoke(
         SubsetDetail $subsetDetail,
@@ -38,7 +38,6 @@ class SubsetOfficeLevelDataController extends Controller
             ->excludeNonMeasurements(false)
             ->withSummaryLevel($request->level ?? 'state')
             ->withSubsetDetail($subsetDetail->id)
-            ->withDimension($request->dimension)
             ->getQuery();
 
         $levelResult = $query?->get();

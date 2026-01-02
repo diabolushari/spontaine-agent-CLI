@@ -157,10 +157,18 @@ export default function PageBuilderChat({
     e?.preventDefault()
     if (!chatMessage.trim() || hasError) return
 
+    const existingPage = page
+
+    const payload = {
+      message: chatMessage,
+      // If editing, pass the page object. If creating new, this can be null/undefined.
+      existing_page: existingPage,
+    }
+
     if (isAwaitingApproval) {
-      sendMessage({ action: 'new_query', message: chatMessage, existing_page: page })
+      sendMessage({ action: 'new_query', ...payload })
     } else {
-      sendMessage({ message: chatMessage, existing_page: page })
+      sendMessage(payload)
     }
 
     setChatMessage('')

@@ -19,6 +19,8 @@ interface OverviewProps {
   selectedMonth: Date
   hierarchy_item_id: number | null
   compact?: boolean
+  overviewLevel: string | null
+  overviewNameField: string | null
 }
 
 export default function OverviewWidgetContent({
@@ -30,7 +32,9 @@ export default function OverviewWidgetContent({
   highlightCards,
   selectedMonth,
   hierarchy_item_id,
+  overviewLevel,
   compact = false,
+  overviewNameField,
 }: Readonly<OverviewProps>) {
   const month = (selectedMonth.getMonth() + 1).toString().padStart(2, '0')
   const year = selectedMonth.getFullYear()
@@ -82,23 +86,24 @@ export default function OverviewWidgetContent({
   const url = useMemo(() => {
     if (!subsetId || !fieldsParam) return null
 
-    let baseUrl = `/subset/${subsetId}?month=${formattedMonth}&fields=${fieldsParam}`
-
-    // Logic:
-    // - If hierarchy_item_id is selected AND data is loaded -> append filter
-    // - If hierarchy_item_id is selected BUT data is NOT loaded -> return null (wait)
-    // - If hierarchy_item_id is NOT selected -> return base URL (no filter)
-
-    if (hierarchy_item_id) {
-      if (hierarchyFilter) {
-        return `${widget_data_url}${baseUrl}&${hierarchyFilter.col}=${hierarchyFilter.val}`
-      } else {
-        return null // Wait for filter details to load
-      }
+    const params: Record<string, string> = {
+      month: formattedMonth,
+      fields: fieldsParam,
     }
 
+    if (hierarchyFilter?.col && hierarchyFilter?.val) {
+      params[hierarchyFilter.col] = hierarchyFilter.val
+    }
+
+    if (overviewLevel) {
+      params['level'] = overviewLevel
+    }
+
+    const queryString = new URLSearchParams(params).toString()
+    let baseUrl = `/subset-level-data/${subsetId}?${queryString}`
+
     return `${widget_data_url}${baseUrl}`
-  }, [subsetId, fieldsParam, formattedMonth, hierarchyFilter, hierarchy_item_id])
+  }, [subsetId, fieldsParam, formattedMonth, hierarchyFilter, widget_data_url, overviewLevel])
 
   console.log('overview url', url)
 
@@ -126,13 +131,15 @@ export default function OverviewWidgetContent({
   const chartMargin = compact ? { top: 5, right: 5, left: 5, bottom: 5 } : undefined
   const axisHeight = compact ? 30 : undefined
 
+  console.log('overviewNameField', overviewNameField)
+
   return (
     <div className='min-h-0 w-full flex-1'>
       {chartType === 'bar' && data != null && (
         <div className='h-full w-full'>
           <CustomBarChart
             data={data.data}
-            dataKey={dimension}
+            dataKey={overviewLevel ? overviewNameField : dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
@@ -145,7 +152,7 @@ export default function OverviewWidgetContent({
         <div className='h-full w-full'>
           <CustomLineChart
             data={data.data}
-            dataKey={dimension}
+            dataKey={overviewLevel ? overviewNameField : dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             containerClassName={containerClass}
@@ -159,7 +166,7 @@ export default function OverviewWidgetContent({
           <CustomPieChart
             data={data.data}
             dataKey={fieldsToPlot[0].key}
-            nameKey={dimension}
+            nameKey={overviewLevel ? overviewNameField : dimension}
             keysToPlot={fieldsToPlot}
             colorScheme={colorPalette}
             fontSize={'text-sm'}

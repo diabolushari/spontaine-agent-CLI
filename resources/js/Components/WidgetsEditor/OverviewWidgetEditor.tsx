@@ -1,5 +1,3 @@
-import OverviewWidget from '@/Components/Widgets/OverviewWidget'
-import Card from '@/ui/Card/Card'
 import WidgetSettingsForm from '@/Components/WidgetsEditor/ConfigSection/WidgetSettingsForm'
 import WidgetChatSection from '@/Components/WidgetsEditor/ConfigSection/WidgetChatSection'
 import useCustomForm from '@/hooks/useCustomForm'
@@ -11,6 +9,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { MetaHierarchy } from '@/interfaces/meta_interfaces'
 import { Bot } from 'lucide-react'
+import OverviewWidget from '../Widgets/OverviewWidget'
 
 export interface SelectedMeasure {
   subset_column: string
@@ -31,6 +30,8 @@ export interface WidgetFormData {
   hierarchy_id: string
   hierarchy_item_id: string
   hierarchy_item_name: string
+  overview_level: string
+  overview_name_field: string
   measures: SelectedMeasure[]
   dimension: string
   color_palette: string
@@ -100,6 +101,8 @@ function parseFormDataToWidget(
         hierarchy_item_id:
           formData.hierarchy_item_id == '' ? null : Number(formData.hierarchy_item_id),
         hierarchy_item_name: formData.hierarchy_item_name,
+        level: formData.overview_level ?? '',
+        name_field: formData.overview_name_field,
       },
       highlight_cards: highlightCards ?? [],
       trend: {
@@ -178,6 +181,8 @@ export default function OverviewWidgetEditor({
     hierarchy_id: widget?.data?.overview?.hierarchy_id?.toString() ?? '',
     hierarchy_item_id: widget?.data?.overview?.hierarchy_item_id?.toString() ?? '',
     hierarchy_item_name: widget?.data?.overview?.hierarchy_item_name ?? '',
+    overview_level: widget?.data?.overview?.level ?? '',
+    overview_name_field: widget?.data?.overview?.name_field ?? '',
     measures: widget?.data?.overview?.measures ?? [],
     dimension: widget?.data?.overview?.dimension?.toString() ?? '',
     color_palette: widget?.data?.overview?.color_palette ?? 'boldWarm',
@@ -220,6 +225,8 @@ export default function OverviewWidgetEditor({
       hierarchy_id: widget.data?.overview?.hierarchy_id?.toString() ?? '',
       hierarchy_item_id: widget.data?.overview?.hierarchy_item_id?.toString() ?? '',
       hierarchy_item_name: widget.data?.overview?.hierarchy_item_name ?? '',
+      overview_level: widget.data?.overview?.level ?? '',
+      overview_name_field: widget.data?.overview?.name_field ?? '',
       measures: widget.data?.overview?.measures ?? [],
       dimension: widget.data?.overview?.dimension?.toString() ?? '',
       color_palette: widget.data?.overview?.color_palette ?? 'boldWarm',
@@ -263,6 +270,8 @@ export default function OverviewWidgetEditor({
         hierarchy_id: '',
         hierarchy_item_id: '',
         hierarchy_item_name: '',
+        overview_level: '',
+        overview_name_field: '',
         measures: [],
         dimension: '',
         color_palette: 'boldWarm',
@@ -291,6 +300,8 @@ export default function OverviewWidgetEditor({
         hierarchy_id: '',
         hierarchy_item_id: '',
         hierarchy_item_name: '',
+        overview_level: '',
+        overview_name_field: '',
         measures: [],
         dimension: '',
         color_palette: 'boldWarm',
