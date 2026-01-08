@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Subset\SubsetLevelDataController;
 use App\Http\Controllers\Utils\MetaHierarchyItemDetailController;
 use App\Http\Controllers\Utils\OrganizationExportController;
 use App\Http\Controllers\OrganizationController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\ChartData\SubsetGroupNameController;
 use App\Http\Controllers\ChartData\SubsetMeasuresController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\ChatHistory\ChatHistoryController;
+use App\Http\Controllers\ChatHistory\FavoriteController;
 use App\Http\Controllers\DataDetail\DataDetailColumnSearchController;
 use App\Http\Controllers\DataDetail\DataDetailController;
 use App\Http\Controllers\DataDetail\DataDetailSearchController;
@@ -390,6 +392,7 @@ Route::get('/get-insights', GetInsights::class)
     ->name('get-insights');
 
 Route::apiResource('/chat-history', ChatHistoryController::class);
+Route::post('/chat-history/favorite', FavoriteController::class)->name('chat-history.favorite');
 
 Route::get('/nav-editor', [NavEditorController::class, 'index'])->name('nav.editor');
 
@@ -468,6 +471,9 @@ Route::get('organization-export', OrganizationExportController::class)
 
 Route::get('meta-hierarchy-item-detail/{metaHierarchyItem}', MetaHierarchyItemDetailController::class)
     ->name('meta-hierarchy-item-detail');
+
+Route::get('subset-level-data/{subsetDetail}', SubsetLevelDataController::class)
+    ->name('subset-level-data');
 
 require __DIR__ . '/auth.php';
 

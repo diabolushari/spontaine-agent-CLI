@@ -169,6 +169,8 @@ export default function OverviewWidget({
           highlightCards={widget.data.highlight_cards}
           selectedMonth={selectedMonth ?? new Date()}
           hierarchy_item_id={widget.data.overview.hierarchy_item_id ?? null}
+          overviewLevel={widget.data.overview.level ?? null}
+          overviewNameField={widget.data.overview.name_field ?? null}
         />
       )}
       {selectedView === 'trend' && (

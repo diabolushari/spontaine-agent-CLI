@@ -110,6 +110,8 @@ export default function Widget({ widget, anchorMonth }: Readonly<Props>) {
           highlightCards={data.highlight_cards}
           selectedMonth={selectedMonth}
           hierarchy_item_id={data?.overview?.hierarchy_item_id}
+          overviewLevel={data?.overview?.level}
+          overviewNameField={data?.overview?.name_field}
         />
       )}
 
