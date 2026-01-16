@@ -307,7 +307,6 @@ export default function PageBuilderChat({
     if (msg.type === 'user') {
       if (msg.action === 'approve') return 'Approved the plan.'
       if (msg.action === 'retry') return 'Retrying generation...'
-      if (msg.action === 'new_query') return 'Submitted a new query.'
       return <p className='whitespace-pre-wrap leading-relaxed'>{msg.message}</p>
     }
 
