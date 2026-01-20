@@ -258,6 +258,9 @@ export interface DataLoaderJob extends Model {
   field_mapping?: DataTableFieldMapping[] | null
   schedule_start_time?: string | null
   sub_hour_interval?: number | null
+  retries?: number
+  retries_interval?: number
+  attempts?: number
 }
 
 export interface JobStatus extends Model {
@@ -309,6 +312,8 @@ export interface JobStatuses extends Model {
   is_successful: 0 | 1
   error_message?: string
   total_records: string
+  is_retry: 0 | 1
+  retry_attempt: number
 }
 
 export const sortOrder = [
