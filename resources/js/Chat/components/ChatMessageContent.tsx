@@ -71,6 +71,56 @@ const ChatMessageContent = ({ message }: Readonly<Props>) => {
           </Accordion>
         </div>
       )}
+      {message.contentType === 'final_response' &&
+        (
+          <div className='w-full'>
+            <ReactMarkdown
+              rehypePlugins={[rehypeRaw]}
+              remarkPlugins={[remarkGfm]}
+              components={{
+                table: ({ ...props }) => (
+                  <div className='w-full overflow-x-auto'>
+                    <table
+                      className='min-w-full divide-y divide-gray-200'
+                      {...props}
+                    />
+                    {message.data_table ? (
+                      <div className='mt-4 flex justify-end'>
+                        <button
+                          onClick={() =>
+                            downloadAsExcel(message.data_table!, `data_table_${message.id}`)
+                          }
+                          className='group flex items-center gap-2 rounded-lg border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 px-3 py-2 text-xs font-medium text-green-700 shadow-sm transition-all duration-200 hover:scale-105 hover:from-green-100 hover:to-emerald-100 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-1'
+                          title='Download Excel file'
+                        >
+                          <Download
+                            size={14}
+                            className='transition-transform group-hover:scale-110'
+                          />
+                          Download Excel
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                ),
+                th: ({ ...props }) => (
+                  <th
+                    className='bg-gray-100 px-4 py-2 text-left text-xs font-semibold text-gray-700'
+                    {...props}
+                  />
+                ),
+                td: ({ ...props }) => (
+                  <td
+                    className='px-4 py-2 text-sm text-gray-600'
+                    {...props}
+                  />
+                ),
+              }}
+            >
+              {stripCodeFencesAndIndent(message.content)}
+            </ReactMarkdown>
+          </div>
+        )}
       {message.contentType === 'text' &&
         (message.role === 'assistant' || message.role === 'user') && (
           <div className='w-full'>

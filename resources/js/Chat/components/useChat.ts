@@ -54,7 +54,7 @@ interface CurrentSession {
   title: string
   messages: ChatMessage[]
 }
-
+const START_OF_ANSWER_MARKER = '<spontaine:start_of_answer>'
 const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
 
 type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
@@ -102,20 +102,32 @@ export default function useChat(currentSession: CurrentSession) {
         //check if the message contains end of answer marker
         const contentStreamedSoFar = lastItem.content + contentToFlush
         let lastMessageContent = contentStreamedSoFar
-        if (contentStreamedSoFar.includes(END_OF_ANSWER_MARKER)) {
-          const parts = contentStreamedSoFar.split(END_OF_ANSWER_MARKER)
-          if (parts.length === 2) {
+        let newContentType = lastItem.contentType
+
+        // Check for START_OF_ANSWER_MARKER and extract content after it
+        if (contentStreamedSoFar.includes(START_OF_ANSWER_MARKER)) {
+          const afterStartMarker = contentStreamedSoFar.split(START_OF_ANSWER_MARKER)[1] || ''
+          lastMessageContent = afterStartMarker
+          newContentType = 'final_response'
+        }
+
+        // Check for END_OF_ANSWER_MARKER and extract content before it
+        if (lastMessageContent.includes(END_OF_ANSWER_MARKER)) {
+          const parts = lastMessageContent.split(END_OF_ANSWER_MARKER)
+          if (parts.length >= 2) {
             isCollectingMeta.current = true
             tempMetaInfo.current = parts[1].trim()
             lastMessageContent = parts[0]
             setStatus(STATUS_STREAMING_META)
           }
         }
+
         return oldValues.map((oldMessage) => {
           if (oldMessage.id === lastItem.id) {
             return {
               ...oldMessage,
               content: lastMessageContent,
+              contentType: newContentType,
             }
           }
           return oldMessage

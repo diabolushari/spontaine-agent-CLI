@@ -10,7 +10,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'action' | 'error'
   content: string
   description?: string
-  contentType: 'text' | 'table' | 'chart'
+  contentType: 'text' | 'table' | 'chart' | 'explore' | 'final_response'
   suggestions?: string[]
 }
 
