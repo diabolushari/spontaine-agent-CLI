@@ -20,7 +20,7 @@ const TabbedResponse = ({
     suggestions,
     handleSendMessage
 }: Readonly<TabbedResponseProps>) => {
-    const [activeTab, setActiveTab] = useState<'response' | 'visualization' | 'table'>('response')
+    const [activeTab, setActiveTab] = useState<'response' | 'visualization' | 'table' | 'more'>('response')
     const [copied, setCopied] = useState(false)
 
     const handleCopy = async () => {
@@ -44,6 +44,12 @@ const TabbedResponse = ({
         content: JSON.stringify(finalResponse.explore_data),
         contentType: 'explore' as const
     } : undefined)
+
+    const extrasToUse = finalResponse.extras ? {
+        ...finalResponse,
+        content: finalResponse.extras,
+        contentType: 'text' as const
+    } : undefined
 
     const extractTitle = (content: string) => {
         const match = content.match(/^#\s+(.*)/m)
@@ -108,21 +114,6 @@ const TabbedResponse = ({
                         <MessageSquareText size={18} />
                         Summary
                     </button>
-                    {chartToUse && (
-                        <button
-                            onClick={() => setActiveTab('visualization')}
-                            className={`
-                    flex items-center gap-2 px-3 py-1.5 text-base font-medium rounded-lg transition-all duration-200
-                    ${activeTab === 'visualization'
-                                    ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100'
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                                }
-                  `}
-                        >
-                            <LayoutGrid size={18} />
-                            Chart
-                        </button>
-                    )}
                     {hasTable && (
                         <button
                             onClick={() => setActiveTab('table')}
@@ -138,23 +129,43 @@ const TabbedResponse = ({
                             Table
                         </button>
                     )}
+                    {extrasToUse && (
+                        <button
+                            onClick={() => setActiveTab('more')}
+                            className={`
+                    flex items-center gap-2 px-3 py-1.5 text-base font-medium rounded-lg transition-all duration-200
+                    ${activeTab === 'more'
+                                    ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                }
+                  `}
+                        >
+                            <FileText size={18} />
+                            More
+                        </button>
+                    )}
                 </div>
 
                 {/* Tab Content */}
                 <div className="relative group/tabcontent border-t border-gray-100 pt-3">
                     {activeTab === 'response' && (
                         <div className="animate-in fade-in slide-in-from-left-2 duration-300">
+                            {chartToUse && (
+                                <div className="mb-4">
+                                    <ChatMessageContent message={chartToUse} />
+                                </div>
+                            )}
                             <ChatMessageContent message={finalResponse} />
-                        </div>
-                    )}
-                    {activeTab === 'visualization' && chartToUse && (
-                        <div className="animate-in fade-in slide-in-from-right-2 duration-300">
-                            <ChatMessageContent message={chartToUse} />
                         </div>
                     )}
                     {activeTab === 'table' && hasTable && (
                         <div className="animate-in fade-in slide-in-from-right-2 duration-300">
                             <ChatMessageContent message={finalResponse} />
+                        </div>
+                    )}
+                    {activeTab === 'more' && extrasToUse && (
+                        <div className="animate-in fade-in slide-in-from-right-2 duration-300">
+                            <ChatMessageContent message={extrasToUse} />
                         </div>
                     )}
                 </div>

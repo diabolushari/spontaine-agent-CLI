@@ -16,6 +16,7 @@ export interface ChatMessage {
   is_favorite?: boolean
   chart_data?: object[]
   explore_data?: { subsetID: number }
+  extras?: string
 }
 
 interface ChatHistory {
