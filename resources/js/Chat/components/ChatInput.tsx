@@ -87,24 +87,25 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
     return (
       <div className='w-full max-w-[920px] mx-auto relative px-4 pb-4 pt-2'>
-        <div className='relative flex items-center gap-3 rounded-[24px] bg-white pl-6 pr-1.5 py-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.06)] hover:shadow-[0_4px_25px_rgb(0,0,0,0.08)] transition-all overflow-hidden border border-gray-100/50'>
-          <textarea
-            ref={localRef}
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setIsFocused?.(true)}
-            onBlur={() => setIsFocused?.(false)}
-            placeholder={placeholder}
-            disabled={isLoading}
-            rows={1}
-            className='flex-1 min-h-[40px] py-2 bg-transparent border-none text-base text-gray-700 placeholder-gray-400 focus:ring-0 resize-none font-normal scrollbar-hide'
-          />
-
+        <div className='flex items-end gap-1'>
+          <div className='flex-1 relative flex items-center gap-3 rounded-[24px] bg-white pl-6 py-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.06)] hover:shadow-[0_4px_25px_rgb(0,0,0,0.08)] transition-all overflow-hidden border border-gray-100/50'>
+            <textarea
+              ref={localRef}
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setIsFocused?.(true)}
+              onBlur={() => setIsFocused?.(false)}
+              placeholder={placeholder}
+              disabled={isLoading}
+              rows={2}
+              className='flex-1 min-h-[40px] py-2 bg-transparent border-none text-base text-gray-700 placeholder-gray-400 focus:ring-0 resize-none font-normal scrollbar-hide'
+            />
+          </div>
           <button
             onClick={onSendMessage}
             disabled={!input.trim() || isLoading}
-            className='h-10 px-8 rounded-full bg-gradient-to-r from-[#00A99D] to-[#007AFF] text-white text-base font-medium shadow-[0_4px_12px_rgba(0,122,255,0.2)] hover:opacity-95 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0'
+            className='h-[77px] px-8 rounded-[24px] bg-gradient-to-r from-[#00A99D] to-[#007AFF] text-white text-base font-medium shadow-[0_4px_12px_rgba(0,122,255,0.2)] hover:opacity-95 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0'
           >
             Ask
           </button>

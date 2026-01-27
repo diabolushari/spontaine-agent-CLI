@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ChatMessage } from './MainArea'
 import ChatMessageContent from './ChatMessageContent'
-import { LayoutGrid, MessageSquareText, Table, Share, Copy, ExternalLink, FileText, ChevronRight } from 'lucide-react'
+import { LayoutGrid, MessageSquareText, Table, Share, Copy, Check, ExternalLink, FileText, ChevronRight } from 'lucide-react'
 
 interface TabbedResponseProps {
     finalResponse: ChatMessage
@@ -21,6 +21,17 @@ const TabbedResponse = ({
     handleSendMessage
 }: Readonly<TabbedResponseProps>) => {
     const [activeTab, setActiveTab] = useState<'response' | 'visualization' | 'table'>('response')
+    const [copied, setCopied] = useState(false)
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(finalResponse.content)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        } catch (err) {
+            console.error('Failed to copy text: ', err)
+        }
+    }
 
     const chartToUse = chart || (finalResponse.chart_data ? {
         ...finalResponse,
@@ -57,8 +68,12 @@ const TabbedResponse = ({
                 <div className="flex items-center justify-between mb-2 px-1">
                     <h3 className="text-[#1A365D] font-semibold text-lg">{title}</h3>
                     <div className="flex items-center gap-2">
-                        <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <Copy size={18} />
+                        <button
+                            onClick={handleCopy}
+                            className={`p-1.5 rounded-lg transition-colors ${copied ? 'text-green-500 bg-green-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+                            title={copied ? 'Copied!' : 'Copy response'}
+                        >
+                            {copied ? <Check size={18} /> : <Copy size={18} />}
                         </button>
                         <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                             <FileText size={18} />

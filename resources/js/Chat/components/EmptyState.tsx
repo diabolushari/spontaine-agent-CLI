@@ -24,21 +24,21 @@ const EmptyState = ({
     handleSendMessage,
 }: EmptyStateProps) => {
     return (
-        <div className='flex flex-1 flex-col items-center justify-center p-4 md:p-8 bg-[#F3F4F7]'>
-            <div className='w-full max-w-[920px]'>
+        <div className='flex flex-1 flex-col items-center justify-center p-4 md:p-8 bg-[#F8FAFC]'>
+            <div className='w-full max-w-[960px]'>
                 {/* Header Section */}
-                <div className='mb-10 pl-2'>
-                    <div className='flex items-center gap-4 mb-1'>
+                <div className='mb-14 pl-2'>
+                    <div className='flex items-center gap-5 mb-3 animate-in fade-in slide-in-from-left-4 duration-700'>
                         {/* Flower Icon */}
                         <div className='flex-shrink-0'>
-                            <img src='/CS_Flower_2 1.svg' alt='' />
+                            <img src='/CS_Flower_2 1.svg' alt='' className='w-14 h-14' />
                         </div>
 
                         <h1
-                            className='font-[Inter] font-medium text-[44px] leading-[53px] tracking-[-0.03em]'
+                            className='font-inter font-semibold text-[52px] leading-tight tracking-[-0.03em]'
                             style={{
                                 background:
-                                    'linear-gradient(90.72deg, #0FB54C -18.17%, #137EB8 76.33%, #1682CC 88.9%)',
+                                    'linear-gradient(135deg, #059669 0%, #1D4ED8 100%)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 backgroundClip: 'text',
@@ -50,52 +50,53 @@ const EmptyState = ({
 
                     {/* Question Text */}
                     <p
-                        className='font-[Inter] font-medium text-[35px] leading-[42px] tracking-[-0.03em]'
+                        className='font-inter font-medium text-[42px] leading-tight tracking-[-0.03em] animate-in fade-in slide-in-from-left-6 duration-700 delay-100'
                         style={{
                             background:
-                                'linear-gradient(90.72deg, #036226 -18.17%, #137EB8 76.33%, #1682CC 88.9%)',
+                                'linear-gradient(135deg, #064E3B 0%, #1E40AF 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text',
                         }}
                     >
-                        How can i help you today?
+                        How can I help you today?
                     </p>
                 </div>
 
                 {/* Input Bar */}
-                <div className='relative mb-12 w-full'>
+                <div className='relative mb-14 w-full animate-in fade-in zoom-in-95 duration-700 delay-200'>
                     <ChatInput
                         input={input}
                         handleInputChange={(e) => setInput(e.target.value)}
                         onSendMessage={onSendMessage}
                         isLoading={isLoading}
-                        placeholder=' '
+                        placeholder='Ask me a business question...'
                     />
                 </div>
 
-                {/* Suggestion Pills */}
-                <div className='grid w-full grid-cols-1 gap-4 md:grid-cols-2'>
+                {/* Suggestion Pills - Professional Card Style */}
+                <div className='flex flex-wrap items-start justify-start gap-4 pl-2 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300'>
                     {isSuggestionsLoading ? (
-                        <div className='col-span-full flex justify-center py-4'>
-                            <FiLoader className='h-6 w-6 animate-spin text-blue-600' />
+                        <div className='flex items-center gap-3 py-3'>
+                            <FiLoader className='h-5 w-5 animate-spin text-blue-600' />
+                            <span className='text-[15px] font-inter text-slate-500'>Identifying relevant insights...</span>
                         </div>
                     ) : (
                         dynamicSuggestions.map((text, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => handleSendMessage(text)}
-                                className='group flex items-center gap-3 rounded-full bg-white px-6 py-4 text-left shadow-[0_2px_8px_rgb(0,0,0,0.02)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgb(0,0,0,0.05)]'
+                                className='group flex items-center gap-3.5 rounded-xl bg-white px-5 py-3.5 text-left border border-slate-200/60 shadow-[0_2px_4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_8px_16px_rgba(0,0,0,0.05)] hover:border-blue-200 hover:bg-slate-50/50'
                             >
-                                {/* Lightning Icon - Solid Blue */}
-                                <span className='flex-shrink-0 text-[#2D7FF9]'>
+                                {/* Lightning Icon - Refined Container */}
+                                <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[#2D7FF9] transition-all duration-300 group-hover:bg-blue-100 group-hover:scale-110'>
                                     <HugeiconsIcon
                                         icon={FlashIcon}
-                                        size={20}
+                                        size={18}
                                         strokeWidth={2.5}
                                     />
                                 </span>
-                                <span className='text-base font-normal text-gray-700 group-hover:text-gray-900'>
+                                <span className='text-[15px] font-inter font-medium text-slate-700 group-hover:text-blue-700 leading-snug transition-colors'>
                                     {text}
                                 </span>
                             </button>

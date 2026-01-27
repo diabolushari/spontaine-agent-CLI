@@ -1,5 +1,5 @@
 import { ChevronDown, MoveRight } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
@@ -45,6 +45,7 @@ export default function ReasoningSection({
 }: Readonly<ReasoningSectionProps>) {
     const [isExpanded, setIsExpanded] = useState(true)
     const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
+    const scrollRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (isComplete) {
@@ -59,6 +60,16 @@ export default function ReasoningSection({
         if (messages.length > 0 && !isComplete && isExpanded) {
             const lastMessage = messages[messages.length - 1]
             setExpandedItems(new Set([lastMessage.id]))
+        }
+    }, [messages, isComplete, isExpanded])
+
+    // Auto-scroll to bottom while reasoning
+    useEffect(() => {
+        if (!isComplete && scrollRef.current && isExpanded) {
+            scrollRef.current.scrollTo({
+                top: scrollRef.current.scrollHeight,
+                behavior: 'smooth'
+            })
         }
     }, [messages, isComplete, isExpanded])
 
@@ -113,9 +124,13 @@ export default function ReasoningSection({
 
             {/* Content */}
             <div
+                ref={scrollRef}
                 className={`
-                    overflow-y-auto transition-all duration-300 ease-in-out h-36 pr-1
-                    ${isExpanded ? 'max-h-[2000px] opacity-100 mt-2.5' : 'max-h-0 opacity-0 mt-0'}
+                    overflow-y-auto transition-all duration-300 ease-in-out pr-1 scroll-smooth
+                    ${isExpanded
+                        ? (isComplete ? 'max-h-[2000px] mt-2.5 opacity-100' : 'max-h-[240px] mt-2.5 opacity-100')
+                        : 'max-h-0 mt-0 opacity-0'
+                    }
                 `}
             >
 
