@@ -33,7 +33,7 @@ const TabbedResponse = ({
         }
     }
 
-    const chartToUse = chart || (finalResponse.chart_data ? {
+    const chartToUse = (finalResponse.chart_data?.length > 0) && (finalResponse.chart_data ? {
         ...finalResponse,
         content: JSON.stringify(finalResponse.chart_data),
         contentType: 'chart' as const

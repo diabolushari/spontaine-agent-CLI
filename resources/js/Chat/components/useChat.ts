@@ -59,8 +59,8 @@ const START_OF_ANSWER_MARKER = '<spontaine:start_of_answer>'
 const END_OF_ANSWER_MARKER = '<spontaine:end_of_answer>'
 const START_OF_META_MARKER = '<spontaine:meta_data>'
 const END_OF_META_MARKER = '</spontaine:meta_data>'
-const START_OF_EXTRAS_MARKER = '<spontaneous_extras>'
-const END_OF_EXTRAS_MARKER = '</spontaneous_extras>'
+const START_OF_EXTRAS_MARKER = '<spontaine:extras>'
+const END_OF_EXTRAS_MARKER = '</spontaine:extras>'
 
 type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
 
