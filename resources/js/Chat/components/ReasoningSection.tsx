@@ -91,7 +91,10 @@ export default function ReasoningSection({
 
     const getPreviewTitle = (message: ChatMessage): string => {
         if (message.role === 'action') {
-            return message.content
+            return message.content || '...'
+        }
+        if (!message.content) {
+            return '...'
         }
         const lines = message.content.split('\n')
         const firstLine = lines.find(l => l.trim().length > 0) || ''

@@ -18,16 +18,19 @@ interface ChatHistory {
   title: string
   messages: ChatMessage[]
   id: number
-  timestamp: string
+  timestamp?: string
 }
+
+import { Favorite } from '@/Pages/Chat/ChatIndexPage'
 
 interface ChatProps {
   chatHistory: ChatHistory[]
   currentSession: ChatHistory
   aiSuggestionUrl?: string
+  favorites?: Favorite[]
 }
 
-export default function Chat({ chatHistory, currentSession, aiSuggestionUrl }: Readonly<ChatProps>) {
+export default function Chat({ chatHistory, currentSession, aiSuggestionUrl, favorites = [] }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
     messages,
@@ -76,6 +79,7 @@ export default function Chat({ chatHistory, currentSession, aiSuggestionUrl }: R
             chatHistory={chatHistory}
             sessionId={_currentSession.id}
             onSessionChange={switchConversation}
+            favorites={favorites}
           />
         </div>
 
