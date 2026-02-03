@@ -104,9 +104,6 @@ const TabbedResponse = ({
                                 <ExternalLink size={18} />
                             </button>
                         )}
-                        <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <FileText size={18} />
-                        </button>
                     </div>
                 </div>
 
