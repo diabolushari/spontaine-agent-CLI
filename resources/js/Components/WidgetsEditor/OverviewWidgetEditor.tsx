@@ -59,7 +59,7 @@ export interface WidgetFormData {
 
 interface Props {
   widget?: Widget
-  collectionId: number
+  collectionId?: number
   type: string
   metaHierarchy: MetaHierarchy[]
   thinkingMessage: string | null
@@ -79,7 +79,7 @@ interface Props {
 function parseFormDataToWidget(
   formData: WidgetFormData,
   highlightCards: HighlightCardData[],
-  collectionId: number,
+  collectionId?: number,
   id?: number
 ): Widget {
   return {
@@ -87,7 +87,7 @@ function parseFormDataToWidget(
     title: formData.title ?? 'Untitled Widget',
     subtitle: formData.subtitle ?? '',
     type: 'overview',
-    collection_id: collectionId,
+    collection_id: collectionId ?? 0,
     data: {
       description: formData.description,
       link: formData.link,
@@ -164,6 +164,7 @@ export default function OverviewWidgetEditor({
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
   const [activeTab, setActiveTab] = useState<'config' | 'chat'>(source_query ? 'chat' : 'config')
+  const [saveMode, setSaveMode] = useState<'save' | 'draft' | null>(null)
 
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
@@ -341,15 +342,21 @@ export default function OverviewWidgetEditor({
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (mode: 'save' | 'draft' = 'save') => {
+    setSaveMode(mode)
     const widgetData = parseFormDataToWidget(formData, highlightCards, collectionId)
+    const postData = {
+      ...widgetData,
+      save_mode: mode
+    }
+
     if (isEditMode) {
       post({
-        ...widgetData,
+        ...postData,
         _method: 'PUT',
       })
     } else {
-      post(widgetData)
+      post(postData)
     }
   }
 

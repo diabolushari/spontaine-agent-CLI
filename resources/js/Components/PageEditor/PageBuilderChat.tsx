@@ -224,11 +224,10 @@ export default function PageBuilderChat({
                     type='button'
                     key={widget.plan_item_id}
                     onClick={() => toggleSelected(widget.plan_item_id)}
-                    className={`w-full rounded-md border p-3 text-left transition ${
-                      checked
+                    className={`w-full rounded-md border p-3 text-left transition ${checked
                         ? 'border-blue-400 bg-blue-50 ring-1 ring-blue-300'
                         : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     <div className='flex items-start gap-2'>
                       <input
@@ -365,11 +364,10 @@ export default function PageBuilderChat({
                   )}
 
                   <div
-                    className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${
-                      isUser
+                    className={`relative max-w-[85%] rounded-2xl p-4 shadow-sm ${isUser
                         ? 'rounded-tr-sm bg-[#007AFF] text-white'
                         : 'rounded-tl-sm bg-white text-gray-800'
-                    }`}
+                      }`}
                   >
                     <div className='whitespace-pre-wrap text-sm leading-relaxed'>
                       {renderMessageContent(msg as AgentMessage)}

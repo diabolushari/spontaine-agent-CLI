@@ -111,9 +111,9 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets }: 
 
   const url = anchor_widget?.data.overview.subset_id
     ? route('subset-field-max-value', {
-        subsetDetail: anchor_widget?.data.overview.subset_id,
-        field: 'month',
-      })
+      subsetDetail: anchor_widget?.data.overview.subset_id,
+      field: 'month',
+    })
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)

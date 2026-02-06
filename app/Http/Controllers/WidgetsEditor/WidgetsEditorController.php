@@ -35,7 +35,17 @@ class WidgetsEditorController extends Controller
 
     public function store(WidgetEditorFormRequest $request)
     {
-        $widget = Widget::create($request->toArray());
+        $data = $request->toArray();
+
+        if ($request->saveMode) {
+            $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
+                'user_id' => auth()->id(),
+                'name' => $request->saveMode === 'save' ? 'save' : 'draft',
+            ]);
+            $data['collection_id'] = $collection->id;
+        }
+
+        $widget = Widget::create($data);
 
         return to_route('widget-collection.index')
             ->with('success', 'Widget created successfully');
@@ -67,8 +77,17 @@ class WidgetsEditorController extends Controller
 
     public function update(WidgetEditorFormRequest $request, Widget $widget)
     {
+        $data = $request->toArray();
 
-        $widget->update($request->toArray());
+        if ($request->saveMode) {
+            $collection = \App\Models\WidgetEditor\WidgetCollection::firstOrCreate([
+                'user_id' => auth()->id(),
+                'name' => $request->saveMode === 'save' ? 'save' : 'draft',
+            ]);
+            $data['collection_id'] = $collection->id;
+        }
+
+        $widget->update($data);
 
         return to_route('widget-collection.index')
             ->with('success', 'Widget updated successfully');
