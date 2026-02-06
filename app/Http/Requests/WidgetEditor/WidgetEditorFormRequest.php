@@ -22,6 +22,7 @@ class WidgetEditorFormRequest extends Data
         public readonly ?int $collectionId,
         public readonly array $data,
         public readonly ?string $saveMode,
+        public readonly ?int $userId,
     ) {
     }
 }
