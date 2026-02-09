@@ -343,7 +343,7 @@ Route::get('subset-fields', SubsetFieldsListController::class)
 Route::get('static-list', StaticListController::class)
     ->name('static-list');
 
-Route::get('chat', ChatController::class)
+Route::get('chat/{chatHistory?}', ChatController::class)
     ->name('chat');
 
 Route::get('subset-documentation', SubsetDocumentationController::class)
