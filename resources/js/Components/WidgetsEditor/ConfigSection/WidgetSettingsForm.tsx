@@ -49,17 +49,10 @@ export default function WidgetSettingsForm({
   return (
     <div
       className={
-        embedded
-          ? 'space-y-3'
-          : 'space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm'
+        'space-y-3'
       }
     >
-      {!embedded && (
-        <div className='mb-4'>
-          <h2 className='mb-1 text-lg font-semibold text-slate-800'>Widget settings</h2>
-          <p className='text-sm text-slate-500'>Configure the basic information for your widget.</p>
-        </div>
-      )}
+
       <Accordion.Root
         type='single'
         collapsible={true}

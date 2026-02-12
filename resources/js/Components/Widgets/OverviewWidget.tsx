@@ -16,6 +16,9 @@ interface OverviewWidgetProps {
   initialMonth?: Date | null
   selectedView: 'overview' | 'trend' | 'ranking'
   setSelectedView: (view: 'overview' | 'trend' | 'ranking') => void
+  isEditable?: boolean
+  onTitleChange?: (value: string) => void
+  onSubtitleChange?: (value: string) => void
 }
 
 interface SubsetGroupDetail {
@@ -32,6 +35,9 @@ export default function OverviewWidget({
   widget,
   selectedView,
   setSelectedView,
+  isEditable = false,
+  onTitleChange,
+  onSubtitleChange,
 }: Readonly<OverviewWidgetProps>) {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null)
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
@@ -134,6 +140,9 @@ export default function OverviewWidget({
       hasTrend={hasTrend}
       hasHighlightCards={hasHighlightCards}
       subsetGroupName={widget.data.explore?.subset_group_name}
+      isEditable={isEditable}
+      onTitleChange={onTitleChange}
+      onSubtitleChange={onSubtitleChange}
     >
       {hasHighlightData && selectedView === 'overview' && (
         <HighlightBar

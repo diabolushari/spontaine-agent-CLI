@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CheckCircle, Send } from 'lucide-react'
 
 interface WidgetChatSectionProps {
@@ -30,12 +30,16 @@ export default function WidgetChatSection({
 
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
     }
   }, [chatInput])
+
+  useEffect(() => {
+    textareaRef.current?.focus()
+  }, [])
 
   const handleSend = () => {
     const lastMsg = messages[messages.length - 1]
@@ -50,7 +54,7 @@ export default function WidgetChatSection({
   }
 
   return (
-    <div className='relative flex h-[600px] flex-col bg-slate-50'>
+    <div className='relative flex h-full flex-col bg-slate-50'>
       <div className='flex-1 overflow-y-auto p-4'>
         {messages.length === 0 && (
           <div className='flex h-full flex-col items-center justify-center text-gray-400'>
