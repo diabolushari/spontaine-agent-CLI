@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { CheckCircle, Send } from 'lucide-react'
+import { ChevronDown, ChevronRight, Send, Terminal } from 'lucide-react'
 
 interface WidgetChatSectionProps {
   messages: any[]
@@ -10,6 +10,38 @@ interface WidgetChatSectionProps {
   onActionSend: (action: string, message?: string) => void
   onSave: (mode?: 'save' | 'draft' | 'community') => void
   connectionStatus: boolean
+}
+
+const CollapsibleQuery = ({ query }: { query: string }) => {
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  return (
+    <div className='overflow-hidden rounded-md bg-blue-50/50 text-blue-900 border border-blue-100'>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className='flex w-full items-center justify-between p-2.5 transition-colors hover:bg-blue-100/50'
+      >
+        <div className='flex items-center gap-2'>
+          <Terminal size={12} className='text-blue-600' />
+          <span className='text-[10px] font-bold uppercase tracking-widest text-blue-700/70'>
+            Refactored Query
+          </span>
+        </div>
+        {isOpen ? (
+          <ChevronDown size={14} className='text-blue-400' />
+        ) : (
+          <ChevronRight size={14} className='text-blue-400' />
+        )}
+      </button>
+      {isOpen && (
+        <div className='border-t border-blue-100 p-2.5 pt-2'>
+          <code className='block whitespace-pre-wrap text-[11px] leading-relaxed font-mono opacity-80'>
+            {query}
+          </code>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function WidgetChatSection({
@@ -140,12 +172,7 @@ export default function WidgetChatSection({
                       )}
 
                       {msg.refactored_query && (
-                        <div className='rounded-md bg-blue-50 p-2.5 text-blue-900'>
-                          <span className='font-bold uppercase tracking-wider'>
-                            Refactored Query:{' '}
-                          </span>
-                          <span>{msg.refactored_query}</span>
-                        </div>
+                        <CollapsibleQuery query={msg.refactored_query} />
                       )}
 
                       <div className='flex gap-2 pt-1'>
@@ -155,14 +182,6 @@ export default function WidgetChatSection({
                             className='flex-1 rounded-lg bg-[#007AFF] px-3 py-2 font-medium text-white transition-colors hover:bg-blue-600'
                           >
                             Proceed
-                          </button>
-                        )}
-                        {showResummarize && (
-                          <button
-                            onClick={() => onActionSend('re-summarize')}
-                            className='flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50'
-                          >
-                            Re-plan
                           </button>
                         )}
                       </div>

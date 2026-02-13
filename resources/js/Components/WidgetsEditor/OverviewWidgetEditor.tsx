@@ -54,6 +54,11 @@ export interface WidgetFormData {
   rank_field_column: string | null
   explore_subset_group_name: string
   ai_agent: boolean
+  view: {
+    overview: boolean
+    trend: boolean
+    ranking: boolean
+  }
 }
 
 interface Props {
@@ -93,6 +98,7 @@ function parseFormDataToWidget(
       ai_agent: formData.ai_agent,
       data_table_id: Number(formData.data_table_id) || 0,
       subset_group_id: Number(formData.subset_group_id) || 0,
+      view: formData.view,
       overview: {
         chart_type: formData.chart_type,
         measures: formData.measures ?? [],
@@ -161,7 +167,7 @@ export default function OverviewWidgetEditor({
 }: Readonly<Props>) {
   const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
-  const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking'>('overview')
+  const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking' | null>(null)
   const [activeTab, setActiveTab] = useState<'config' | 'chat'>(source_query ? 'chat' : 'config')
   const [saveMode, setSaveMode] = useState<'save' | 'draft' | 'community' | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(source_query ? true : false)
@@ -172,7 +178,7 @@ export default function OverviewWidgetEditor({
   useEffect(() => {
     if (openItem === 'trend') setSelectedView('trend')
     if (openItem === 'ranking') setSelectedView('ranking')
-    if (openItem === 'basic') setSelectedView('overview')
+    // if (openItem === 'basic') setSelectedView('overview')
     if (openItem === 'chart') setSelectedView('overview')
     if (openItem === 'highlight_cards') setSelectedView('overview')
   }, [openItem])
@@ -211,7 +217,43 @@ export default function OverviewWidgetEditor({
     rank_field_column: widget?.data?.rank?.field_column ?? null,
     explore_subset_group_name: widget?.data?.explore?.subset_group_name ?? '',
     ai_agent: widget?.data?.ai_agent ?? false,
+
+    view: widget?.data?.view ?? { overview: false, trend: false, ranking: false },
+
   })
+
+  // Synchronize selectedView with formData.view
+  useEffect(() => {
+    const { overview, trend, ranking } = formData.view
+
+    // If no views are selected, set selectedView to null
+    if (!overview && !trend && !ranking) {
+      if (selectedView !== null) setSelectedView(null)
+      return
+    }
+
+    // If selectedView is null but some views are selected, pick the first available one
+    if (selectedView === null) {
+      if (overview) setSelectedView('overview')
+      else if (trend) setSelectedView('trend')
+      else if (ranking) setSelectedView('ranking')
+    } else {
+      // If the currently selectedView is no longer active, fallback to another active one
+      if (selectedView === 'overview' && !overview) {
+        if (trend) setSelectedView('trend')
+        else if (ranking) setSelectedView('ranking')
+        else setSelectedView(null)
+      } else if (selectedView === 'trend' && !trend) {
+        if (overview) setSelectedView('overview')
+        else if (ranking) setSelectedView('ranking')
+        else setSelectedView(null)
+      } else if (selectedView === 'ranking' && !ranking) {
+        if (overview) setSelectedView('overview')
+        else if (trend) setSelectedView('trend')
+        else setSelectedView(null)
+      }
+    }
+  }, [formData.view, selectedView])
 
   const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
     widget?.data?.highlight_cards ?? []
@@ -255,6 +297,7 @@ export default function OverviewWidgetEditor({
       rank_field_column: widget.data?.rank?.field_column ?? null,
       explore_subset_group_name: widget.data?.explore?.subset_group_name ?? '',
       ai_agent: widget.data?.ai_agent ?? false,
+      view: widget.data?.view ?? { overview: false, trend: false, ranking: false },
     })
 
     // 2. Update the Highlight Cards
@@ -395,6 +438,34 @@ export default function OverviewWidgetEditor({
                 link: route('widget-editor.create', { type: 'overview' }),
               },
             ]}
+            actions={
+              <div className='flex items-center gap-2'>
+                <button
+                  onClick={() => handleSubmit('draft')}
+                  disabled={loading}
+                  className='h-9 rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-gray-600 transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-50'
+                >
+                  Draft
+                </button>
+                <button
+                  onClick={() => handleSubmit('save')}
+                  disabled={loading}
+                  className='h-9 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50'
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => handleSubmit('community')}
+                  disabled={loading}
+                  className='h-9 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition-all hover:bg-emerald-700 active:scale-95 disabled:opacity-50'
+                >
+                  Add to Community
+                </button>
+                {loading && (
+                  <div className='ml-2 h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent' />
+                )}
+              </div>
+            }
           />
           <EditorPreview
             thinkingMessage={thinkingMessage}
@@ -408,6 +479,7 @@ export default function OverviewWidgetEditor({
             setSelectedView={setSelectedView}
             onTitleChange={setFormValue('title')}
             onSubtitleChange={setFormValue('subtitle')}
+            onEditSection={setOpenItem}
           />
         </div>
       </div>

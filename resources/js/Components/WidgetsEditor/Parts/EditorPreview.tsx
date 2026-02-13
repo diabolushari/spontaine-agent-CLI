@@ -11,10 +11,11 @@ interface EditorPreviewProps {
     setActiveTab: (tab: 'config' | 'chat') => void
     setIsSidebarOpen: (value: boolean) => void
     previewWidget: Widget
-    selectedView: 'overview' | 'trend' | 'ranking'
-    setSelectedView: (view: 'overview' | 'trend' | 'ranking') => void
+    selectedView: 'overview' | 'trend' | 'ranking' | null
+    setSelectedView: (view: 'overview' | 'trend' | 'ranking' | null) => void
     onTitleChange: (value: string) => void
     onSubtitleChange: (value: string) => void
+    onEditSection: (value: string) => void
 }
 
 export default function EditorPreview({
@@ -29,6 +30,7 @@ export default function EditorPreview({
     setSelectedView,
     onTitleChange,
     onSubtitleChange,
+    onEditSection,
 }: EditorPreviewProps) {
     return (
         <div className='relative min-h-[500px] w-full max-w-[800px]'>
@@ -71,6 +73,9 @@ export default function EditorPreview({
                             <button
                                 onClick={() => {
                                     setBuildMode(true)
+                                    setIsSidebarOpen(true)
+                                    setActiveTab('config')
+                                    onEditSection('basic')
                                 }}
                                 className='flex h-12 w-40 items-center justify-center gap-2 rounded-xl bg-white font-bold text-gray-900 shadow-xl transition-all hover:scale-105 hover:bg-gray-50 active:scale-95'
                             >
@@ -98,6 +103,7 @@ export default function EditorPreview({
                     isEditable={true}
                     onTitleChange={onTitleChange}
                     onSubtitleChange={onSubtitleChange}
+                    onEditSection={onEditSection}
                 />
             )}
         </div>

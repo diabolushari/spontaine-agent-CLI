@@ -15,7 +15,7 @@ interface WidgetLayoutProps {
   link?: string
   selectedMonth: Date | null
   setSelectedMonth: React.Dispatch<React.SetStateAction<Date | null>>
-  selectedView?: string
+  selectedView?: string | null
   onViewChange?: (view: string) => void
   hasOverview?: boolean
   hasRanking?: boolean
