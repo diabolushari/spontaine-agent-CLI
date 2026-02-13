@@ -78,24 +78,30 @@ export default function HeroSection({
                 {/* Search/Chat Bar */}
                 <div className='w-full max-w-3xl'>
                     <form onSubmit={handleSearch} className={`relative group transition-all duration-300 ${isFocused ? 'scale-[1.01]' : ''}`}>
-                        <div className={`absolute -inset-0.5 rounded-[2rem] bg-gradient-to-r from-emerald-500 via-blue-500 to-indigo-500 opacity-30 blur transition duration-500 ${isFocused ? 'opacity-60 blur-md' : 'group-hover:opacity-50'}`}></div>
-                        <div className='relative flex items-center rounded-[2rem] bg-white p-2 shadow-xl ring-1 ring-slate-100 transition-all'>
-                            <div className='pl-4 pr-2'>
+                        <div className={`absolute -inset-0.5 rounded-xl bg-gradient-to-r from-emerald-500 via-blue-500 to-indigo-500 opacity-30 blur transition duration-500 ${isFocused ? 'opacity-60 blur-md' : 'group-hover:opacity-50'}`}></div>
+                        <div className='relative flex items-center rounded-xl bg-white p-1.5 shadow-xl ring-1 ring-slate-100 transition-all'>
+                            <div className='pl-3 pr-2'>
                                 <Sparkles className={`h-6 w-6 transition-colors ${isFocused ? 'text-blue-600' : 'text-slate-400'}`} />
                             </div>
-                            <input
-                                type='text'
+                            <textarea
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 onFocus={() => setIsFocused(true)}
                                 onBlur={() => setIsFocused(false)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        handleSearch(e as any);
+                                    }
+                                }}
                                 placeholder='Ask anything about your data...'
-                                className='h-14 w-full border-none bg-transparent px-2 text-lg text-slate-900 placeholder-slate-400 focus:ring-0'
+                                rows={2}
+                                className='w-full resize-none border-none bg-transparent px-2 py-2 text-base text-slate-900 placeholder-slate-400 focus:ring-0 scrollbar-hide'
                             />
                             <button
                                 type='submit'
                                 disabled={!query.trim()}
-                                className='flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg transition-all hover:bg-blue-700 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100'
+                                className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg transition-all hover:bg-blue-700 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100'
                             >
                                 <ArrowRight className='h-5 w-5' />
                             </button>
