@@ -33,7 +33,7 @@ class SubsetDuplicateController extends Controller implements HasMiddleware
 
             // Replicate the subset detail
             $newSubset = $subsetDetail->replicate();
-            $newSubset->name = $subsetDetail->name . ' (Copy)';
+            $newSubset->name = $subsetDetail->name.' (Copy)';
             $newSubset->created_by = $user;
             $newSubset->updated_by = $user;
             $newSubset->save();
@@ -67,19 +67,20 @@ class SubsetDuplicateController extends Controller implements HasMiddleware
 
             DB::commit();
 
-            return redirect()
-                ->route('subset.edit', $newSubset->id)
-                ->with([
-                    'message' => 'Subset duplicated successfully',
-                ]);
         } catch (Throwable $e) {
             DB::rollBack();
 
             return redirect()
                 ->back()
                 ->with([
-                    'error' => 'Failed to duplicate subset: ' . $e->getMessage(),
+                    'error' => 'Failed to duplicate subset: '.$e->getMessage(),
                 ]);
         }
+
+        return redirect()
+            ->route('subset.edit', $newSubset->id)
+            ->with([
+                'message' => 'Subset duplicated successfully',
+            ]);
     }
 }
