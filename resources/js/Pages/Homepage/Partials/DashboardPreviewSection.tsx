@@ -1,9 +1,11 @@
 import CustomPageRow from '@/Components/PageEditor/CustomPage/CustomPageRow'
 import { DashboardPage } from '@/interfaces/data_interfaces'
 import { router } from '@inertiajs/react'
-import { Maximize2, Plus } from 'lucide-react'
+import { ArrowRight, Maximize2, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+declare function route(name: string, params?: any): string
 
 interface Props {
     pages: DashboardPage[]
@@ -63,7 +65,7 @@ export default function DashboardPreviewSection({ pages }: Props) {
                         className='overflow-hidden bg-white relative'
                         transition={{ duration: 0.5, ease: "easeInOut" }}
                     >
-                        <div className="pointer-events-none select-none p-8 origin-top transition-all duration-500 ease-in-out">
+                        <div className=" p-8 origin-top transition-all duration-500 ease-in-out">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={selectedPage ? selectedPage.id : 'empty'}
@@ -106,6 +108,16 @@ export default function DashboardPreviewSection({ pages }: Props) {
                             <span>{isExpanded ? 'Collapse View' : 'Expand View'}</span>
                         </button>
                     </div>
+                </div>
+
+                <div className='mt-8 flex justify-center'>
+                    <button
+                        onClick={() => router.visit(route('page-editor.index'))}
+                        className='flex items-center gap-2 text-sm font-medium text-emerald-600 hover:text-emerald-700'
+                    >
+                        View more dashboards
+                        <ArrowRight className='h-4 w-4' />
+                    </button>
                 </div>
             </div>
         </div>

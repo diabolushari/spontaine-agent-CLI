@@ -141,7 +141,7 @@ export default function OverviewWidgetContent({
   return (
     <div
       className='flex min-h-0 w-full flex-1 cursor-pointer flex-col [container-type:inline-size]'
-      onClick={() => onEditSection?.('chart')}
+
     >
       {highlightCards && highlightCards.length > 0 && (
         <div className='mb-[2cqw]'>
@@ -152,7 +152,7 @@ export default function OverviewWidgetContent({
           />
         </div>
       )}
-      <div className='relative h-[50cqw] min-h-[250px] w-full transition-all hover:scale-[1.005]'>
+      <div className='relative h-[50cqw] min-h-[250px] w-full transition-all hover:scale-[1.005]' onClick={() => onEditSection?.('chart')}>
         {chartType === 'bar' && data != null && (
           <CustomBarChart
             data={data.data}
