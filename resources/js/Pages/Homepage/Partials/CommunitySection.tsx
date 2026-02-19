@@ -89,7 +89,7 @@ export default function CommunitySection({ widgets, itemVariants }: Props) {
 
                                         <div className='mt-auto flex items-center justify-between text-xs text-gray-500'>
                                             <span className="flex items-center gap-1">
-                                                Generated {new Date(widget.updated_at || Date.now()).toLocaleDateString([], { month: 'short', day: 'numeric' })} ago
+                                                Generated {new Date(widget.updated_at || Date.now()).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                             </span>
                                             <span className='flex items-center gap-1 font-medium text-gray-400'>
                                                 <span className="w-1 h-1 rounded-full bg-gray-300"></span>

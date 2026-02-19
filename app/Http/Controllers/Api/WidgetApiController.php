@@ -18,6 +18,7 @@ class WidgetApiController
         try {
             $data = $request->toArray();
 
+
             if ($request->saveMode) {
                 $userId = $request->userId ?? auth()->id();
                 $collection = \App\Models\WidgetEditor\WidgetCollection::where([
