@@ -73,7 +73,7 @@ interface Props {
   onActionSend: (action: string, message?: string) => void
   onPreviewWidgetChange?: (widget: Widget) => void
   messages: any[]
-  source_query?: string
+  sourceQuery?: string
   connectionStatus: boolean
 }
 
@@ -162,15 +162,15 @@ export default function OverviewWidgetEditor({
   onActionSend,
   onPreviewWidgetChange,
   messages,
-  source_query,
+  sourceQuery,
   connectionStatus
 }: Readonly<Props>) {
   const isEditMode = widget?.id != null
   const [openItem, setOpenItem] = React.useState<string>('basic')
   const [selectedView, setSelectedView] = useState<'overview' | 'trend' | 'ranking' | null>(null)
-  const [activeTab, setActiveTab] = useState<'config' | 'chat'>(source_query ? 'chat' : 'config')
+  const [activeTab, setActiveTab] = useState<'config' | 'chat'>(sourceQuery ? 'chat' : 'config')
   const [saveMode, setSaveMode] = useState<'save' | 'draft' | 'community' | null>(null)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(source_query ? true : false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(sourceQuery ? true : false)
   const [buildMode, setBuildMode] = useState<boolean>(widget ? true : false)
 
   const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props

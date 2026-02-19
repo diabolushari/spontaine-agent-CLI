@@ -29,9 +29,9 @@ const WidgetGenerationCard: React.FC<WidgetGenerationCardProps> = ({ widgetGener
 
     const handleGotoEditor = () => {
         router.get(route('widget-editor.create'), {
-            collection_id: 1,
+            collectionId: 1,
             type: 'overview',
-            source_query: prompt
+            sourceQuery: prompt
         })
     }
 
