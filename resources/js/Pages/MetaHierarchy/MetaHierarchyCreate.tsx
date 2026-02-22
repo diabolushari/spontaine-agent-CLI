@@ -131,11 +131,11 @@ export default function MetaHierarchyCreate({
         label: 'Secondary Field (If Any)',
         setValue: setFormValue('secondary_field_name'),
       },
-      default_heirarchy: {
-        type: 'text',
-        label: 'Default Heirarchy',
-        setValue: setFormValue('default_heirarchy'),
-      },
+      // default_heirarchy: {
+      //   type: 'text',
+      //   label: 'Default Heirarchy',
+      //   setValue: setFormValue('default_heirarchy'),
+      // },
     } as Record<U, FormItem<T[U], K, G, L>>
   }, [setFormValue])
 

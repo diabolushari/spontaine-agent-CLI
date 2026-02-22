@@ -103,7 +103,7 @@ export default function SubsetEdit({
         dataKey: 'id',
         list: hierarchies,
         showAllOption: true,
-        // label: 'Heirarchy',
+        label: 'Primary Heirarchy',
       },
       group_data: {
         label: 'Perform Grouping & Aggregation Operations on Data',
