@@ -1,5 +1,10 @@
 import useCustomForm from '@/hooks/useCustomForm'
-import { DashboardPage, Widget, WidgetPosition as WidgetSlot } from '@/interfaces/data_interfaces'
+import {
+  DashboardPage,
+  HighlightCardData,
+  Widget,
+  WidgetPosition as WidgetSlot,
+} from '@/interfaces/data_interfaces'
 import { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
@@ -108,13 +113,13 @@ export function usePageEditor(
 
   useEffect(() => {
     const missingIds = new Set<number>()
-      ; (pageStructure.page ?? []).forEach((row) => {
-        row.widgets.forEach((slot) => {
-          if (slot.widgetId != null && !knownWidgets.has(slot.widgetId)) {
-            missingIds.add(slot.widgetId)
-          }
-        })
+    ;(pageStructure.page ?? []).forEach((row) => {
+      row.widgets.forEach((slot) => {
+        if (slot.widgetId != null && !knownWidgets.has(slot.widgetId)) {
+          missingIds.add(slot.widgetId)
+        }
       })
+    })
 
     missingIds.forEach((id) => fetchWidget(id))
   }, [pageStructure.page, knownWidgets, fetchWidget])
@@ -304,7 +309,7 @@ export function usePageEditor(
 
       const page = [...pageList]
 
-        ;[page[index], page[targetIndex]] = [page[targetIndex], page[index]]
+      ;[page[index], page[targetIndex]] = [page[targetIndex], page[index]]
 
       setFormValue('page')(page)
       return true
@@ -391,6 +396,30 @@ export function usePageEditor(
     })
   }
 
+  const [highlightCards, setHighlightCards] = useState<HighlightCardData[]>(
+    pageStructure.config?.highlight_cards ?? []
+  )
+
+  useEffect(() => {
+    if (pageStructure.config?.highlight_cards) {
+      setHighlightCards(pageStructure.config.highlight_cards)
+    }
+  }, [pageStructure.config?.highlight_cards])
+
+  const handleHighlightCardsUpdate = useCallback(
+    (action: HighlightCardData[] | ((prev: HighlightCardData[]) => HighlightCardData[])) => {
+      setHighlightCards((prev) => {
+        const nextCards = typeof action === 'function' ? action(prev) : action
+        setFormValue('config')({
+          ...pageStructure.config,
+          highlight_cards: nextCards,
+        } as any)
+        return nextCards
+      })
+    },
+    [pageStructure.config, setFormValue]
+  )
+
   return {
     pageStructure,
     setFormValue,
@@ -414,5 +443,7 @@ export function usePageEditor(
     handleAddWidgetToSlot,
     handleRemoveTextBlock,
     handleHeadingStyleChange,
+    highlightCards,
+    handleHighlightCardsUpdate,
   }
 }

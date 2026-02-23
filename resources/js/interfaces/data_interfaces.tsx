@@ -615,6 +615,7 @@ export interface DashboardPage extends Model {
   published: boolean
   anchor_widget: number | null
   config: {
+    highlight_cards?: HighlightCardData[]
     heading_style: number | null
   } | null
 }

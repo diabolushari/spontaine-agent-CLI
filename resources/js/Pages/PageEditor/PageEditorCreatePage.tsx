@@ -3,7 +3,7 @@ import axios from 'axios'
 import PagePreviewArea from '@/Components/PageEditor/PagePreviewArea'
 import PageConfigurationSidebar from '@/Components/PageEditor/PageConfigurationSidebar'
 import useInertiaPost from '@/hooks/useInertiaPost'
-import { DashboardPage, Widget } from '@/interfaces/data_interfaces'
+import { DashboardPage, Widget, HighlightCardData } from '@/interfaces/data_interfaces'
 import AnalyticsDashboardLayout from '@/Layouts/AnalyticsDashboardLayout'
 import DashboardPadding from '@/Layouts/DashboardPadding'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
@@ -14,6 +14,12 @@ import WidgetListView from '@/Components/WidgetsEditor/WidgetListView'
 import WidgetDetailView from '@/Components/WidgetsEditor/WidgetDetailView'
 import HeadingStyleComponent from '@/Components/PageEditor/HeadingStyleComponent'
 import PageEditorHeader from '@/Components/PageEditor/PageEditorHeader'
+import { Edit } from 'lucide-react'
+import Modal from '@/ui/Modal/Modal'
+import HighlightConfigSection from '@/Components/WidgetsEditor/ConfigSection/HighlightConfigSection'
+import { usePage } from '@inertiajs/react'
+import { PageProps } from '@/types'
+import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
 
 interface Props {
   page_agent_url?: string
@@ -33,10 +39,18 @@ interface SubsetMaxValueResponse {
   max_value: string | null
 }
 
-export default function PageEditorCreatePage({ page_agent_url, page, widgets, auth }: Readonly<Props>) {
+export default function PageEditorCreatePage({
+  page_agent_url,
+  page,
+  widgets,
+  auth,
+}: Readonly<Props>) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [selectWidget, setSelectWidget] = useState(null)
   const [selectedWidget, setSelectedWidget] = useState<Widget | null>(null)
+  const [showHighlightModal, setShowHighlightModal] = useState(false)
+
+  const { widget_data_url } = usePage<PageProps & { widget_data_url: string }>().props
 
   const { post } = useInertiaPost(
     page ? route('page-editor.update', page.id) : route('page-editor.store'),
@@ -67,6 +81,8 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets, au
     handleAddWidgetToSlot,
     handleRemoveTextBlock,
     handleHeadingStyleChange,
+    highlightCards,
+    handleHighlightCardsUpdate,
   } = usePageEditor(page ?? null, widgets, setIsSidebarOpen)
 
   const sensors = useSensors(
@@ -119,9 +135,9 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets, au
 
   const url = anchor_widget?.data.overview.subset_id
     ? route('subset-field-max-value', {
-      subsetDetail: anchor_widget?.data.overview.subset_id,
-      field: 'month',
-    })
+        subsetDetail: anchor_widget?.data.overview.subset_id,
+        field: 'month',
+      })
     : null
 
   const [maxValueData, loading] = useFetchRecord<SubsetMaxValueResponse>(url)
@@ -197,6 +213,45 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets, au
                     onChange={handleHeadingStyleChange}
                   />
                 </div>
+                <div className='mb-8 rounded-xl border border-gray-200 bg-white p-6'>
+                  <div className='mb-4 flex items-center justify-between'>
+                    <h3 className='text-lg font-bold text-gray-900'>Highlight Cards</h3>
+                    <button
+                      type='button'
+                      onClick={() => setShowHighlightModal(true)}
+                      className='flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50'
+                    >
+                      <Edit className='h-4 w-4' />
+                      Edit Configuration
+                    </button>
+                  </div>
+                  <p className='text-sm text-gray-500'>
+                    Configure up to 4 highlight cards to display key metrics at the top of your
+                    page.
+                  </p>
+                  <HighlightBar
+                    highlightCards={highlightCards}
+                    selectedMonth={selectedMonth}
+                  />
+                </div>
+
+                {showHighlightModal && (
+                  <Modal
+                    setShowModal={setShowHighlightModal}
+                    title='Configure Highlight Cards'
+                    large={true}
+                  >
+                    <div className='p-6'>
+                      <HighlightConfigSection
+                        highlightCards={highlightCards}
+                        setHighlightCards={handleHighlightCardsUpdate}
+                        widget_data_url={widget_data_url}
+                        ai_agent={true}
+                        maxCards={4}
+                      />
+                    </div>
+                  </Modal>
+                )}
 
                 <PagePreviewArea
                   pageStructure={pageStructure as DashboardPage}
@@ -229,6 +284,7 @@ export default function PageEditorCreatePage({ page_agent_url, page, widgets, au
             />
           </div>
         )}
+
         {selectWidget && !selectedWidget && <WidgetListView onSelectWidget={setSelectedWidget} />}
         {selectWidget && selectedWidget && (
           <WidgetDetailView
