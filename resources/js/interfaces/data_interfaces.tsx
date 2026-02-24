@@ -27,6 +27,11 @@ export interface UserGroup extends Model {
   users?: User[]
 }
 
+export interface SubsetPermission extends Model {
+  subset_id: string
+  group_id: string
+  groups: UserGroup[]
+}
 export interface UserGroupPermissions extends Model {
   user_group_id: number
   role: string

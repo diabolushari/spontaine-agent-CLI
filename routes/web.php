@@ -104,6 +104,7 @@ use App\Http\Controllers\Subset\SubsetExportController;
 use App\Http\Controllers\Subset\SubsetFieldsListController;
 use App\Http\Controllers\Subset\SubsetListController;
 use App\Http\Controllers\Subset\SubsetOfficeLevelDataController;
+use App\Http\Controllers\Subset\SubsetPermissionsController;
 use App\Http\Controllers\Subset\SubsetPreviewController;
 use App\Http\Controllers\Subset\SubsetRankedDataController;
 use App\Http\Controllers\Subset\SubsetStoreController;
@@ -476,6 +477,9 @@ Route::resource('manage-users', ManageUserController::class)
 
 Route::resource('manage-user-group', ManageUserGroupController::class)
     ->parameters(['manage-user-group' => 'userGroup']);
+
+Route::resource('subset-permissions', SubsetPermissionsController::class);
+
 require __DIR__ . '/auth.php';
 
 Route::get('/{slug}', [CustomPageController::class, 'show'])->name('custom-page');

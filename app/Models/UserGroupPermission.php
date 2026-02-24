@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserGroupPermission extends Model
 {
-        use SoftDeletes;
+    use SoftDeletes;
+
     protected $fillable = [
         'group_id',
-        'role'
+        'role',
     ];
 }

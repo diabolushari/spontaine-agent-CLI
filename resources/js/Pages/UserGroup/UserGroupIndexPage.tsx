@@ -86,7 +86,7 @@ const UserGroupIndexPage = ({ userGroups, oldSearch }: Properties) => {
             })}
           </div>
         </Card>
-        <Pagination pagination={userGroups} />
+        {/* <Pagination pagination={userGroups} /> */}
         {/* {showGroupModal && selectedGroup && (
           <Modal
             setShowModal={setShowGroupModal}
