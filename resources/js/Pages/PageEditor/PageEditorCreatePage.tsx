@@ -20,6 +20,7 @@ import HighlightConfigSection from '@/Components/WidgetsEditor/ConfigSection/Hig
 import { usePage } from '@inertiajs/react'
 import { PageProps } from '@/types'
 import HighlightBar from '@/Components/WidgetsEditor/WidgetComponents/HighlightBar'
+import DraggableWidget from '@/Components/PageEditor/DraggableWidget'
 
 interface Props {
   page_agent_url?: string
@@ -166,133 +167,149 @@ export default function PageEditorCreatePage({
   return (
     <AnalyticsDashboardLayout>
       <DashboardPadding>
-        {!selectWidget && (
-          <div className='relative flex h-[calc(100vh-100px)] overflow-hidden rounded-xl bg-gray-50/50'>
-            {/* Main Content Area */}
-            <div className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50/50 p-8 transition-all'>
-              <div
-                className={`relative mx-auto max-w-7xl transition-all duration-300 ${isSidebarOpen ? 'pr-4' : ''}`}
-              >
-                {/* Dashboard Builder Header */}
-                <PageEditorHeader
-                  onSaveDraft={handleSaveDraft}
-                  onPreview={handlePreview}
-                  onPublish={handlePublish}
-                  isEditMode={!!page}
-                  pageStructure={pageStructure}
-                  pageWidgets={pageWidgets}
-                  onTitleChange={handleTitleChange}
-                  onDescriptionChange={handleDescriptionChange}
-                  onLinkChange={handleLinkChange}
-                  setAnchorWidget={setAnchorWidget}
-                />
-
-                {/* AI Glow Effect Overlay */}
-                {thinkingMessage && (
-                  <div className='absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl border-2 border-blue-200 bg-white/90 shadow-[0_0_30px_rgba(59,130,246,0.3)] backdrop-blur-sm transition-all duration-500'>
-                    <div className='relative mb-4'>
-                      <div className='absolute -inset-4 animate-pulse rounded-full bg-blue-500/20 blur-xl'></div>
-                      <Bot className='relative h-16 w-16 animate-bounce text-blue-600' />
-                    </div>
-                    <h3 className='mb-2 text-xl font-bold text-gray-900'>AI Generating...</h3>
-                    <p className='max-w-md text-center text-sm text-gray-500'>{thinkingMessage}</p>
-
-                    {/* Loading Bar */}
-                    <div className='mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-gray-200'>
-                      <div className='h-full w-1/2 animate-[shimmer_1.5s_infinite] rounded-full bg-gradient-to-r from-transparent via-blue-500 to-transparent'></div>
-                    </div>
-                  </div>
-                )}
-
-                <div className='mb-8'>
-                  <h3 className='mb-4 text-lg font-bold text-gray-900'>Page Heading Style</h3>
-                  <HeadingStyleComponent
-                    title={pageStructure.title || 'Page Title'}
-                    description={pageStructure.description || 'Page Description'}
-                    currentStyle={pageStructure.config?.heading_style ?? 0}
-                    onChange={handleHeadingStyleChange}
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          {!selectWidget && (
+            <div className='relative flex h-[calc(100vh-100px)] overflow-hidden rounded-xl bg-gray-50/50'>
+              {/* Main Content Area */}
+              <div className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50/50 p-8 transition-all'>
+                <div
+                  className={`relative mx-auto max-w-7xl transition-all duration-300 ${isSidebarOpen ? 'pr-4' : ''}`}
+                >
+                  {/* Dashboard Builder Header */}
+                  <PageEditorHeader
+                    onSaveDraft={handleSaveDraft}
+                    onPreview={handlePreview}
+                    onPublish={handlePublish}
+                    isEditMode={!!page}
+                    pageStructure={pageStructure}
+                    pageWidgets={pageWidgets}
+                    onTitleChange={handleTitleChange}
+                    onDescriptionChange={handleDescriptionChange}
+                    onLinkChange={handleLinkChange}
+                    setAnchorWidget={setAnchorWidget}
                   />
-                </div>
-                <div className='mb-8 rounded-xl border border-gray-200 bg-white p-6'>
-                  <div className='mb-4 flex items-center justify-between'>
-                    <h3 className='text-lg font-bold text-gray-900'>Highlight Cards</h3>
-                    <button
-                      type='button'
-                      onClick={() => setShowHighlightModal(true)}
-                      className='flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50'
+
+                  {/* AI Glow Effect Overlay */}
+                  {thinkingMessage && (
+                    <div className='absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl border-2 border-blue-200 bg-white/90 shadow-[0_0_30px_rgba(59,130,246,0.3)] backdrop-blur-sm transition-all duration-500'>
+                      <div className='relative mb-4'>
+                        <div className='absolute -inset-4 animate-pulse rounded-full bg-blue-500/20 blur-xl'></div>
+                        <Bot className='relative h-16 w-16 animate-bounce text-blue-600' />
+                      </div>
+                      <h3 className='mb-2 text-xl font-bold text-gray-900'>AI Generating...</h3>
+                      <p className='max-w-md text-center text-sm text-gray-500'>
+                        {thinkingMessage}
+                      </p>
+
+                      {/* Loading Bar */}
+                      <div className='mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-gray-200'>
+                        <div className='h-full w-1/2 animate-[shimmer_1.5s_infinite] rounded-full bg-gradient-to-r from-transparent via-blue-500 to-transparent'></div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className='mb-8'>
+                    <h3 className='mb-4 text-lg font-bold text-gray-900'>Page Heading Style</h3>
+                    <HeadingStyleComponent
+                      title={pageStructure.title || 'Page Title'}
+                      description={pageStructure.description || 'Page Description'}
+                      currentStyle={pageStructure.config?.heading_style ?? 0}
+                      onChange={handleHeadingStyleChange}
+                    />
+                  </div>
+                  <div className='mb-8 rounded-xl border border-gray-200 bg-white p-6'>
+                    <div className='mb-4 flex items-center justify-between'>
+                      <h3 className='text-lg font-bold text-gray-900'>Highlight Cards</h3>
+                      <button
+                        type='button'
+                        onClick={() => setShowHighlightModal(true)}
+                        className='flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50'
+                      >
+                        <Edit className='h-4 w-4' />
+                        Edit Configuration
+                      </button>
+                    </div>
+                    <p className='text-sm text-gray-500'>
+                      Configure up to 4 highlight cards to display key metrics at the top of your
+                      page.
+                    </p>
+                    <HighlightBar
+                      highlightCards={highlightCards}
+                      selectedMonth={selectedMonth}
+                    />
+                  </div>
+
+                  {showHighlightModal && (
+                    <Modal
+                      setShowModal={setShowHighlightModal}
+                      title='Configure Highlight Cards'
+                      large={true}
                     >
-                      <Edit className='h-4 w-4' />
-                      Edit Configuration
-                    </button>
-                  </div>
-                  <p className='text-sm text-gray-500'>
-                    Configure up to 4 highlight cards to display key metrics at the top of your
-                    page.
-                  </p>
-                  <HighlightBar
-                    highlightCards={highlightCards}
+                      <div className='p-6'>
+                        <HighlightConfigSection
+                          highlightCards={highlightCards}
+                          setHighlightCards={handleHighlightCardsUpdate}
+                          widget_data_url={widget_data_url}
+                          ai_agent={true}
+                          maxCards={4}
+                        />
+                      </div>
+                    </Modal>
+                  )}
+
+                  <PagePreviewArea
+                    pageStructure={pageStructure as DashboardPage}
+                    getWidgetById={getWidgetById}
+                    onRemoveWidget={handleRemoveWidget}
+                    onDeleteRow={handleDeleteRow}
+                    onLayoutClick={handleLayoutClick}
+                    moveRow={moveRow}
                     selectedMonth={selectedMonth}
+                    onRowUpdate={handleRowUpdate}
+                    setSheetOpen={setIsSidebarOpen}
+                    handleAddTextBlock={handleAddTextBlock}
+                    handleTextUpdate={handleTextUpdate}
+                    setSelectWidget={setSelectWidget}
+                    handleRemoveTextBlock={handleRemoveTextBlock}
                   />
                 </div>
-
-                {showHighlightModal && (
-                  <Modal
-                    setShowModal={setShowHighlightModal}
-                    title='Configure Highlight Cards'
-                    large={true}
-                  >
-                    <div className='p-6'>
-                      <HighlightConfigSection
-                        highlightCards={highlightCards}
-                        setHighlightCards={handleHighlightCardsUpdate}
-                        widget_data_url={widget_data_url}
-                        ai_agent={true}
-                        maxCards={4}
-                      />
-                    </div>
-                  </Modal>
-                )}
-
-                <PagePreviewArea
-                  pageStructure={pageStructure as DashboardPage}
-                  getWidgetById={getWidgetById}
-                  onRemoveWidget={handleRemoveWidget}
-                  onDeleteRow={handleDeleteRow}
-                  onLayoutClick={handleLayoutClick}
-                  moveRow={moveRow}
-                  selectedMonth={selectedMonth}
-                  onRowUpdate={handleRowUpdate}
-                  setSheetOpen={setIsSidebarOpen}
-                  handleAddTextBlock={handleAddTextBlock}
-                  handleTextUpdate={handleTextUpdate}
-                  setSelectWidget={setSelectWidget}
-                  handleRemoveTextBlock={handleRemoveTextBlock}
-                />
               </div>
+
+              {/* AI Chat Sidebar */}
+              <PageConfigurationSidebar
+                pageStructure={pageStructure}
+                isOpen={isSidebarOpen}
+                setIsOpen={setIsSidebarOpen}
+                onPageUpdate={setAll}
+                agentUrl={page_agent_url ?? ''}
+                onThinking={setThinkingMessage}
+                userId={auth.user.id}
+                onSave={handlePublish}
+              />
             </div>
+          )}
 
-            {/* AI Chat Sidebar */}
-            <PageConfigurationSidebar
-              pageStructure={pageStructure}
-              isOpen={isSidebarOpen}
-              setIsOpen={setIsSidebarOpen}
-              onPageUpdate={setAll}
-              agentUrl={page_agent_url ?? ''}
-              onThinking={setThinkingMessage}
-              userId={auth.user.id}
-              onSave={handlePublish}
+          {selectWidget && !selectedWidget && <WidgetListView onSelectWidget={setSelectedWidget} />}
+          {selectWidget && selectedWidget && (
+            <WidgetDetailView
+              onBack={() => setSelectWidget(null)}
+              widget={selectedWidget}
+              onAddToDashboard={handleAddToDashboard}
             />
-          </div>
-        )}
+          )}
 
-        {selectWidget && !selectedWidget && <WidgetListView onSelectWidget={setSelectedWidget} />}
-        {selectWidget && selectedWidget && (
-          <WidgetDetailView
-            onBack={() => setSelectWidget(null)}
-            widget={selectedWidget}
-            onAddToDashboard={handleAddToDashboard}
-          />
-        )}
+          <DragOverlay>
+            {activeWidget ? (
+              <div className='w-80 rotate-3 cursor-grabbing opacity-90 shadow-2xl'>
+                <DraggableWidget widget={activeWidget} />
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndContext>
       </DashboardPadding>
     </AnalyticsDashboardLayout>
   )

@@ -181,20 +181,51 @@ export function usePageEditor(
 
     if (over != null && widgetId != null) {
       const dropData = over.data.current as { rowId: number; position: number }
+      const sourceData = active.data.current?.source as
+        | { rowId: number; position: number }
+        | undefined
 
       if (dropData != null && !isNaN(widgetId)) {
         let newPage = [...(pageStructure.page ?? [])]
 
-        newPage = newPage.map((row) => {
+        // 1. Identify if target is occupied and what is there
+        let targetWidgetId: number | null = null
+        newPage.forEach((row) => {
           if (row.id === dropData.rowId) {
-            return {
-              ...row,
-              widgets: row.widgets.map((slot) =>
-                slot.position === dropData.position ? { ...slot, widgetId: widgetId } : slot
-              ),
+            const slot = row.widgets.find((s) => s.position === dropData.position)
+            if (slot?.widgetId) {
+              targetWidgetId = slot.widgetId
             }
           }
-          return row
+        })
+
+        // 2. Perform the update
+        newPage = newPage.map((row) => {
+          let updatedWidgets = [...row.widgets]
+
+          // Handle Source Slot (if moving an existing widget)
+          if (sourceData && row.id === sourceData.rowId) {
+            updatedWidgets = updatedWidgets.map((slot) => {
+              if (slot.position === sourceData.position) {
+                // SWAP: Put the target widget in the source slot
+                return { ...slot, widgetId: targetWidgetId }
+              }
+              return slot
+            })
+          }
+
+          // Handle Target Slot
+          if (row.id === dropData.rowId) {
+            updatedWidgets = updatedWidgets.map((slot) => {
+              if (slot.position === dropData.position) {
+                // Put the dragged widget in the target slot
+                return { ...slot, widgetId: widgetId }
+              }
+              return slot
+            })
+          }
+
+          return { ...row, widgets: updatedWidgets }
         })
 
         setFormValue('page')(newPage)
