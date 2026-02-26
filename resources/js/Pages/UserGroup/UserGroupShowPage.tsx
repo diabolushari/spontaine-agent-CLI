@@ -40,62 +40,122 @@ const UserGroupShowPage = ({ userGroup }: Properties) => {
       subtype='data-tables'
     >
       <DashboardPadding>
-        <Card>
-          <CardHeader title={userGroup.group_name} />
-          <div className='flex flex-col'>
-            <span>Group name: {userGroup.group_name}</span>
-            <span>Description: {userGroup.description}</span>
-            <span>Permissions: {userGroup.permissions.map((perm) => perm.role).join(', ')}</span>
-            <span>Created at: {getDisplayDate(userGroup.created_at)}</span>
+        <div className='flex flex-col gap-8'>
+          {/* Header */}
+          <CardHeader title={`User Group: ${userGroup.group_name}`} />
+
+          {/* Basic Information Section */}
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div className='rounded-xl border border-gray-100 bg-white p-6 shadow-sm'>
+              <h3 className='mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500'>
+                Basic Information
+              </h3>
+
+              <div className='space-y-4'>
+                <div>
+                  <p className='text-xs font-medium text-gray-400'>Group Name</p>
+                  <p className='text-lg font-semibold text-gray-900'>{userGroup.group_name}</p>
+                </div>
+
+                <div>
+                  <p className='text-xs font-medium text-gray-400'>Description</p>
+                  <p className='whitespace-pre-wrap text-base text-gray-700'>
+                    {userGroup.description || '—'}
+                  </p>
+                </div>
+
+                <div>
+                  <p className='text-xs font-medium text-gray-400'>Created At</p>
+                  <p className='text-sm text-gray-700'>{getDisplayDate(userGroup.created_at)}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Permissions Section */}
+            <div className='rounded-xl border border-indigo-100 bg-indigo-50/40 p-6 shadow-sm'>
+              <h3 className='mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600'>
+                Permissions
+              </h3>
+
+              {userGroup.permissions?.length > 0 ? (
+                <div className='flex flex-wrap gap-3'>
+                  {userGroup.permissions.map((perm, index) => (
+                    <div
+                      key={index}
+                      className='rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm'
+                    >
+                      {perm.role}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className='text-sm text-gray-500'>No permissions assigned.</p>
+              )}
+            </div>
           </div>
-        </Card>
-        <Tab
-          tabItems={tabItems}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-        {activeTab === 'users' && (
-          <div className=''>
-            <CardHeader
-              title='Users'
-              onAddClick={() => setAddUserModal(true)}
-            />
-            <div className='flex w-full'>
+
+          {/* Users Section */}
+          <div className='flex flex-col gap-6'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <h3 className='text-lg font-semibold text-gray-900'>Users</h3>
+                <p className='text-xs text-gray-500'>Users assigned to this group.</p>
+              </div>
+
+              <button
+                onClick={() => setAddUserModal(true)}
+                className='flex items-center gap-2 rounded-lg bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 transition-colors hover:bg-indigo-100'
+              >
+                Add User
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className='rounded-xl border border-gray-100 bg-white p-4 shadow-sm'>
               <form
                 onSubmit={handleFormSubmit}
-                className='md:min-w-1/2 flex gap-2'
+                className='flex flex-col gap-4 md:flex-row md:items-end'
               >
-                <div className='flex flex-col'>
+                <div className='flex w-full flex-col md:max-w-sm'>
                   <Input
                     value={formData.search}
                     setValue={setFormValue('search')}
-                    placeholder='Search'
+                    placeholder='Search users...'
                   />
                 </div>
-                <div className='flex flex-col'>
-                  <Button
-                    label='Search'
-                    type='submit'
-                  />
-                </div>
+
+                <Button
+                  label='Search'
+                  type='submit'
+                />
               </form>
             </div>
-            <JobsTable heads={['Name', 'Email', 'Role', 'Office Code']}>
-              <tbody>
-                {userGroup.users?.map((user) => {
-                  return (
-                    <tr key={user.id}>
-                      <td className='standard-td'>{user.name}</td>
-                      <td className='standard-td'>{user.email}</td>
-                      <td className='standard-td'>{user.role}</td>
-                      <td className='standard-td'>{user.office_code}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </JobsTable>
+
+            {/* Users Table */}
+            <div className='rounded-xl border border-gray-100 bg-white shadow-sm'>
+              {userGroup.users?.length > 0 ? (
+                <JobsTable heads={['Name', 'Email', 'Role', 'Office Code']}>
+                  <tbody>
+                    {userGroup.users.map((user) => (
+                      <tr key={user.id}>
+                        <td className='standard-td'>{user.name}</td>
+                        <td className='standard-td'>{user.email}</td>
+                        <td className='standard-td'>{user.role}</td>
+                        <td className='standard-td'>{user.office_code}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </JobsTable>
+              ) : (
+                <div className='py-12 text-center'>
+                  <p className='text-sm text-gray-500'>No users assigned to this group.</p>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* Add User Modal */}
         {addUserModal && (
           <Modal
             setShowModal={setAddUserModal}
