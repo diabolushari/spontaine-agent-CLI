@@ -560,7 +560,7 @@ export interface Widget {
       subset_id: number | null
       subset_name?: string
       chart_type: 'area' | 'bar'
-      measure: SelectedMeasure | null
+      measures: SelectedMeasure[]
       dimension: string
       color: string
     }
@@ -616,6 +616,7 @@ export interface DashboardPage extends Model {
   published: boolean
   anchor_widget: number | null
   config: {
+    highlight_cards?: HighlightCardData[]
     heading_style: number | null
   } | null
 }
