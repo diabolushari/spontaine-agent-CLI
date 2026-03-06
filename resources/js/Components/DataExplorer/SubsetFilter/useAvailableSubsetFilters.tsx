@@ -26,7 +26,7 @@ export default function useAvailableSubsetFilters(
         fieldId: date.field_id,
         fieldName: date.subset_field_name ?? '',
         column: date.subset_column ?? '',
-        type: date.use_expression === 1 ? 'string' : 'date',
+        type: date.use_expression === 1 ? 'string' : (date.temporal_type ?? 'date'),
       })
     })
 

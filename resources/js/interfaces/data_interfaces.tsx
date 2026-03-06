@@ -142,6 +142,7 @@ export interface SubsetDateField extends Model {
   dynamic_end_offset: number | null
   dynamic_end_unit: string | null
   sort_order: string | null
+  temporal_type?: 'date' | 'datetime'
   info?: Partial<TableDateField>
 }
 

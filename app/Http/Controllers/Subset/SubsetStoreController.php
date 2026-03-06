@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+use App\Models\DataTable\DataTableDate;
 
 class SubsetStoreController extends Controller implements HasMiddleware
 {
@@ -63,8 +64,11 @@ class SubsetStoreController extends Controller implements HasMiddleware
         }
 
         $dates = array_map(function ($date) use ($record, $user) {
+            $tableDate = DataTableDate::find($date->fieldId);
+
             return [
                 'subset_detail_id' => $record->id,
+                'temporal_type' => $tableDate?->temporal_type,
                 'created_by' => $user,
                 'updated_by' => $user,
                 ...$date->toArray(),

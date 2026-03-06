@@ -66,6 +66,7 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                     'dynamic_end_offset',
                     'dynamic_end_unit',
                     'date_field_expression',
+                    'temporal_type',
                     'updated_by',
                 ]
             );
@@ -178,6 +179,11 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                 'updated_by' => $userId,
                 ...collect($itemArray)->except('id')->toArray(),
             ];
+
+            if ($relationName === 'dates' && !empty($preparedData['field_id'])) {
+                $tableDate = \App\Models\DataTable\DataTableDate::find($preparedData['field_id']);
+                $preparedData['temporal_type'] = $tableDate?->temporal_type;
+            }
 
             if (!empty($itemArray['id'])) {
                 $preparedData['id'] = $itemArray['id'];

@@ -30,7 +30,7 @@ function pushDateField(
     value,
     officeData: null,
     dimensionData: null,
-    type: date.use_expression === 1 ? 'string' : 'date',
+    type: date.use_expression === 1 ? 'string' : (date.temporal_type ?? 'date'),
   })
 }
 
