@@ -8,6 +8,7 @@ use App\Models\Subset\SubsetDetail;
 use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
+use App\Models\Subset\SubsetDetailText;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,7 @@ class SubsetUpdateController extends Controller implements HasMiddleware
             DB::beginTransaction();
 
             $subsetDetail->update(
-                $request->except('dates', 'dimensions', 'measures')->toArray()
+                $request->except('dates', 'dimensions', 'measures', 'texts')->toArray()
             );
 
             $user = request()->user()?->id;
@@ -108,6 +109,24 @@ class SubsetUpdateController extends Controller implements HasMiddleware
                     'aggregation',
                     'expression',
                     'weight_field_id',
+                    'updated_by',
+                ]
+            );
+
+            // --- Process Text Fields ---
+            $this->processRelatedData(
+                $request->texts ?? [],
+                $subsetDetail,
+                SubsetDetailText::class,
+                'texts',
+                $user,
+                [
+                    'subset_detail_id',
+                    'field_id',
+                    'subset_field_name',
+                    'subset_column',
+                    'sort_order',
+                    'description',
                     'updated_by',
                 ]
             );

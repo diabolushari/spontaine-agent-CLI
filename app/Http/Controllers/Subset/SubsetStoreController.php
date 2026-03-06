@@ -10,6 +10,7 @@ use App\Models\Subset\SubsetDetail;
 use App\Models\Subset\SubsetDetailDate;
 use App\Models\Subset\SubsetDetailDimension;
 use App\Models\Subset\SubsetDetailMeasure;
+use App\Models\Subset\SubsetDetailText;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -88,12 +89,22 @@ class SubsetStoreController extends Controller implements HasMiddleware
             ];
         }, $request->measures);
 
+        $texts = array_map(function ($text) use ($record, $user) {
+            return [
+                'subset_detail_id' => $record->id,
+                'created_by' => $user,
+                'updated_by' => $user,
+                ...$text->toArray(),
+            ];
+        }, $request->texts ?? []);
+
         try {
             SubsetDetailDate::insert($dates);
             foreach ($dimensions as $dimension) {
                 SubsetDetailDimension::create($dimension);
             }
             SubsetDetailMeasure::insert($measures);
+            SubsetDetailText::insert($texts);
         } catch (Exception $e) {
             DB::rollBack();
 
