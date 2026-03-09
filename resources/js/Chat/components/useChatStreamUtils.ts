@@ -66,6 +66,7 @@ export class StreamProcessor {
         let extras: string | null = null
 
         while (this.state.streamBuffer) {
+            console.log('this.state.streamBuffer :',this.state.streamBuffer)
             if (this.state.isCollectingInlineMeta) {
                 const endIdx = this.state.streamBuffer.indexOf(MARKERS.END_OF_META)
                 if (endIdx !== -1) {
