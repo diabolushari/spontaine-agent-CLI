@@ -34,6 +34,10 @@ export default function AddSubsetTextFieldForm({
     description: selectedField?.description ?? '',
   })
 
+  const selectedTextField = useMemo(() => {
+    return textFields.find((field) => field.id === Number(formData.field_id))
+  }, [formData.field_id, textFields])
+
   const formItems = useMemo(<
     T,
     U extends keyof T,
@@ -49,7 +53,7 @@ export default function AddSubsetTextFieldForm({
           const selected = textFields.find((f) => f.id === Number(value))
           if (selected != null) {
             setFormValue('subset_field_name')(selected.field_name)
-            setFormValue('expression')(`MYSQL format - EXPR(${selected.column})`)
+            setFormValue('expression')(`LEFT(\`${selected.column}\`, 1)`)
           }
         },
         label: 'Field',
@@ -72,7 +76,9 @@ export default function AddSubsetTextFieldForm({
         setValue: setFormValue('expression'),
         label: 'Expression',
         hidden: !formData.use_expression,
-        placeholder: 'e.g. CONCAT(column, " ", "added_text")',
+        placeholder: selectedTextField
+          ? `e.g. LEFT(\`${selectedTextField.column}\`, 1)`
+          : 'e.g. LEFT(`column`, 1)',
       },
       description: {
         type: 'textarea' as const,
@@ -91,7 +97,7 @@ export default function AddSubsetTextFieldForm({
         label: 'Sort Order',
       },
     } as Record<U, FormItem<T[U], K, G, L>>
-  }, [setFormValue, textFields, toggleBoolean, formData.use_expression])
+  }, [setFormValue, textFields, toggleBoolean, formData.use_expression, selectedTextField])
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
