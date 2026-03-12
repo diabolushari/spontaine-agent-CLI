@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title inertia>KSEB</title>
+    <title inertia>Spontaine</title>
 
     <!-- Manifest -->
     <link rel="manifest" href="/site.webmanifest">

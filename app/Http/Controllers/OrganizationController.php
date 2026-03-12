@@ -78,7 +78,7 @@ final class OrganizationController extends Controller implements HasMiddleware
                     $request->logo,
                     $organization->id,
                     'logo',
-                    false
+                     true
                 );
 
                 if ($logoFileName == '') {
@@ -135,6 +135,7 @@ final class OrganizationController extends Controller implements HasMiddleware
 
     public function update(OrganizationFormRequest $request, $id): RedirectResponse
     {
+        dd($request->all());
         $organization = Organization::findOrFail($id);
         $saveFile = new SaveFile;
 
@@ -179,7 +180,7 @@ final class OrganizationController extends Controller implements HasMiddleware
                     $request->logo,
                     $organization->id,
                     'logo',
-                    false
+                    true
                 );
 
                 if ($logoFileName == '') {
