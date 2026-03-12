@@ -28,6 +28,7 @@ export interface UserGroup extends Model {
   permissions: UserGroupPermissions[]
   users?: User[]
   hierarchy?: UserGroupHeirarchy
+  subset_permission: SubsetPermission[]
 }
 
 export interface UserGroupHeirarchy extends Model {
@@ -39,7 +40,8 @@ export interface UserGroupHeirarchy extends Model {
 export interface SubsetPermission extends Model {
   subset_id: string
   group_id: string
-  groups: UserGroup[]
+  groups: UserGroup
+  subset:SubsetDetail
 }
 export interface UserGroupPermissions extends Model {
   user_group_id: number
@@ -149,6 +151,7 @@ export interface SubsetDetail extends Model {
   proactive_insight_instructions: string | null
   visualization_instructions: string | null
   type: string | null
+  heirarchy: MetaHierarchy
 }
 
 export interface SubsetDateField extends Model {

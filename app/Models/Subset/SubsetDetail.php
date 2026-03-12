@@ -3,6 +3,7 @@
 namespace App\Models\Subset;
 
 use App\Models\DataDetail\DataDetail;
+use App\Models\Meta\MetaHierarchy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -18,6 +19,7 @@ class SubsetDetail extends Model
         'data_detail_id',
         'group_data',
         'type',
+        'heirarchy',
         'max_rows_to_fetch',
         'use_for_training_ai',
         'proactive_insight_instructions',
@@ -64,5 +66,13 @@ class SubsetDetail extends Model
     public function texts(): HasMany
     {
         return $this->hasMany(SubsetDetailText::class, 'subset_detail_id', 'id');
+    }
+
+    /**
+     * @return HasOne<MetaHierarchy, $this>
+     */
+    public function heirarchy(): HasOne
+    {
+        return $this->hasOne(MetaHierarchy::class, 'id', 'heirarchy');
     }
 }

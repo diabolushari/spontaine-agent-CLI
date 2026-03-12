@@ -72,15 +72,14 @@ class ManageUserGroupController extends Controller
         }
 
         return redirect()->route('manage-user-group.index')
-            ->with('success', 'User group created successfully.');
+            ->with('message', 'User group created successfully.');
     }
 
     public function show(UserGroup $userGroup): Response
     {
         $userGroup->load('permissions', 'users.organization', 'hierarchy.metaHierarchyItem.primaryField.metaStructure',
-            'hierarchy.metaHierarchyItem.secondaryField', );
-    
-
+            'hierarchy.metaHierarchyItem.secondaryField', 'subsetPermission.subset');
+// dd($userGroup);
         return Inertia::render('UserGroup/UserGroupShowPage', [
             'userGroup' => $userGroup,
         ]);
