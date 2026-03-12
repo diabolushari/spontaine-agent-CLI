@@ -135,7 +135,6 @@ final class OrganizationController extends Controller implements HasMiddleware
 
     public function update(OrganizationFormRequest $request, $id): RedirectResponse
     {
-        dd($request->all());
         $organization = Organization::findOrFail($id);
         $saveFile = new SaveFile;
 
