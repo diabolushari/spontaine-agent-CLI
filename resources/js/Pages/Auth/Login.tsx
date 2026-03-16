@@ -57,7 +57,12 @@ export default function Login() {
         </div>
         <div className='w-full rounded-lg bg-blue-100 p-8 md:rounded-r-xl lg:rounded-r-3xl'>
           <div className='mb-4 flex justify-center'>
-            <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' />
+            {/* <ApplicationLogo className='h-20 w-20 fill-current text-gray-500' /> */}
+            <img
+          src={ '/spontaine-favicon.png'}
+          alt='logo'
+          className='h-12 w-12'
+        />
           </div>
           <p className='subheader-1stop text-center tracking-widest'>WELCOME BACK!</p>
           <p className='body-1stop mb-8 mt-4 text-center'>Please Sign In</p>
