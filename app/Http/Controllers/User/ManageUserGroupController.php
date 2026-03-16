@@ -11,12 +11,20 @@ use App\Models\UserGroupPermission;
 use App\Services\User\UserRoleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ManageUserGroupController extends Controller
+class ManageUserGroupController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            'auth',
+        ];
+    }
+
     public function index(Request $request): Response
     {
         $data = UserGroup::with('permissions', 'users')
