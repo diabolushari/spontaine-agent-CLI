@@ -234,7 +234,7 @@ const UserGroupShowPage = ({ userGroup }: Properties) => {
 
                         <td className='standard-td'>{user.name}</td>
                         <td className='standard-td'>{user.email}</td>
-                        <td className='standard-td'>{user.organization.name}</td>
+                        <td className='standard-td'>{user?.organization?.name}</td>
                         <td className='standard-td'>
                           <button
                             onClick={() => {
