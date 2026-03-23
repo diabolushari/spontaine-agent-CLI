@@ -53,7 +53,8 @@ class GetPrimaryFieldData implements DataFetcherInterface
             ->setUrl($dataSource->apiInfo->url)
             ->setMethod($dataSource->apiInfo->method)
             ->setHeaders($headers)
-            ->setBody($body);
+            ->setBody($body)
+            ->setSdk($dataSource->apiInfo->sdk);
 
         // Fetch the data
         $data = $this->fetchJSONAPI->getData();

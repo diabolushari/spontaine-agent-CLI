@@ -401,6 +401,7 @@ export interface DataLoaderAPI extends Model {
   method: 'GET' | 'POST'
   headers: KeyValue[] | null
   body: KeyValue[] | null
+  sdk: 'netsuite' | null
   response_structure: JSONStructureDefinition
 }
 

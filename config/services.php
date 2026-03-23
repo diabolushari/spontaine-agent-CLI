@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'netsuite' => [
+        'consumer_key'  => env('CONSUMER_KEY'),
+        'certificate_id' => env('CERTIFICATE_ID'),
+        'account_id'    => env('ACCOUNT_ID'),
+        'private_key'   => env('CERTIFICATE_PRIVATE_KEY'),
+    ],
+
 ];

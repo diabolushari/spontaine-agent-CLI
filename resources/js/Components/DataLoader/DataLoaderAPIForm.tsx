@@ -16,6 +16,11 @@ const requestTypes = [
   { method: 'POST', label: 'POST' },
 ]
 
+const sdkOptions = [
+  { value: null, label: 'None / Generic' },
+  { value: 'netsuite', label: 'NetSuite' },
+]
+
 const httpHeaderFieldPlaceholder = {
   key: 'Header name (e.g., Authorization)',
   value: 'Header value (e.g., Bearer YOUR_API_KEY)',
@@ -39,6 +44,7 @@ export default function DataLoaderAPIForm({
     description: dataLoaderAPI?.description ?? '',
     method: dataLoaderAPI?.method ?? 'GET',
     url: dataLoaderAPI?.url ?? '',
+    sdk: (dataLoaderAPI as any)?.sdk ?? null,
   })
 
   const [headers, setHeaders] = useState<KeyValue[]>(
@@ -85,6 +91,14 @@ export default function DataLoaderAPIForm({
         label: 'Description',
         setValue: setFormValue('description'),
       },
+      sdk: {
+        type: 'select',
+        label: 'SDK Injection',
+        list: sdkOptions,
+        setValue: setFormValue('sdk'),
+        displayKey: 'label',
+        dataKey: 'value',
+      },
       method: {
         type: 'select',
         label: 'Method',
@@ -129,6 +143,7 @@ export default function DataLoaderAPIForm({
       } = await axios.post(route('get-api-response-structure'), {
         url: formData.url,
         method: formData.method,
+        sdk: (formData as any).sdk,
         headers,
         body: params,
       })
