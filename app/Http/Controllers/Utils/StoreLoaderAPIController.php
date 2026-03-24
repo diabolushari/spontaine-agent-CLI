@@ -33,6 +33,7 @@ final class StoreLoaderAPIController extends Controller implements HasMiddleware
                 'url' => $request->url,
                 'headers' => $request->headers,
                 'body' => $request->body,
+                'sdk' => $request->sdk,
                 'response_structure' => $request->responseStructure,
             ]);
 

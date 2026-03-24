@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('token_key', 150)->comment('Logical token identifier, fixed to m2m_access_token');
             $table->text('token')->comment('Latest active NetSuite bearer token');
             $table->timestamp('expires_at')->comment('UTC expiry time for the current token');
-            $table->timestamp('created_at')->comment('Timestamp of last successful issuance/persistence');
+            $table->timestamps();
         });
     }
 
