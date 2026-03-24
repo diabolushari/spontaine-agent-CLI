@@ -40,4 +40,9 @@ interface FetchDataInterface
      * @param  array<string, string>  $headers
      */
     public function setHeaders(array $headers): self;
+
+    /**
+     * Set the SDK to use for the request (e.g., 'netsuite')
+     */
+    public function setSdk(?string $sdk): self;
 }

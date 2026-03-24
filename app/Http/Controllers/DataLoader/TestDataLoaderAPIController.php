@@ -31,6 +31,7 @@ final class TestDataLoaderAPIController extends Controller
             $validated = $request->validate([
                 'url' => 'required|string',
                 'method' => 'required|string|in:GET,POST',
+                'sdk' => 'nullable|string|in:netsuite',
                 'headers' => 'nullable|array',
                 'headers.*.key' => 'required|string',
                 'headers.*.value' => 'nullable|string',
@@ -64,7 +65,8 @@ final class TestDataLoaderAPIController extends Controller
                 ->setUrl($validated['url'])
                 ->setMethod($validated['method'])
                 ->setHeaders($headers)
-                ->setBody($body);
+                ->setBody($body)
+                ->setSdk($request->input('sdk'));
 
             $data = $this->fetchJSONAPI->getData();
             $noOfRecords = is_array($data) ? count($data) : 0;

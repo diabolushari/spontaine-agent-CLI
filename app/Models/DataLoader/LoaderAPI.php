@@ -19,6 +19,7 @@ class LoaderAPI extends Model
     protected $fillable = [
         'name',
         'description',
+        'sdk',
         'url',
         'method',
         'headers',

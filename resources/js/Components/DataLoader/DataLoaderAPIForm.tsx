@@ -1,19 +1,26 @@
 import HttpHeadersForm from '@/Components/DataLoader/KeyValueList/HttpHeadersForm'
 import KeyValueList from '@/Components/DataLoader/KeyValueList/KeyValueList'
 import SetDataStructure from '@/Components/DataLoader/SetDataStructure/SetDataStructure'
-import useJsonStructure, { JSONStructureDefinition, } from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
+import useJsonStructure, {
+  JSONStructureDefinition,
+} from '@/Components/DataLoader/SetDataStructure/useJsonStructure'
 import FormBuilder, { FormItem } from '@/FormBuilder/FormBuilder'
 import useCustomForm from '@/hooks/useCustomForm'
 import { DataLoaderAPI, KeyValue, Model } from '@/interfaces/data_interfaces'
 import ErrorText from '@/typography/ErrorText'
+import { handleHttpErrors, showError } from '@/ui/alerts'
 import Button from '@/ui/button/Button'
 import axios from 'axios'
 import { FormEvent, useMemo, useState } from 'react'
-import { handleHttpErrors, showError } from '@/ui/alerts'
 
 const requestTypes = [
   { method: 'GET', label: 'GET' },
   { method: 'POST', label: 'POST' },
+]
+
+const sdkOptions = [
+  { value: '', label: 'None / Generic' },
+  { value: 'netsuite', label: 'NetSuite' },
 ]
 
 const httpHeaderFieldPlaceholder = {
@@ -39,6 +46,7 @@ export default function DataLoaderAPIForm({
     description: dataLoaderAPI?.description ?? '',
     method: dataLoaderAPI?.method ?? 'GET',
     url: dataLoaderAPI?.url ?? '',
+    sdk: dataLoaderAPI?.sdk ?? '',
   })
 
   const [headers, setHeaders] = useState<KeyValue[]>(
@@ -85,6 +93,14 @@ export default function DataLoaderAPIForm({
         label: 'Description',
         setValue: setFormValue('description'),
       },
+      sdk: {
+        type: 'select',
+        label: 'SDK Injection',
+        list: sdkOptions,
+        setValue: setFormValue('sdk'),
+        displayKey: 'label',
+        dataKey: 'value',
+      },
       method: {
         type: 'select',
         label: 'Method',
@@ -129,6 +145,7 @@ export default function DataLoaderAPIForm({
       } = await axios.post(route('get-api-response-structure'), {
         url: formData.url,
         method: formData.method,
+        sdk: formData.sdk,
         headers,
         body: params,
       })

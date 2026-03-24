@@ -6,6 +6,7 @@ use App\Services\DataLoader\JsonStructure\JsonStructureDefinition;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\Validation\In;
 use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -26,6 +27,8 @@ class DataLoaderAPIFormRequest extends Data
         public readonly string $method,
         #[Max(2000)]
         public readonly string $url,
+        #[Nullable, In('netsuite')]
+        public readonly ?string $sdk,
         public readonly array $headers,
         public readonly array $body,
         public readonly JsonStructureDefinition $responseStructure,
