@@ -6,15 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Meta\MetaHierarchyItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 
-class MetaHierarchyItemSearchController extends Controller implements HasMiddleware
+class MetaHierarchyItemSearchController extends Controller
 {
-    public static function middleware(): array
-    {
-        return ['auth'];
-    }
-
     public function __invoke(Request $request): JsonResponse
     {
         $search = $request->query('search');
