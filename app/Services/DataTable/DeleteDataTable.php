@@ -4,6 +4,7 @@ namespace App\Services\DataTable;
 
 use App\Models\DataDetail\DataDetail;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 readonly class DeleteDataTable
@@ -27,34 +28,17 @@ readonly class DeleteDataTable
             }
 
             foreach ($dataDetail->dimensionFields as $dimensionField) {
-                $table->dropForeign(
-                    $dataDetail->table_name
-                    .'_'
-                    .$dimensionField->column
-                    .'_foreign'
-                );
-                $table->dropIndex(
-                    $dataDetail->table_name
-                    .'_'
-                    .$dimensionField->column
-                    .'_foreign'
-                );
-            }
+                $column = $dimensionField->column;
 
-            // Drop foreign keys from related tables
-            foreach ($dataDetail->relationFields as $relation) {
-                $table->dropForeign(
-                    $dataDetail->table_name
-                    .'_'
-                    .$relation->column
-                    .'_foreign'
-                );
-                $table->dropIndex(
-                    $dataDetail->table_name
-                    .'_'
-                    .$relation->column
-                    .'_foreign'
-                );
+                $fkName = 'fk_dt_'.$dataDetail->id.'_'.$column;
+
+                try {
+                    $table->dropForeign($fkName);
+                } catch (\Throwable $e) {
+
+                    $table->dropForeign($dataDetail->table_name.'_'.$dimensionField->column.'_foreign');
+                    $table->dropIndex($dataDetail->table_name.'_'.$dimensionField->column.'_foreign');
+                }
             }
         });
 

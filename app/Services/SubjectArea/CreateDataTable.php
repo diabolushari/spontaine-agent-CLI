@@ -63,7 +63,7 @@ class CreateDataTable
 
             $table->foreignId($dimension->column)
                 ->nullable()
-                ->constrained(table: 'meta_data', indexName: 'fk_dt_'.$dataDetailId.$dimension->column);
+                ->constrained('meta_data', 'id', 'fk_dt_'.$dataDetailId.'_'.$dimension->column);
         }
     }
 
