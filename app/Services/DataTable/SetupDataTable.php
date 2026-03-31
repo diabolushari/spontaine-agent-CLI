@@ -30,7 +30,7 @@ readonly class SetupDataTable
                 'created_by' => request()->user()?->id,
             ]);
         } catch (Exception $e) {
-            Schema::dropIfExists($formRequest->tableName);
+            // Schema::dropIfExists($formRequest->tableName);
 
             return OperationResult::from([
                 'error' => true,
