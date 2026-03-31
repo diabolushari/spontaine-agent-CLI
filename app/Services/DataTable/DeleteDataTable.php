@@ -27,17 +27,36 @@ readonly class DeleteDataTable
                 );
             }
 
+            // foreach ($dataDetail->dimensionFields as $dimensionField) {
+            //     $column = $dimensionField->column;
+
+            //     $fkName = 'fk_dt_'.$dataDetail->id.'_'.$column;
+
+            //     try {
+            //         $table->dropForeign($fkName);
+            //     } catch (\Throwable $e) {
+
+            //         $table->dropForeign($dataDetail->table_name.'_'.$dimensionField->column.'_foreign');
+            //         $table->dropIndex($dataDetail->table_name.'_'.$dimensionField->column.'_foreign');
+            //     }
+            // }
             foreach ($dataDetail->dimensionFields as $dimensionField) {
                 $column = $dimensionField->column;
 
-                $fkName = 'fk_dt_'.$dataDetail->id.'_'.$column;
-
-                try {
-                    $table->dropForeign($fkName);
-                } catch (\Throwable $e) {
-
-                    $table->dropForeign($dataDetail->table_name.'_'.$dimensionField->column.'_foreign');
-                    $table->dropIndex($dataDetail->table_name.'_'.$dimensionField->column.'_foreign');
+                // Get actual FK name from DB
+                $fk = DB::selectOne('
+        SELECT CONSTRAINT_NAME
+        FROM information_schema.KEY_COLUMN_USAGE
+        WHERE TABLE_NAME = ?
+        AND COLUMN_NAME = ?
+        AND REFERENCED_TABLE_NAME IS NOT NULL
+    ', [
+                    $dataDetail->table_name,
+                    $column,
+                ]);
+                
+                if ($fk) {
+                    $table->dropForeign($fk->CONSTRAINT_NAME);
                 }
             }
         });
