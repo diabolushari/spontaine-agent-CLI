@@ -1,4 +1,5 @@
 import { ChatMessage } from '@/Chat/components/MainArea'
+import { PageProps } from '@/types'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
@@ -25,8 +26,8 @@ function startNewChat(
   })
 }
 
-export default function useChat(currentSession: CurrentSession, persist: boolean = true) {
-  const { chatToken, chatURL, agentURL } = usePage<{
+export default function useChat(currentSession: CurrentSession, organization_id: number | null, persist: boolean = true) {
+  const { chatToken, chatURL, agentURL } = usePage<PageProps & {
     chatToken: string
     chatURL: string
     agentURL: string
@@ -221,11 +222,13 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
     setIsLoading(true)
 
     console.log(trimmedContent)
+    console.log("organization_id : ", organization_id)
 
     socketRef.current?.send(
       JSON.stringify({
         type: 'question',
         question: trimmedContent,
+        organization_id: organization_id,
       })
     )
     setInput('')
@@ -237,6 +240,7 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
         JSON.stringify({
           type: 'widget',
           widget: widget,
+          organization_id: organization_id,
         })
       )
       console.log(widget)
@@ -259,6 +263,7 @@ export default function useChat(currentSession: CurrentSession, persist: boolean
       JSON.stringify({
         type: 'history',
         history: filteredMessages,
+        organization_id: organization_id,
       })
     )
   }, [currentSession, reconnectTrigger, messages, wsStatus])

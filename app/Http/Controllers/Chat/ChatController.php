@@ -60,6 +60,7 @@ class ChatController extends Controller implements HasMiddleware
             'aiSuggestionUrl' => config('app.ai_suggestion_url'),
             'chatSummarizationUrl' => config('app.chat_summarization_url'),
             'initialMessage' => request()->query('initial_message'),
+            'organization_id' => auth()->user()->organization?->id,
         ]);
     }
 }
