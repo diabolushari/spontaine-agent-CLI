@@ -59,6 +59,7 @@ export default function SubsetCreate({
     add_visualization_instructions: false,
     visualization_instructions: '',
     type: 'composite_subset',
+    heirarchy: '',
   })
 
   const { post, loading, errors } = useInertiaPost(route('subset.store', dataDetail.id), {
@@ -94,6 +95,15 @@ export default function SubsetCreate({
         type: 'text' as const,
         setValue: setFormValue('max_rows_to_fetch'),
         placeholder: 'Max Rows To Show (Leave Empty To Show All)',
+      },
+      heirarchy: {
+        type: 'select',
+        setValue: setFormValue('heirarchy'),
+        displayKey: 'name',
+        dataKey: 'id',
+        list: hierarchies,
+        showAllOption: true,
+        label: 'Primary Heirarchy',
       },
       group_data: {
         label: 'Perform Grouping & Aggregation Operations on Data',
