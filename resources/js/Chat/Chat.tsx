@@ -30,6 +30,7 @@ interface ChatProps {
   aiSuggestionUrl?: string
   favorites?: Favorite[]
   initialMessage?: string
+  organization_id?: number | null
 }
 
 export default function Chat({
@@ -38,6 +39,7 @@ export default function Chat({
   aiSuggestionUrl,
   favorites = [],
   initialMessage,
+  organization_id,
 }: Readonly<ChatProps>) {
   const [_currentSession, setCurrentSession] = useState<ChatHistory>(currentSession)
   const {
@@ -51,7 +53,7 @@ export default function Chat({
     handleRetryConnection,
     wsStatus,
     handleToggleFavorite,
-  } = useChat(_currentSession)
+  } = useChat(_currentSession, organization_id)
 
   // Listen for AI Insights custom event to send a message
   useEffect(() => {
