@@ -60,8 +60,8 @@ class CreateDataTable
         }
 
         foreach ($request->dimensions as $dimension) {
-            $foreignName = 'fk_dt_'.$dataDetailId.$dimension->column;
-            $indexName = 'idx_dt_'.$dataDetailId.$dimension->column;
+            $foreignName = 'fk_dt_'.$dataDetailId.'_'.$dimension->column;
+            $indexName = 'idx_dt_'.$dataDetailId.'_'.$dimension->column;
 
             $table->foreignId($dimension->column)
                 ->nullable()
