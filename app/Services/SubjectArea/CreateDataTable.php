@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateDataTable
 {
-    public function create(DataDetailFormRequest $request): void
+    public function create(DataDetailFormRequest $request, string $dataDetailId): void
     {
-        Schema::create($request->tableName, function (Blueprint $table) use ($request) {
+
+        Schema::create($request->tableName, function (Blueprint $table) use ($request, $dataDetailId) {
             $this->addPrimaryKey($table);
             $this->addDateFields($table, $request);
             $this->addDateTimeFields($table, $request);
-            $this->addDimensionFields($table, $request);
+            $this->addDimensionFields($table, $request, $dataDetailId);
             $this->addMeasureFields($table, $request);
             $this->addTextFieldFields($table, $request);
             $this->addRelationFields($table, $request);
@@ -41,26 +42,31 @@ class CreateDataTable
         }
     }
 
-    private function addDateTimeFields(Blueprint $table, DataDetailFormRequest $request) : void {
-        if($request->datetimes === null) {
+    private function addDateTimeFields(Blueprint $table, DataDetailFormRequest $request): void
+    {
+        if ($request->datetimes === null) {
             return;
         }
 
-        foreach($request->datetimes as $datetime) {
+        foreach ($request->datetimes as $datetime) {
             $table->dateTime($datetime->column)->nullable()->index();
         }
     }
 
-    private function addDimensionFields(Blueprint $table, DataDetailFormRequest $request): void
+    private function addDimensionFields(Blueprint $table, DataDetailFormRequest $request, string $dataDetailId): void
     {
         if ($request->dimensions === null) {
             return;
         }
 
         foreach ($request->dimensions as $dimension) {
+            $foreignName = 'fk_dt_'.$dataDetailId.'_'.$dimension->column;
+            $indexName = 'idx_dt_'.$dataDetailId.'_'.$dimension->column;
+
             $table->foreignId($dimension->column)
                 ->nullable()
-                ->constrained('meta_data');
+                ->index($indexName)
+                ->constrained('meta_data', 'id', $foreignName);
         }
     }
 
