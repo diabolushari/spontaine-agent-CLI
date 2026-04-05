@@ -60,10 +60,13 @@ class CreateDataTable
         }
 
         foreach ($request->dimensions as $dimension) {
+            $foreignName = 'fk_dt_'.$dataDetailId.$dimension->column;
+            $indexName = 'idx_dt_'.$dataDetailId.$dimension->column;
 
             $table->foreignId($dimension->column)
                 ->nullable()
-                ->constrained(table: 'meta_data', indexName: 'fk_dt_'.$dataDetailId.$dimension->column);
+                ->index($indexName)
+                ->constrained('meta_data', 'id', $foreignName);
         }
     }
 
