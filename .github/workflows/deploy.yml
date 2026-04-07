@@ -1,0 +1,58 @@
+name: Run Build & Migrate on Server
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  run-on-server:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start SSH agent and add key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DO_SSH_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 22 -H ${{ secrets.DO_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Run commands on server
+        run: |
+          ssh -p ${{ secrets.DO_PORT }} ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} << EOF
+            set -e
+
+            echo "Deploying Spontaine_agent"
+            cd /var/www/html/spontaine_agent_test
+
+            echo "Pull latest code"
+            git fetch origin main
+            git pull --ff-only origin main
+
+            echo "Building frontend"
+            npm run build
+
+            echo "Running migrations"
+            php artisan migrate --force
+
+            echo "Deploying Spontaine_demo"
+            cd /var/www/html/spontaine_demo_test
+
+            echo "Pull latest code"
+            git fetch origin main
+            git pull --ff-only origin main
+
+            echo "Building frontend"
+            npm run build
+
+            echo "Running migrations"
+            php artisan migrate --force
+
+            echo "done"
+          EOF
